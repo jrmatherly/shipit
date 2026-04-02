@@ -1,0 +1,43 @@
+import { lstatSync } from 'node:fs';
+
+/**
+ * lint-staged Configuration
+ *
+ * Runs linters on staged files before commit.
+ * This ensures only clean, formatted code gets committed.
+ *
+ * Functions returning commands (without using file list) run once per batch.
+ *
+ * @see https://github.com/lint-staged/lint-staged
+ */
+
+/** Filter out symlinks — prettier rejects them and Windows handles them differently. */
+const skipSymlinks = (files) => files.filter((f) => !lstatSync(f).isSymbolicLink());
+
+export default {
+  // TypeSpec files - format and compile
+  '*.tsp': ['prettier --write', () => 'pnpm run tsp:compile'],
+
+  // TypeScript files - lint, format, and typecheck
+  // Note: Includes src/domain/generated/**/*.ts (TypeSpec-generated files)
+  // --no-warn-ignored suppresses "file ignored" warnings for config files matched
+  // by ESLint's global ignores (e.g. *.config.ts) that lint-staged may stage.
+  '*.{ts,tsx,mts,cts}': [
+    'eslint --fix --max-warnings 0 --no-warn-ignored',
+    'prettier --write',
+    () => 'pnpm run typecheck',
+  ],
+
+  // JavaScript files - lint and format
+  '*.{js,jsx,mjs,cjs}': ['eslint --fix --max-warnings 0 --no-warn-ignored', 'prettier --write'],
+
+  // JSON, YAML, Markdown - format only
+  '*.{json,yaml,yml}': ['prettier --write'],
+  '*.md': (files) => {
+    const real = skipSymlinks(files);
+    return real.length ? [`prettier --write ${real.join(' ')}`] : [];
+  },
+
+  // Package.json - sort and format
+  'package.json': ['prettier --write'],
+};

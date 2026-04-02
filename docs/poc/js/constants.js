@@ -1,0 +1,511 @@
+export const LIFECYCLE_PHASES = [
+  { id: 0, label: 'Requirements', color: 'bg-slate-400', actionRequired: false },
+  { id: 1, label: 'Research', color: 'bg-indigo-500', actionRequired: false },
+  { id: 2, label: 'Review PRD', color: 'bg-pink-500', actionRequired: true },
+  { id: 3, label: 'Planning', color: 'bg-sky-500', actionRequired: false },
+  { id: 4, label: 'Review Plan', color: 'bg-purple-500', actionRequired: true },
+  { id: 5, label: 'Implementation', color: 'bg-amber-500', actionRequired: false },
+  { id: 6, label: 'QA Check', color: 'bg-orange-500', actionRequired: true },
+  { id: 7, label: 'Final Approval', color: 'bg-emerald-600', actionRequired: true },
+  { id: 8, label: 'Live', color: 'bg-emerald-500', actionRequired: false },
+];
+
+// Keep PHASES as alias for backward compatibility
+export const PHASES = LIFECYCLE_PHASES;
+
+/**
+ * Feature suggestion presets for quick demo feature creation
+ * These are only used to pre-fill the form, not as actual data
+ */
+export const PRESETS = [
+  {
+    title: 'SSO Integration',
+    description:
+      'Implement Single Sign-On using SAML 2.0/OIDC. Integrate with Okta and Google Workspace.',
+    priority: 'high',
+    tags: [
+      { id: 'tag_sso_1', label: 'Security', color: 'red' },
+      { id: 'tag_sso_2', label: 'Auth', color: 'purple' },
+    ],
+  },
+  {
+    title: 'API Rate Limiting',
+    description: 'Implement sliding window rate limiting for public endpoints using Redis.',
+    priority: 'high',
+    tags: [
+      { id: 'tag_rate_1', label: 'API', color: 'blue' },
+      { id: 'tag_rate_2', label: 'Performance', color: 'amber' },
+    ],
+  },
+  {
+    title: 'Audit Logging',
+    description:
+      'Track all create/update/delete actions on critical resources with 90-day retention.',
+    priority: 'medium',
+    tags: [
+      { id: 'tag_audit_1', label: 'Compliance', color: 'slate' },
+      { id: 'tag_audit_2', label: 'Logging', color: 'indigo' },
+    ],
+  },
+  {
+    title: 'Dark Mode Support',
+    description: 'Implement system-wide theme switching with Tailwind dark variant.',
+    priority: 'low',
+    tags: [
+      { id: 'tag_dark_1', label: 'UI', color: 'emerald' },
+      { id: 'tag_dark_2', label: 'UX', color: 'teal' },
+    ],
+  },
+  {
+    title: '2FA Authentication',
+    description: 'Add TOTP based two-factor authentication with QR codes.',
+    priority: 'critical',
+    tags: [
+      { id: 'tag_2fa_1', label: 'Security', color: 'red' },
+      { id: 'tag_2fa_2', label: 'Auth', color: 'purple' },
+    ],
+  },
+  {
+    title: 'Real-time Notifications',
+    description: 'WebSocket-based push notifications for user actions and system events.',
+    priority: 'medium',
+    tags: [
+      { id: 'tag_notif_1', label: 'WebSocket', color: 'cyan' },
+      { id: 'tag_notif_2', label: 'UX', color: 'teal' },
+    ],
+  },
+  {
+    title: 'Data Export Feature',
+    description: 'Allow users to export their data in CSV, JSON, and PDF formats.',
+    priority: 'low',
+    tags: [
+      { id: 'tag_export_1', label: 'Data', color: 'indigo' },
+      { id: 'tag_export_2', label: 'UX', color: 'teal' },
+    ],
+  },
+];
+
+/**
+ * Mock implementation phases (for features in Implementation phase)
+ * Based on the structure of specs/006-cli-settings-commands/tasks.md
+ * Demonstrates parallel and sequential phases with TDD cycles
+ */
+export const MOCK_IMPLEMENTATION_PHASES = [
+  // Phase 0: Foundation (sequential)
+  {
+    id: 'phase_0',
+    name: 'Phase 0: Foundation',
+    description: 'Install dependencies and create skeletons',
+    status: 'pending',
+    order: 0,
+    parallelGroup: null,
+    branch: 'feat/006-cli-settings-commands/phase-0',
+    worktree: '.worktrees/phase-0-foundation',
+    estimatedTime: '~30 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: null,
+    actionItems: [
+      { id: 'ai_0_0', description: 'Install npm dependencies', completed: false, order: 0 },
+      {
+        id: 'ai_0_1',
+        description: 'Create src/presentation/cli/ui/tables.ts skeleton',
+        completed: false,
+        order: 1,
+      },
+      {
+        id: 'ai_0_2',
+        description: 'Create src/presentation/cli/ui/output.ts skeleton',
+        completed: false,
+        order: 2,
+      },
+      {
+        id: 'ai_0_3',
+        description: 'Export utilities from ui/index.ts',
+        completed: false,
+        order: 3,
+      },
+      { id: 'ai_0_4', description: 'Verify build passes', completed: false, order: 4 },
+      {
+        id: 'ai_0_5',
+        description: 'Commit: feat(cli): add CLI UI foundation',
+        completed: false,
+        order: 5,
+      },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  // Phase 1.1: Show Command - RED
+  {
+    id: 'phase_1_1',
+    name: 'Phase 1.1: Show Command (RED)',
+    description: 'Write failing tests for show command',
+    status: 'pending',
+    order: 1,
+    parallelGroup: null,
+    branch: 'feat/006-cli-settings-commands/phase-1-1',
+    worktree: '.worktrees/phase-1-1-show-red',
+    estimatedTime: '~45 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: 'RED',
+    actionItems: [
+      {
+        id: 'ai_1_0',
+        description: 'Create failing tests for formatAsTable()',
+        completed: false,
+        order: 0,
+      },
+      {
+        id: 'ai_1_1',
+        description: 'Create failing tests for formatAsJSON()',
+        completed: false,
+        order: 1,
+      },
+      {
+        id: 'ai_1_2',
+        description: 'Create failing tests for formatAsYAML()',
+        completed: false,
+        order: 2,
+      },
+      {
+        id: 'ai_1_3',
+        description: 'Create show command failing tests',
+        completed: false,
+        order: 3,
+      },
+      {
+        id: 'ai_1_4',
+        description: 'Run tests - verify all FAIL (RED)',
+        completed: false,
+        order: 4,
+      },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  // Phase 1.2: Show Command - GREEN
+  {
+    id: 'phase_1_2',
+    name: 'Phase 1.2: Show Command (GREEN)',
+    description: 'Implement minimal solution to pass tests',
+    status: 'pending',
+    order: 2,
+    parallelGroup: null,
+    branch: 'feat/006-cli-settings-commands/phase-1-2',
+    worktree: '.worktrees/phase-1-2-show-green',
+    estimatedTime: '~60 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: 'GREEN',
+    actionItems: [
+      { id: 'ai_1_5', description: 'Implement OutputFormatter class', completed: false, order: 0 },
+      {
+        id: 'ai_1_6',
+        description: 'Implement table/JSON/YAML formatting',
+        completed: false,
+        order: 1,
+      },
+      { id: 'ai_1_7', description: 'Implement TableFormatter class', completed: false, order: 2 },
+      { id: 'ai_1_8', description: 'Implement show command', completed: false, order: 3 },
+      {
+        id: 'ai_1_9',
+        description: 'Run tests - verify all PASS (GREEN)',
+        completed: false,
+        order: 4,
+      },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  // Phase 1.3: Show Command - REFACTOR
+  {
+    id: 'phase_1_3',
+    name: 'Phase 1.3: Show Command (REFACTOR)',
+    description: 'Improve code quality and styling',
+    status: 'pending',
+    order: 3,
+    parallelGroup: null,
+    branch: 'feat/006-cli-settings-commands/phase-1-3',
+    worktree: '.worktrees/phase-1-3-show-refactor',
+    estimatedTime: '~30 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: 'REFACTOR',
+    actionItems: [
+      { id: 'ai_1_10', description: 'Extract database metadata logic', completed: false, order: 0 },
+      {
+        id: 'ai_1_11',
+        description: 'Improve table styling with colors',
+        completed: false,
+        order: 1,
+      },
+      {
+        id: 'ai_1_12',
+        description: 'Add helper functions for formatting',
+        completed: false,
+        order: 2,
+      },
+      { id: 'ai_1_13', description: 'Run lint and typecheck', completed: false, order: 3 },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  // Phase 4.1-4.5: Parallel Documentation Phases
+  {
+    id: 'phase_4_1',
+    name: 'Phase 4.1: CLI README',
+    description: 'Document CLI architecture overview',
+    status: 'pending',
+    order: 4,
+    parallelGroup: 1,
+    branch: 'feat/006-cli-settings-commands/phase-4-1',
+    worktree: '.worktrees/phase-4-1-docs-readme',
+    estimatedTime: '~30 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: null,
+    actionItems: [
+      {
+        id: 'ai_4_0',
+        description: 'Write docs/cli/README.md overview',
+        completed: false,
+        order: 0,
+      },
+      { id: 'ai_4_1', description: 'Add links to CLI documentation', completed: false, order: 1 },
+      { id: 'ai_4_2', description: 'Create quick reference table', completed: false, order: 2 },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  {
+    id: 'phase_4_2',
+    name: 'Phase 4.2: Architecture Doc',
+    description: 'Document command patterns and DI integration',
+    status: 'pending',
+    order: 4,
+    parallelGroup: 1,
+    branch: 'feat/006-cli-settings-commands/phase-4-2',
+    worktree: '.worktrees/phase-4-2-docs-arch',
+    estimatedTime: '~30 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: null,
+    actionItems: [
+      { id: 'ai_4_3', description: 'Write docs/cli/architecture.md', completed: false, order: 0 },
+      {
+        id: 'ai_4_4',
+        description: 'Document command file organization',
+        completed: false,
+        order: 1,
+      },
+      { id: 'ai_4_5', description: 'Document DI container patterns', completed: false, order: 2 },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  {
+    id: 'phase_4_3',
+    name: 'Phase 4.3: Design System Doc',
+    description: 'Document output formatting and design patterns',
+    status: 'pending',
+    order: 4,
+    parallelGroup: 1,
+    branch: 'feat/006-cli-settings-commands/phase-4-3',
+    worktree: '.worktrees/phase-4-3-docs-design',
+    estimatedTime: '~30 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: null,
+    actionItems: [
+      { id: 'ai_4_6', description: 'Write docs/cli/design-system.md', completed: false, order: 0 },
+      { id: 'ai_4_7', description: 'Document table formatting', completed: false, order: 1 },
+      { id: 'ai_4_8', description: 'Document color usage patterns', completed: false, order: 2 },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  {
+    id: 'phase_4_4',
+    name: 'Phase 4.4: Commands Doc',
+    description: 'Document all CLI commands and usage',
+    status: 'pending',
+    order: 4,
+    parallelGroup: 1,
+    branch: 'feat/006-cli-settings-commands/phase-4-4',
+    worktree: '.worktrees/phase-4-4-docs-commands',
+    estimatedTime: '~30 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: null,
+    actionItems: [
+      { id: 'ai_4_9', description: 'Write docs/cli/commands.md', completed: false, order: 0 },
+      { id: 'ai_4_10', description: 'Add usage examples and flags', completed: false, order: 1 },
+      { id: 'ai_4_11', description: 'Add output format examples', completed: false, order: 2 },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  {
+    id: 'phase_4_5',
+    name: 'Phase 4.5: Update CLAUDE.md',
+    description: 'Update project documentation',
+    status: 'pending',
+    order: 4,
+    parallelGroup: 1,
+    branch: 'feat/006-cli-settings-commands/phase-4-5',
+    worktree: '.worktrees/phase-4-5-docs-claude',
+    estimatedTime: '~20 min',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: null,
+    actionItems: [
+      { id: 'ai_4_12', description: 'Add CLI Architecture section', completed: false, order: 0 },
+      { id: 'ai_4_13', description: 'Document command patterns', completed: false, order: 1 },
+      { id: 'ai_4_14', description: 'Link to docs/cli/ documentation', completed: false, order: 2 },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+
+  // Phase 5: Integration & Polish
+  {
+    id: 'phase_5',
+    name: 'Phase 5: Integration & Polish',
+    description: 'Run tests, verify quality, and create PR',
+    status: 'pending',
+    order: 5,
+    parallelGroup: null,
+    branch: 'feat/006-cli-settings-commands/phase-5',
+    worktree: '.worktrees/phase-5-integration',
+    estimatedTime: '~1 hour',
+    progress: 0,
+    currentActionItem: null,
+    tddCycle: null,
+    actionItems: [
+      { id: 'ai_5_0', description: 'Run full test suite', completed: false, order: 0 },
+      { id: 'ai_5_1', description: 'Run E2E tests in real terminal', completed: false, order: 1 },
+      { id: 'ai_5_2', description: 'Run lint and typecheck', completed: false, order: 2 },
+      { id: 'ai_5_3', description: 'Update spec documentation', completed: false, order: 3 },
+      { id: 'ai_5_4', description: 'Create pull request', completed: false, order: 4 },
+    ],
+    commits: [],
+    changesSummary: { filesChanged: 0, additions: 0, deletions: 0, commits: 0 },
+    mergedAt: null,
+    mergedInto: '',
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: new Date().toISOString(),
+  },
+];
+
+/**
+ * Mock repositories for demo
+ */
+export const MOCK_REPOS = [
+  { id: 'repo_1', org: 'shep-ai', name: 'cli', fullName: 'shep-ai/shep' },
+  { id: 'repo_2', org: 'acme-corp', name: 'platform-api', fullName: 'acme-corp/platform-api' },
+  { id: 'repo_3', org: 'acme-corp', name: 'web-dashboard', fullName: 'acme-corp/web-dashboard' },
+];
+
+/**
+ * Random real-looking repository names for the "Add Repository" flow
+ */
+export const RANDOM_REPO_NAMES = [
+  'stripe/payment-engine',
+  'vercel/edge-runtime',
+  'linear/sync-service',
+  'notion/block-editor',
+  'figma/design-tokens',
+  'planetscale/vitess-proxy',
+  'supabase/realtime',
+  'clerk/auth-sdk',
+  'resend/email-api',
+  'turso/libsql-server',
+  'neon/pg-proxy',
+  'railway/deploy-agent',
+  'fly-apps/machines-api',
+  'deno/fresh-runtime',
+  'bun-sh/bundler',
+  'biomejs/analyzer',
+  'oxc-project/transformer',
+  'astro-build/renderer',
+  'svelte/kit-adapter',
+  'remix-run/dev-server',
+];
+
+/**
+ * Feature idea templates - shown as mind-map bubbles when selecting a repo
+ */
+export const FEATURE_IDEAS = [
+  'Real-time collaboration',
+  'OAuth 2.1 migration',
+  'GraphQL subscriptions',
+  'Rate limiting v2',
+  'Webhook retry system',
+  'Audit trail logging',
+  'Multi-tenant isolation',
+  'Edge caching layer',
+  'Dark mode support',
+  'CLI plugin system',
+  'API versioning strategy',
+  'Batch import/export',
+  'Role-based permissions',
+  'Search indexing pipeline',
+  'SSO integration',
+  'Usage analytics dashboard',
+];

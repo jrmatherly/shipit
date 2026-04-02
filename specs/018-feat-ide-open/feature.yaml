@@ -1,0 +1,56 @@
+feature:
+  id: '018-feat-ide-open'
+  name: 'feat-ide-open'
+  number: 18
+  branch: 'feat/ide-open'
+  lifecycle: 'Review'
+  createdAt: '2026-02-15T16:12:29Z'
+
+status:
+  phase: 'in-review'
+  progress:
+    completed: 11
+    total: 11
+    percentage: 100
+  currentTask: null
+  lastUpdated: '2026-02-15T22:40:00Z'
+  lastUpdatedBy: 'shep-kit:commit-pr'
+
+prUrl: 'https://github.com/shep-ai/shep/pull/54'
+
+validation:
+  lastRun: '2026-02-15T18:48:00Z'
+  gatesPassed:
+    - completeness
+    - architecture
+    - consistency
+  autoFixesApplied: []
+
+tasks:
+  current: null
+  blocked: []
+  failed: []
+
+checkpoints:
+  - phase: 'feature-created'
+    completedAt: '2026-02-15T16:12:29Z'
+    completedBy: 'shep-kit:new-feature'
+  - phase: 'research-complete'
+    completedAt: '2026-02-15T17:00:00Z'
+    completedBy: 'shep-kit:research'
+  - phase: 'plan-complete'
+    completedAt: '2026-02-15T17:15:00Z'
+    completedBy: 'shep-kit:plan'
+  - phase: 'implementation-complete'
+    completedAt: '2026-02-15T18:52:00Z'
+    completedBy: 'shep-kit:implement'
+  - phase: 'pr-created'
+    completedAt: '2026-02-15T18:55:00Z'
+    completedBy: 'shep-kit:commit-pr'
+  - phase: 'ci-passed'
+    completedAt: '2026-02-15T22:40:00Z'
+    completedBy: 'shep-kit:commit-pr'
+
+errors:
+  current: null
+  history: []

@@ -1,0 +1,534 @@
+# Implementation Plan (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: feature-agent
+summary: Implementation plan for 013-feature-agent with 15 phases following Clean Architecture and TDD. Phases 1-11 complete (core agent system). Phases 12-14 human-in-the-loop, Phase 16 resume command. Phase 15 (external tools) out of scope.
+
+# Relationships
+relatedFeatures:
+  - '008-agent-configuration'
+technologies:
+  - TypeScript
+  - Commander.js
+  - LangGraph
+  - SQLite
+  - better-sqlite3
+  - Node.js fork()
+relatedLinks:
+  - file://./specs/013-feature-agent/spec.yaml
+  - file://./specs/013-feature-agent/research.yaml
+  - file://./tsp/domain/entities/feature.tsp
+  - file://./tsp/agents/feature-agent.tsp
+
+# Structured implementation phases
+phases:
+  - id: phase-1
+    name: 'Foundation & Domain Setup'
+    parallel: false
+    taskIds:
+      - task-1
+      - task-2
+  - id: phase-2
+    name: 'Repository Layer (TDD)'
+    parallel: false
+    taskIds:
+      - task-3
+      - task-4
+  - id: phase-3
+    name: 'Git Worktree Service (TDD)'
+    parallel: false
+    taskIds:
+      - task-5
+      - task-6
+  - id: phase-4
+    name: 'Use Cases (TDD)'
+    parallel: false
+    taskIds:
+      - task-7
+      - task-8
+      - task-9
+  - id: phase-5
+    name: 'LangGraph Agent Foundation (TDD)'
+    parallel: false
+    taskIds:
+      - task-10
+      - task-11
+  - id: phase-6
+    name: 'CLI Commands (TDD)'
+    parallel: false
+    taskIds:
+      - task-12
+      - task-13
+      - task-14
+  - id: phase-7
+    name: 'Agent Nodes (TDD)'
+    parallel: false
+    taskIds:
+      - task-15
+      - task-16
+      - task-17
+      - task-18
+  - id: phase-8
+    name: 'Background Execution (TDD)'
+    parallel: false
+    taskIds:
+      - task-19
+      - task-20
+  - id: phase-9
+    name: 'Agent Run CLI Commands (TDD)'
+    parallel: false
+    taskIds:
+      - task-21
+      - task-22
+      - task-23
+  - id: phase-10
+    name: 'Feature Deletion (TDD)'
+    parallel: false
+    taskIds:
+      - task-24
+      - task-25
+  - id: phase-11
+    name: 'Integration & Polish'
+    parallel: false
+    taskIds:
+      - task-26
+      - task-27
+
+  # === Deferred Gap Implementation (Phases 12-16) ===
+  - id: phase-12
+    name: 'Human-in-the-Loop: Domain & State (TDD)'
+    parallel: false
+    taskIds:
+      - task-28
+      - task-29
+  - id: phase-13
+    name: 'Human-in-the-Loop: Interrupt Logic & Worker (TDD)'
+    parallel: false
+    taskIds:
+      - task-30
+      - task-31
+  - id: phase-14
+    name: 'Human-in-the-Loop: Approve/Reject CLI (TDD)'
+    parallel: false
+    taskIds:
+      - task-32
+      - task-33
+  # Phase 15 (External Tool Integration) — OUT OF SCOPE. Tasks 34-36 deferred.
+  - id: phase-16
+    name: 'Resume Command & Final Integration (TDD)'
+    parallel: false
+    taskIds:
+      - task-37
+      - task-38
+      - task-39
+
+# File change tracking
+filesToCreate:
+  # Phase 1-11 (already created)
+  - src/application/ports/output/feature-repository.interface.ts
+  - src/application/ports/output/worktree-service.interface.ts
+  - src/infrastructure/repositories/sqlite-feature.repository.ts
+  - src/infrastructure/persistence/sqlite/mappers/feature.mapper.ts
+  - src/infrastructure/services/git/worktree.service.ts
+  - src/infrastructure/services/agents/langgraph/feature-agent-graph.ts
+  - src/infrastructure/services/agents/feature-agent-worker.ts
+  - src/presentation/cli/commands/feat/index.ts
+  - src/presentation/cli/commands/feat/new.command.ts
+  - src/presentation/cli/commands/feat/ls.command.ts
+  - src/presentation/cli/commands/feat/show.command.ts
+  - src/presentation/cli/commands/feat/del.command.ts
+  - src/presentation/cli/commands/agent/index.ts
+  - src/presentation/cli/commands/agent/ls.command.ts
+  - src/presentation/cli/commands/agent/show.command.ts
+  - src/application/use-cases/features/create-feature.use-case.ts
+  - src/application/use-cases/features/list-features.use-case.ts
+  - src/application/use-cases/features/show-feature.use-case.ts
+  - src/application/use-cases/features/delete-feature.use-case.ts
+  - src/application/use-cases/agents/list-agent-runs.use-case.ts
+  - src/application/use-cases/agents/show-agent-run.use-case.ts
+  - tests/unit/application/use-cases/features/delete-feature.use-case.test.ts
+  - tests/unit/application/use-cases/agents/list-agent-runs.use-case.test.ts
+  - tests/unit/application/use-cases/agents/show-agent-run.use-case.test.ts
+  - tests/unit/infrastructure/repositories/sqlite-feature.repository.test.ts
+  - tests/unit/infrastructure/services/git/worktree.service.test.ts
+  - tests/unit/application/use-cases/features/create-feature.use-case.test.ts
+  - tests/e2e/cli/feat.test.ts
+  # Phase 12-16 (new files for deferred gaps)
+  - src/application/use-cases/agents/approve-agent-run.use-case.ts
+  - src/application/use-cases/agents/reject-agent-run.use-case.ts
+  - src/application/use-cases/features/resume-feature.use-case.ts
+  # External tool files (tasks 34-36) OUT OF SCOPE:
+  # - src/application/ports/output/external-issue-fetcher.interface.ts
+  # - src/infrastructure/services/github/github-issue.service.ts
+  # - src/infrastructure/services/jira/jira-ticket.service.ts
+  - src/presentation/cli/commands/agent/approve.command.ts
+  - src/presentation/cli/commands/agent/reject.command.ts
+  - src/presentation/cli/commands/feat/resume.command.ts
+  - tests/unit/application/use-cases/agents/approve-agent-run.use-case.test.ts
+  - tests/unit/application/use-cases/agents/reject-agent-run.use-case.test.ts
+  - tests/unit/application/use-cases/features/resume-feature.use-case.test.ts
+  # External tool test files (tasks 34-36) OUT OF SCOPE:
+  # - tests/unit/infrastructure/services/github/github-issue.service.test.ts
+  # - tests/unit/infrastructure/services/jira/jira-ticket.service.test.ts
+  - tests/unit/infrastructure/services/agents/interrupt-logic.test.ts
+  - tests/integration/agents/interrupt-resume.test.ts
+
+filesToModify:
+  # Phase 1-11 (already modified)
+  - tsp/domain/entities/feature.tsp
+  - tsp/agents/agent-run.tsp
+  - src/infrastructure/di/container.ts
+  - src/infrastructure/persistence/migrations.ts
+  - package.json
+  - src/presentation/cli/index.ts
+  # Phase 12-16 (modifications for deferred gaps)
+  - tsp/agents/enums/agent-run-status.tsp
+  - src/infrastructure/services/agents/feature-agent/state.ts
+  - src/infrastructure/services/agents/feature-agent/nodes/node-helpers.ts
+  - src/infrastructure/services/agents/feature-agent/nodes/analyze.node.ts
+  - src/infrastructure/services/agents/feature-agent/nodes/requirements.node.ts
+  - src/infrastructure/services/agents/feature-agent/nodes/research.node.ts
+  - src/infrastructure/services/agents/feature-agent/nodes/plan.node.ts
+  - src/infrastructure/services/agents/feature-agent/nodes/implement.node.ts
+  - src/infrastructure/services/agents/feature-agent/feature-agent-worker.ts
+  - src/infrastructure/services/agents/feature-agent/feature-agent-process.service.ts
+  - src/infrastructure/repositories/agent-run.repository.ts
+  - src/application/ports/output/agent-run-repository.interface.ts
+  - src/presentation/cli/commands/feat/new.command.ts
+  - src/presentation/cli/commands/agent/index.ts
+  - src/presentation/cli/commands/agent/show.command.ts
+  - src/presentation/cli/commands/feat/index.ts
+
+# Open questions (should all be resolved before implementation)
+openQuestions: []
+
+# Markdown content (the full plan document)
+content: |
+  ## Status
+
+  - **Phase:** Planning
+  - **Updated:** 2026-02-11
+
+  ## Architecture Overview
+
+  This implementation follows **Clean Architecture** with clear separation of concerns:
+
+  ```
+  Presentation (CLI)
+      ↓
+  Application (Use Cases)
+      ↓
+  Domain (TypeSpec Models)
+      ↑
+  Infrastructure (Repositories, Services)
+  ```
+
+  **Key Design Decisions:**
+  - Feature storage in global SQLite DB (~/.shep/data) with repositoryPath filtering
+  - Git worktree management via native execFile (zero new dependencies)
+  - LangGraph StateGraph with minimal state, nodes read spec files directly
+  - Background execution via Node.js fork() with detached + unref()
+  - SQLite checkpointing per feature for crash recovery
+
+  ## Implementation Strategy
+
+  **MANDATORY TDD**: All phases with executable code follow RED-GREEN-REFACTOR cycles.
+
+  ### Phase 1: Foundation & Domain Setup (No Tests)
+
+  **Goal:** Install dependencies and update TypeSpec models for cross-references
+
+  **Steps:**
+  1. Install LangGraph packages (@langchain/langgraph, @langchain/core, @langchain/langgraph-checkpoint-sqlite)
+  2. Update TypeSpec: Add featureId/repositoryPath to AgentRun, add agentRunId to Feature
+  3. Compile TypeSpec and verify generated types
+
+  **Deliverables:** Dependencies installed, TypeSpec models updated, pnpm tsp:compile passes
+
+  ### Phase 2: Repository Layer (TDD Cycle 1)
+
+  **Goal:** Implement IFeatureRepository with SQLite persistence
+
+  **TDD Workflow:**
+  1. **RED:** Write unit tests for IFeatureRepository interface methods (create, findById, list, update)
+  2. **GREEN:** Implement SQLiteFeatureRepository with database migration (features table)
+  3. **REFACTOR:** Extract feature mapper, add indexes for performance
+
+  **Deliverables:** IFeatureRepository interface, SQLiteFeatureRepository, migration v4, passing tests
+
+  ### Phase 3: Git Worktree Service (TDD Cycle 2)
+
+  **Goal:** Implement IWorktreeService for git worktree management
+
+  **TDD Workflow:**
+  1. **RED:** Write unit tests for worktree operations (create, remove, list, exists)
+  2. **GREEN:** Implement WorktreeService using execFile with typed errors
+  3. **REFACTOR:** Extract error parsing, improve error messages
+
+  **Deliverables:** IWorktreeService interface, WorktreeService implementation, passing tests
+
+  ### Phase 4: Use Cases (TDD Cycle 3)
+
+  **Goal:** Implement feature CRUD use cases
+
+  **TDD Workflow:**
+  1. **RED:** Write unit tests for CreateFeatureUseCase, ListFeaturesUseCase, ShowFeatureUseCase
+  2. **GREEN:** Implement use cases with repository and worktree service injection
+  3. **REFACTOR:** Extract common validation logic, improve error handling
+
+  **Deliverables:** 3 use cases, DI container registration, passing tests
+
+  ### Phase 5: LangGraph Agent Foundation (TDD Cycle 4)
+
+  **Goal:** Set up FeatureAgent StateGraph structure and analyze node
+
+  **TDD Workflow:**
+  1. **RED:** Write integration tests for graph initialization and analyze node
+  2. **GREEN:** Implement FeatureAgentState, graph structure, analyze node
+  3. **REFACTOR:** Extract node factory pattern, improve state transitions
+
+  **Deliverables:** feature-agent-graph.ts with analyze node, SQLite checkpointing, passing tests
+
+  ### Phase 6: CLI Commands (TDD Cycle 5)
+
+  **Goal:** Implement feat new/ls/show CLI commands
+
+  **TDD Workflow:**
+  1. **RED:** Write E2E tests for CLI commands (feat new, feat ls, feat show)
+  2. **GREEN:** Implement commands with use case integration
+  3. **REFACTOR:** Extract common UI patterns, improve output formatting
+
+  **Deliverables:** 3 CLI commands registered, table formatting, passing E2E tests
+
+  ### Phase 7: Agent Nodes (TDD Cycle 6)
+
+  **Goal:** Implement requirements, research, plan, implement nodes
+
+  **TDD Workflow:**
+  1. **RED:** Write integration tests for each node with mock spec files
+  2. **GREEN:** Implement nodes with IAgentExecutor delegation and spec file I/O
+  3. **REFACTOR:** Extract prompt templates, improve error handling
+
+  **Deliverables:** 4 LangGraph nodes, human-in-the-loop support, passing tests
+
+  ### Phase 8: Background Execution (TDD Cycle 7)
+
+  **Goal:** Implement fork() worker and process management
+
+  **TDD Workflow:**
+  1. **RED:** Write integration tests for worker spawn and IPC handshake
+  2. **GREEN:** Implement feature-agent-worker.ts with fork() + detached
+  3. **REFACTOR:** Extract process management utilities, improve logging
+
+  **Deliverables:** Background worker, PID tracking, crash detection, passing tests
+
+  ### Phase 9: Agent Run CLI Commands (TDD Cycle 8)
+
+  **Goal:** Implement `shep agent ls` and `shep agent show <id>` commands to surface agent run data
+
+  **TDD Workflow:**
+  1. **RED:** Write unit tests for ListAgentRunsUseCase, ShowAgentRunUseCase, and CLI command tests
+  2. **GREEN:** Implement use cases and CLI commands with table/detail formatting
+  3. **REFACTOR:** Extract formatters, improve status display with colors
+
+  **Deliverables:** `shep agent ls` (table with ID, feature, status, agent, started), `shep agent show <id>` (full run details with liveness check), passing tests
+
+  ### Phase 10: Feature Deletion (TDD Cycle 9)
+
+  **Goal:** Implement `shep feat del <id>` with confirmation prompt and `--force` flag
+
+  **TDD Workflow:**
+  1. **RED:** Write unit tests for DeleteFeatureUseCase (with worktree cleanup, run cancellation)
+  2. **GREEN:** Implement use case and CLI command with @inquirer/prompts confirm
+  3. **REFACTOR:** Improve error messages, handle edge cases (running agent, missing worktree)
+
+  **Deliverables:** `shep feat del <id>` with confirm prompt, `--force` to skip, worktree cleanup, agent run cancellation, passing tests
+
+  ### Phase 11: Integration & Polish
+
+  **Goal:** E2E testing, documentation, and final validation
+
+  **Steps:**
+  1. Write full E2E test for complete workflow (feat new → agent runs → feat show → feat del)
+  2. Update AGENTS.md with FeatureAgent implementation details
+  3. Add CLI reference docs for shep feat and shep agent commands
+  4. Validate all tests pass (pnpm test)
+  5. Validate build passes (pnpm build)
+  6. Validate typecheck passes (pnpm typecheck)
+
+  **Deliverables:** E2E tests passing, documentation complete, feature ready for PR
+
+  ## Files to Create/Modify
+
+  ### New Files (Application Layer)
+
+  | File | Purpose |
+  | ---- | ------- |
+  | src/application/ports/output/feature-repository.interface.ts | IFeatureRepository port |
+  | src/application/ports/output/worktree-service.interface.ts | IWorktreeService port |
+  | src/application/use-cases/features/create-feature.use-case.ts | Create feature + worktree + spawn agent |
+  | src/application/use-cases/features/list-features.use-case.ts | List features with filtering |
+  | src/application/use-cases/features/show-feature.use-case.ts | Show feature details |
+  | src/application/use-cases/features/delete-feature.use-case.ts | Delete feature + worktree cleanup + cancel run |
+  | src/application/use-cases/agents/list-agent-runs.use-case.ts | List all agent runs |
+  | src/application/use-cases/agents/show-agent-run.use-case.ts | Show agent run details with liveness |
+
+  ### New Files (Infrastructure Layer)
+
+  | File | Purpose |
+  | ---- | ------- |
+  | src/infrastructure/repositories/sqlite-feature.repository.ts | SQLite implementation of IFeatureRepository |
+  | src/infrastructure/persistence/sqlite/mappers/feature.mapper.ts | Feature domain <-> SQLite mapping |
+  | src/infrastructure/services/git/worktree.service.ts | Git worktree management via execFile |
+  | src/infrastructure/services/agents/langgraph/feature-agent-graph.ts | LangGraph StateGraph with 5 nodes |
+  | src/infrastructure/services/agents/feature-agent-worker.ts | Background worker entry point |
+
+  ### New Files (Presentation Layer)
+
+  | File | Purpose |
+  | ---- | ------- |
+  | src/presentation/cli/commands/feat/index.ts | Parent command with subcommands |
+  | src/presentation/cli/commands/feat/new.command.ts | shep feat new implementation |
+  | src/presentation/cli/commands/feat/ls.command.ts | shep feat ls implementation |
+  | src/presentation/cli/commands/feat/show.command.ts | shep feat show implementation |
+  | src/presentation/cli/commands/feat/del.command.ts | shep feat del implementation |
+  | src/presentation/cli/commands/agent/index.ts | Agent command group with subcommands |
+  | src/presentation/cli/commands/agent/ls.command.ts | shep agent ls implementation |
+  | src/presentation/cli/commands/agent/show.command.ts | shep agent show implementation |
+
+  ### Modified Files
+
+  | File | Changes |
+  | ---- | ------- |
+  | tsp/domain/entities/feature.tsp | Add agentRunId optional field |
+  | tsp/agents/agent-run.tsp | Add featureId and repositoryPath optional fields |
+  | src/infrastructure/di/container.ts | Register IFeatureRepository, IWorktreeService, use cases |
+  | src/infrastructure/persistence/migrations.ts | Add migration v4 for features table |
+  | package.json | Add @langchain/langgraph, @langchain/langgraph-checkpoint-sqlite |
+  | src/presentation/cli/index.ts | Register feat and agent commands |
+
+  ## Testing Strategy (TDD: Tests FIRST)
+
+  **CRITICAL:** Tests are written FIRST in each TDD cycle.
+
+  ### Unit Tests (RED -> GREEN -> REFACTOR)
+
+  Write FIRST for:
+  - SQLiteFeatureRepository (create, findById, findBySlug, list, update, delete)
+  - WorktreeService (create, remove, list, exists)
+  - CreateFeatureUseCase, ListFeaturesUseCase, ShowFeatureUseCase
+  - Feature mapper (domain <-> SQLite row conversion)
+
+  ### Integration Tests
+
+  Write FIRST for:
+  - FeatureAgent graph execution (analyze node, full workflow)
+  - Background worker spawn and IPC handshake
+  - Database migrations (v4 features table creation)
+
+  ### E2E Tests
+
+  Write FIRST for:
+  - feat new command (full workflow: create + worktree + agent spawn)
+  - feat ls command (table output with filtering)
+  - feat show command (detailed feature display)
+  - Complete feature lifecycle (new -> running -> complete)
+
+  ---
+
+  ## Deferred Gap Implementation (Phases 12-16)
+
+  Phases 1-11 are **complete** (27/27 tasks). The following phases address 3 gaps identified
+  during requirements review: human-in-the-loop approval, external tool integration, and
+  crash recovery resume.
+
+  ### Phase 12: Human-in-the-Loop — Domain & State (TDD Cycle 10)
+
+  **Goal:** Extend TypeSpec models and LangGraph state to support approval workflow
+
+  **TDD Workflow:**
+  1. **RED:** Write tests that assert: AgentRunStatus includes `waiting_approval`;
+     AgentRun has `approvalMode` and `approvalStatus` fields; FeatureAgentState includes
+     `approvalMode` field; migration v6 adds columns to agent_runs table
+  2. **GREEN:** Update TypeSpec enum + model, run `tsp:compile`, add migration v6,
+     update state.ts with new Annotation field
+  3. **REFACTOR:** Verify generated types match, update agent-run repository updateStatus()
+     to handle new fields
+
+  **Deliverables:** Updated TypeSpec models, migration v6, extended state schema, passing tests
+
+  ### Phase 13: Human-in-the-Loop — Interrupt Logic & Worker (TDD Cycle 11)
+
+  **Goal:** Add `interrupt()` calls to nodes and teach worker to handle interrupt/resume
+
+  **TDD Workflow:**
+  1. **RED:** Write integration test that: creates graph with `approvalMode='interactive'`,
+     invokes graph, asserts execution pauses after first node with interrupt payload;
+     write test that resumes graph with `Command({ resume })` and asserts continuation
+  2. **GREEN:** Add `shouldInterrupt()` helper to node-helpers.ts; modify each node's
+     `buildPrompt` wrapper in executeNode() to call `interrupt()` conditionally after
+     executor completes; update worker to detect interrupt result and set
+     `status=waiting_approval` before exiting; update worker to accept `--resume` mode
+     that invokes `graph.invoke(new Command({ resume }), config)`
+  3. **REFACTOR:** Extract interrupt decision logic into single `shouldInterruptNode()`
+     function; ensure all 5 nodes share the same interrupt pattern
+
+  **Deliverables:** Interrupt-capable nodes, resume-capable worker, passing integration tests
+
+  ### Phase 14: Human-in-the-Loop — Approve/Reject CLI (TDD Cycle 12)
+
+  **Goal:** Implement `shep agent approve <id>` and `shep agent reject <id>` commands
+
+  **TDD Workflow:**
+  1. **RED:** Write unit tests for `ApproveAgentRunUseCase` (validates waiting_approval
+     status, updates approvalStatus, spawns resume worker); write unit tests for
+     `RejectAgentRunUseCase` (validates status, marks failed with reason); write CLI
+     command tests for approve/reject
+  2. **GREEN:** Implement use cases with status validation + process spawning; implement
+     CLI commands; register in DI container and agent command index; add approval mode
+     flags to `feat new` command (`--interactive`, `--allow-prd`, `--allow-plan`, `--allow-all`)
+  3. **REFACTOR:** Extract shared run-resolution logic (prefix match); update
+     `agent show` to display approval status and mode
+
+  **Deliverables:** approve/reject commands, feat new flags, updated agent show, passing tests
+
+  ### Phase 15: External Tool Integration — OUT OF SCOPE
+
+  Tasks 34-36 (GitHub/Jira integration) deferred to future work.
+
+  ### Phase 16: Resume Command & Final Integration (TDD Cycle 13)
+
+  **Goal:** Implement `shep feat resume <id>` and validate full end-to-end workflow
+
+  **TDD Workflow:**
+  1. **RED:** Write unit tests for `ResumeFeatureUseCase` (validates interrupted/failed
+     status, spawns worker with --resume flag, creates new AgentRun); write CLI command
+     test for feat resume; write integration test for full lifecycle: feat new with
+     --interactive → agent pauses → agent approve → agent completes
+  2. **GREEN:** Implement `ResumeFeatureUseCase` that loads feature + last AgentRun,
+     validates resumable status, creates new run, spawns worker with `--resume` + threadId;
+     implement feat resume command; update FeatureAgentProcessService.spawn() to accept
+     optional `resumeThreadId` arg; register in DI + CLI
+  3. **REFACTOR:** Update feat show to display "Waiting for approval — run `shep agent approve`"
+     suggestion; validate all tests pass (pnpm test); validate build (pnpm build);
+     validate typecheck (pnpm typecheck)
+
+  **Deliverables:** Resume command, full lifecycle test, all validation gates passing
+
+  ## Risk Mitigation
+
+  | Risk | Mitigation |
+  | ---- | ---------- |
+  | LangGraph learning curve | Start with simple analyze node, expand incrementally |
+  | Background process crashes | SQLite checkpointing enables resume, PID tracking for detection |
+  | Git worktree conflicts | Check existence before create, validate branch availability |
+  | Database schema changes | Versioned migrations with rollback support |
+  | TypeSpec breaking changes | Compile after every TypeSpec edit, fix immediately |
+  | LangGraph interrupt() behavior | Verified via Context7 docs — interrupt pauses, checkpointer saves, Command resumes |
+  | Worker exit on interrupt | Worker detects interrupt result (no tasks array in output), updates DB, exits cleanly |
+  | gh CLI not installed | OUT OF SCOPE (deferred) |
+  | Jira auth not configured | OUT OF SCOPE (deferred) |
+
+  ---
+
+  _Updated 2026-02-12 with deferred gap phases (12-16). Original plan by `/shep-kit:plan`._

@@ -1,0 +1,93 @@
+# Feature Specification (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: feat-ide-open
+number: 018
+branch: feat/ide-open
+oneLiner: Configure preferred IDE and open feature workspaces directly from the CLI
+summary: >
+  Two-part feature: (1) `shep settings ide` configures the preferred IDE via
+  interactive prompt or --editor flag, persisting via UpdateSettingsUseCase.
+  (2) `shep ide <feat-id>` opens a feature's worktree in the configured IDE,
+  with per-invocation override flags (--vscode, --cursor, --windsurf, --zed,
+  --antigravity). Per-IDE launcher files enable future IDE-specific behavior.
+phase: Implementation
+sizeEstimate: medium
+
+# Relationships
+relatedFeatures:
+  - '006-cli-settings-commands'
+
+technologies:
+  - TypeScript
+  - Commander.js
+  - '@inquirer/prompts'
+  - node:child_process
+
+relatedLinks:
+  - title: Google Antigravity IDE docs
+    url: https://antigravity.google/docs/command
+
+# Open questions (must be resolved before implementation)
+openQuestions: []
+
+# Markdown content (the actual spec)
+content: |
+  ## Problem Statement
+
+  The `Settings.environment.defaultEditor` field exists in the data model (TypeSpec, generated types, SQLite schema) and is already displayed in `settings show`, but:
+
+  1. There is no CLI command to **configure** it (users are stuck with the default "vscode")
+  2. There is no command to **open** a feature's workspace in the configured IDE
+
+  ## Success Criteria
+
+  ### Part 1: `shep settings ide` (Configuration) — DONE
+
+  - [x] `shep settings ide` command allows interactive selection of preferred IDE (vscode, cursor, windsurf, zed, antigravity)
+  - [x] `shep settings ide --editor <name>` allows non-interactive configuration
+  - [x] Selected IDE is persisted via `UpdateSettingsUseCase`
+  - [x] `shep settings show` displays the configured editor (existing behavior)
+  - [x] Validation: warn if chosen IDE binary isn't found in PATH (non-blocking)
+
+  ### Part 2: `shep ide <feat-id>` (Open in IDE)
+
+  - [ ] `shep ide <feat-id>` opens the feature's worktree directory in the default IDE from settings
+  - [ ] Override flags: `--vscode`, `--cursor`, `--windsurf`, `--zed`, `--antigravity`
+  - [ ] `shep ide --help` prints all available IDE override options with descriptions
+  - [ ] IDE process spawned detached (CLI exits immediately)
+  - [ ] Non-blocking PATH warning if binary not found
+  - [ ] Per-IDE launcher files for future extensibility
+
+  ## Supported IDEs
+
+  | Editor ID     | Display Name  | Binary     | CLI Flag         |
+  | ------------- | ------------- | ---------- | ---------------- |
+  | vscode        | VS Code       | `code`     | `--vscode`       |
+  | cursor        | Cursor        | `cursor`   | `--cursor`       |
+  | windsurf      | Windsurf      | `windsurf` | `--windsurf`     |
+  | zed           | Zed           | `zed`      | `--zed`          |
+  | antigravity   | Antigravity   | `agy`      | `--antigravity`  |
+
+  ## Affected Areas
+
+  | Area             | Impact        | Reasoning                                              |
+  | ---------------- | ------------- | ------------------------------------------------------ |
+  | CLI Commands     | **New**       | `settings/ide.command.ts` + top-level `ide-open.command.ts` |
+  | Infrastructure   | **New**       | Per-IDE launcher files in `ide-launchers/`              |
+  | TUI              | **New**       | Interactive IDE selection prompt (5 IDEs)               |
+  | Use Cases        | **Reuse**     | Uses existing `UpdateSettingsUseCase`, `ShowFeatureUseCase` |
+  | Settings Schema  | **No change** | `defaultEditor` already exists in EnvironmentConfig     |
+  | Domain Models    | **No change** | EnvironmentConfig already has the field                 |
+
+  ## Dependencies
+
+  - Existing `UpdateSettingsUseCase`
+  - Existing `ShowFeatureUseCase`
+  - Existing `getSettings()` singleton
+  - Existing `Settings.environment.defaultEditor` field
+  - Existing `computeWorktreePath()` logic (from `feat/show.command.ts`)
+
+  ## Size Estimate
+
+  **Medium** — Settings IDE command (done) + new IDE launcher files + top-level ide open command.

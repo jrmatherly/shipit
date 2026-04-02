@@ -1,0 +1,82 @@
+import { defineConfig } from 'vitest/config';
+import { resolve } from 'node:path';
+import react from '@vitejs/plugin-react';
+
+const sharedExclude = [
+  'node_modules',
+  'dist',
+  'tests/e2e/**/*.spec.ts',
+  'tests/e2e/**/*.spec.tsx',
+  'tests/manual/**/*.manual.test.ts',
+  'tests/manual/**/*.manual.test.tsx',
+];
+
+const sharedResolve = {
+  alias: [
+    { find: '@shipit-ai/core', replacement: resolve(__dirname, './packages/core/src') },
+    { find: '@/application', replacement: resolve(__dirname, './packages/core/src/application') },
+    {
+      find: '@/infrastructure',
+      replacement: resolve(__dirname, './packages/core/src/infrastructure'),
+    },
+    { find: '@/domain', replacement: resolve(__dirname, './packages/core/src/domain') },
+    { find: '@/components', replacement: resolve(__dirname, './src/presentation/web/components') },
+    { find: '@/lib', replacement: resolve(__dirname, './src/presentation/web/lib') },
+    { find: '@/hooks', replacement: resolve(__dirname, './src/presentation/web/hooks') },
+    { find: '@/app', replacement: resolve(__dirname, './src/presentation/web/app') },
+    { find: '@/types', replacement: resolve(__dirname, './src/presentation/web/types') },
+    { find: '@cli', replacement: resolve(__dirname, './src') },
+    { find: '@', replacement: resolve(__dirname, './src') },
+    { find: '@tests', replacement: resolve(__dirname, './tests') },
+  ],
+};
+
+// Ensure React loads its development bundle (which exports `act`) even when
+// the shell environment has NODE_ENV=production (e.g. after a build step).
+(process.env as Record<string, string>).NODE_ENV = 'test';
+
+export default defineConfig({
+  plugins: [react()],
+  test: {
+    globals: false,
+    testTimeout: 10000,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'json', 'html'],
+      exclude: ['node_modules', 'dist', 'tests', '**/*.d.ts', '**/*.config.*'],
+    },
+    // Two projects: web tests get jsdom + setup, everything else runs in fast node env
+    projects: [
+      {
+        test: {
+          name: 'web',
+          include: [
+            'tests/unit/presentation/web/**/*.test.ts',
+            'tests/unit/presentation/web/**/*.test.tsx',
+          ],
+          exclude: sharedExclude,
+          environment: 'jsdom',
+          setupFiles: ['tests/unit/presentation/web/setup.ts'],
+          testTimeout: 10000,
+        },
+        resolve: sharedResolve,
+      },
+      {
+        test: {
+          name: 'node',
+          include: ['tests/**/*.test.ts', 'tests/**/*.test.tsx'],
+          exclude: [
+            ...sharedExclude,
+            'tests/unit/presentation/web/**/*.test.ts',
+            'tests/unit/presentation/web/**/*.test.tsx',
+          ],
+          environment: 'node',
+          setupFiles: ['tests/unit/setup.ts'],
+          testTimeout: 30000,
+        },
+        resolve: sharedResolve,
+      },
+    ],
+  },
+  resolve: sharedResolve,
+});

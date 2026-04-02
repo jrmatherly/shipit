@@ -1,0 +1,54 @@
+{
+  "name": "@shipit-ai/core",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "import": "./src/index.ts",
+      "types": "./src/index.ts"
+    },
+    "./domain": {
+      "import": "./src/domain/index.ts",
+      "types": "./src/domain/index.ts"
+    },
+    "./domain/*": {
+      "import": "./src/domain/*.ts",
+      "types": "./src/domain/*.ts"
+    },
+    "./domain/generated": {
+      "import": "./src/domain/generated/output.ts",
+      "types": "./src/domain/generated/output.ts"
+    },
+    "./application": {
+      "import": "./src/application/index.ts",
+      "types": "./src/application/index.ts"
+    },
+    "./application/*": {
+      "import": "./src/application/*.ts",
+      "types": "./src/application/*.ts"
+    },
+    "./infrastructure": {
+      "import": "./src/infrastructure/index.ts",
+      "types": "./src/infrastructure/index.ts"
+    },
+    "./infrastructure/*": {
+      "import": "./src/infrastructure/*.ts",
+      "types": "./src/infrastructure/*.ts"
+    }
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/which": "^3.0.4",
+    "typescript": "^5.3.0"
+  },
+  "dependencies": {
+    "ajv": "^8.18.0",
+    "tree-kill": "^1.2.2",
+    "which": "^5.0.0"
+  }
+}

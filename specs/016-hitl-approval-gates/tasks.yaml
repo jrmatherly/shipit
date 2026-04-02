@@ -1,0 +1,719 @@
+# Task Breakdown (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: hitl-approval-gates
+summary: Task breakdown for 016-hitl-approval-gates
+
+# Relationships
+relatedFeatures:
+  - '008-agent-configuration'
+  - '013-feature-agent'
+technologies:
+  - TypeSpec
+  - TypeScript
+  - LangGraph
+  - Commander.js
+  - better-sqlite3
+  - tsyringe
+relatedLinks: []
+
+# Structured task list — this is the single source of truth for tasks.
+# The content field below is a summary only; it does NOT duplicate task details.
+tasks:
+  # ── Phase 1: TypeSpec Models & Code Generation (Foundation, no tests) ──
+
+  - id: task-1
+    title: Create ApprovalGates and PhaseTiming TypeSpec models
+    description: >
+      Define ApprovalGates as a plain value object (allowPrd: boolean,
+      allowPlan: boolean) in tsp/agents/approval-gates.tsp. Define PhaseTiming
+      extending BaseEntity (agentRunId, phase, startedAt, completedAt?,
+      durationMs?) in tsp/agents/phase-timing.tsp. Import both in
+      tsp/agents/index.tsp.
+    state: Done
+    dependencies: []
+    acceptanceCriteria:
+      - ApprovalGates model compiles with two boolean fields
+      - PhaseTiming model compiles extending BaseEntity with all specified fields
+      - Both models imported in tsp/agents/index.tsp
+    tdd: null # Foundation — pure code generation
+    estimatedEffort: S
+
+  - id: task-2
+    title: Update AgentRun TypeSpec model and compile
+    description: >
+      In tsp/agents/agent-run.tsp, replace approvalMode?: string and
+      approvalStatus?: string with approvalGates?: ApprovalGates. Run
+      pnpm tsp:compile. Verify generated output.ts contains ApprovalGates
+      type and updated AgentRun interface.
+    state: Done
+    dependencies:
+      - task-1
+    acceptanceCriteria:
+      - AgentRun no longer has approvalMode or approvalStatus string fields
+      - AgentRun has approvalGates?: ApprovalGates field
+      - pnpm tsp:compile succeeds without errors
+      - src/domain/generated/output.ts contains ApprovalGates interface
+    tdd: null # Foundation — pure code generation
+    estimatedEffort: S
+
+  # ── Phase 2: Database Migration & Phase Timing Repository (TDD) ──
+
+  - id: task-3
+    title: Migration 008, PhaseTimingRepository, and AgentRun mapper update
+    description: >
+      Add migration 008: ALTER TABLE agent_runs ADD COLUMN approval_gates TEXT
+      with UPDATE statements transforming approval_mode strings to JSON. CREATE
+      TABLE phase_timings with proper indexes. Create IPhaseTimingRepository
+      port interface (save, update, findByRunId, findByFeatureId). Implement
+      SQLitePhaseTimingRepository. Update AgentRunRepository mapper to
+      serialize/deserialize approval_gates JSON column. Register in DI container.
+    state: Done
+    dependencies:
+      - task-2
+    acceptanceCriteria:
+      - Migration 008 adds approval_gates column and creates phase_timings table
+      - Existing approval_mode values transformed to JSON correctly
+      - IPhaseTimingRepository interface with save, update, findByRunId, findByFeatureId
+      - SQLitePhaseTimingRepository passes all repository tests
+      - AgentRunRepository reads/writes approval_gates as JSON
+      - PhaseTimingRepository registered in DI container
+    tdd:
+      red:
+        - Write integration tests for SQLitePhaseTimingRepository (save, findByRunId, findByFeatureId)
+        - Write integration tests for AgentRunRepository approval_gates serialization
+        - Write migration test verifying data transformation from approval_mode strings
+      green:
+        - Implement IPhaseTimingRepository interface
+        - Implement SQLitePhaseTimingRepository with SQL queries
+        - Write migration 008 SQL
+        - Update AgentRunRepository mapper for approval_gates
+      refactor:
+        - Extract shared mapper helpers if patterns emerge
+        - Ensure consistent error handling in repository methods
+    estimatedEffort: L
+
+  # ── Phase 3: Agent System Core — ApprovalGates & Phase Timing (TDD) ──
+
+  - id: task-4
+    title: Refactor shouldInterrupt() and update worker/process service
+    description: >
+      Refactor shouldInterrupt() in node-helpers.ts to accept ApprovalGates
+      instead of string. Replace AUTO_APPROVED_NODES lookup table with direct
+      boolean checks. Update FeatureAgentState to use approvalGates instead of
+      approvalMode. Update worker to parse --approval-gates JSON arg. Update
+      process service to pass --approval-gates JSON in spawn().
+    state: Done
+    dependencies:
+      - task-2
+    acceptanceCriteria:
+      - shouldInterrupt() accepts ApprovalGates?, returns boolean
+      - Requirements node interrupts when !gates.allowPrd
+      - Plan node interrupts when !gates.allowPlan
+      - Other nodes never interrupt
+      - No gates (undefined) means no interrupts
+      - AUTO_APPROVED_NODES map deleted
+      - Worker parses --approval-gates JSON correctly
+      - Process service passes --approval-gates JSON string
+      - FeatureAgentState.approvalGates replaces approvalMode
+    tdd:
+      red:
+        - Write tests for shouldInterrupt() with all ApprovalGates combinations
+        - Write tests for undefined gates (backward compat)
+        - Write tests for worker --approval-gates arg parsing
+      green:
+        - Implement shouldInterrupt() with boolean checks
+        - Update FeatureAgentState annotation
+        - Update worker parseWorkerArgs() for --approval-gates
+        - Update process service spawn() args
+      refactor:
+        - Remove all traces of approval_mode string handling
+        - Clean up imports of removed constants
+    estimatedEffort: M
+
+  - id: task-5
+    title: Add phase timing recording to executeNode()
+    description: >
+      Add optional IPhaseTimingRepository parameter to executeNode(). On node
+      entry, save a PhaseTiming record with startedAt. On success, update with
+      completedAt and durationMs. On error, leave completedAt null (partial
+      timing). When repository is not provided, skip timing (backward compat).
+    state: Done
+    dependencies:
+      - task-3
+      - task-4
+    acceptanceCriteria:
+      - executeNode() accepts optional IPhaseTimingRepository parameter
+      - Timing record saved with startedAt on node entry
+      - Timing record updated with completedAt + durationMs on success
+      - Partial timing (no completedAt) preserved on error
+      - No timing when repository is not provided
+      - Existing tests pass without providing repository
+    tdd:
+      red:
+        - Write tests for executeNode() with mock IPhaseTimingRepository
+        - Test timing save on entry, update on success, partial on error
+        - Test no-op when repository is undefined
+      green:
+        - Add repository parameter to executeNode()
+        - Add save() call at entry, update() call at exit
+        - Handle error case for partial timing
+      refactor:
+        - Extract timing helper if logic becomes complex
+    estimatedEffort: M
+
+  # ── Phase 4: Application Layer — Use Case Updates (TDD) [P] ──
+
+  - id: task-6
+    title: Update CreateFeatureUseCase for ApprovalGates
+    description: >
+      Change CreateFeatureInput.approvalMode?: string to
+      approvalGates?: ApprovalGates. Update the use case to pass the
+      ApprovalGates object through to RunAgentUseCase and ultimately
+      to the process service. Ensure backward compatibility when
+      approvalGates is undefined (no gates = autonomous).
+    state: Done
+    dependencies:
+      - task-4
+    acceptanceCriteria:
+      - CreateFeatureInput accepts approvalGates?: ApprovalGates
+      - ApprovalGates passed through to RunAgentUseCase
+      - Undefined approvalGates results in autonomous behavior
+      - No reference to approvalMode string in create-feature flow
+    tdd:
+      red:
+        - Write tests for CreateFeatureUseCase with ApprovalGates input
+        - Test that gates are passed through to agent run creation
+        - Test undefined gates behavior
+      green:
+        - Update CreateFeatureInput type
+        - Update use case execute() to pass approvalGates
+      refactor:
+        - Remove any leftover approvalMode references in use case chain
+    estimatedEffort: S
+
+  - id: task-7
+    title: Create resolveWaitingFeature() helper
+    description: >
+      Create a shared helper function in
+      src/presentation/cli/commands/feat/resolve-waiting-feature.ts. Given an
+      optional feature ID and current repo path, resolve the target feature
+      waiting for approval. If ID provided, look it up directly. If omitted,
+      list features for the repo, find their agent runs, filter to
+      waiting_approval status. Return the feature if exactly one match. Error
+      with helpful message if zero or multiple.
+    state: Done
+    dependencies:
+      - task-3
+    acceptanceCriteria:
+      - Returns single waiting feature when exactly one exists
+      - Uses provided ID directly when given
+      - Errors with "No features waiting for approval" when none found
+      - Errors listing waiting features when multiple found
+      - Scoped to current repository (not global)
+    tdd:
+      red:
+        - Write tests for auto-resolve with 0, 1, 2+ waiting features
+        - Write tests for explicit ID lookup
+        - Write tests for repo-scoped resolution
+      green:
+        - Implement resolveWaitingFeature() with ListFeaturesUseCase + agent run queries
+        - Return feature or throw descriptive error
+      refactor:
+        - Ensure error messages include actionable instructions
+    estimatedEffort: M
+
+  # ── Phase 5: New CLI Commands — feat review/approve/reject (TDD) [P] ──
+
+  - id: task-8
+    title: Create feat review command
+    description: >
+      Add createReviewCommand() in review.command.ts. Accepts optional [id]
+      argument. Uses resolveWaitingFeature() to find target. Shows the
+      feature's current waiting state, which phase triggered the interrupt,
+      and the generated content (requirements or plan output). Displays
+      approval instructions at the bottom.
+    state: Done
+    dependencies:
+      - task-7
+    acceptanceCriteria:
+      - feat review (no args) auto-resolves single waiting feature
+      - feat review with explicit id looks up specific feature
+      - Shows waiting phase and generated content
+      - Displays approval/rejection instructions
+      - Registered in feat/index.ts
+    tdd:
+      red:
+        - Write tests for review command with mocked use cases
+        - Test auto-resolve and explicit ID paths
+        - Test output formatting
+      green:
+        - Implement createReviewCommand() with Commander
+        - Integrate resolveWaitingFeature()
+        - Format and display review output
+      refactor:
+        - Extract display formatting helpers if needed
+    estimatedEffort: M
+
+  - id: task-9
+    title: Create feat approve command
+    description: >
+      Add createApproveCommand() in approve.command.ts. Accepts optional [id]
+      argument. Uses resolveWaitingFeature() to find target. Delegates to
+      existing ApproveAgentRunUseCase to resume the agent. Shows which phase
+      was approved and what comes next.
+    state: Done
+    dependencies:
+      - task-7
+    acceptanceCriteria:
+      - feat approve (no args) auto-resolves single waiting feature
+      - feat approve with explicit id looks up specific feature
+      - Delegates to ApproveAgentRunUseCase
+      - Shows approved phase and next step
+      - Registered in feat/index.ts
+    tdd:
+      red:
+        - Write tests for approve command with mocked use cases
+        - Test auto-resolve and explicit ID paths
+        - Test success output messaging
+      green:
+        - Implement createApproveCommand() with Commander
+        - Integrate resolveWaitingFeature() and ApproveAgentRunUseCase
+      refactor:
+        - Ensure consistent error handling with other feat commands
+    estimatedEffort: S
+
+  - id: task-10
+    title: Create feat reject command
+    description: >
+      Add createRejectCommand() in reject.command.ts. Accepts optional [id]
+      argument and --reason <text> option. Uses resolveWaitingFeature() to
+      find target. Delegates to existing RejectAgentRunUseCase to cancel
+      the agent. Shows confirmation of rejection.
+    state: Done
+    dependencies:
+      - task-7
+    acceptanceCriteria:
+      - feat reject (no args) auto-resolves single waiting feature
+      - feat reject with explicit id looks up specific feature
+      - --reason option passed to RejectAgentRunUseCase
+      - Delegates to RejectAgentRunUseCase
+      - Shows rejection confirmation
+      - Registered in feat/index.ts
+    tdd:
+      red:
+        - Write tests for reject command with mocked use cases
+        - Test auto-resolve and explicit ID paths
+        - Test --reason option handling
+      green:
+        - Implement createRejectCommand() with Commander
+        - Integrate resolveWaitingFeature() and RejectAgentRunUseCase
+      refactor:
+        - Ensure consistent error handling with other feat commands
+    estimatedEffort: S
+
+  # ── Phase 6: CLI Enhancement — feat new & feat show (TDD) [P] ──
+
+  - id: task-11
+    title: Update feat new flags and output messaging
+    description: >
+      In new.command.ts, remove --interactive flag. Build ApprovalGates object
+      from --allow-prd, --allow-plan, --allow-all flags. Default (no flags)
+      creates { allowPrd: false, allowPlan: false }. Pass ApprovalGates to
+      CreateFeatureUseCase. Add output hint about approval behavior.
+    state: Done
+    dependencies:
+      - task-6
+    acceptanceCriteria:
+      - --interactive flag removed
+      - No flags defaults to pause after requirements and plan
+      - --allow-prd sets allowPrd to true
+      - --allow-plan sets allowPlan to true
+      - --allow-all sets both to true
+      - --allow-prd and --allow-plan composable (both true)
+      - Output shows approval behavior hint
+      - ApprovalGates object passed to use case (not string)
+    tdd:
+      red:
+        - Write tests for each flag combination to ApprovalGates mapping
+        - Test default (no flags) behavior
+        - Test output messaging content
+      green:
+        - Remove --interactive, update flag handling
+        - Build ApprovalGates from flags
+        - Add output hint after feature creation
+      refactor:
+        - Clean up any leftover approvalMode string references
+    estimatedEffort: M
+
+  - id: task-12
+    title: Add phase timing breakdown and approval context to feat show
+    description: >
+      In show.command.ts, after existing feature display, load phase timings
+      via IPhaseTimingRepository.findByRunId(). Display a timing breakdown
+      table with phase names, durations, and awaiting-review indicator. When
+      the feature is in waiting_approval state, show which phase is waiting
+      and approval instructions.
+    state: Done
+    dependencies:
+      - task-5
+      - task-7
+    acceptanceCriteria:
+      - Phase timing breakdown displayed when timings exist
+      - Shows duration for completed phases
+      - Shows "awaiting review" indicator for interrupted phase
+      - Shows dash for unexecuted phases
+      - Shows total elapsed time
+      - Approval context shown when in waiting_approval state
+      - Approval instructions displayed (shep feat approve/reject)
+      - No timing section when no timings exist
+    tdd:
+      red:
+        - Write tests for timing breakdown rendering with various phase states
+        - Test waiting_approval context display
+        - Test no-timings case (no section shown)
+      green:
+        - Load phase timings in show command
+        - Render timing breakdown table
+        - Add approval context section
+      refactor:
+        - Extract timing formatting into reusable helper
+    estimatedEffort: M
+
+  # ── Phase 7: YAML Validation & Auto-Repair Graph Nodes (TDD) ──
+  # Detailed 10-task breakdown — each task has exact file paths and TDD steps.
+
+  - id: task-13
+    title: 'Shared validation types & helpers (requireString, requireNonEmptyArray, requireArrayOfShape)'
+    description: >
+      Create nodes/schemas/validation.ts with ValidationResult interface and
+      three helper functions: requireString, requireNonEmptyArray, requireArrayOfShape.
+      Each helper mutates an errors[] array with specific, AI-friendly messages.
+      requireArrayOfShape delegates to an itemChecker callback for nested validation.
+    state: Done
+    dependencies:
+      - task-4
+    files:
+      create:
+        - src/infrastructure/services/agents/feature-agent/nodes/schemas/validation.ts
+        - tests/unit/infrastructure/services/agents/feature-agent/nodes/schemas/validation.test.ts
+    acceptanceCriteria:
+      - 'ValidationResult interface exported (valid: boolean, errors: string[])'
+      - requireString validates missing, non-string, and empty string
+      - requireNonEmptyArray validates missing, non-array, and empty array
+      - requireArrayOfShape validates each item with callback, reports indexed paths
+      - All helpers accept optional prefix for nested error paths
+    tdd:
+      red:
+        - Write tests for requireString with valid, missing, non-string, and empty inputs
+        - Write tests for requireNonEmptyArray with valid, missing, non-array, and empty inputs
+        - Write tests for requireArrayOfShape with valid items and with items missing fields
+      green:
+        - Implement ValidationResult interface
+        - Implement requireString, requireNonEmptyArray, requireArrayOfShape
+      refactor:
+        - Ensure consistent error message formatting across all helpers
+    estimatedEffort: S
+
+  - id: task-14
+    title: Spec schema validator (analyze + requirements phases)
+    description: >
+      Create nodes/schemas/spec.schema.ts with validateSpecAnalyze() and
+      validateSpecRequirements(). Analyze validates: name, oneLiner, summary,
+      phase, sizeEstimate (enum S/M/L/XL), content, technologies[]. Requirements
+      additionally validates openQuestions[] (can be empty) with question field per item.
+    state: Done
+    dependencies:
+      - task-13
+    files:
+      create:
+        - src/infrastructure/services/agents/feature-agent/nodes/schemas/spec.schema.ts
+        - tests/unit/infrastructure/services/agents/feature-agent/nodes/schemas/spec.schema.test.ts
+    acceptanceCriteria:
+      - validateSpecAnalyze passes for valid analyze spec, fails for missing fields
+      - sizeEstimate validated against S/M/L/XL enum
+      - Null input returns 'YAML parsed to null or non-object'
+      - validateSpecRequirements extends analyze validation with openQuestions[]
+      - Empty openQuestions array is valid (no questions is fine)
+      - OpenQuestion items validated for 'question' field
+    tdd:
+      red:
+        - Test valid analyze spec passes
+        - Test missing name, empty technologies, invalid sizeEstimate, null input
+        - Test valid requirements spec passes
+        - Test missing openQuestions, missing question field in items
+      green:
+        - Implement validateBaseSpec helper (shared fields)
+        - Implement validateSpecAnalyze wrapping validateBaseSpec
+        - Implement validateSpecRequirements extending with openQuestions validation
+      refactor:
+        - Ensure validateBaseSpec is reused cleanly by both functions
+    estimatedEffort: S
+
+  - id: task-15
+    title: Research schema validator
+    description: >
+      Create nodes/schemas/research.schema.ts with validateResearch().
+      Validates: name, summary, content, decisions[] with title/chosen/rejected[]/rationale per item.
+    state: Done
+    dependencies:
+      - task-13
+    files:
+      create:
+        - src/infrastructure/services/agents/feature-agent/nodes/schemas/research.schema.ts
+        - tests/unit/infrastructure/services/agents/feature-agent/nodes/schemas/research.schema.test.ts
+    acceptanceCriteria:
+      - validateResearch passes for valid research object
+      - Fails when decisions array is empty
+      - Fails when decision item missing title, chosen, rationale
+      - Fails when decision item missing rejected array
+      - Null input handled gracefully
+    tdd:
+      red:
+        - Test valid research passes
+        - Test empty decisions, missing decision fields, null input
+      green:
+        - Implement validateResearch using requireString and requireArrayOfShape
+      refactor:
+        - Consistent error message style with spec schema
+    estimatedEffort: S
+
+  - id: task-16
+    title: Plan + tasks schema validators (with cross-validation)
+    description: >
+      Create nodes/schemas/plan.schema.ts with validatePlan() and validateTasks().
+      Plan validates phases[] with id/name/parallel, requires at least one of
+      filesToCreate or filesToModify non-empty, content. Tasks validates
+      tasks[] with id/phaseId/title/state/acceptanceCriteria[], cross-validates
+      phaseId references against provided phaseIds array.
+    state: Done
+    dependencies:
+      - task-13
+    files:
+      create:
+        - src/infrastructure/services/agents/feature-agent/nodes/schemas/plan.schema.ts
+        - tests/unit/infrastructure/services/agents/feature-agent/nodes/schemas/plan.schema.test.ts
+    acceptanceCriteria:
+      - validatePlan passes for valid plan, fails for empty phases, missing phase.id
+      - At least one of filesToCreate/filesToModify must be non-empty
+      - validateTasks passes with matching phaseIds, fails for unknown phaseId
+      - Task items validated for id, title, state, acceptanceCriteria
+    tdd:
+      red:
+        - Test valid plan passes, empty phases fails, missing phase.id fails
+        - Test both filesToCreate and filesToModify empty fails
+        - Test valid tasks with matching phaseIds passes
+        - Test task with unknown phaseId fails, missing acceptanceCriteria fails
+      green:
+        - Implement validatePlan with phases and file list validation
+        - Implement validateTasks with phaseId cross-reference
+      refactor:
+        - Consistent phase validation pattern
+    estimatedEffort: S
+
+  - id: task-17
+    title: Validate node factory (createValidateNode)
+    description: >
+      Create nodes/validate.node.ts with createValidateNode(filename, schema)
+      factory. Reads YAML file from specDir, parses with safeYamlLoad, runs
+      schema validator. On success: resets validationRetries=0, clears errors.
+      On failure: increments validationRetries, sets lastValidationErrors.
+      On parse error: reports YAML parse error without calling schema.
+    state: Done
+    dependencies:
+      - task-13
+    files:
+      create:
+        - src/infrastructure/services/agents/feature-agent/nodes/validate.node.ts
+        - tests/unit/infrastructure/services/agents/feature-agent/nodes/validate.node.test.ts
+    acceptanceCriteria:
+      - Returns empty errors on valid YAML, validationRetries reset to 0
+      - Returns schema errors and increments validationRetries on failure
+      - Returns parse error when YAML is malformed, schema not called
+      - Accumulates retry count across invocations
+      - Sets lastValidationTarget to filename
+    tdd:
+      red:
+        - Test valid YAML returns empty errors, retries=0
+        - Test schema failure returns errors, increments retries
+        - Test malformed YAML returns parse error, schema not called
+        - Test retry accumulation across invocations
+      green:
+        - Implement createValidateNode factory using readSpecFile and safeYamlLoad
+        - Handle parse errors separately from schema errors
+      refactor:
+        - Ensure consistent logging via createNodeLogger
+    estimatedEffort: M
+
+  - id: task-18
+    title: Repair node factory (createRepairNode)
+    description: >
+      Create nodes/repair.node.ts with createRepairNode(filename, executor)
+      factory. Reads broken YAML, builds repair prompt with validation errors
+      from state, calls executor with constrained options (maxTurns: 5,
+      disableMcp: true, tools: ['write']). Supports single file or array
+      of filenames for multi-file repair (plan.yaml + tasks.yaml).
+    state: Done
+    dependencies:
+      - task-17
+    files:
+      create:
+        - src/infrastructure/services/agents/feature-agent/nodes/repair.node.ts
+        - tests/unit/infrastructure/services/agents/feature-agent/nodes/repair.node.test.ts
+    acceptanceCriteria:
+      - Sends repair prompt containing validation errors and broken YAML content
+      - Executor called with maxTurns=5, disableMcp=true, tools=['write']
+      - Supports single file (spec.yaml) and multi-file (plan.yaml + tasks.yaml)
+      - Returns messages about repair attempt
+      - Prompt includes file paths for executor to write fixed files
+    tdd:
+      red:
+        - Test repair prompt contains validation errors and broken YAML
+        - Test executor options (maxTurns, disableMcp, tools)
+        - Test multi-file repair includes all file contents
+        - Test messages returned about repair attempt
+      green:
+        - Implement buildRepairPrompt helper for prompt construction
+        - Implement createRepairNode factory calling executor
+      refactor:
+        - Extract buildRepairPrompt as separate exported function
+    estimatedEffort: M
+
+  - id: task-19
+    title: Update state annotation with validation channels
+    description: >
+      Add three new annotation channels to FeatureAgentAnnotation in state.ts:
+      validationRetries (number, default 0), lastValidationTarget (string, default ''),
+      lastValidationErrors (string[], default []). All use replace reducer.
+    state: Done
+    dependencies:
+      - task-4
+    files:
+      modify:
+        - src/infrastructure/services/agents/feature-agent/state.ts
+    acceptanceCriteria:
+      - validationRetries annotation with default 0
+      - lastValidationTarget annotation with default ''
+      - lastValidationErrors annotation with default []
+      - Existing tests pass (new channels have defaults)
+    tdd:
+      red:
+        - Run existing integration tests to verify baseline
+      green:
+        - Add three annotation channels with defaults
+      refactor:
+        - Group validation channels together with comment
+    estimatedEffort: S
+
+  - id: task-20
+    title: Wire validate/repair nodes into graph with conditional edges
+    description: >
+      Update feature-agent-graph.ts to add validate and repair nodes after
+      each YAML-producing node. Create routeValidation(successNode, repairNode)
+      factory for conditional edges. Create createPlanTasksValidator for
+      cross-validating plan.yaml and tasks.yaml. Wire: analyze→validate_spec_analyze,
+      requirements→validate_spec_requirements, research→validate_research,
+      plan→validate_plan. Each with repair loop (max 3 retries).
+    state: Done
+    dependencies:
+      - task-17
+      - task-18
+      - task-19
+    files:
+      modify:
+        - src/infrastructure/services/agents/feature-agent/feature-agent-graph.ts
+    acceptanceCriteria:
+      - routeValidation routes to successNode on pass, repairNode on fail
+      - routeValidation throws after 3 retries
+      - createPlanTasksValidator cross-validates tasks.yaml phaseIds against plan phases
+      - Graph has 4 validate nodes and 4 repair nodes
+      - Conditional edges create retry loops
+      - Graph compiles without errors
+      - Existing HITL interrupt behavior preserved
+    tdd:
+      red:
+        - Write integration test verifying validation nodes run in graph
+        - Write test for validate-repair loop with mocked executor
+      green:
+        - Implement routeValidation factory
+        - Implement createPlanTasksValidator
+        - Add all validate/repair nodes to graph builder
+        - Wire conditional edges
+      refactor:
+        - Group node registration by concern (producers, validators, repairers)
+    estimatedEffort: M
+
+  - id: task-21
+    title: Integration test for validate-repair loop
+    description: >
+      Add integration test to hitl-approval-flow.test.ts that verifies the
+      full validate-repair cycle. Mock executor writes intentionally invalid
+      YAML on first call, then valid YAML on repair call. Verify graph
+      completes, repair node ran, and validation eventually passed.
+    state: Done
+    dependencies:
+      - task-20
+    files:
+      modify:
+        - tests/integration/infrastructure/services/agents/hitl-approval-flow.test.ts
+    acceptanceCriteria:
+      - Test writes invalid spec.yaml, verifies repair node called
+      - Executor mock writes valid YAML on repair call
+      - Graph completes with repair messages in state
+      - Validation PASS message present after repair
+    tdd:
+      red:
+        - Write integration test for repair loop
+      green:
+        - Test should pass once graph wiring is correct
+      refactor:
+        - Ensure test is deterministic and fast
+    estimatedEffort: S
+
+  - id: task-22
+    title: Full suite verification (tests, typecheck, lint)
+    description: >
+      Run pnpm test, pnpm typecheck, pnpm lint to verify all changes work
+      together. Fix any type errors, lint issues, or test failures. This is
+      the final validation before the feature is complete.
+    state: Done
+    dependencies:
+      - task-21
+    acceptanceCriteria:
+      - pnpm test passes (all unit + integration tests)
+      - pnpm typecheck passes (no type errors)
+      - pnpm lint passes (no lint errors)
+    tdd: null
+    estimatedEffort: S
+
+# Total effort estimate
+totalEstimate: XL (22 tasks across 7 phases)
+
+# Open questions
+openQuestions: []
+
+# Markdown content — summary and acceptance checklist only.
+# Individual task details live in the tasks[] array above (no duplication).
+content: |
+  ## Summary
+
+  HITL Approval Gates + YAML Validation — 22 tasks across 7 phases.
+  Covers TypeSpec models, database migration, agent system refactor,
+  new CLI commands, existing command enhancements, and LangGraph
+  validate-repair loops for AI-generated YAML outputs.
+
+  ## Acceptance Checklist
+
+  Before marking feature complete:
+
+  - [ ] All 22 tasks completed
+  - [ ] Tests passing (`pnpm test`)
+  - [ ] Linting clean (`pnpm lint`)
+  - [ ] Types valid (`pnpm typecheck`)
+  - [ ] TypeSpec compiles (`pnpm tsp:compile`)
+  - [ ] YAML validation loops tested with mock executor
+  - [ ] PR created and reviewed
+
+  ---
+
+  _Task details are in the tasks[] array of tasks.yaml_

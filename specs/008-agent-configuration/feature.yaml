@@ -1,0 +1,57 @@
+feature:
+  id: '008-agent-configuration'
+  name: 'agent-configuration'
+  number: 8
+  branch: 'feat/008-agent-configuration'
+  lifecycle: 'review'
+  createdAt: '2026-02-08T11:23:54Z'
+
+status:
+  phase: 'in-review'
+  progress:
+    completed: 69
+    total: 69
+    percentage: 100
+  currentTask: null
+  lastUpdated: '2026-02-08T14:25:00Z'
+  lastUpdatedBy: 'shep-kit:commit-pr'
+
+prUrl: 'https://github.com/shep-ai/shep/pull/25'
+
+validation:
+  lastRun: '2026-02-08T14:19:00Z'
+  gatesPassed:
+    - 'typecheck'
+    - 'lint'
+    - 'format'
+    - 'tsp-compile'
+    - 'unit-tests'
+    - 'integration-tests'
+    - 'e2e-tests'
+  autoFixesApplied: []
+
+tasks:
+  current: null
+  blocked: []
+  failed: []
+
+checkpoints:
+  - phase: 'feature-created'
+    completedAt: '2026-02-08T11:23:54Z'
+    completedBy: 'shep-kit:new-feature'
+  - phase: 'research-complete'
+    completedAt: '2026-02-08T11:36:00Z'
+    completedBy: 'shep-kit:research'
+  - phase: 'plan-complete'
+    completedAt: '2026-02-08T12:15:00Z'
+    completedBy: 'shep-kit:plan'
+  - phase: 'implementation-complete'
+    completedAt: '2026-02-08T14:20:00Z'
+    completedBy: 'shep-kit:implement'
+  - phase: 'pr-created'
+    completedAt: '2026-02-08T14:25:00Z'
+    completedBy: 'shep-kit:commit-pr'
+
+errors:
+  current: null
+  history: []

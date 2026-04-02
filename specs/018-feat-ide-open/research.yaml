@@ -1,0 +1,221 @@
+# Research Artifact (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: feat-ide-open
+summary: Technical analysis for 018-feat-ide-open
+
+# Relationships
+relatedFeatures:
+  - '006-cli-settings-commands'
+technologies:
+  - TypeScript
+  - Commander.js
+  - '@inquirer/prompts'
+  - node:child_process
+relatedLinks:
+  - title: Google Antigravity IDE docs
+    url: https://antigravity.google/docs/command
+
+# Structured technology decisions
+decisions:
+  - title: Command pattern — dedicated use case vs direct UpdateSettingsUseCase
+    chosen: Direct UpdateSettingsUseCase with settings mutation in command
+    rejected:
+      - Dedicated ConfigureIdeUseCase (like ConfigureAgentUseCase)
+    rationale: >
+      The agent command uses a dedicated ConfigureAgentUseCase because it has
+      complex validation (agent type enum, auth method combinations, token
+      presence). IDE selection is trivial — just setting a string field.
+      A dedicated use case would be over-engineering. Follow the KISS principle:
+      mutate the settings object in the command handler, call
+      UpdateSettingsUseCase.execute(), and refresh the singleton.
+
+  - title: IDE binary validation approach
+    chosen: 'Non-blocking PATH check with warning via execFileNoThrow'
+    rejected:
+      - Blocking validation (reject save if binary not found)
+      - No validation at all
+    rationale: >
+      Users may configure their IDE before installing it, or the binary may be
+      in a non-standard location. Blocking would frustrate users. No validation
+      gives no feedback. A warning strikes the right balance: inform but don't
+      block. Use the project's execFileNoThrow utility for safe PATH checking.
+
+  - title: Supported IDE list
+    chosen: 'vscode, cursor, windsurf, zed, antigravity (extensible string, not enum)'
+    rejected:
+      - Hardcoded enum in TypeSpec
+    rationale: >
+      The existing TypeSpec model defines defaultEditor as `string`, not an
+      enum. This is intentional — users may have other editors. The CLI command
+      offers known IDEs as select options but also accepts any string via the
+      --editor flag. No TypeSpec changes needed. Antigravity (Google's AI IDE,
+      binary: `agy`) added as a 5th supported IDE.
+
+  - title: Per-IDE launcher files vs flat binary map
+    chosen: 'Per-IDE launcher files in src/infrastructure/services/ide-launchers/'
+    rejected:
+      - Single flat IDE_BINARY_MAP constant in command file
+    rationale: >
+      Each IDE may need custom launch behavior in the future (e.g., Zed opens
+      in foreground, Antigravity may need extra flags). Separate files per IDE
+      follow the project's code organization rules (one responsibility per file,
+      subdirectory grouping). A registry maps editor IDs to launcher instances.
+
+  - title: Command placement — top-level vs nested under feat
+    chosen: 'Top-level: `shep ide <feat-id>`'
+    rejected:
+      - 'Nested: `shep feat ide <feat-id>`'
+    rationale: >
+      Opening an IDE is a frequent developer action. A shorter top-level
+      command is more ergonomic. The feat subcommand group is for SDLC
+      lifecycle management, not IDE tooling.
+
+# Open questions (should be resolved by end of research)
+openQuestions: []
+
+# Markdown content (the full research document)
+content: |
+  ## Status
+
+  - **Phase:** Research
+  - **Updated:** 2026-02-15
+
+  ## Technology Decisions
+
+  ### 1. Command Pattern — Dedicated Use Case vs Direct UpdateSettingsUseCase
+
+  **Options considered:**
+
+  1. **Dedicated ConfigureIdeUseCase** — Like ConfigureAgentUseCase, with validation logic
+  2. **Direct UpdateSettingsUseCase** — Mutate settings in command handler, persist via generic use case
+
+  **Decision:** Direct UpdateSettingsUseCase
+
+  **Rationale:** Agent configuration has complex validation (enum types, auth method combos, token presence), justifying a dedicated use case. IDE selection is a single string field — a dedicated use case would be over-engineering. Mutate the settings object, call `UpdateSettingsUseCase.execute()`, refresh the in-memory singleton via `resetSettings()` + `initializeSettings()`.
+
+  ### 2. IDE Binary Validation Approach
+
+  **Options considered:**
+
+  1. **Blocking validation** — Reject save if IDE binary not found in PATH
+  2. **Non-blocking warning** — Save anyway, show warning if binary not found
+  3. **No validation** — Just save the value
+
+  **Decision:** Non-blocking PATH check with warning
+
+  **Rationale:** Users may configure an IDE before installing it, or the binary may exist in a non-standard PATH. Blocking frustrates users. No feedback is unhelpful. Warning is the right balance.
+
+  **Implementation:** Use project's `execFileNoThrow` utility (safe, no shell injection) to check PATH availability via `which`. Map editor names to binaries:
+
+  | Editor       | Binary     |
+  | ------------ | ---------- |
+  | vscode       | `code`     |
+  | cursor       | `cursor`   |
+  | windsurf     | `windsurf` |
+  | zed          | `zed`      |
+  | antigravity  | `agy`      |
+
+  ### 3. Supported IDE List
+
+  **Options considered:**
+
+  1. **Hardcoded TypeSpec enum** — Restrict to known values
+  2. **String with known options** — CLI offers select menu, --editor accepts any string
+
+  **Decision:** String with known options (no TypeSpec changes)
+
+  **Rationale:** `defaultEditor` is already `string` in TypeSpec. Users may have other editors. The interactive prompt offers known options, but `--editor` accepts any string for flexibility. Antigravity added as 5th known option.
+
+  ### 4. Per-IDE Launcher Architecture
+
+  **Decision:** Per-IDE launcher files with interface + registry
+
+  Each IDE gets its own file implementing `IdeLauncher` interface (`launch()`, `checkAvailable()`). A registry maps editor IDs to instances. This replaces the flat `IDE_BINARY_MAP` in `ide.command.ts`.
+
+  ### 5. Command Placement
+
+  **Decision:** Top-level `shep ide <feat-id>` (not `shep feat ide`)
+
+  Shorter, more ergonomic for frequent use. Override flags: `--vscode`, `--cursor`, `--windsurf`, `--zed`, `--antigravity`.
+
+  ## Architecture
+
+  ### File Structure
+
+  ```
+  src/
+  ├── infrastructure/services/ide-launchers/
+  │   ├── ide-launcher.interface.ts     # IdeLauncher interface
+  │   ├── ide-launcher.registry.ts      # Registry: editor name -> launcher
+  │   ├── vscode.launcher.ts            # binary: code
+  │   ├── cursor.launcher.ts            # binary: cursor
+  │   ├── windsurf.launcher.ts          # binary: windsurf
+  │   ├── zed.launcher.ts               # binary: zed
+  │   └── antigravity.launcher.ts       # binary: agy
+  └── presentation/
+      ├── cli/commands/
+      │   ├── settings/ide.command.ts   # shep settings ide (uses registry)
+      │   └── ide-open.command.ts       # shep ide <feat-id> (top-level)
+      └── tui/prompts/
+          └── ide-select.prompt.ts      # IDE selection prompt (5 IDEs)
+  ```
+
+  ### Flow: `shep settings ide`
+
+  ```
+  User runs `shep settings ide`
+    -> Interactive: TUI select prompt (vscode/cursor/windsurf/zed/antigravity)
+    -> Non-interactive: --editor flag value
+    -> Validate binary in PATH via launcher registry (warn if not found)
+    -> getSettings() -> mutate environment.defaultEditor
+    -> UpdateSettingsUseCase.execute(settings)
+    -> resetSettings() + initializeSettings(updatedSettings)
+    -> Success message
+  ```
+
+  ### Flow: `shep ide <feat-id>`
+
+  ```
+  User runs `shep ide abc123 [--cursor]`
+    -> Resolve feature by ID prefix via ShowFeatureUseCase
+    -> Compute worktree path from feature.repositoryPath + feature.branch
+    -> Determine editor: override flag > settings.environment.defaultEditor
+    -> Get launcher from registry
+    -> checkAvailable() — warn if binary not in PATH (non-blocking)
+    -> launcher.launch(worktreePath) — spawn detached process
+    -> Success message, CLI exits
+  ```
+
+  ### Pattern Reference
+
+  Follows the exact pattern of `agent.command.ts`:
+  - Interactive wizard vs non-interactive flags
+  - Resolve use case from container
+  - Update in-memory singleton after persistence
+  - Graceful Ctrl+C handling
+
+  ## Library Analysis
+
+  | Library            | Version  | Purpose                    | Pros                       | Cons         |
+  | ------------------ | -------- | -------------------------- | -------------------------- | ------------ |
+  | @inquirer/prompts  | existing | Interactive IDE selection   | Already used, TypeScript   | None         |
+  | commander          | existing | CLI flag parsing           | Already used               | None         |
+  | execFileNoThrow    | internal | PATH validation via which  | Safe, no shell injection   | None         |
+
+  ## Security Considerations
+
+  - Use `execFileNoThrow('which', [binary])` — safe against command injection
+  - No user input is passed to shell execution (binary names are from a known map)
+
+  ## Performance Implications
+
+  No performance implications. Single `which` call is negligible.
+
+  ## Open Questions
+
+  All questions resolved.
+
+  ---
+
+  _Updated by `/shep-kit:research` — proceed with `/shep-kit:plan`_

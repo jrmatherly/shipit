@@ -1,0 +1,57 @@
+feature:
+  id: '007-ui-command'
+  name: 'ui-command'
+  number: 7
+  branch: 'feat/007-ui-command'
+  lifecycle: 'complete'
+  createdAt: '2026-02-05T13:45:58Z'
+
+status:
+  phase: 'complete'
+  progress:
+    completed: 25
+    total: 25
+    percentage: 100
+  currentTask: null
+  lastUpdated: '2026-02-08T12:30:00Z'
+  lastUpdatedBy: 'shep-kit:merged'
+
+prUrl: 'https://github.com/shep-ai/shep/pull/24'
+mergedAt: '2026-02-08T12:30:00Z'
+
+validation:
+  lastRun: '2026-02-05T15:00:00Z'
+  gatesPassed: ['completeness', 'architecture', 'consistency']
+  autoFixesApplied: ['task-count-25']
+
+tasks:
+  current: null
+  blocked: []
+  failed: []
+
+checkpoints:
+  - phase: 'feature-created'
+    completedAt: '2026-02-05T13:45:58Z'
+    completedBy: 'shep-kit:new-feature'
+  - phase: 'spec-approved'
+    completedAt: '2026-02-05T13:46:00Z'
+    completedBy: 'shep-kit:new-feature'
+  - phase: 'research-complete'
+    completedAt: '2026-02-05T13:50:00Z'
+    completedBy: 'shep-kit:research'
+  - phase: 'plan-complete'
+    completedAt: '2026-02-05T14:00:00Z'
+    completedBy: 'shep-kit:plan'
+  - phase: 'implementation-complete'
+    completedAt: '2026-02-05T16:23:00Z'
+    completedBy: 'shep-kit:implement'
+  - phase: 'pr-created'
+    completedAt: '2026-02-05T16:25:00Z'
+    completedBy: 'shep-kit:commit-pr'
+  - phase: 'feature-merged'
+    completedAt: '2026-02-08T12:30:00Z'
+    completedBy: 'shep-kit:merged'
+
+errors:
+  current: null
+  history: []

@@ -1,0 +1,93 @@
+/**
+ * Init Command Unit Tests
+ *
+ * Tests for the `shep settings init` command.
+ *
+ * TDD Phase: GREEN
+ * - Tests updated to match actual implementation (settings service, not use case)
+ */
+
+import 'reflect-metadata';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { Command } from 'commander';
+
+// Mock the settings service
+vi.mock('@/infrastructure/services/settings.service.js', () => ({
+  getSettings: vi.fn(),
+  resetSettings: vi.fn(),
+  initializeSettings: vi.fn(),
+}));
+
+// Mock the domain factory
+vi.mock('@/domain/factories/settings-defaults.factory.js', () => ({
+  createDefaultSettings: vi.fn().mockReturnValue({ id: 'test-id', models: {} }),
+}));
+
+// Mock the DI container
+vi.mock('@/infrastructure/di/container.js', () => ({
+  container: {
+    resolve: vi.fn().mockReturnValue({
+      load: vi.fn().mockResolvedValue({ id: 'existing-id', createdAt: '2026-01-01T00:00:00Z' }),
+      update: vi.fn().mockResolvedValue(undefined),
+    }),
+  },
+}));
+
+import { resetSettings, initializeSettings } from '@/infrastructure/services/settings.service.js';
+import { createInitCommand } from '../../../../../../src/presentation/cli/commands/settings/init.command.js';
+
+describe('Init Command', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+  });
+
+  describe('command structure', () => {
+    it('should create a valid Commander command', () => {
+      const cmd = createInitCommand();
+      expect(cmd).toBeInstanceOf(Command);
+      expect(cmd.name()).toBe('init');
+    });
+
+    it('should have a --force option', () => {
+      const cmd = createInitCommand();
+      const forceOption = cmd.options.find((o) => o.long === '--force');
+      expect(forceOption).toBeDefined();
+    });
+  });
+
+  describe('--force flag', () => {
+    it('should skip confirmation when --force is used', async () => {
+      const cmd = createInitCommand();
+      const consoleSpy = vi.spyOn(console, 'log').mockImplementation(vi.fn());
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(vi.fn());
+
+      await cmd.parseAsync(['--force'], { from: 'user' });
+
+      // Should have called resetSettings and initializeSettings without prompting
+      expect(resetSettings).toHaveBeenCalled();
+      expect(initializeSettings).toHaveBeenCalled();
+      consoleSpy.mockRestore();
+      errorSpy.mockRestore();
+    });
+  });
+
+  describe('error handling', () => {
+    it('should handle initialization errors', async () => {
+      (resetSettings as ReturnType<typeof vi.fn>).mockImplementation(() => {
+        throw new Error('Database error');
+      });
+
+      const cmd = createInitCommand();
+      const errorSpy = vi.spyOn(console, 'error').mockImplementation(vi.fn());
+      const logSpy = vi.spyOn(console, 'log').mockImplementation(vi.fn());
+
+      await cmd.parseAsync(['--force'], { from: 'user' });
+
+      expect(process.exitCode).toBe(1);
+      errorSpy.mockRestore();
+      logSpy.mockRestore();
+
+      process.exitCode = undefined;
+    });
+  });
+});

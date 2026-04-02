@@ -1,0 +1,11 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: ModelConfiguration.yaml
+type: object
+properties:
+  default:
+    type: string
+    default: claude-sonnet-4-6
+    description: Default model identifier for all agents
+required:
+  - default
+description: AI model configuration for the SDLC agent

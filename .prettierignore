@@ -1,0 +1,57 @@
+# Build outputs
+dist/
+build/
+.next/
+out/
+
+# Dependencies
+node_modules/
+
+# Generated files
+apis/
+*.generated.*
+coverage/
+src/presentation/web/next-env.d.ts
+
+# Spec artifacts (auto-generated YAML, evidence PNGs, auto-generated MD)
+specs/
+
+# Claude Code skills (third-party, not our code)
+.claude/skills/
+
+# Markdown (formatting not enforced — prettier only for code)
+*.md
+
+# POC / static docs (formatting not enforced)
+docs/poc/
+
+# Package manager
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# IDE
+.idea/
+.vscode/
+.cursor
+*.code-workspace
+
+# Symlinks (prettier rejects them)
+CURSOR.md
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Test outputs
+test-results/
+playwright-report/
+
+# Husky
+.husky/_
+
+# Local editor/IDE settings (may be machine-specific)
+.claude/settings.local.json

@@ -1,0 +1,54 @@
+feature:
+  id: '014-ui-sidebar'
+  name: 'ui-sidebar'
+  number: 14
+  branch: 'feat/ui-sidebar'
+  lifecycle: 'review'
+  createdAt: '2026-02-11T15:16:23Z'
+
+status:
+  phase: 'in-review'
+  lastUpdated: '2026-02-11T21:40:00Z'
+  lastUpdatedBy: 'shep-kit:commit-pr'
+  progress:
+    completed: 6
+    total: 6
+    percentage: 100
+  currentTask: null
+
+validation:
+  lastRun: '2026-02-11T17:54:00Z'
+  gatesPassed:
+    - 'unit-tests'
+    - 'lint'
+    - 'typecheck'
+    - 'build-storybook'
+    - 'build-web'
+  autoFixesApplied:
+    - 'eslint-array-type-rule'
+    - 'tw-animate-css-dependency'
+
+tasks:
+  current: null
+  blocked: []
+  failed: []
+
+prUrl: 'https://github.com/shep-ai/shep/pull/46'
+
+checkpoints:
+  - phase: 'feature-created'
+    completedAt: '2026-02-11T15:16:23Z'
+    completedBy: 'shep-kit:new-feature'
+  - phase: 'research-complete'
+    completedAt: '2026-02-11T18:00:00Z'
+    completedBy: 'shep-kit:research'
+  - phase: 'plan-complete'
+    completedAt: '2026-02-11T19:00:00Z'
+    completedBy: 'shep-kit:plan'
+  - phase: 'pr-created'
+    completedAt: '2026-02-11T20:00:00Z'
+    completedBy: 'shep-kit:commit-pr'
+
+errors:
+  current: null
+  history: []

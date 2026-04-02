@@ -1,0 +1,582 @@
+# =============================================================================
+# Shipit AI E2E Pipeline
+# =============================================================================
+# Validates shipit-ai's full feature lifecycle (feat new → feat ls → feat show)
+# across all supported platforms and agents.
+#
+# Agents run locally without --push/--pr/--allow-merge. Verification checks
+# that the feature completed and local changes exist on the worktree branch.
+# =============================================================================
+
+name: Shipit AI E2E
+
+on:
+  schedule:
+    - cron: '0 * * * *' # every hour
+  workflow_dispatch:
+
+concurrency:
+  group: shipit-ai-e2e-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  shipit-ai-e2e:
+    name: ${{ matrix.agent }} / ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 30
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        agent: [dev, claude-code]
+        # cursor temporarily excluded from e2e matrix
+        # agent: [dev, claude-code, cursor]
+        # exclude:
+        #   - os: windows-latest
+        #     agent: cursor
+
+    permissions:
+      contents: read
+
+    steps:
+      # ─────────────────────────────────────────────────────────────────────
+      # 1. Checkout, build, link
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Checkout shipit-ai CLI
+        uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shipit-ai CLI
+        run: pnpm run build:release
+
+      - name: Link shipit-ai globally
+        run: npm link
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 2. Install agent CLI (skip for dev — no binary needed)
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Install Claude Code CLI (Linux/macOS)
+        if: matrix.agent == 'claude-code' && runner.os != 'Windows'
+        run: |
+          curl -fsSL https://claude.ai/install.sh | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Install Claude Code CLI (Windows)
+        if: matrix.agent == 'claude-code' && runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          irm https://claude.ai/install.ps1 | iex
+          $claudePath = "$env:LOCALAPPDATA\Programs\claude-code"
+          if (Test-Path "$env:USERPROFILE\.local\bin") { $claudePath = "$env:USERPROFILE\.local\bin" }
+          echo $claudePath >> $env:GITHUB_PATH
+
+      # - name: Install Cursor CLI (Linux/macOS)
+      #   if: matrix.agent == 'cursor' && runner.os != 'Windows'
+      #   run: |
+      #     curl -fsS https://cursor.com/install | bash
+      #     echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      # - name: Install Cursor CLI (Windows)
+      #   if: matrix.agent == 'cursor' && runner.os == 'Windows'
+      #   shell: pwsh
+      #   run: |
+      #     irm 'https://cursor.com/install?win32=true' | iex
+      #     # Installer adds $LOCALAPPDATA\cursor-agent to user PATH
+      #     echo "$env:LOCALAPPDATA\cursor-agent" >> $env:GITHUB_PATH
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 3. Clone shipped repo (target for feature creation)
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Clone shipped repo
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          TARGET_DIR="${RUNNER_TEMP}/shipped"
+          git clone https://x-access-token:${GH_TOKEN}@github.com/jrmatherly/shipped.git "$TARGET_DIR"
+          cd "$TARGET_DIR"
+          git config user.name "shipit-ai-bot"
+          git config user.email "jrmatherly@users.noreply.github.com"
+          echo "TARGET_DIR=$TARGET_DIR" >> $GITHUB_ENV
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 4. Configure agent
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Configure shipit-ai agent
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: |
+          # if [ "${{ matrix.agent }}" = "cursor" ]; then
+          #   shipit-ai settings agent --agent cursor --auth token --token "$CURSOR_API_KEY"
+          if [ "${{ matrix.agent }}" = "claude-code" ]; then
+            shipit-ai settings agent --agent claude-code --auth session
+          else
+            shipit-ai settings agent --agent dev
+          fi
+        # env:
+        #   CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 5. Generate prompt and create feature (no push/pr/merge)
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Create feature
+        timeout-minutes: 5
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        env:
+          DEV_EXECUTOR_DELAY_MS: '0'
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: |
+          SUFFIX=$(node -e "console.log(Math.random().toString(36).slice(2,8))")
+          # Use cheapest model per agent
+          # Cursor CLI only supports its own model list — use "auto" (its default)
+          # if [ "${{ matrix.agent }}" = "cursor" ]; then
+          #   MODEL="auto"
+          if [ "${{ matrix.agent }}" = "claude-code" ]; then
+            MODEL="claude-haiku-4-5"
+          else
+            MODEL=""
+          fi
+          MODEL_FLAG=""
+          if [ -n "$MODEL" ]; then
+            MODEL_FLAG="--model $MODEL"
+          fi
+          shipit-ai feat new "create a single markdown file called test-${SUFFIX}.md with a title and 2-3 sentences about anything" \
+            --fast \
+            --allow-all \
+            $MODEL_FLAG
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 6. Verify feature listed
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Verify feature listed
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: |
+          echo "=== shipit-ai feat ls ==="
+          OUTPUT=$(shipit-ai feat ls)
+          echo "$OUTPUT"
+          echo "$OUTPUT" | grep -q "[0-9a-f]" || { echo "::error::No feature ID found"; exit 1; }
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 7. Wait for feature to complete
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Wait for feature to complete
+        timeout-minutes: 15
+        shell: node {0}
+        env:
+          DEV_EXECUTOR_DELAY_MS: '0'
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # CURSOR_API_KEY: ${{ secrets.CURSOR_API_KEY }}
+        run: |
+          const { execSync } = require('child_process');
+          const cwd = process.env.TARGET_DIR;
+          const fs = require('fs');
+
+          const lsOutput = execSync('shipit-ai feat ls', { cwd, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+          const idMatch = lsOutput.match(/[0-9a-f]{8}/);
+          if (!idMatch) {
+            console.error('::error::Could not find feature ID from shipit-ai feat ls');
+            process.exit(1);
+          }
+          const featureId = idMatch[0];
+          console.log(`Feature ID: ${featureId}`);
+
+          const MAX_WAIT = 600000; // 10 minutes
+          const INTERVAL = 10000;  // 10 seconds
+          const start = Date.now();
+
+          function checkStatus() {
+            try {
+              const output = execSync(`shipit-ai feat show ${featureId}`, { cwd, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+              console.log(output);
+              return output;
+            } catch (e) {
+              console.log(e.stdout || e.message);
+              return e.stdout || '';
+            }
+          }
+
+          function poll() {
+            const elapsed = Math.round((Date.now() - start) / 1000);
+            console.log(`\n=== Checking status (${elapsed}s elapsed) ===`);
+            const output = checkStatus();
+
+            if (/completed/i.test(output)) {
+              console.log('\nFeature completed!');
+              fs.appendFileSync(process.env.GITHUB_ENV, `FEATURE_ID=${featureId}\n`);
+              process.exit(0);
+            }
+            if (/failed|crashed|interrupted/i.test(output)) {
+              console.error('\n::error::Feature reached terminal error state');
+              process.exit(1);
+            }
+            if (Date.now() - start > MAX_WAIT) {
+              console.error(`::error::Feature did not complete within ${MAX_WAIT / 1000}s`);
+              process.exit(1);
+            }
+            console.log(`Still running, waiting ${INTERVAL / 1000}s...`);
+            setTimeout(poll, INTERVAL);
+          }
+
+          poll();
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 8. Show final feature details
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Show completed feature
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: |
+          echo "=== Final feature details ==="
+          shipit-ai feat show "$FEATURE_ID"
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 9. Verify local changes exist on the feature worktree branch
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Verify local changes
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: |
+          echo "=== Checking for worktree branches ==="
+          git worktree list
+          if [ "${{ matrix.agent }}" = "dev" ]; then
+            echo "Dev agent — skipping commit check (dev executor simulates work without real commits)"
+            echo "Feature completed successfully — that's the verification for dev."
+          else
+            # Real agents should have created commits beyond the initial one
+            COMMIT_COUNT=$(git log --oneline --all | wc -l)
+            echo "Total commits across all branches: $COMMIT_COUNT"
+            if [ "$COMMIT_COUNT" -le 1 ]; then
+              echo "::error::No new commits found — agent did not produce changes"
+              exit 1
+            fi
+            echo "Local changes verified!"
+          fi
+
+      # ─────────────────────────────────────────────────────────────────────
+      # 10. Upload shipit-ai logs (always, even on failure)
+      # ─────────────────────────────────────────────────────────────────────
+      - name: Dump feature logs
+        if: always()
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: |
+          echo "=== shipit-ai feat logs ==="
+          shipit-ai feat logs "$FEATURE_ID" || echo "(no logs available)"
+
+      - name: Upload shipit-ai logs
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: shipit-ai-logs-${{ matrix.agent }}-${{ matrix.os }}
+          path: ~/.shep/logs/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ===========================================================================
+  # Feature Test: Claude Code on Windows — full SDLC, local only
+  # Target: jrmatherly/shipped repo
+  # ===========================================================================
+  claude-windows-full-sdlc:
+    name: claude-code / windows / full-sdlc
+    runs-on: windows-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout shipit-ai CLI
+        uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shipit-ai CLI
+        run: pnpm run build:release
+
+      - name: Link shipit-ai globally
+        run: npm link
+
+      - name: Install Claude Code CLI
+        shell: pwsh
+        run: |
+          irm https://claude.ai/install.ps1 | iex
+          $claudePath = "$env:LOCALAPPDATA\Programs\claude-code"
+          if (Test-Path "$env:USERPROFILE\.local\bin") { $claudePath = "$env:USERPROFILE\.local\bin" }
+          echo $claudePath >> $env:GITHUB_PATH
+
+      - name: Clone shipped repo
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          TARGET_DIR="${RUNNER_TEMP}/shipped"
+          git clone https://x-access-token:${GH_TOKEN}@github.com/jrmatherly/shipped.git "$TARGET_DIR"
+          cd "$TARGET_DIR"
+          git config user.name "shipit-ai-bot"
+          git config user.email "jrmatherly@users.noreply.github.com"
+          echo "TARGET_DIR=$TARGET_DIR" >> $GITHUB_ENV
+
+      - name: Configure shipit-ai agent
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: shipit-ai settings agent --agent claude-code --auth session
+
+      - name: Create feature (full SDLC)
+        timeout-minutes: 15
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          SUFFIX=$(node -e "console.log(Math.random().toString(36).slice(2,8))")
+          shipit-ai feat new "create a single markdown file called test-${SUFFIX}.md with a title and 2-3 sentences about anything" \
+            --allow-all \
+            --model claude-haiku-4-5
+
+      - name: Verify feature listed
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: |
+          OUTPUT=$(shipit-ai feat ls)
+          echo "$OUTPUT"
+          echo "$OUTPUT" | grep -q "[0-9a-f]" || { echo "::error::No feature ID found"; exit 1; }
+
+      - name: Wait for feature to complete
+        timeout-minutes: 25
+        shell: node {0}
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+        run: |
+          const { execSync } = require('child_process');
+          const cwd = process.env.TARGET_DIR;
+          const fs = require('fs');
+
+          const lsOutput = execSync('shipit-ai feat ls', { cwd, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+          const idMatch = lsOutput.match(/[0-9a-f]{8}/);
+          if (!idMatch) { console.error('::error::No feature ID'); process.exit(1); }
+          const featureId = idMatch[0];
+          console.log(`Feature ID: ${featureId}`);
+
+          const MAX_WAIT = 1200000, INTERVAL = 10000, start = Date.now();
+          function checkStatus() {
+            try { const o = execSync(`shipit-ai feat show ${featureId}`, { cwd, encoding: 'utf8', stdio: ['pipe','pipe','pipe'] }); console.log(o); return o; }
+            catch (e) { console.log(e.stdout || e.message); return e.stdout || ''; }
+          }
+          function poll() {
+            const elapsed = Math.round((Date.now() - start) / 1000);
+            console.log(`\n=== Checking status (${elapsed}s elapsed) ===`);
+            const output = checkStatus();
+            if (/completed/i.test(output)) { fs.appendFileSync(process.env.GITHUB_ENV, `FEATURE_ID=${featureId}\n`); process.exit(0); }
+            if (/failed|crashed|interrupted/i.test(output)) { console.error('::error::Terminal error state'); process.exit(1); }
+            if (Date.now() - start > MAX_WAIT) { console.error('::error::Timeout'); process.exit(1); }
+            setTimeout(poll, INTERVAL);
+          }
+          poll();
+
+      - name: Show completed feature
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: shipit-ai feat show "$FEATURE_ID"
+
+      - name: Verify local changes
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: |
+          COMMIT_COUNT=$(git log --oneline --all | wc -l)
+          echo "Total commits: $COMMIT_COUNT"
+          if [ "$COMMIT_COUNT" -le 1 ]; then
+            echo "::error::No new commits found"
+            exit 1
+          fi
+          echo "Local changes verified!"
+
+      - name: Dump feature logs
+        if: always()
+        shell: bash
+        working-directory: ${{ env.TARGET_DIR }}
+        run: shipit-ai feat logs "$FEATURE_ID" || echo "(no logs available)"
+
+      - name: Upload shipit-ai logs
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: shipit-ai-logs-claude-windows-full-sdlc
+          path: ~/.shep/logs/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # ===========================================================================
+  # Feature Test: Claude Code on Ubuntu — full SDLC + push + PR
+  # Target: jrmatherly/shipped repo
+  # ===========================================================================
+  claude-ubuntu-full-sdlc-pr:
+    name: claude-code / ubuntu / full-sdlc + push + pr
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout shipit-ai CLI
+        uses: actions/checkout@v5
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v5
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build shipit-ai CLI
+        run: pnpm run build:release
+
+      - name: Link shipit-ai globally
+        run: npm link
+
+      - name: Install Claude Code CLI
+        run: |
+          curl -fsSL https://claude.ai/install.sh | bash
+          echo "$HOME/.local/bin" >> $GITHUB_PATH
+
+      - name: Clone shipped repo
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          TARGET_DIR="${RUNNER_TEMP}/shipped"
+          git clone https://x-access-token:${GH_TOKEN}@github.com/jrmatherly/shipped.git "$TARGET_DIR"
+          cd "$TARGET_DIR"
+          git config user.name "shipit-ai-bot"
+          git config user.email "jrmatherly@users.noreply.github.com"
+          echo "TARGET_DIR=$TARGET_DIR" >> $GITHUB_ENV
+
+      - name: Configure shipit-ai agent
+        working-directory: ${{ env.TARGET_DIR }}
+        run: shipit-ai settings agent --agent claude-code --auth session
+
+      - name: Create feature (full SDLC + push + PR)
+        timeout-minutes: 15
+        working-directory: ${{ env.TARGET_DIR }}
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          SUFFIX=$(node -e "console.log(Math.random().toString(36).slice(2,8))")
+          shipit-ai feat new "create a single markdown file called test-${SUFFIX}.md with a title and 2-3 sentences about anything" \
+            --allow-all \
+            --push \
+            --pr \
+            --model claude-haiku-4-5
+
+      - name: Verify feature listed
+        working-directory: ${{ env.TARGET_DIR }}
+        run: |
+          OUTPUT=$(shipit-ai feat ls)
+          echo "$OUTPUT"
+          echo "$OUTPUT" | grep -q "[0-9a-f]" || { echo "::error::No feature ID found"; exit 1; }
+
+      - name: Wait for feature to complete
+        timeout-minutes: 25
+        shell: node {0}
+        env:
+          CLAUDE_CODE_OAUTH_TOKEN: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          const { execSync } = require('child_process');
+          const cwd = process.env.TARGET_DIR;
+          const fs = require('fs');
+
+          const lsOutput = execSync('shipit-ai feat ls', { cwd, encoding: 'utf8', stdio: ['pipe', 'pipe', 'pipe'] });
+          const idMatch = lsOutput.match(/[0-9a-f]{8}/);
+          if (!idMatch) { console.error('::error::No feature ID'); process.exit(1); }
+          const featureId = idMatch[0];
+          console.log(`Feature ID: ${featureId}`);
+
+          const MAX_WAIT = 1200000, INTERVAL = 10000, start = Date.now();
+          function checkStatus() {
+            try { const o = execSync(`shipit-ai feat show ${featureId}`, { cwd, encoding: 'utf8', stdio: ['pipe','pipe','pipe'] }); console.log(o); return o; }
+            catch (e) { console.log(e.stdout || e.message); return e.stdout || ''; }
+          }
+          function poll() {
+            const elapsed = Math.round((Date.now() - start) / 1000);
+            console.log(`\n=== Checking status (${elapsed}s elapsed) ===`);
+            const output = checkStatus();
+            if (/completed/i.test(output)) { fs.appendFileSync(process.env.GITHUB_ENV, `FEATURE_ID=${featureId}\n`); process.exit(0); }
+            if (/failed|crashed|interrupted/i.test(output)) { console.error('::error::Terminal error state'); process.exit(1); }
+            if (Date.now() - start > MAX_WAIT) { console.error('::error::Timeout'); process.exit(1); }
+            setTimeout(poll, INTERVAL);
+          }
+          poll();
+
+      - name: Show completed feature
+        working-directory: ${{ env.TARGET_DIR }}
+        run: shipit-ai feat show "$FEATURE_ID"
+
+      - name: Verify push and PR
+        working-directory: ${{ env.TARGET_DIR }}
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          echo "=== Remote branches ==="
+          git fetch origin
+          git branch -r
+
+          echo ""
+          echo "=== Open PRs ==="
+          gh pr list --repo jrmatherly/shipped --state open
+          PR_COUNT=$(gh pr list --repo jrmatherly/shipped --state open --json number -q 'length')
+          echo "Open PR count: $PR_COUNT"
+          if [ "$PR_COUNT" -lt 1 ]; then
+            echo "::warning::No PR was created"
+          else
+            echo "PR created successfully!"
+          fi
+
+      - name: Cleanup e2e branch and PR
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+        run: |
+          # Close any PRs created by this e2e run and delete their branches
+          for pr_number in $(gh pr list --repo jrmatherly/shipped --state open --json number,headRefName -q '.[] | select(.headRefName | test("test-")) | .number'); do
+            echo "Closing PR #${pr_number} and deleting branch..."
+            gh pr close "$pr_number" --repo jrmatherly/shipped --delete-branch || true
+          done
+
+      - name: Dump feature logs
+        if: always()
+        working-directory: ${{ env.TARGET_DIR }}
+        run: shipit-ai feat logs "$FEATURE_ID" || echo "(no logs available)"
+
+      - name: Upload shipit-ai logs
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: shipit-ai-logs-claude-ubuntu-full-sdlc-pr
+          path: ~/.shep/logs/
+          if-no-files-found: ignore
+          retention-days: 7

@@ -1,0 +1,300 @@
+/**
+ * Tool Installer Service Implementation
+ *
+ * Provides tool availability checking, installation command resolution,
+ * and installation execution with streaming output and timeout handling.
+ *
+ * Features:
+ * - Check binary availability using 'which' command
+ * - Retrieve platform-specific installation commands
+ * - Execute installations with real-time output streaming
+ * - Automatic timeout handling with process termination
+ * - Immutable status objects via value object factory functions
+ */
+
+import { injectable } from 'tsyringe';
+import { exec, spawn } from 'node:child_process';
+import { platform } from 'node:os';
+import type {
+  IToolInstallerService,
+  AvailableTerminalEntry,
+  TerminalOpenConfig,
+} from '../../../application/ports/output/services/tool-installer.service.js';
+import type {
+  ToolInstallationStatus,
+  ToolInstallCommand,
+  InstallationSuggestion,
+} from '../../../domain/generated/output.js';
+import {
+  createAvailableStatus,
+  createMissingStatus,
+  createErrorStatus,
+} from '../../../domain/value-objects/tool-installation-status.js';
+import { TOOL_METADATA, getTerminalEntries, type ToolMetadata } from './tool-metadata.js';
+import { checkBinaryExists } from './binary-exists.js';
+
+/**
+ * Resolve binary name for the current platform.
+ * Supports both simple string binaries and per-platform maps.
+ */
+function resolveBinary(metadata: ToolMetadata): string {
+  if (typeof metadata.binary === 'string') return metadata.binary;
+  return metadata.binary[platform()] ?? Object.values(metadata.binary)[0];
+}
+
+/**
+ * Run a shell command and resolve true when it exits 0, false otherwise.
+ * Used as a fallback for GUI apps whose binary isn't in PATH (e.g. Warp, iTerm2).
+ */
+const runVerifyCommand = (command: string): Promise<boolean> =>
+  new Promise((resolve) => {
+    exec(command, (err) => resolve(!err));
+  });
+
+@injectable()
+export class ToolInstallerServiceImpl implements IToolInstallerService {
+  /**
+   * Check if a tool binary is available on the system (PATH check,
+   * with verifyCommand fallback for GUI apps).
+   */
+  async checkAvailability(toolName: string): Promise<ToolInstallationStatus> {
+    const metadata = TOOL_METADATA[toolName];
+
+    if (!metadata) {
+      return createErrorStatus(toolName, `Unknown tool: ${toolName}`);
+    }
+
+    try {
+      const result = await checkBinaryExists(resolveBinary(metadata));
+
+      if (result.found) {
+        return createAvailableStatus(toolName);
+      }
+
+      // Binary not in PATH — try verifyCommand as fallback (handles GUI .app bundles)
+      if (result.notInPath && metadata.verifyCommand) {
+        const verified = await runVerifyCommand(metadata.verifyCommand);
+        if (verified) {
+          return createAvailableStatus(toolName);
+        }
+      }
+
+      if (result.notInPath) {
+        const suggestions = this.createInstallationSuggestions(metadata);
+        return createMissingStatus(toolName, suggestions);
+      }
+
+      // Genuine error (e.g. `which` binary missing, permission denied)
+      const errorMessage = result.error?.message ?? 'Unknown error checking availability';
+      return createErrorStatus(toolName, errorMessage);
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+      return createErrorStatus(toolName, `Failed to check availability: ${errorMessage}`);
+    }
+  }
+
+  /**
+   * Get the install command metadata for a tool on the current platform.
+   * Returns null if tool is unknown or not supported on current platform.
+   */
+  getInstallCommand(toolName: string): ToolInstallCommand | null {
+    const metadata = TOOL_METADATA[toolName];
+    if (!metadata) {
+      return null;
+    }
+
+    const currentPlatform = platform();
+    const command = metadata.commands[currentPlatform];
+    if (!command) {
+      return null;
+    }
+
+    return {
+      command,
+      platform: currentPlatform,
+      timeout: metadata.timeout,
+      toolName,
+      packageManager: metadata.packageManager,
+    };
+  }
+
+  /**
+   * Execute installation of a tool with live output streaming.
+   * Streams stdout/stderr to optional callback and handles timeout automatically.
+   */
+  async executeInstall(
+    toolName: string,
+    onOutput?: (data: string) => void
+  ): Promise<ToolInstallationStatus> {
+    const installCommand = this.getInstallCommand(toolName);
+    if (!installCommand) {
+      return createErrorStatus(toolName, `No installation command available for ${toolName}`);
+    }
+
+    return new Promise((resolve) => {
+      let output = '';
+
+      const child = spawn(installCommand.command, [], {
+        shell: true,
+        stdio: ['pipe', 'pipe', 'pipe'],
+        env: {
+          ...process.env,
+          DEBIAN_FRONTEND: 'noninteractive',
+          GIT_TERMINAL_PROMPT: '0',
+          GPG_TTY: '',
+        },
+      });
+
+      // Close stdin immediately to prevent interactive prompts
+      child.stdin?.end();
+
+      // Stream output from stdout and stderr
+      const pipeOutput = (stream: NodeJS.ReadableStream | null) => {
+        if (!stream) return;
+        stream.on('data', (data: Buffer) => {
+          const text = data.toString();
+          output += text;
+          if (onOutput) {
+            onOutput(text);
+          }
+        });
+      };
+
+      pipeOutput(child.stdout);
+      pipeOutput(child.stderr);
+
+      // Set up timeout to kill process if it takes too long
+      const timeoutId = setTimeout(() => {
+        child.kill();
+      }, installCommand.timeout);
+
+      // Handle process completion or error
+      const cleanup = (errorMessage?: string) => {
+        clearTimeout(timeoutId);
+        const returnStatus = errorMessage
+          ? createErrorStatus(toolName, errorMessage)
+          : createAvailableStatus(toolName);
+        resolve(returnStatus);
+      };
+
+      child.on('close', async (code: number) => {
+        if (code === 0) {
+          // Verify the installation by checking if binary exists
+          const metadata = TOOL_METADATA[toolName];
+          if (metadata) {
+            const binary = resolveBinary(metadata);
+            const verifyResult = await checkBinaryExists(binary);
+            if (verifyResult.found) {
+              cleanup();
+            } else {
+              cleanup(
+                `Installation completed but binary '${binary}' not found in PATH. The installation may require a shell restart or PATH update.`
+              );
+            }
+          } else {
+            cleanup();
+          }
+        } else {
+          cleanup(`Installation failed with exit code ${code}. Output: ${output.slice(0, 200)}`);
+        }
+      });
+
+      child.on('error', (err: Error) => {
+        cleanup(`Installation error: ${err.message}`);
+      });
+    });
+  }
+
+  /**
+   * List all terminal emulators supported on the current platform with availability status.
+   * TOOL_METADATA is loaded in the Node.js CLI context, so this is safe to call from the
+   * DI container even when the Next.js standalone bundle cannot resolve tools/ via import.meta.url.
+   */
+  async listAvailableTerminals(): Promise<AvailableTerminalEntry[]> {
+    const currentPlatform = platform();
+    const entries = getTerminalEntries();
+    const results: AvailableTerminalEntry[] = [];
+
+    for (const [id, meta] of entries) {
+      if (
+        meta.platforms &&
+        !meta.platforms.includes(currentPlatform as 'linux' | 'darwin' | 'win32')
+      ) {
+        continue;
+      }
+
+      if (id === 'system-terminal') {
+        results.unshift({ id: 'system', name: meta.name, available: true });
+        continue;
+      }
+
+      const binary = typeof meta.binary === 'string' ? meta.binary : meta.binary[currentPlatform];
+      if (!binary) continue;
+
+      let available = false;
+      if (meta.verifyCommand.startsWith('test ')) {
+        available = await runVerifyCommand(meta.verifyCommand);
+      } else {
+        const result = await checkBinaryExists(binary);
+        available = result.found;
+      }
+
+      results.push({ id, name: meta.name, available });
+    }
+
+    if (!results.some((r) => r.id === 'system')) {
+      results.unshift({ id: 'system', name: 'System Terminal', available: true });
+    }
+
+    return results;
+  }
+
+  getTerminalOpenConfig(terminalId: string): TerminalOpenConfig | null {
+    const meta = TOOL_METADATA[terminalId];
+    if (!meta?.openDirectory) return null;
+
+    const openDirectory =
+      typeof meta.openDirectory === 'string'
+        ? meta.openDirectory
+        : (meta.openDirectory[platform()] ?? Object.values(meta.openDirectory)[0]);
+
+    if (!openDirectory) return null;
+
+    return {
+      openDirectory,
+      shell: meta.spawnOptions?.shell === true,
+    };
+  }
+
+  /**
+   * Create installation suggestions for a tool based on its metadata
+   */
+  private createInstallationSuggestions(
+    metadata: (typeof TOOL_METADATA)[string]
+  ): InstallationSuggestion[] {
+    const suggestions: InstallationSuggestion[] = [];
+
+    // Add suggestion for current platform if available
+    const currentPlatform = platform();
+    const command = metadata.commands[currentPlatform];
+
+    if (command) {
+      suggestions.push({
+        packageManager: metadata.packageManager,
+        command,
+        documentationUrl: metadata.documentationUrl,
+      });
+    }
+
+    // Add generic suggestion
+    if (!suggestions.length) {
+      suggestions.push({
+        packageManager: metadata.packageManager,
+        command: 'Visit official documentation',
+        documentationUrl: metadata.documentationUrl,
+      });
+    }
+
+    return suggestions;
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "name": "Alacritty",
+  "summary": "GPU-accelerated terminal emulator",
+  "description": "Alacritty is a modern, GPU-accelerated terminal emulator focused on simplicity and performance. Cross-platform (macOS and Linux). On older Linux distributions, you may need to add a PPA before installing via apt.",
+  "tags": ["terminal"],
+  "author": "Alacritty Contributors",
+  "website": "https://alacritty.org",
+  "platforms": ["linux", "darwin", "win32"],
+  "iconUrl": "https://cdn.simpleicons.org/alacritty",
+  "binary": "alacritty",
+  "packageManager": "brew",
+  "commands": {
+    "darwin": "brew install --cask alacritty",
+    "linux": "sudo apt-get update && sudo apt-get install -y alacritty",
+    "win32": "winget install --id Alacritty.Alacritty -e --source winget"
+  },
+  "timeout": 300000,
+  "documentationUrl": "https://alacritty.org/",
+  "verifyCommand": "alacritty --version",
+  "autoInstall": true,
+  "openDirectory": "alacritty --working-directory {dir}"
+}

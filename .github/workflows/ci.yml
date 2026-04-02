@@ -1,0 +1,364 @@
+# =============================================================================
+# CI/CD Pipeline
+# =============================================================================
+# All jobs run in parallel. Release only runs on push to main.
+#
+# Pipeline Structure:
+#   ┌──────┬───────────┬─────────────────┬─────────────────┬─────────┬─────────┬───────────┐
+#   │ Lint │ Typecheck │ Unit (lin+win)  │ E2E CLI (l+w)   │ E2E TUI │ E2E Web │ Storybook │
+#   └──────┴───────────┴─────────────────┴─────────────────┴─────────┴─────────┴───────────┘
+#   ┌──────────┬─────────┐
+#   │ Gitleaks │ Semgrep │
+#   └──────────┴─────────┘
+#                  (all parallel)
+#
+#   On push to main only:
+#   ┌───────────┐
+#   │  Release  │  (after ALL jobs pass)
+#   └───────────┘
+#
+#   On pull requests (after ALL jobs pass):
+#   ┌───────────────┐
+#   │  Dev Release   │  npm dev tag
+#   └───────────────┘
+#
+# @see https://docs.github.com/en/actions
+
+name: CI/CD
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+
+env:
+  NODE_VERSION: '22'
+
+jobs:
+  # ===========================================================================
+  # Code Quality
+  # ===========================================================================
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run lint
+      - run: pnpm run format:check
+      - run: pnpm run tsp:compile
+
+  typecheck:
+    name: Type Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run generate
+      - run: pnpm run typecheck
+
+  # ===========================================================================
+  # Tests
+  # ===========================================================================
+  test-unit:
+    name: Unit Tests (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run tsp:compile
+      - run: pnpm run test:unit --passWithNoTests
+      - run: pnpm run test:int --passWithNoTests
+
+  test-e2e-cli:
+    name: E2E CLI (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:release
+      - run: pnpm run test:e2e:cli
+
+  test-e2e-tui:
+    name: E2E (TUI)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:release
+      - run: pnpm run test:e2e:tui
+
+  test-e2e-web:
+    name: E2E (Web)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:release
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm run test:e2e:web
+
+  # ===========================================================================
+  # Storybook Build (catches missing mocks, broken imports in stories)
+  # ===========================================================================
+  storybook-build:
+    name: Storybook Build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:storybook
+
+  # ===========================================================================
+  # Security: Gitleaks Secret Detection
+  # Uses gitleaks CLI directly (free, open source) instead of gitleaks-action
+  # which requires a paid license for organizations
+  # ===========================================================================
+  security-gitleaks:
+    name: Gitleaks
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install gitleaks
+        run: |
+          GITLEAKS_VERSION="8.18.4"
+          curl -sSfL "https://github.com/gitleaks/gitleaks/releases/download/v${GITLEAKS_VERSION}/gitleaks_${GITLEAKS_VERSION}_linux_x64.tar.gz" | tar -xz
+          sudo mv gitleaks /usr/local/bin/
+
+      - name: Gitleaks secret scan
+        run: gitleaks detect --source . --verbose --redact
+
+  # ===========================================================================
+  # Security: Semgrep SAST
+  # ===========================================================================
+  security-semgrep:
+    name: Semgrep
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      security-events: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Semgrep SAST scan
+        uses: returntocorp/semgrep-action@v1
+        with:
+          config: >-
+            p/typescript
+            p/javascript
+            p/security-audit
+
+  # ===========================================================================
+  # Security Summary Comment (PRs only)
+  # Posts aggregated security scan results as a PR comment
+  # ===========================================================================
+  security-summary:
+    name: Security Summary
+    runs-on: ubuntu-latest
+    needs:
+      - security-gitleaks
+      - security-semgrep
+    # Only post comment when security issues are found
+    if: >-
+      github.event_name == 'pull_request' && always() &&
+      (needs.security-gitleaks.result == 'failure' ||
+       needs.security-semgrep.result == 'failure')
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - name: Post security summary comment
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-tag: security-summary
+          body: |
+            ## 🔒 Security Issues Detected
+
+            | Scanner | Status | Details |
+            |---------|--------|---------|
+            | **Gitleaks** | ${{ needs.security-gitleaks.result == 'success' && '✅ Pass' || needs.security-gitleaks.result == 'failure' && '❌ Failed' || needs.security-gitleaks.result == 'skipped' && '⏭️ Skipped' || '⚠️ Cancelled' }} | Secret detection in git history |
+            | **Semgrep** | ${{ needs.security-semgrep.result == 'success' && '✅ Pass' || needs.security-semgrep.result == 'failure' && '❌ Failed' || needs.security-semgrep.result == 'skipped' && '⏭️ Skipped' || '⚠️ Cancelled' }} | SAST for TypeScript/JavaScript |
+
+            > ⚠️ **Please review the failed checks above before merging.**
+
+            ---
+            <sub>🤖 Generated by CI Security Scan | [View Details](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})</sub>
+
+  # ===========================================================================
+  # Release (main only, after ALL jobs pass)
+  # ===========================================================================
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - typecheck
+      - test-unit
+      - test-e2e-cli
+      - test-e2e-tui
+      - test-e2e-web
+      - storybook-build
+      - security-gitleaks
+      - security-semgrep
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && !contains(github.event.head_commit.message, '[skip ci]')
+
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+      id-token: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Use PAT token to allow pushing to protected main branch
+          # persist-credentials must be true for semantic-release to push commits
+          persist-credentials: true
+          token: ${{ secrets.RELEASE_TOKEN }}
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:release
+
+      - name: Run semantic-release
+        id: semantic
+        env:
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+          SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
+        run: npx semantic-release
+
+  # ===========================================================================
+  # Dev Release (PRs only, after ALL jobs pass)
+  # Publishes npm prerelease with dev tag
+  # ===========================================================================
+  dev-release:
+    name: Dev Release
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - typecheck
+      - test-unit
+      - test-e2e-cli
+      - test-e2e-tui
+      - test-e2e-web
+      - storybook-build
+      - security-gitleaks
+      - security-semgrep
+    if: github.event_name == 'pull_request'
+
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute dev version
+        id: devver
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          SHORT_SHA=$(git rev-parse --short=7 HEAD)
+          BASE_VERSION=$(node -p "require('./package.json').version")
+          DEV_VERSION="${BASE_VERSION}-pr${PR_NUMBER}.${SHORT_SHA}"
+          echo "version=$DEV_VERSION" >> $GITHUB_OUTPUT
+          echo "Dev version: $DEV_VERSION"
+
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm run build:release
+
+      - name: Publish npm dev release
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          DEV_VERSION: ${{ steps.devver.outputs.version }}
+        run: |
+          npm version "$DEV_VERSION" --no-git-tag-version
+          npm publish --tag dev --access public
+
+      - name: Post PR comment with dev versions
+        uses: peter-evans/create-or-update-comment@v5
+        env:
+          DEV_VERSION: ${{ steps.devver.outputs.version }}
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-tag: dev-release
+          body: |
+            ## Dev Release Published
+
+            | Artifact | Version | Install |
+            |----------|---------|---------|
+            | **npm** | `${{ steps.devver.outputs.version }}` | `npm install -g @shipit-ai/cli@${{ steps.devver.outputs.version }}` |
+
+            ---
+            <sub>Published from commit ${{ github.event.pull_request.head.sha }} | [View CI](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})</sub>

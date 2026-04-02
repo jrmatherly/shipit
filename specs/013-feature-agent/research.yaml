@@ -1,0 +1,581 @@
+# Research Artifact (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: feature-agent
+summary: >
+  Technical research for 013-feature-agent covering database schema, git worktree management,
+  LangGraph agent design, CLI command architecture, background execution patterns, and
+  deferred capabilities: human-in-the-loop approval (interrupt/resume), external tool
+  integration (GitHub Issues via gh CLI, Jira tickets via REST API), and crash recovery resume.
+
+# Relationships
+relatedFeatures:
+  - '008-agent-configuration'
+technologies:
+  - TypeScript
+  - Commander.js
+  - LangGraph (@langchain/langgraph)
+  - better-sqlite3
+  - Node.js native APIs (execFile, fork)
+  - cli-table3
+relatedLinks:
+  - https://langchain-ai.github.io/langgraphjs/
+  - file://./tsp/domain/entities/feature.tsp
+  - file://./src/infrastructure/services/agents/langgraph/analyze-repository-graph.ts
+  - file://./src/application/ports/output/agent-run-repository.interface.ts
+  - file://./src/presentation/cli/commands/settings/index.ts
+
+# Structured technology decisions
+decisions:
+  # --- Database & Repository ---
+  - title: Feature Storage Schema
+    chosen: Single 'features' table with JSON columns for nested entities
+    rejected:
+      - Normalized tables (5+ tables for Plan/Task/ActionItem/Message)
+      - NoSQL document store
+    rationale: >
+      Feature is an Aggregate Root - always loaded/saved as a whole unit. JSON columns for
+      messages[], plan, and relatedArtifacts avoid 5+ JOIN queries for deeply nested structures
+      (Plan > Task > ActionItem > AcceptanceCriteria). Primary queries (findById, findBySlug,
+      list, filter by lifecycle) don't need to query into JSON. Follows same pattern as
+      existing AgentRun repository.
+
+  - title: Timestamp Format
+    chosen: INTEGER (unix milliseconds)
+    rejected:
+      - ISO string format (used in older Settings migration v1)
+    rationale: >
+      Follows the newer AgentRun convention (migration v3). More efficient for sorting/comparison.
+      Settings used ISO strings in migration v1 but AgentRun switched to INTEGER.
+
+  - title: Feature Repository Pattern
+    chosen: Singleton IFeatureRepository in global DB (~/.shep/data) with repositoryPath column
+    rejected:
+      - Per-repo databases with IFeatureRepositoryFactory (unnecessary complexity)
+      - Separate feature.db file (fragments data, complicates queries)
+    rationale: >
+      Feature is stored in the same global SQLite database as Settings and AgentRun. The
+      repositoryPath column allows filtering by repo (list features for current repo). Simple
+      singleton repository registered in DI container, same pattern as IAgentRunRepository.
+      Single migration file extends existing global DB migrations.
+
+  # --- Git Worktree ---
+  - title: Git Operations Library
+    chosen: Native execFile via injectable ExecFunction (zero new deps)
+    rejected:
+      - simple-git (no native worktree API, requires .raw() wrapper)
+      - isomorphic-git (no worktree support at all)
+    rationale: >
+      simple-git has NO dedicated worktree API - all operations go through git.raw() which
+      is just a wrapper around execFile. The codebase already has injectable
+      ExecFunction pattern (AgentValidatorService). Zero new dependencies needed.
+
+  - title: Worktree Location
+    chosen: .worktrees/<slug>/ in repo root
+    rejected:
+      - ~/.shep/repos/<hash>/worktrees/<slug>/ (centralized)
+    rationale: >
+      Already in production use (this project uses .worktrees/). Already in .gitignore (line 87).
+      Discoverable via 'ls .worktrees/', simple path derivation, keeps worktrees close to repo.
+
+  # --- LangGraph Agent ---
+  - title: Agent State Design
+    chosen: Minimal state (orchestration only, nodes read spec files directly)
+    rejected:
+      - Rich state with domain objects and reducers (duplicates spec file data)
+    rationale: >
+      Per the decision that nodes read spec files directly, state tracks only orchestration
+      concerns (featureId, paths, completion flags, error/retry). Analysis results, requirements,
+      research, and plan data live in spec YAML files (source of truth). Matches existing
+      AnalyzeRepositoryState pattern which is minimal.
+
+  - title: AI Execution Strategy
+    chosen: IAgentExecutor.execute() (agent-agnostic)
+    rejected:
+      - ChatAnthropic directly (bypasses agent abstraction, only works with Anthropic)
+    rationale: >
+      IAgentExecutor wraps the Claude Code CLI subprocess, not just an API call. Using
+      ChatModel directly would lose ability to use Claude Code's built-in tooling (file
+      operations, terminal). Supports multiple agent types via Settings.agent config.
+
+  - title: Checkpointing Storage
+    chosen: Separate SQLite DB per feature
+    rejected:
+      - Same DB as features (schema conflicts with LangGraph checkpoint tables)
+      - Global checkpoint DB (harder to clean up per-feature)
+      - In-memory (no persistence)
+    rationale: >
+      Clean isolation - each feature has its own checkpoint DB at
+      ~/.shep/repos/<hash>/checkpoints/<feature-id>.db. Easy cleanup when feature deleted.
+      Uses featureId as LangGraph thread_id for natural 1:1 mapping.
+
+  - title: Human-in-the-Loop Pattern
+    chosen: LangGraph interrupt() + Command({ resume }) with approvalMode field
+    rejected:
+      - interruptBefore/interruptAfter (older pattern)
+      - Custom polling mechanism
+    rationale: >
+      Modern LangGraph pattern. interrupt() pauses graph execution and surfaces data to caller.
+      approvalMode field ('interactive'|'allow-prd'|'allow-plan'|'allow-all') controls which
+      phases pause for user review vs auto-accept with AI-recommended defaults.
+
+  # --- CLI ---
+  - title: CLI Command Structure
+    chosen: Directory-based pattern (feat/ with index.ts + per-subcommand files)
+    rejected:
+      - Single feat.command.ts file (too large for 3 subcommands)
+    rationale: >
+      Mirrors the existing settings/ command directory pattern exactly. Each subcommand in
+      its own file: new.command.ts, ls.command.ts, show.command.ts. Parent index.ts uses
+      addCommand() to compose them.
+
+  # --- Background Execution ---
+  - title: Background Execution Strategy
+    chosen: Node.js fork() with detached + unref()
+    rejected:
+      - spawn() with detached (no IPC for startup confirmation)
+      - In-process async (CLI cannot exit while agent runs)
+      - Worker threads (die when parent exits)
+    rationale: >
+      Only fork() and spawn() can survive CLI exit (detached processes). fork() adds IPC
+      channel for startup confirmation handshake. CLI creates Feature + AgentRun, forks
+      worker, receives "started" via IPC, prints success, unrefs, exits. Agent continues.
+
+  - title: Feature-AgentRun Database Colocation
+    chosen: Both Feature and AgentRun in global DB (~/.shep/data)
+    rejected:
+      - Per-repo DB for Feature (unnecessary complexity, fragments data)
+    rationale: >
+      Both entities live in the same global SQLite database. Cross-referenced via featureId
+      field on AgentRun and agentRunId on Feature. Simple foreign-key-like relationship.
+      SQLite WAL mode supports concurrent reader (CLI) + writer (agent).
+
+  - title: Crash Recovery
+    chosen: Manual 'shep feat resume <id>' using LangGraph checkpoint thread_id
+    rejected:
+      - Automatic resume on CLI startup (race conditions, user may not want it)
+    rationale: >
+      PID liveness check on 'shep feat show' detects crashes. LangGraph SqliteSaver
+      checkpointer enables resume by reusing same thread_id. User explicitly triggers
+      resume. 'shep feat show' displays crashed status with resume suggestion.
+
+  # --- Gap 1: Human-in-the-Loop (deferred from initial implementation) ---
+  - title: Human-in-the-Loop Approval Pattern
+    chosen: LangGraph interrupt() inside nodes + Command({ resume }) from CLI
+    rejected:
+      - Database polling loop in approval checkpoint nodes (blocks worker thread, wasteful)
+      - interruptBefore/interruptAfter compile options (older LangGraph pattern, less flexible)
+      - Custom IPC-based approval channel (over-engineered for CLI use case)
+    rationale: >
+      LangGraph's native interrupt() function pauses graph execution and persists state
+      via checkpointer. The CLI can resume execution by invoking graph.invoke(new Command({ resume: decision })).
+      This is the official LangGraph human-in-the-loop pattern. No polling required — the worker
+      process exits after interrupt, and a new worker is spawned on resume. The checkpointer
+      (SqliteSaver) preserves full graph state between invocations. Approval mode is stored
+      on the AgentRun record so the resume worker knows which nodes need approval.
+
+  - title: Approval Mode Architecture
+    chosen: approvalMode field on AgentRun with 4 levels controlling which nodes call interrupt()
+    rejected:
+      - Per-node boolean flags (too granular, confusing UX)
+      - Single global toggle (not flexible enough for progressive autonomy)
+    rationale: >
+      Four escalating autonomy levels map to clear user intent.
+      'interactive' interrupts after every node (maximum control).
+      'allow-prd' auto-accepts analyze+requirements, interrupts research/plan/implement.
+      'allow-plan' auto-accepts through plan, interrupts only implement.
+      'allow-all' is fully autonomous (current behavior, MVP default).
+      Each node checks state.approvalMode to decide whether to call interrupt().
+      The interrupt payload includes node output summary for user review.
+
+  - title: Interrupt/Resume Worker Lifecycle
+    chosen: Worker exits after interrupt(), new worker spawned on resume with same thread_id
+    rejected:
+      - Worker stays alive polling DB (wastes resources, complex error handling)
+      - Worker uses IPC to CLI process (CLI may have exited)
+    rationale: >
+      LangGraph checkpointer persists state on every node completion AND on interrupt().
+      When worker calls interrupt(), graph.invoke() returns with the interrupt payload.
+      Worker updates AgentRun status to 'waiting_approval' and exits cleanly.
+      User runs 'shep agent approve <id>' which spawns a fresh worker with same thread_id.
+      The new graph.invoke(new Command({ resume: decision }), { configurable: { thread_id } })
+      resumes from the checkpoint. This is resource-efficient and crash-safe.
+
+  # --- Gap 2: External Tool Integration — OUT OF SCOPE ---
+  # GitHub Issue and Jira Ticket integration (tasks 34-36) deferred to future work.
+  # Research preserved for reference when this gap is revisited.
+
+  # --- Gap 3: Resume Command (deferred from initial implementation) ---
+  - title: Resume Command Implementation
+    chosen: shep feat resume <id> spawns new worker with checkpoint thread_id
+    rejected:
+      - Automatic resume on next CLI invocation (could resume unwanted runs)
+      - Resume via shep agent approve (conflates approval with crash recovery)
+    rationale: >
+      Explicit user intent via 'shep feat resume <id>'. Uses existing
+      FeatureAgentProcessService.spawn() with additional --resume flag.
+      Worker passes stored thread_id to graph.invoke(null, { configurable: { thread_id } }).
+      LangGraph SqliteSaver loads last checkpoint and continues from last completed node.
+      Works for both crash recovery AND resuming after approval.
+
+# Open questions (all resolved during research)
+openQuestions:
+  - question: 'Where to store Feature records?'
+    resolved: true
+    answer: 'Global SQLite database (~/.shep/data) alongside Settings and AgentRun. repositoryPath column for per-repo filtering.'
+  - question: 'Which library for git worktree operations?'
+    resolved: true
+    answer: 'Native execFile via existing injectable ExecFunction. simple-git has no worktree API, isomorphic-git has no worktree support.'
+  - question: 'How to link Feature with AgentRun?'
+    resolved: true
+    answer: 'Both in same global DB. Add featureId field to AgentRun. Add agentRunId field to Feature. Simple same-DB reference.'
+  - question: 'How to handle agent crashes and resume?'
+    resolved: true
+    answer: 'PID liveness check via process.kill(pid, 0). LangGraph SQLite checkpointing enables resume. Manual shep feat resume <id> command.'
+  - question: 'How should human-in-the-loop approval work with background workers?'
+    resolved: true
+    answer: >
+      Worker calls interrupt() inside node, graph persists state via checkpointer, worker
+      updates AgentRun to waiting_approval and exits. User runs shep agent approve <id>
+      which spawns new worker with Command({ resume: decision }) and same thread_id.
+      No polling, no long-lived processes.
+  - question: 'Should GitHub/Jira integration use API libraries or CLI tools?'
+    resolved: true
+    answer: 'OUT OF SCOPE — deferred to future work. Research preserved in git history.'
+  - question: 'What approval modes should be supported?'
+    resolved: true
+    answer: >
+      Four levels: interactive (interrupt every node), allow-prd (auto-accept analyze+requirements),
+      allow-plan (auto-accept through plan), allow-all (fully autonomous, current default).
+      Stored as approvalMode field on AgentRun record.
+
+# Markdown content (the full research document)
+content: |
+  ## Status
+
+  - **Phase:** Research
+  - **Updated:** 2026-02-11
+  - **Researched by:** 5 parallel agents (db, git, agent, cli, bg)
+
+  ## Technology Decisions
+
+  ### 1. Feature Storage Schema
+
+  **Chosen:** Single `features` table with JSON columns for nested entities
+
+  ```sql
+  CREATE TABLE features (
+    id TEXT PRIMARY KEY NOT NULL,
+    name TEXT NOT NULL,
+    slug TEXT NOT NULL,
+    description TEXT NOT NULL,
+    repository_path TEXT NOT NULL,
+    branch TEXT NOT NULL,
+    lifecycle TEXT NOT NULL DEFAULT 'Requirements',
+    messages TEXT NOT NULL DEFAULT '[]',
+    plan TEXT,
+    related_artifacts TEXT NOT NULL DEFAULT '[]',
+    created_at INTEGER NOT NULL,
+    updated_at INTEGER NOT NULL
+  );
+
+  CREATE UNIQUE INDEX idx_features_slug ON features(slug);
+  CREATE INDEX idx_features_repository_path ON features(repository_path);
+  CREATE INDEX idx_features_lifecycle ON features(lifecycle);
+  CREATE INDEX idx_features_updated_at ON features(updated_at);
+  ```
+
+  **Rationale:** Feature is the Aggregate Root - always loaded/saved as a whole unit. JSON columns
+  for messages[], plan, and relatedArtifacts avoid 5+ normalized tables with complex JOINs for
+  deeply nested structures (Plan > Task > ActionItem > AcceptanceCriteria). Primary queries (by ID,
+  slug, lifecycle) don't need SQL queries into JSON content.
+
+  ### 2. Feature Repository Pattern
+
+  **Chosen:** Singleton `IFeatureRepository` in global DB (`~/.shep/data`)
+
+  Features are stored in the same global SQLite database as Settings and AgentRun.
+  The `repositoryPath` column enables per-repo filtering. Simple singleton registered in DI,
+  same pattern as `IAgentRunRepository`.
+
+  **IFeatureRepository interface:**
+  - `create(feature: Feature): Promise<void>`
+  - `findById(id: string): Promise<Feature | null>`
+  - `findBySlug(slug: string): Promise<Feature | null>`
+  - `list(options?: { repositoryPath?: string, lifecycle?: SdlcLifecycle }): Promise<Feature[]>`
+  - `update(feature: Feature): Promise<void>`
+  - `delete(id: string): Promise<void>`
+
+  ### 3. Git Worktree Management
+
+  **Chosen:** Native execFile via injectable `ExecFunction` (zero new dependencies)
+
+  **IWorktreeService interface:**
+  - `create(repoPath, slug): Promise<WorktreeInfo>` - creates worktree + branch `feat/<slug>`
+  - `remove(repoPath, slug, options?): Promise<void>` - removes worktree, optionally deletes branch
+  - `list(repoPath): Promise<WorktreeInfo[]>` - parses `git worktree list --porcelain`
+  - `exists(repoPath, slug): Promise<boolean>`
+  - `getWorktreePath(repoPath, slug): string` - pure function: `path.join(repoPath, '.worktrees', slug)`
+
+  **WorktreeInfo:** `{ path, head, branch, isMain }`
+
+  **Error handling:** Typed `WorktreeError` with codes: ALREADY_EXISTS, BRANCH_IN_USE, NOT_FOUND,
+  DIRTY_WORKTREE, NOT_A_REPO, GIT_ERROR. Parsed from git stderr patterns.
+
+  **Location:** `.worktrees/<slug>/` in repo root (already in production use, already in .gitignore).
+
+  ### 4. LangGraph FeatureAgent Design
+
+  **Chosen:** Linear StateGraph with minimal state, IAgentExecutor delegation
+
+  ```
+  START -> analyze -> requirements -> research -> plan -> implement -> END
+            retry      retry          retry       retry    retry
+  ```
+
+  **FeatureAgentState (minimal):**
+  - Identity: featureId, repositoryPath, worktreePath, description, specDir
+  - Lifecycle: currentPhase, approvalMode
+  - Completion: analysisComplete, requirementsComplete, researchComplete, planComplete, implementComplete
+  - Error: error, retryCount
+  - Session: sessionId (for IAgentExecutor resume)
+
+  **Node pattern:** Each node follows `createAnalyzeNode(executor)` pattern:
+  1. Read spec files from disk
+  2. Build prompt with context
+  3. Call `executor.execute(prompt, { cwd: worktreePath })`
+  4. Parse output and write to spec YAML files
+  5. Update feature.yaml status
+  6. Return minimal state update (completion flag + phase)
+
+  **Human-in-the-loop:** `interrupt()` + `Command({ resume })` with approvalMode control:
+  - `--interactive`: interrupt at every phase
+  - `--allow-prd`: auto-accept requirements, interrupt rest
+  - `--allow-plan`: auto-accept requirements + research + plan, interrupt implement
+  - `--allow-all`: fully autonomous, no interrupts
+
+  **Checkpointing:** SQLite per-feature at `~/.shep/repos/<hash>/checkpoints/<feature-id>.db`.
+  Thread ID = featureId (UUID). Enables resume from last completed node.
+
+  **Error handling:** Conditional edges with retry counter (max 3). Each node checks completion
+  flag first for resume support (skip already-done work).
+
+  ### 5. CLI Command Architecture
+
+  **Chosen:** Directory-based pattern mirroring `settings/` command
+
+  ```
+  src/presentation/cli/commands/feat/
+    index.ts          - createFeatCommand() parent with addCommand()
+    new.command.ts    - createNewCommand()
+    ls.command.ts     - createLsCommand()
+    show.command.ts   - createShowCommand()
+  ```
+
+  **`feat new` options:**
+  - `<description>` (argument) - feature description
+  - `-r, --repo <path>` - repository path (default: cwd)
+  - `-i, --interactive` - enable interactive mode
+  - `--allow-prd` / `--allow-plan` / `--allow-all` - approval modes
+  - `--tool-jira-ticket <id>` / `--tool-github-issue <id>` - external context
+
+  **Slug generation:** `description.toLowerCase().replace(/[^a-z0-9\s-]/g,'').trim().replace(/\s+/g,'-').substring(0,50)`
+
+  **`feat ls` output:** Table with ID, Name, Status columns using status indicators.
+
+  **`feat show` output:** Section-based display using existing TableFormatter pattern with
+  Overview, Plan, and Tasks sections.
+
+  ### 6. Background Agent Execution
+
+  **Chosen:** Node.js `fork()` with `detached: true` + `unref()`
+
+  **Sequence:**
+  1. CLI creates Feature in global DB (lifecycle=Requirements)
+  2. CLI creates AgentRun in global DB (status=pending)
+  3. CLI creates git branch + worktree
+  4. CLI forks background worker with --feature-id, --run-id, --repo
+  5. Worker sends "started" via IPC
+  6. CLI receives confirmation, prints success, unrefs, exits
+  7. Worker initializes own DI container + DB connections
+  8. Worker executes LangGraph feature-agent graph
+  9. Worker updates Feature + AgentRun as graph progresses
+  10. Worker writes heartbeat every 30s to AgentRun.lastHeartbeat
+  11. Worker exits on completion
+
+  **Process management:**
+  - PID stored in AgentRun.pid (already exists in TypeSpec model)
+  - Liveness check: `process.kill(pid, 0)`
+  - Graceful stop: SIGTERM -> wait 5s -> SIGKILL
+  - Crash detection: PID dead + status="running" -> mark "interrupted"
+
+  **Logging:** File-based at `~/.shep/logs/<feature-slug>/agent.log`
+
+  **Feature <-> AgentRun link:** Same global DB. featureId on AgentRun, agentRunId on Feature.
+
+  ## Library Analysis
+
+  | Library | Status | Purpose | Decision |
+  | ------- | ------ | ------- | -------- |
+  | @langchain/langgraph | To install | StateGraph workflow orchestration | Use for FeatureAgent graph |
+  | @langchain/core | To install | Tools, messages, prompts | Required by LangGraph |
+  | @langchain/anthropic | Already installed | Claude model integration | Use existing |
+  | @langchain/langgraph-checkpoint-sqlite | To install | SQLite checkpoint persistence | Use for durable state |
+  | better-sqlite3 | Already installed | SQLite driver | Use for per-repo feature DB |
+  | cli-table3 | Already installed | Table rendering | Use for feat ls output |
+  | simple-git | Not needed | Git wrapper | Rejected: no worktree API |
+  | isomorphic-git | Not needed | Pure JS git | Rejected: no worktree support |
+
+  ## Security Considerations
+
+  - **Database permissions**: Global database directory (~/.shep/) created with 0700 (owner-only), matching existing pattern
+  - **Background process**: Fork inherits parent environment. Sensitive env vars (API tokens) are needed by the agent
+  - **PID tracking**: Only process owner can send signals (no privilege escalation risk)
+  - **SQLite WAL mode**: Safe for concurrent reader (CLI) + writer (agent) pattern
+
+  ## Performance Implications
+
+  - **Single global DB**: No per-repo connection overhead. All features in one database with repositoryPath filtering
+  - **JSON columns**: Larger row sizes but SQLite handles BLOBs efficiently. Acceptable for aggregate root pattern
+  - **Background fork()**: ~50-100MB per background agent (V8 instance). One agent per feature is acceptable
+  - **LangGraph checkpointing**: SQLite writes on every node completion. Minimal overhead for crash recovery benefit
+  - **Worktree operations**: Native git commands are fast (<100ms for create/list/remove)
+
+  ## TypeSpec Changes Needed
+
+  - Add `featureId?: string` and `repositoryPath?: string` to `AgentRun` model
+  - Add `agentRunId?: string` to `Feature` model (optional back-reference)
+  - Add `approvalMode?: string` to `AgentRun` model (interactive|allow-prd|allow-plan|allow-all)
+  - Add `approvalStatus?: string` to `AgentRun` model (pending|approved|rejected)
+  - Add `waiting_approval` to `AgentRunStatus` enum
+
+  ---
+
+  ## Gap Analysis: Deferred Capabilities
+
+  The following capabilities were specified in the original spec but deferred during the initial
+  27-task implementation. Research findings below document the technical approach for each.
+
+  ### 7. Human-in-the-Loop Approval Pattern
+
+  **Chosen:** LangGraph native `interrupt()` + `Command({ resume })` pattern
+
+  **How it works:**
+
+  ```typescript
+  // Inside a node (e.g., plan.node.ts):
+  const shouldInterrupt = (
+    state.approvalMode === 'interactive' ||
+    (state.approvalMode === 'allow-prd' && !['analyze', 'requirements'].includes(nodeName)) ||
+    (state.approvalMode === 'allow-plan' && nodeName === 'implement')
+  );
+
+  if (shouldInterrupt) {
+    const decision = interrupt<{ approved: boolean; feedback?: string }>({
+      node: nodeName,
+      summary: `Completed ${nodeName} phase. Review output in spec directory.`,
+      specDir: state.specDir,
+    });
+    if (!decision.approved) {
+      return { error: `User rejected ${nodeName}: ${decision.feedback}` };
+    }
+  }
+  ```
+
+  **Worker lifecycle on interrupt:**
+  1. Node calls `interrupt()` → graph.invoke() returns with interrupt payload
+  2. Worker updates AgentRun: `status=waiting_approval`, stores interrupt metadata
+  3. Worker exits cleanly (process terminates)
+  4. User reviews output, runs `shep agent approve <id>` or `shep agent reject <id>`
+  5. CLI spawns new worker with: `graph.invoke(new Command({ resume: { approved: true } }), config)`
+  6. Graph resumes from checkpointed state, continues to next node
+
+  **Approval modes:**
+
+  | Flag | Behavior |
+  |------|----------|
+  | `--interactive` | Interrupt after every node |
+  | `--allow-prd` | Auto-accept analyze + requirements, interrupt rest |
+  | `--allow-plan` | Auto-accept through plan, interrupt only implement |
+  | `--allow-all` | Fully autonomous (default, current behavior) |
+
+  **New CLI commands:**
+  - `shep agent approve <id>` — approve pending approval, resume agent
+  - `shep agent reject <id> [--reason <text>]` — reject and fail the run
+
+  **New AgentRun fields:**
+  - `approvalMode` — which mode was requested
+  - `approvalStatus` — current approval state (null, pending, approved, rejected)
+
+  ### 8. External Tool Integration — OUT OF SCOPE
+
+  GitHub Issue and Jira Ticket integration deferred to future work.
+
+  ### 9. Resume Command
+
+  **Chosen:** `shep feat resume <id>` spawns new worker with checkpoint thread_id
+
+  ```typescript
+  // ResumeFeatureUseCase:
+  // 1. Load AgentRun by featureId
+  // 2. Verify status is 'interrupted' or 'failed'
+  // 3. Spawn new worker with --resume flag + existing runId
+  // 4. Worker calls graph.invoke(null, { configurable: { thread_id: runId } })
+  // 5. LangGraph loads checkpoint, continues from last completed node
+  ```
+
+  **Works for two scenarios:**
+  - Crash recovery: process died, checkpoint preserved, resume from last node
+  - Approval resume: same mechanism as `agent approve`, but for manual restart
+
+  ## New Files Summary
+
+  **Application Layer:**
+  - `src/application/ports/output/feature-repository.interface.ts`
+  - `src/application/ports/output/worktree-service.interface.ts`
+  - `src/application/use-cases/features/create-feature.use-case.ts`
+  - `src/application/use-cases/features/list-features.use-case.ts`
+  - `src/application/use-cases/features/show-feature.use-case.ts`
+  - `src/application/use-cases/features/update-feature.use-case.ts`
+
+  **Infrastructure Layer:**
+  - `src/infrastructure/repositories/sqlite-feature.repository.ts`
+  - `src/infrastructure/persistence/sqlite/mappers/feature.mapper.ts`
+  - `src/infrastructure/services/git/worktree.service.ts`
+  - `src/infrastructure/services/agents/langgraph/feature-agent-graph.ts`
+  - `src/infrastructure/services/agents/langgraph/prompts/feature-agent.prompt.ts`
+  - `src/infrastructure/services/agents/feature-agent-worker.ts`
+
+  **Presentation Layer:**
+  - `src/presentation/cli/commands/feat/index.ts`
+  - `src/presentation/cli/commands/feat/new.command.ts`
+  - `src/presentation/cli/commands/feat/ls.command.ts`
+  - `src/presentation/cli/commands/feat/show.command.ts`
+
+  ## New Files for Deferred Capabilities
+
+  **Application Layer (new):**
+  - `src/application/use-cases/agents/approve-agent-run.use-case.ts`
+  - `src/application/use-cases/agents/reject-agent-run.use-case.ts`
+  - `src/application/use-cases/features/resume-feature.use-case.ts`
+
+  **Presentation Layer (new):**
+  - `src/presentation/cli/commands/agent/approve.command.ts`
+  - `src/presentation/cli/commands/agent/reject.command.ts`
+  - `src/presentation/cli/commands/feat/resume.command.ts`
+
+  **Modified Files:**
+  - `tsp/agents/agent-run.tsp` — Add approvalMode, approvalStatus fields
+  - `tsp/agents/enums/agent-run-status.tsp` — Add waiting_approval status
+  - `src/infrastructure/services/agents/feature-agent/state.ts` — Add approvalMode to state
+  - `src/infrastructure/services/agents/feature-agent/nodes/*.node.ts` — Add interrupt() logic
+  - `src/infrastructure/services/agents/feature-agent/feature-agent-graph.ts` — No structural changes (interrupt is inline in nodes)
+  - `src/infrastructure/services/agents/feature-agent/feature-agent-worker.ts` — Parse --approval-mode, --resume args
+  - `src/infrastructure/services/agents/feature-agent/feature-agent-process.service.ts` — Pass approval/resume args
+  - `src/presentation/cli/commands/feat/new.command.ts` — Add --interactive, --allow-prd, --allow-plan, --allow-all flags
+  - `src/infrastructure/di/container.ts` — Register new services and use cases
+  - `src/infrastructure/persistence/sqlite/migrations.ts` — New migration for approval fields
+
+  ---
+
+  _Research updated 2026-02-12 with deferred capability analysis. Original research by 5 parallel agents._

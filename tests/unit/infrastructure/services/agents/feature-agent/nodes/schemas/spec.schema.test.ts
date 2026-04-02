@@ -1,0 +1,143 @@
+import { describe, it, expect } from 'vitest';
+import {
+  validateSpecAnalyze,
+  validateSpecRequirements,
+} from '@/infrastructure/services/agents/feature-agent/nodes/schemas/spec.schema.js';
+
+const validAnalyzeSpec = {
+  name: 'test-feature',
+  number: 2,
+  branch: 'feat/002-test-feature',
+  oneLiner: 'A test feature',
+  summary: 'This is a test feature for validation',
+  phase: 'Analysis',
+  sizeEstimate: 'M',
+  technologies: ['TypeScript'],
+  content: '## Problem Statement\nSome content here',
+};
+
+describe('validateSpecAnalyze', () => {
+  it('passes for a valid analyze spec', () => {
+    const result = validateSpecAnalyze(validAnalyzeSpec);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
+  it('fails when name is missing', () => {
+    const { name: _, ...data } = validAnalyzeSpec;
+    const result = validateSpecAnalyze(data);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Missing required string field 'name'");
+  });
+
+  it('fails when technologies is empty', () => {
+    const result = validateSpecAnalyze({ ...validAnalyzeSpec, technologies: [] });
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Field 'technologies' must not be empty");
+  });
+
+  it('fails when sizeEstimate is invalid', () => {
+    const result = validateSpecAnalyze({ ...validAnalyzeSpec, sizeEstimate: 'Huge' });
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('sizeEstimate');
+    expect(result.errors[0]).toContain('S, M, L, XL');
+  });
+
+  it('fails for null input', () => {
+    const result = validateSpecAnalyze(null);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain('YAML parsed to null or non-object');
+  });
+
+  it('fails when openQuestions is a non-empty array', () => {
+    const data = { ...validAnalyzeSpec, openQuestions: ['What about X?'] };
+    const result = validateSpecAnalyze(data);
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('openQuestions');
+  });
+
+  it('passes when openQuestions is an empty array', () => {
+    const data = { ...validAnalyzeSpec, openQuestions: [] };
+    const result = validateSpecAnalyze(data);
+    expect(result.valid).toBe(true);
+  });
+
+  it('passes when openQuestions is not present', () => {
+    const result = validateSpecAnalyze(validAnalyzeSpec);
+    expect(result.valid).toBe(true);
+  });
+
+  it('fails when number is a string instead of integer', () => {
+    const result = validateSpecAnalyze({ ...validAnalyzeSpec, number: '002' });
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('number');
+    expect(result.errors[0]).toContain('integer');
+  });
+
+  it('fails when number is a float', () => {
+    const result = validateSpecAnalyze({ ...validAnalyzeSpec, number: 2.5 });
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('number');
+  });
+
+  it('fails when number is missing', () => {
+    const { number: _, ...data } = validAnalyzeSpec;
+    const result = validateSpecAnalyze(data);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Missing required integer field 'number'");
+  });
+
+  it('fails when branch is missing', () => {
+    const { branch: _, ...data } = validAnalyzeSpec;
+    const result = validateSpecAnalyze(data);
+    expect(result.valid).toBe(false);
+    expect(result.errors).toContain("Missing required string field 'branch'");
+  });
+
+  it('fails when openQuestions contains structured objects', () => {
+    const data = {
+      ...validAnalyzeSpec,
+      openQuestions: [{ question: 'Should we use X?', resolved: false }],
+    };
+    const result = validateSpecAnalyze(data);
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('openQuestions');
+  });
+});
+
+const validRequirementsSpec = {
+  ...validAnalyzeSpec,
+  phase: 'Requirements',
+  openQuestions: [{ question: 'Should we use X?', resolved: true, answer: 'Yes because...' }],
+};
+
+describe('validateSpecRequirements', () => {
+  it('passes for a valid requirements spec', () => {
+    const result = validateSpecRequirements(validRequirementsSpec);
+    expect(result.valid).toBe(true);
+    expect(result.errors).toEqual([]);
+  });
+
+  it('fails when openQuestions is missing', () => {
+    const { openQuestions: _, ...data } = validRequirementsSpec;
+    const result = validateSpecRequirements(data);
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('openQuestions');
+  });
+
+  it('fails when openQuestion item missing question field', () => {
+    const data = {
+      ...validRequirementsSpec,
+      openQuestions: [{ resolved: true, answer: 'Yes' }],
+    };
+    const result = validateSpecRequirements(data);
+    expect(result.valid).toBe(false);
+    expect(result.errors[0]).toContain('question');
+  });
+
+  it('passes when openQuestions is empty array (no questions is valid)', () => {
+    const data = { ...validRequirementsSpec, openQuestions: [] };
+    const result = validateSpecRequirements(data);
+    expect(result.valid).toBe(true);
+  });
+});

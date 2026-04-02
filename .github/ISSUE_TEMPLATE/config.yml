@@ -1,0 +1,11 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 💬 GitHub Discussions
+    url: https://github.com/jrmatherly/shipit/discussions
+    about: Ask questions, share ideas, or discuss Shipit AI with the community
+  - name: 📖 Documentation
+    url: https://github.com/jrmatherly/shipit#documentation
+    about: Read guides, tutorials, and reference documentation
+  - name: 🚀 Quick Start
+    url: https://github.com/jrmatherly/shipit#quick-start
+    about: Get started with Shipit AI in under 5 minutes
