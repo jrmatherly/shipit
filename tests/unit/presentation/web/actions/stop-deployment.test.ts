@@ -8,9 +8,8 @@ vi.mock('@/lib/server-container', () => ({
   resolve: (token: string) => mockResolve(token),
 }));
 
-const { stopDeployment } = await import(
-  '../../../../../src/presentation/web/app/actions/stop-deployment.js'
-);
+const { stopDeployment } =
+  await import('../../../../../src/presentation/web/app/actions/stop-deployment.js');
 
 describe('stopDeployment server action', () => {
   beforeEach(() => {

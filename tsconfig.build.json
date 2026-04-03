@@ -7,17 +7,6 @@
     "outDir": "dist",
     "rootDir": "."
   },
-  "include": [
-    "src/**/*",
-    "packages/core/src/**/*",
-    "types/**/*"
-  ],
-  "exclude": [
-    "node_modules",
-    "dist",
-    "tsp",
-    "apis",
-    "**/*.test.ts",
-    "**/*.spec.ts"
-  ]
+  "include": ["src/**/*", "packages/core/src/**/*", "types/**/*"],
+  "exclude": ["node_modules", "dist", "tsp", "apis", "**/*.test.ts", "**/*.spec.ts"]
 }

@@ -11,9 +11,8 @@ vi.mock('@/lib/server-container', () => ({
   },
 }));
 
-const { rejectFeature } = await import(
-  '../../../../../src/presentation/web/app/actions/reject-feature.js'
-);
+const { rejectFeature } =
+  await import('../../../../../src/presentation/web/app/actions/reject-feature.js');
 
 describe('rejectFeature server action', () => {
   beforeEach(() => {

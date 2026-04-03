@@ -7,9 +7,8 @@ vi.mock('@/lib/server-container', () => ({
   resolve: (...args: unknown[]) => mockResolve(...args),
 }));
 
-const { getViewerPermission } = await import(
-  '../../../../../src/presentation/web/app/actions/get-viewer-permission.js'
-);
+const { getViewerPermission } =
+  await import('../../../../../src/presentation/web/app/actions/get-viewer-permission.js');
 
 describe('getViewerPermission server action', () => {
   let mockService: { getViewerPermission: ReturnType<typeof vi.fn> };

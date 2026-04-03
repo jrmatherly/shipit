@@ -11,9 +11,8 @@ vi.mock('@/lib/server-container', () => ({
   },
 }));
 
-const { approveFeature } = await import(
-  '../../../../../src/presentation/web/app/actions/approve-feature.js'
-);
+const { approveFeature } =
+  await import('../../../../../src/presentation/web/app/actions/approve-feature.js');
 
 describe('approveFeature server action', () => {
   beforeEach(() => {

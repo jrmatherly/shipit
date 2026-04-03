@@ -8,9 +8,8 @@ vi.mock('@/lib/server-container', () => ({
   resolve: (token: string) => mockResolve(token),
 }));
 
-const { getDeploymentStatus } = await import(
-  '../../../../../src/presentation/web/app/actions/get-deployment-status.js'
-);
+const { getDeploymentStatus } =
+  await import('../../../../../src/presentation/web/app/actions/get-deployment-status.js');
 
 describe('getDeploymentStatus server action', () => {
   beforeEach(() => {

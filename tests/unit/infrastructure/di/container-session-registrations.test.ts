@@ -51,12 +51,10 @@ describe('session DI registrations', () => {
   });
 
   it('resolves ListAgentSessionsUseCase after initialization', async () => {
-    const { initializeContainer } = await import(
-      '../../../../packages/core/src/infrastructure/di/container.js'
-    );
-    const { ListAgentSessionsUseCase } = await import(
-      '../../../../packages/core/src/application/use-cases/agents/list-agent-sessions.use-case.js'
-    );
+    const { initializeContainer } =
+      await import('../../../../packages/core/src/infrastructure/di/container.js');
+    const { ListAgentSessionsUseCase } =
+      await import('../../../../packages/core/src/application/use-cases/agents/list-agent-sessions.use-case.js');
 
     const container = await initializeContainer();
     expect(() => container.resolve(ListAgentSessionsUseCase)).not.toThrow();
@@ -64,12 +62,10 @@ describe('session DI registrations', () => {
   });
 
   it('resolves GetAgentSessionUseCase after initialization', async () => {
-    const { initializeContainer } = await import(
-      '../../../../packages/core/src/infrastructure/di/container.js'
-    );
-    const { GetAgentSessionUseCase } = await import(
-      '../../../../packages/core/src/application/use-cases/agents/get-agent-session.use-case.js'
-    );
+    const { initializeContainer } =
+      await import('../../../../packages/core/src/infrastructure/di/container.js');
+    const { GetAgentSessionUseCase } =
+      await import('../../../../packages/core/src/application/use-cases/agents/get-agent-session.use-case.js');
 
     const container = await initializeContainer();
     expect(() => container.resolve(GetAgentSessionUseCase)).not.toThrow();
@@ -77,12 +73,10 @@ describe('session DI registrations', () => {
   });
 
   it('resolves IAgentSessionRepository:claude-code as ClaudeCodeSessionRepository', async () => {
-    const { initializeContainer } = await import(
-      '../../../../packages/core/src/infrastructure/di/container.js'
-    );
-    const { ClaudeCodeSessionRepository } = await import(
-      '../../../../packages/core/src/infrastructure/services/agents/sessions/claude-code-session.repository.js'
-    );
+    const { initializeContainer } =
+      await import('../../../../packages/core/src/infrastructure/di/container.js');
+    const { ClaudeCodeSessionRepository } =
+      await import('../../../../packages/core/src/infrastructure/services/agents/sessions/claude-code-session.repository.js');
     const { AgentType } = await import('../../../../packages/core/src/domain/generated/output.js');
 
     const container = await initializeContainer();
@@ -91,12 +85,10 @@ describe('session DI registrations', () => {
   });
 
   it('resolves IAgentSessionRepository:cursor as StubSessionRepository', async () => {
-    const { initializeContainer } = await import(
-      '../../../../packages/core/src/infrastructure/di/container.js'
-    );
-    const { StubSessionRepository } = await import(
-      '../../../../packages/core/src/infrastructure/services/agents/sessions/stub-session.repository.js'
-    );
+    const { initializeContainer } =
+      await import('../../../../packages/core/src/infrastructure/di/container.js');
+    const { StubSessionRepository } =
+      await import('../../../../packages/core/src/infrastructure/services/agents/sessions/stub-session.repository.js');
     const { AgentType } = await import('../../../../packages/core/src/domain/generated/output.js');
 
     const container = await initializeContainer();
@@ -105,12 +97,10 @@ describe('session DI registrations', () => {
   });
 
   it('resolves IAgentSessionRepository:gemini-cli as StubSessionRepository', async () => {
-    const { initializeContainer } = await import(
-      '../../../../packages/core/src/infrastructure/di/container.js'
-    );
-    const { StubSessionRepository } = await import(
-      '../../../../packages/core/src/infrastructure/services/agents/sessions/stub-session.repository.js'
-    );
+    const { initializeContainer } =
+      await import('../../../../packages/core/src/infrastructure/di/container.js');
+    const { StubSessionRepository } =
+      await import('../../../../packages/core/src/infrastructure/services/agents/sessions/stub-session.repository.js');
     const { AgentType } = await import('../../../../packages/core/src/domain/generated/output.js');
 
     const container = await initializeContainer();
@@ -119,12 +109,10 @@ describe('session DI registrations', () => {
   });
 
   it('resolves IAgentSessionRepository:codex-cli as CodexCliSessionRepository', async () => {
-    const { initializeContainer } = await import(
-      '../../../../packages/core/src/infrastructure/di/container.js'
-    );
-    const { CodexCliSessionRepository } = await import(
-      '../../../../packages/core/src/infrastructure/services/agents/sessions/codex-cli-session.repository.js'
-    );
+    const { initializeContainer } =
+      await import('../../../../packages/core/src/infrastructure/di/container.js');
+    const { CodexCliSessionRepository } =
+      await import('../../../../packages/core/src/infrastructure/services/agents/sessions/codex-cli-session.repository.js');
     const { AgentType } = await import('../../../../packages/core/src/domain/generated/output.js');
 
     const container = await initializeContainer();

@@ -30,9 +30,8 @@ vi.mock('node:path', async () => {
   };
 });
 
-const { openFolder } = await import(
-  '../../../../../src/presentation/web/app/actions/open-folder.js'
-);
+const { openFolder } =
+  await import('../../../../../src/presentation/web/app/actions/open-folder.js');
 
 describe('openFolder server action', () => {
   beforeEach(() => {

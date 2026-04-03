@@ -40,9 +40,8 @@ describe('GET /api/tools/[id]/install/stream', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    routeModule = await import(
-      '../../../../../src/presentation/web/app/api/tools/[id]/install/stream/route.js'
-    );
+    routeModule =
+      await import('../../../../../src/presentation/web/app/api/tools/[id]/install/stream/route.js');
   });
 
   it('returns SSE content-type headers', async () => {

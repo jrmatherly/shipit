@@ -51,12 +51,10 @@ describe('RejectAgentRunUseCase string-token alias', () => {
   });
 
   it('resolves RejectAgentRunUseCase via string token after initialization', async () => {
-    const { initializeContainer } = await import(
-      '../../../../packages/core/src/infrastructure/di/container.js'
-    );
-    const { RejectAgentRunUseCase } = await import(
-      '../../../../packages/core/src/application/use-cases/agents/reject-agent-run.use-case.js'
-    );
+    const { initializeContainer } =
+      await import('../../../../packages/core/src/infrastructure/di/container.js');
+    const { RejectAgentRunUseCase } =
+      await import('../../../../packages/core/src/application/use-cases/agents/reject-agent-run.use-case.js');
 
     const container = await initializeContainer();
     const resolved = container.resolve('RejectAgentRunUseCase');

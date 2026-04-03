@@ -19,9 +19,8 @@ vi.mock('node:path', async () => {
   return { ...actual, isAbsolute: (p: string) => mockIsAbsolute(p) };
 });
 
-const { deployRepository } = await import(
-  '../../../../../src/presentation/web/app/actions/deploy-repository.js'
-);
+const { deployRepository } =
+  await import('../../../../../src/presentation/web/app/actions/deploy-repository.js');
 
 describe('deployRepository server action', () => {
   beforeEach(() => {

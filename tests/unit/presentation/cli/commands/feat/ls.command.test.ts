@@ -229,9 +229,8 @@ describe('createLsCommand', () => {
 
   it('should show empty message when no features', async () => {
     mockListExecute.mockResolvedValue([]);
-    const { messages: mockMessages } = await import(
-      '../../../../../../src/presentation/cli/ui/index.js'
-    );
+    const { messages: mockMessages } =
+      await import('../../../../../../src/presentation/cli/ui/index.js');
 
     const cmd = createLsCommand();
     await cmd.parseAsync([], { from: 'user' });

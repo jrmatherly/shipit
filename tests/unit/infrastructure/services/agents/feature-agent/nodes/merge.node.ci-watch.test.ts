@@ -434,9 +434,8 @@ describe('createMergeNode — CI watch/fix loop', () => {
     });
 
     it('should invoke retryExecute with the fix prompt after CI failure', async () => {
-      const { retryExecute } = await import(
-        '@/infrastructure/services/agents/feature-agent/nodes/node-helpers.js'
-      );
+      const { retryExecute } =
+        await import('@/infrastructure/services/agents/feature-agent/nodes/node-helpers.js');
       const node = createMergeNode(deps);
       await node(baseState({ push: true }));
 

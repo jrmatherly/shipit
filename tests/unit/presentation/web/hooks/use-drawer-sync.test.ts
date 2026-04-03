@@ -10,9 +10,8 @@ vi.mock('@/app/actions/get-feature-drawer-data', () => ({
 }));
 
 // Must import after mocking
-const { useDrawerSync } = await import(
-  '../../../../../src/presentation/web/components/common/control-center-drawer/use-drawer-sync.js'
-);
+const { useDrawerSync } =
+  await import('../../../../../src/presentation/web/components/common/control-center-drawer/use-drawer-sync.js');
 
 const makeFeatureView = (overrides?: Record<string, unknown>): DrawerView => ({
   type: 'feature',

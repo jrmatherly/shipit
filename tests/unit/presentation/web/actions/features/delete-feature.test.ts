@@ -5,9 +5,8 @@ vi.mock('@/lib/server-container', () => ({
   resolve: () => ({ execute: mockExecute }),
 }));
 
-const { deleteFeature } = await import(
-  '../../../../../../src/presentation/web/app/actions/delete-feature.js'
-);
+const { deleteFeature } =
+  await import('../../../../../../src/presentation/web/app/actions/delete-feature.js');
 
 describe('deleteFeature server action', () => {
   beforeEach(() => {

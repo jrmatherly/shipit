@@ -75,9 +75,8 @@ describe('createStartCommand', () => {
       },
       agentRun: { id: 'run-001' },
     });
-    const { messages: mockMessages } = await import(
-      '../../../../../../src/presentation/cli/ui/index.js'
-    );
+    const { messages: mockMessages } =
+      await import('../../../../../../src/presentation/cli/ui/index.js');
 
     const cmd = createStartCommand();
     await cmd.parseAsync(['feat-001'], { from: 'user' });
@@ -100,9 +99,8 @@ describe('createStartCommand', () => {
       },
       agentRun: { id: 'run-001' },
     });
-    const { messages: mockMessages } = await import(
-      '../../../../../../src/presentation/cli/ui/index.js'
-    );
+    const { messages: mockMessages } =
+      await import('../../../../../../src/presentation/cli/ui/index.js');
 
     const cmd = createStartCommand();
     await cmd.parseAsync(['feat-001'], { from: 'user' });
@@ -114,9 +112,8 @@ describe('createStartCommand', () => {
     mockStartExecute.mockRejectedValue(
       new Error('Feature "Test" is not in Pending state (current: Requirements)')
     );
-    const { messages: mockMessages } = await import(
-      '../../../../../../src/presentation/cli/ui/index.js'
-    );
+    const { messages: mockMessages } =
+      await import('../../../../../../src/presentation/cli/ui/index.js');
 
     const cmd = createStartCommand();
     await cmd.parseAsync(['feat-001'], { from: 'user' });
@@ -138,9 +135,8 @@ describe('createStartCommand', () => {
       },
       agentRun: { id: 'run-001' },
     });
-    const { spinner: mockSpinner } = await import(
-      '../../../../../../src/presentation/cli/ui/index.js'
-    );
+    const { spinner: mockSpinner } =
+      await import('../../../../../../src/presentation/cli/ui/index.js');
 
     const cmd = createStartCommand();
     await cmd.parseAsync(['feat-001'], { from: 'user' });
