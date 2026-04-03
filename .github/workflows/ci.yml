@@ -284,15 +284,12 @@ jobs:
 
       - uses: pnpm/action-setup@v5
       # Do NOT set registry-url here — it creates an .npmrc that conflicts
-      # with semantic-release's OIDC authentication mechanism
+      # with semantic-release's OIDC authentication mechanism.
+      # Use Node 24 for npm 11.x (OIDC trusted publishing requires npm >= 11.5.1)
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '24'
           cache: 'pnpm'
-
-      # OIDC trusted publishing requires npm >= 11.5.1 (Node 22 ships npm 10.x)
-      - name: 📦 Upgrade npm for OIDC trusted publishing
-        run: npm install -g npm@latest
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build:release
@@ -343,15 +340,12 @@ jobs:
           echo "Dev version: $DEV_VERSION"
 
       - uses: pnpm/action-setup@v5
+      # Use Node 24 for npm 11.x (OIDC trusted publishing requires npm >= 11.5.1)
       - uses: actions/setup-node@v6
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: '24'
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
-
-      # OIDC trusted publishing requires npm >= 11.5.1 (Node 22 ships npm 10.x)
-      - name: 📦 Upgrade npm for OIDC trusted publishing
-        run: npm install -g npm@latest
 
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build:release
