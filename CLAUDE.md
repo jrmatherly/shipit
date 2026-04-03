@@ -72,6 +72,7 @@ Several former god classes are now **facades** delegating to focused sub-service
 ## Tooling
 
 - **DI:** tsyringe (constructor injection with decorators)
+- **pnpm patches:** Use `pnpm patch <pkg> → edit file → pnpm patch-commit <dir>` to create patches. Never hand-write patch files or edit node_modules directly — the lockfile won't match and CI fails with `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`. Always commit `pnpm-lock.yaml` alongside patch changes.
 - **Serena MCP:** Onboarded — use for semantic symbol navigation, find references, code overview
 - **Code Review Graph:** Built — use for impact analysis, flow tracing, PR review context
 
