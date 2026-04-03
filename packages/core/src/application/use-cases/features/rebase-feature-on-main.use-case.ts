@@ -50,7 +50,7 @@ export class RebaseFeatureOnMainUseCase {
     }
 
     // Create standalone agent run + phase timing for activity timeline
-    const now = new Date().toISOString();
+    const now = new Date();
     const agentRunId = randomUUID();
     const phaseTimingId = randomUUID();
 
@@ -129,7 +129,7 @@ export class RebaseFeatureOnMainUseCase {
     exitCode: 'success' | 'error',
     errorMessage?: string
   ): Promise<void> {
-    const completedAt = new Date().toISOString();
+    const completedAt = new Date();
     const durationMs = Date.now() - startMs;
 
     await this.phaseTimingRepo.update(phaseTimingId, {

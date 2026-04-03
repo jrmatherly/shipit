@@ -1,0 +1,19 @@
+diff --git a/dist/emitter.js b/dist/emitter.js
+--- a/dist/emitter.js
++++ b/dist/emitter.js
+@@ -7,6 +7,11 @@ export const intrinsicNameToTSType = new Map([
+     ["int16", "number"],
+     ["float16", "number"],
+     ["float32", "number"],
+     ["int64", "bigint"],
+     ["boolean", "boolean"],
+     ["unknown", "unknown"],
+     ["null", "null"],
+     ["never", "never"],
+     ["void", "void"],
++    ["utcDateTime", "Date"],
++    ["offsetDateTime", "Date"],
++    ["plainDate", "Date"],
++    ["plainTime", "Date"],
++    ["duration", "string"],
+ ]);

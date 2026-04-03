@@ -50,8 +50,8 @@ import { SdlcLifecycle, TaskState } from '@/domain/generated/output.js';
 function buildSpecArtifactBaseSample(): SpecArtifactBase {
   return {
     id: '00000000-0000-0000-0000-000000000000',
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    createdAt: new Date(),
+    updatedAt: new Date(),
     name: 'test-feature',
     summary: 'A test feature',
     content: '## Problem\n\nTest content',
@@ -263,8 +263,8 @@ describe('feature.yaml → FeatureStatus mapping', () => {
   function buildFeatureStatusSample(): FeatureStatus {
     return {
       id: '00000000-0000-0000-0000-000000000000',
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
+      createdAt: new Date(),
+      updatedAt: new Date(),
       feature: {
         id: '021-agent-notifications',
         name: 'agent-notifications',

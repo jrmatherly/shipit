@@ -12,23 +12,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ShowAgentRunUseCase } from '@/application/use-cases/agents/show-agent-run.use-case.js';
 import type { IAgentRunRepository } from '@/application/ports/output/agents/agent-run-repository.interface.js';
 import type { IFeatureAgentProcessService } from '@/application/ports/output/agents/feature-agent-process.interface.js';
-import type { AgentRun } from '@/domain/generated/output.js';
-import { AgentRunStatus, AgentType } from '@/domain/generated/output.js';
-
-function createMockAgentRun(overrides?: Partial<AgentRun>): AgentRun {
-  return {
-    id: 'abcd1234-5678-9abc-def0-123456789abc',
-    agentType: AgentType.ClaudeCode,
-    agentName: 'feature-agent',
-    status: AgentRunStatus.running,
-    prompt: 'Implement feature X',
-    threadId: 'thread-1',
-    pid: 12345,
-    createdAt: new Date('2025-01-01T10:00:00Z'),
-    updatedAt: new Date('2025-01-01T10:00:00Z'),
-    ...overrides,
-  };
-}
+import { createMockAgentRun } from '@tests/factories/index.js';
 
 describe('ShowAgentRunUseCase', () => {
   let useCase: ShowAgentRunUseCase;
@@ -38,7 +22,11 @@ describe('ShowAgentRunUseCase', () => {
   beforeEach(() => {
     mockRepo = {
       create: vi.fn(),
-      findById: vi.fn().mockResolvedValue(createMockAgentRun()),
+      findById: vi
+        .fn()
+        .mockResolvedValue(
+          createMockAgentRun({ id: 'abcd1234-5678-9abc-def0-123456789abc', pid: 12345 })
+        ),
       findByThreadId: vi.fn(),
       updateStatus: vi.fn(),
       findRunningByPid: vi.fn(),

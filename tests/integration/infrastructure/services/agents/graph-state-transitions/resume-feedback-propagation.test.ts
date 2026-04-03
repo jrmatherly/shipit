@@ -83,7 +83,7 @@ function appendRejectionFeedback(specDir: string, message: string, phase: string
     iteration: existing.length + 1,
     message,
     phase,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date(),
   };
 
   spec.rejectionFeedback = [...existing, newEntry];

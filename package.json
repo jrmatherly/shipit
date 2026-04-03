@@ -169,6 +169,9 @@
     ],
     "overrides": {
       "minimatch": "^7.x"
+    },
+    "patchedDependencies": {
+      "@typespec-tools/emitter-typescript@0.3.0": "patches/@typespec-tools__emitter-typescript@0.3.0.patch"
     }
   },
   "packageManager": "pnpm@10.30.0",

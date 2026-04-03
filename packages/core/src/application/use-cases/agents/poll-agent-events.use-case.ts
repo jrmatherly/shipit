@@ -292,7 +292,7 @@ export class PollAgentEventsUseCase {
       ...(phase && { phaseName: phase }),
       message: `Agent status: ${run.status}`,
       severity: mapping.severity,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     });
   }
 
@@ -316,7 +316,7 @@ export class PollAgentEventsUseCase {
       ...(phase && { phaseName: phase }),
       message: `Agent crashed (PID ${run.pid} dead)`,
       severity: NotificationSeverity.Error,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     });
   }
 
@@ -337,7 +337,7 @@ export class PollAgentEventsUseCase {
       phaseName: nodeName,
       message: 'Feature metadata updated',
       severity: NotificationSeverity.Info,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     });
   }
 
@@ -363,7 +363,7 @@ export class PollAgentEventsUseCase {
         phaseName: 'merge',
         message,
         severity: NotificationSeverity.Info,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date(),
       });
     } else if (nodeName) {
       out.push({
@@ -374,7 +374,7 @@ export class PollAgentEventsUseCase {
         phaseName: nodeName,
         message: `Entered ${nodeName} phase`,
         severity: NotificationSeverity.Info,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date(),
       });
     }
   }
@@ -410,7 +410,7 @@ export class PollAgentEventsUseCase {
           ? `PR #${feature.pr?.number} has merge conflicts`
           : 'PR status updated',
       severity: curMergeable === false ? NotificationSeverity.Warning : NotificationSeverity.Info,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     });
   }
 
@@ -432,7 +432,7 @@ export class PollAgentEventsUseCase {
           phaseName: t.phase,
           message: `Completed ${t.phase} phase`,
           severity: NotificationSeverity.Info,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date(),
         });
       }
     }

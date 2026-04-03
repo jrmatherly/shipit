@@ -154,12 +154,12 @@ function formatPid(agentRun: AgentRun, pidAlive: boolean | null): string {
   return pidStr;
 }
 
-function formatDate(date?: string): string | null {
+function formatDate(date?: Date | string): string | null {
   if (!date) return null;
   try {
-    return new Date(date).toLocaleString();
+    return (date instanceof Date ? date : new Date(date)).toLocaleString();
   } catch {
-    return date;
+    return String(date);
   }
 }
 

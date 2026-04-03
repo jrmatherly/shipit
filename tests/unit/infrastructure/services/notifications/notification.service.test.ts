@@ -28,7 +28,7 @@ function createTestEvent(overrides?: Partial<NotificationEvent>): NotificationEv
     featureName: 'Test Feature',
     message: 'Agent completed successfully',
     severity: NotificationSeverity.Success,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date(),
     ...overrides,
   };
 }

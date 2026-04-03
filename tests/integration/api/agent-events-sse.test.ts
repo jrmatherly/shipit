@@ -80,7 +80,7 @@ function makeTiming(overrides?: Partial<PhaseTiming>): PhaseTiming {
     id: 'timing-1',
     agentRunId: 'run-1',
     phase: 'analyze',
-    startedAt: new Date().toISOString(),
+    startedAt: new Date(),
     ...overrides,
   } as PhaseTiming;
 }
@@ -278,9 +278,7 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
     await advancePollCycles(1);
 
     // Add a completed phase timing for next poll
-    mockTimings.set('run-1', [
-      makeTiming({ phase: 'analyze', completedAt: new Date().toISOString() }),
-    ]);
+    mockTimings.set('run-1', [makeTiming({ phase: 'analyze', completedAt: new Date() })]);
 
     // Delta poll — should detect new completed phase
     await advancePollCycles(1);

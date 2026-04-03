@@ -11,22 +11,8 @@ import { SessionNotFoundError } from '@/domain/errors/session-not-found.error.js
 import type { AgentSessionRepositoryRegistry } from '@/application/services/agents/agent-session-repository.registry.js';
 import type { IAgentSessionRepository } from '@/application/ports/output/agents/agent-session-repository.interface.js';
 import type { ISettingsRepository } from '@/application/ports/output/repositories/settings.repository.interface.js';
-import type { AgentSession } from '@/domain/generated/output.js';
 import { AgentType } from '@/domain/generated/output.js';
-
-function createMockSession(overrides?: Partial<AgentSession>): AgentSession {
-  return {
-    id: 'session-uuid-001',
-    agentType: AgentType.ClaudeCode,
-    projectPath: '~/repos/my-project',
-    messageCount: 5,
-    preview: 'Help me implement a feature',
-    messages: [],
-    createdAt: new Date('2025-01-01T10:00:00Z'),
-    updatedAt: new Date('2025-01-01T12:00:00Z'),
-    ...overrides,
-  };
-}
+import { createMockAgentSession } from '@tests/factories/index.js';
 
 describe('GetAgentSessionUseCase', () => {
   let useCase: GetAgentSessionUseCase;
@@ -55,7 +41,7 @@ describe('GetAgentSessionUseCase', () => {
   });
 
   it('should return the session when findById returns a session', async () => {
-    const session = createMockSession({ id: 'abc123' });
+    const session = createMockAgentSession({ id: 'abc123' });
     (mockRepository.findById as ReturnType<typeof vi.fn>).mockResolvedValue(session);
 
     const result = await useCase.execute({ id: 'abc123' });
@@ -75,7 +61,7 @@ describe('GetAgentSessionUseCase', () => {
   });
 
   it('should call findById with messageLimit 20 by default', async () => {
-    const session = createMockSession();
+    const session = createMockAgentSession();
     (mockRepository.findById as ReturnType<typeof vi.fn>).mockResolvedValue(session);
 
     await useCase.execute({ id: 'abc123' });
@@ -83,7 +69,7 @@ describe('GetAgentSessionUseCase', () => {
   });
 
   it('should call findById with the specified messageLimit', async () => {
-    const session = createMockSession();
+    const session = createMockAgentSession();
     (mockRepository.findById as ReturnType<typeof vi.fn>).mockResolvedValue(session);
 
     await useCase.execute({ id: 'abc123', messageLimit: 50 });
@@ -91,7 +77,7 @@ describe('GetAgentSessionUseCase', () => {
   });
 
   it('should call findById with messageLimit 0 to get all messages', async () => {
-    const session = createMockSession();
+    const session = createMockAgentSession();
     (mockRepository.findById as ReturnType<typeof vi.fn>).mockResolvedValue(session);
 
     await useCase.execute({ id: 'abc123', messageLimit: 0 });
@@ -99,7 +85,7 @@ describe('GetAgentSessionUseCase', () => {
   });
 
   it('should use the configured agent type from settings when no agentType is provided', async () => {
-    const session = createMockSession();
+    const session = createMockAgentSession();
     (mockRepository.findById as ReturnType<typeof vi.fn>).mockResolvedValue(session);
 
     await useCase.execute({ id: 'abc123' });
@@ -107,7 +93,7 @@ describe('GetAgentSessionUseCase', () => {
   });
 
   it('should use the explicit agentType when provided in input', async () => {
-    const session = createMockSession();
+    const session = createMockAgentSession();
     (mockRepository.findById as ReturnType<typeof vi.fn>).mockResolvedValue(session);
 
     await useCase.execute({ id: 'abc123', agentType: AgentType.GeminiCli });

@@ -68,7 +68,7 @@ function appendRejectionFeedback(
     iteration,
     message,
     phase,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date(),
   };
 
   spec.rejectionFeedback = [...existing, newEntry];

@@ -11,11 +11,11 @@ export type BaseEntity = {
   /**
    * Timestamp when this entity was created (read-only, set by system)
    */
-  createdAt: any;
+  createdAt: Date;
   /**
    * Timestamp when this entity was last updated (read-only, set by system)
    */
-  updatedAt: any;
+  updatedAt: Date;
 };
 
 /**
@@ -25,7 +25,7 @@ export type SoftDeletableEntity = BaseEntity & {
   /**
    * Timestamp when this entity was soft-deleted (null if not deleted)
    */
-  deletedAt?: any;
+  deletedAt?: Date;
 };
 
 /**
@@ -736,7 +736,7 @@ export type TimelineEvent = BaseEntity & {
   /**
    * Timestamp when this event occurred (read-only, set by system)
    */
-  timestamp: any;
+  timestamp: Date;
 };
 export enum PlanState {
   Requirements = 'Requirements',
@@ -759,11 +759,11 @@ export type GanttTask = {
   /**
    * Scheduled start time for the task
    */
-  start: any;
+  start: Date;
   /**
    * Scheduled end time for the task
    */
-  end: any;
+  end: Date;
   /**
    * IDs of tasks that this task depends on (must complete before this task can start)
    */
@@ -785,11 +785,11 @@ export type GanttViewData = {
   /**
    * Start date of the overall work plan (left boundary of the chart)
    */
-  startDate: any;
+  startDate: Date;
   /**
    * End date of the overall work plan (right boundary of the chart)
    */
-  endDate: any;
+  endDate: Date;
 };
 
 /**
@@ -964,7 +964,7 @@ export type Attachment = {
   /**
    * Timestamp when the attachment was created
    */
-  createdAt: any;
+  createdAt: Date;
   /**
    * Optional user notes or annotations for this attachment
    */
@@ -1218,7 +1218,7 @@ export type RejectionFeedbackEntry = {
   /**
    * When the rejection occurred
    */
-  timestamp: any;
+  timestamp: Date;
   /**
    * File attachment paths included with the rejection feedback
    */
@@ -1595,7 +1595,7 @@ export type Tool = BaseEntity & {
   /**
    * Tool installation timestamp
    */
-  installedAt?: any;
+  installedAt?: Date;
 };
 export enum NotificationEventType {
   AgentStarted = 'agent_started',
@@ -1652,7 +1652,7 @@ export type NotificationEvent = {
   /**
    * When the event occurred
    */
-  timestamp: any;
+  timestamp: Date;
 };
 
 /**
@@ -1800,7 +1800,7 @@ export type AgentInstance = {
   /**
    * Timestamp when this agent instance was created
    */
-  createdAt: any;
+  createdAt: Date;
 };
 
 /**
@@ -1876,7 +1876,7 @@ export type FeatureAgent = {
   /**
    * Timestamp when this feature agent was created
    */
-  createdAt: any;
+  createdAt: Date;
 };
 
 /**
@@ -1894,7 +1894,7 @@ export type LocalDeployAgent = {
   /**
    * Timestamp when this deployment agent was created
    */
-  createdAt: any;
+  createdAt: Date;
 };
 export enum PortProtocol {
   TCP = 'TCP',
@@ -1949,7 +1949,7 @@ export type DeploySkill = {
   /**
    * Timestamp when the deployment skill was created
    */
-  createdAt: any;
+  createdAt: Date;
 };
 export enum DeploymentState {
   Booting = 'Booting',
@@ -1980,11 +1980,11 @@ export type Deployment = {
   /**
    * Timestamp when the deployment was created
    */
-  createdAt: any;
+  createdAt: Date;
   /**
    * Timestamp when the deployment was stopped (only present when state is Stopped)
    */
-  stoppedAt?: any;
+  stoppedAt?: Date;
 };
 export enum AgentRunStatus {
   pending = 'pending',
@@ -2035,15 +2035,15 @@ export type AgentRun = BaseEntity & {
   /**
    * Last heartbeat timestamp for crash detection (optional)
    */
-  lastHeartbeat?: any;
+  lastHeartbeat?: Date;
   /**
    * Execution start timestamp (optional)
    */
-  startedAt?: any;
+  startedAt?: Date;
   /**
    * Execution completion timestamp (optional)
    */
-  completedAt?: any;
+  completedAt?: Date;
   /**
    * Error message if execution failed (optional)
    */
@@ -2081,7 +2081,7 @@ export type AgentRunEvent = {
   /**
    * Event timestamp
    */
-  timestamp: any;
+  timestamp: Date;
 };
 
 /**
@@ -2115,11 +2115,11 @@ export type PhaseTiming = BaseEntity & {
   /**
    * When the phase started executing
    */
-  startedAt: any;
+  startedAt: Date;
   /**
    * When the phase finished executing (null if still running)
    */
-  completedAt?: any;
+  completedAt?: Date;
   /**
    * Duration in milliseconds (computed on completion)
    */
@@ -2127,7 +2127,7 @@ export type PhaseTiming = BaseEntity & {
   /**
    * When the phase started waiting for user approval (null if no approval needed)
    */
-  waitingApprovalAt?: any;
+  waitingApprovalAt?: Date;
   /**
    * Duration in milliseconds the phase waited for user approval (null if no approval needed)
    */
@@ -2291,7 +2291,7 @@ export type AgentSessionMessage = {
   /**
    * Timestamp when the message was recorded
    */
-  timestamp: any;
+  timestamp: Date;
 };
 
 /**
@@ -2321,11 +2321,11 @@ export type AgentSession = BaseEntity & {
   /**
    * Timestamp of the first message in the session (optional)
    */
-  firstMessageAt?: any;
+  firstMessageAt?: Date;
   /**
    * Timestamp of the most recent message in the session (optional)
    */
-  lastMessageAt?: any;
+  lastMessageAt?: Date;
 };
 export enum InteractiveSessionStatus {
   booting = 'booting',
@@ -2349,15 +2349,15 @@ export type InteractiveSession = BaseEntity & {
   /**
    * Timestamp when the agent process was spawned
    */
-  startedAt: any;
+  startedAt: Date;
   /**
    * Timestamp when the session ended (null if still active)
    */
-  stoppedAt?: any;
+  stoppedAt?: Date;
   /**
    * Timestamp of last user message or agent stdout activity
    */
-  lastActivityAt: any;
+  lastActivityAt: Date;
 };
 export enum InteractiveMessageRole {
   user = 'user',

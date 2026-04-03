@@ -48,10 +48,10 @@ export async function getFeaturePhaseTimings(featureId: string): Promise<GetPhas
     const timings: PhaseTimingData[] = phaseTimings.map((t) => ({
       agentRunId: t.agentRunId,
       phase: t.phase,
-      startedAt: t.startedAt,
-      completedAt: t.completedAt,
+      startedAt: t.startedAt.toISOString(),
+      completedAt: t.completedAt?.toISOString(),
       durationMs: t.durationMs != null ? Number(t.durationMs) : undefined,
-      waitingApprovalAt: t.waitingApprovalAt,
+      waitingApprovalAt: t.waitingApprovalAt?.toISOString(),
       approvalWaitMs: t.approvalWaitMs != null ? Number(t.approvalWaitMs) : undefined,
       inputTokens: t.inputTokens != null ? Number(t.inputTokens) : undefined,
       outputTokens: t.outputTokens != null ? Number(t.outputTokens) : undefined,

@@ -85,7 +85,7 @@ function makeRejection(iteration: number, message: string, phase?: string): Reje
     iteration,
     message,
     phase,
-    timestamp: new Date().toISOString(),
+    timestamp: new Date(),
   };
 }
 

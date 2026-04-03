@@ -15,7 +15,7 @@ vi.mock('@/infrastructure/services/agents/feature-agent/phase-timing-context.js'
 }));
 
 function makeAgentRun(overrides: Partial<AgentRun> = {}): AgentRun {
-  const now = new Date().toISOString();
+  const now = new Date();
   return {
     id: 'run-123',
     agentType: AgentType.ClaudeCode,

@@ -587,7 +587,7 @@ export class PrSyncWatcherService {
       featureName,
       message,
       severity,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     };
 
     this.notificationService.notify(event);

@@ -100,8 +100,7 @@ export class AgentRunnerService implements IAgentRunner {
       yield {
         type: event.type,
         content: event.content,
-        timestamp:
-          event.timestamp instanceof Date ? event.timestamp.toISOString() : event.timestamp,
+        timestamp: event.timestamp instanceof Date ? event.timestamp : new Date(event.timestamp),
       } as AgentRunEvent;
     }
 
@@ -126,7 +125,7 @@ export class AgentRunnerService implements IAgentRunner {
 
     const runId = crypto.randomUUID();
     const threadId = crypto.randomUUID();
-    const now = new Date().toISOString();
+    const now = new Date();
 
     const agentRun: AgentRun = {
       id: runId,
@@ -150,7 +149,7 @@ export class AgentRunnerService implements IAgentRunner {
   }
 
   private async markCompleted(runId: string, result: Record<string, unknown>) {
-    const completedAt = new Date().toISOString();
+    const completedAt = new Date();
     await this.runRepository.updateStatus(runId, AgentRunStatus.completed, {
       result:
         (result.analysisMarkdown as string) ?? (result.result as string) ?? JSON.stringify(result),
@@ -160,7 +159,7 @@ export class AgentRunnerService implements IAgentRunner {
   }
 
   private async markFailed(runId: string, error: unknown) {
-    const failedAt = new Date().toISOString();
+    const failedAt = new Date();
     await this.runRepository.updateStatus(runId, AgentRunStatus.failed, {
       error: error instanceof Error ? error.message : String(error),
       completedAt: failedAt,

@@ -157,7 +157,7 @@ export class FeatureAgentProcessService implements IFeatureAgentProcessService {
     }
 
     if (!this.isAlive(run.pid)) {
-      const now = new Date().toISOString();
+      const now = new Date();
       await this.runRepository.updateStatus(runId, AgentRunStatus.interrupted, {
         error: `Agent process (PID ${run.pid}) crashed or was killed`,
         completedAt: now,

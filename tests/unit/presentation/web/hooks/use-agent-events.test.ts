@@ -118,7 +118,7 @@ function createSampleEvent(overrides?: Partial<NotificationEvent>): Notification
     featureName: 'Test Feature',
     message: 'Agent completed successfully',
     severity: NotificationSeverity.Success,
-    timestamp: '2026-02-17T10:00:00Z',
+    timestamp: new Date('2026-02-17T10:00:00Z'),
     ...overrides,
   };
 }

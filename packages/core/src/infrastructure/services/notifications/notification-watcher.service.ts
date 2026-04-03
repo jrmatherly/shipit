@@ -209,7 +209,7 @@ export class NotificationWatcherService {
       featureName: state.featureName,
       message: EVENT_MESSAGES[mapping.eventType] ?? `Agent status: ${run.status}`,
       severity: mapping.severity,
-      timestamp: new Date().toISOString(),
+      timestamp: new Date(),
     };
 
     this.notificationService.notify(event);
@@ -231,7 +231,7 @@ export class NotificationWatcherService {
             phaseName: timing.phase,
             message: `Completed ${timing.phase} phase`,
             severity: NotificationSeverity.Info,
-            timestamp: new Date().toISOString(),
+            timestamp: new Date(),
           };
 
           this.notificationService.notify(event);
@@ -264,7 +264,7 @@ export class NotificationWatcherService {
           featureName: feature.name,
           message,
           severity: NotificationSeverity.Info,
-          timestamp: new Date().toISOString(),
+          timestamp: new Date(),
         };
 
         this.notificationService.notify(event);

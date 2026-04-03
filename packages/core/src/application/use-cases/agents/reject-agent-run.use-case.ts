@@ -96,7 +96,7 @@ export class RejectAgentRunUseCase {
         iteration,
         message: feedback,
         phase: rejectedPhase,
-        timestamp: new Date().toISOString(),
+        timestamp: new Date(),
         ...(attachments && attachments.length > 0 ? { attachments } : {}),
       };
 

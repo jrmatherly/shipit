@@ -10,7 +10,7 @@ import type { IAgentRunRepository } from '@/application/ports/output/agents/agen
 import type { AgentRun } from '@/domain/generated/output.js';
 
 function makeAgentRun(overrides: Partial<AgentRun> = {}): AgentRun {
-  const now = new Date().toISOString();
+  const now = new Date();
   return {
     id: 'run-123',
     agentType: AgentType.ClaudeCode,

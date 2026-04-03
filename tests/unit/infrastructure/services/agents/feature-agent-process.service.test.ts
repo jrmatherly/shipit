@@ -37,7 +37,7 @@ vi.mock('@/infrastructure/platform.js', () => ({
 import { FeatureAgentProcessService } from '@/infrastructure/services/agents/feature-agent/feature-agent-process.service.js';
 
 function makeAgentRun(overrides: Partial<AgentRun> = {}): AgentRun {
-  const now = new Date().toISOString();
+  const now = new Date();
   return {
     id: 'run-123',
     agentType: AgentType.ClaudeCode,

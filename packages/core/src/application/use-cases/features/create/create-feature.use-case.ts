@@ -212,8 +212,8 @@ export class CreateFeatureUseCase {
         : settings.models?.default
           ? { modelId: settings.models.default }
           : {}),
-      createdAt: now.toISOString(),
-      updatedAt: now.toISOString(),
+      createdAt: now,
+      updatedAt: now,
     };
     await this.runRepository.create(agentRun);
 
