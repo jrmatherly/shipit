@@ -57,10 +57,12 @@ function createMockRunRepository(runs: AgentRun[] = []): IAgentRunRepository {
   return {
     create: vi.fn(),
     findById: vi.fn(),
+    findByIds: vi.fn().mockResolvedValue([]),
     findByThreadId: vi.fn(),
     updateStatus: vi.fn(),
     findRunningByPid: vi.fn(),
     list: vi.fn().mockResolvedValue(runs),
+    listActive: vi.fn().mockResolvedValue(runs),
     delete: vi.fn(),
   };
 }
@@ -71,6 +73,7 @@ function createMockPhaseTimingRepository(timings: PhaseTiming[] = []): IPhaseTim
     update: vi.fn(),
     updateApprovalWait: vi.fn(),
     findByRunId: vi.fn().mockResolvedValue(timings),
+    findByRunIds: vi.fn().mockResolvedValue([]),
     findByFeatureId: vi.fn(),
   };
 }
@@ -145,7 +148,7 @@ describe('NotificationWatcherService', () => {
    * bootstrapped and subsequent polls will emit notifications normally.
    */
   async function bootstrapWithEmptyRuns(): Promise<void> {
-    vi.mocked(runRepo.list).mockResolvedValueOnce([]);
+    vi.mocked(runRepo.listActive).mockResolvedValueOnce([]);
     vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
     watcher.start();
     await vi.advanceTimersByTimeAsync(0); // trigger first (bootstrap) poll
@@ -162,7 +165,7 @@ describe('NotificationWatcherService', () => {
         featureId: 'feat-1',
       });
 
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
 
       watcher.start();
@@ -180,7 +183,7 @@ describe('NotificationWatcherService', () => {
         completedAt: new Date(),
       });
 
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([completedPhase]);
 
       watcher.start();
@@ -194,7 +197,7 @@ describe('NotificationWatcherService', () => {
       const existingRun = createMockAgentRun({ id: 'run-1', status: AgentRunStatus.running });
 
       // First poll (bootstrap): existing run is present, should be silently seeded
-      vi.mocked(runRepo.list).mockResolvedValueOnce([existingRun]);
+      vi.mocked(runRepo.listActive).mockResolvedValueOnce([existingRun]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
 
       watcher.start();
@@ -205,7 +208,7 @@ describe('NotificationWatcherService', () => {
 
       // Second poll: a genuinely new run appears alongside the existing one
       const newRun = createMockAgentRun({ id: 'run-2', status: AgentRunStatus.running });
-      vi.mocked(runRepo.list).mockResolvedValue([existingRun, newRun]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([existingRun, newRun]);
       notificationService.receivedEvents.length = 0;
       vi.mocked(notificationService.notify).mockClear();
 
@@ -228,7 +231,7 @@ describe('NotificationWatcherService', () => {
       });
 
       // First poll (bootstrap): run with completed analyze phase — silently seeded
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValueOnce([existingPhase]);
 
       watcher.start();
@@ -267,7 +270,7 @@ describe('NotificationWatcherService', () => {
       });
 
       // First poll (bootstrap): run with completed phase — silently seeded
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([completedPhase]);
 
       watcher.start();
@@ -289,32 +292,32 @@ describe('NotificationWatcherService', () => {
 
   describe('start/stop lifecycle', () => {
     it('should poll repository at configured interval', async () => {
-      vi.mocked(runRepo.list).mockResolvedValue([]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([]);
 
       watcher.start();
 
       // First poll happens immediately
       await vi.advanceTimersByTimeAsync(0);
-      expect(runRepo.list).toHaveBeenCalledTimes(1);
+      expect(runRepo.listActive).toHaveBeenCalledTimes(1);
 
       await vi.advanceTimersByTimeAsync(3000);
-      expect(runRepo.list).toHaveBeenCalledTimes(2);
+      expect(runRepo.listActive).toHaveBeenCalledTimes(2);
 
       await vi.advanceTimersByTimeAsync(3000);
-      expect(runRepo.list).toHaveBeenCalledTimes(3);
+      expect(runRepo.listActive).toHaveBeenCalledTimes(3);
     });
 
     it('should stop polling when stop() is called', async () => {
-      vi.mocked(runRepo.list).mockResolvedValue([]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([]);
 
       watcher.start();
       await vi.advanceTimersByTimeAsync(0);
-      expect(runRepo.list).toHaveBeenCalledTimes(1);
+      expect(runRepo.listActive).toHaveBeenCalledTimes(1);
 
       watcher.stop();
 
       await vi.advanceTimersByTimeAsync(10000);
-      expect(runRepo.list).toHaveBeenCalledTimes(1);
+      expect(runRepo.listActive).toHaveBeenCalledTimes(1);
     });
   });
 
@@ -328,7 +331,7 @@ describe('NotificationWatcherService', () => {
         featureId: 'feat-1',
       });
 
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
 
       await vi.advanceTimersByTimeAsync(3000);
@@ -347,7 +350,7 @@ describe('NotificationWatcherService', () => {
       const runningRun = createMockAgentRun({ id: 'run-1', status: AgentRunStatus.running });
       const completedRun = createMockAgentRun({ id: 'run-1', status: AgentRunStatus.completed });
 
-      vi.mocked(runRepo.list)
+      vi.mocked(runRepo.listActive)
         .mockResolvedValueOnce([runningRun])
         .mockResolvedValueOnce([completedRun]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
@@ -370,7 +373,7 @@ describe('NotificationWatcherService', () => {
       const runningRun = createMockAgentRun({ id: 'run-1', status: AgentRunStatus.running });
       const failedRun = createMockAgentRun({ id: 'run-1', status: AgentRunStatus.failed });
 
-      vi.mocked(runRepo.list)
+      vi.mocked(runRepo.listActive)
         .mockResolvedValueOnce([runningRun])
         .mockResolvedValueOnce([failedRun]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
@@ -396,7 +399,7 @@ describe('NotificationWatcherService', () => {
         status: AgentRunStatus.waitingApproval,
       });
 
-      vi.mocked(runRepo.list)
+      vi.mocked(runRepo.listActive)
         .mockResolvedValueOnce([runningRun])
         .mockResolvedValueOnce([waitingRun]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
@@ -418,7 +421,7 @@ describe('NotificationWatcherService', () => {
 
       const run = createMockAgentRun({ id: 'run-1', status: AgentRunStatus.running });
 
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
 
       await vi.advanceTimersByTimeAsync(3000); // poll 2: first observation post-bootstrap
@@ -440,7 +443,7 @@ describe('NotificationWatcherService', () => {
         completedAt: new Date(),
       });
 
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId)
         .mockResolvedValueOnce([]) // poll 2: no completed phases yet
         .mockResolvedValueOnce([completedPhase]); // poll 3: analyze completed
@@ -468,7 +471,7 @@ describe('NotificationWatcherService', () => {
         completedAt: new Date(),
       });
 
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([completedPhase]);
 
       await vi.advanceTimersByTimeAsync(3000); // poll 2: first observation
@@ -500,7 +503,7 @@ describe('NotificationWatcherService', () => {
       vi.mocked(featureRepo.findById).mockResolvedValue({
         name: 'Quick Markdown File Creation',
       } as any);
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
 
       await vi.advanceTimersByTimeAsync(3000);
@@ -521,7 +524,7 @@ describe('NotificationWatcherService', () => {
         featureId: undefined,
       });
 
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
 
       await vi.advanceTimersByTimeAsync(3000); // poll 2: first observation post-bootstrap
@@ -540,7 +543,7 @@ describe('NotificationWatcherService', () => {
       });
 
       vi.mocked(featureRepo.findById).mockRejectedValue(new Error('DB error'));
-      vi.mocked(runRepo.list).mockResolvedValue([run]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([run]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
 
       await vi.advanceTimersByTimeAsync(3000);
@@ -557,7 +560,7 @@ describe('NotificationWatcherService', () => {
       const runningRun = createMockAgentRun({ id: 'run-1', status: AgentRunStatus.running });
       const completedRun = createMockAgentRun({ id: 'run-1', status: AgentRunStatus.completed });
 
-      vi.mocked(runRepo.list)
+      vi.mocked(runRepo.listActive)
         .mockResolvedValueOnce([runningRun])
         .mockResolvedValueOnce([completedRun])
         .mockResolvedValueOnce([]); // run is gone
@@ -574,7 +577,7 @@ describe('NotificationWatcherService', () => {
 
   describe('error handling', () => {
     it('should not crash if repository throws during poll', async () => {
-      vi.mocked(runRepo.list).mockRejectedValue(new Error('DB error'));
+      vi.mocked(runRepo.listActive).mockRejectedValue(new Error('DB error'));
 
       watcher.start();
       await vi.advanceTimersByTimeAsync(0);
@@ -582,9 +585,9 @@ describe('NotificationWatcherService', () => {
       expect(notificationService.receivedEvents).toHaveLength(0);
 
       // Should continue polling after error
-      vi.mocked(runRepo.list).mockResolvedValue([]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([]);
       await vi.advanceTimersByTimeAsync(3000);
-      expect(runRepo.list).toHaveBeenCalledTimes(2);
+      expect(runRepo.listActive).toHaveBeenCalledTimes(2);
     });
   });
 
@@ -685,7 +688,7 @@ describe('NotificationWatcherService', () => {
         lifecycle: SdlcLifecycle.Review,
       });
 
-      vi.mocked(runRepo.list).mockResolvedValue([]);
+      vi.mocked(runRepo.listActive).mockResolvedValue([]);
       vi.mocked(phaseRepo.findByRunId).mockResolvedValue([]);
       vi.mocked(featureRepo.list).mockResolvedValue([feature]);
 

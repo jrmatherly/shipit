@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
+import { apiError } from '@/lib/api-helpers';
 import type { ListRepositoriesUseCase } from '@shipit-ai/core/application/use-cases/repositories/list-repositories.use-case';
 import type { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 import { scanSessionsForPath, type SessionResult } from '@/lib/session-scanner';
@@ -73,8 +74,6 @@ export async function GET() {
     cache = { data: sessionsByPath, createdAt: Date.now() };
     return NextResponse.json({ sessionsByPath });
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('[API] GET /api/sessions-batch error:', error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    return apiError(500, 'Failed to load sessions', error);
   }
 }

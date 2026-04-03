@@ -88,6 +88,7 @@ function makeMockRunRepository() {
       ),
     findRunningByPid: vi.fn().mockResolvedValue([]),
     list: vi.fn().mockResolvedValue([]),
+    listActive: vi.fn().mockResolvedValue([]),
     delete: vi.fn().mockResolvedValue(undefined),
   };
 }

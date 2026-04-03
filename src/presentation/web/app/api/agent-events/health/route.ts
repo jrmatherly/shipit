@@ -23,10 +23,10 @@ export async function GET(): Promise<Response> {
     resolve<ListFeaturesUseCase>('ListFeaturesUseCase');
     checks.container = { ok: true };
   } catch (error) {
-    checks.container = {
-      ok: false,
-      detail: error instanceof Error ? error.message : String(error),
-    };
+    const safeDetail = 'DI container resolution failed';
+    // eslint-disable-next-line no-console
+    console.error(`[Health] ${safeDetail}:`, error);
+    checks.container = { ok: false, detail: safeDetail };
   }
 
   // Check 2: Feature listing works
@@ -39,10 +39,10 @@ export async function GET(): Promise<Response> {
       detail: `${features.length} features (${withRuns} with agent runs)`,
     };
   } catch (error) {
-    checks.features = {
-      ok: false,
-      detail: error instanceof Error ? error.message : String(error),
-    };
+    const safeDetail = 'Feature listing failed';
+    // eslint-disable-next-line no-console
+    console.error(`[Health] ${safeDetail}:`, error);
+    checks.features = { ok: false, detail: safeDetail };
   }
 
   // Check 3: Agent run repository works
@@ -57,10 +57,10 @@ export async function GET(): Promise<Response> {
       detail: `${runs.length} runs (${active} active)`,
     };
   } catch (error) {
-    checks.agentRuns = {
-      ok: false,
-      detail: error instanceof Error ? error.message : String(error),
-    };
+    const safeDetail = 'Agent run listing failed';
+    // eslint-disable-next-line no-console
+    console.error(`[Health] ${safeDetail}:`, error);
+    checks.agentRuns = { ok: false, detail: safeDetail };
   }
 
   const allOk = Object.values(checks).every((c) => c.ok);

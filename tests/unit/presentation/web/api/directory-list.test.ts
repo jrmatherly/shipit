@@ -337,7 +337,7 @@ describe('GET /api/directory/list', () => {
       const body = await response.json();
 
       expect(response.status).toBe(500);
-      expect(body.error).toBe('Unexpected IO error');
+      expect(body.error).toBe('Failed to read directory');
     });
   });
 });

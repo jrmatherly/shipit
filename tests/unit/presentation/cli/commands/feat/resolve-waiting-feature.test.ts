@@ -33,6 +33,7 @@ function createMockRunRepo() {
     updateStatus: vi.fn(),
     findRunningByPid: vi.fn(),
     list: vi.fn().mockResolvedValue([]),
+    listActive: vi.fn().mockResolvedValue([]),
     delete: vi.fn(),
   };
 }

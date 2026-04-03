@@ -22,6 +22,9 @@ import type {
 import type { SpawnFunction } from '../types.js';
 import { getCurrentPhase, getLogPrefix } from '../../feature-agent/log-context.js';
 
+/** Maximum stderr accumulation size (bytes). Keeps the tail for most-recent errors. */
+const MAX_STDERR_BYTES = 100 * 1024; // 100 KB
+
 /** Features supported by Gemini CLI */
 const SUPPORTED_FEATURES = new Set<string>(['session-resume', 'streaming', 'tool-scoping']);
 
@@ -91,6 +94,9 @@ export class GeminiCliExecutorService implements IAgentExecutor {
       proc.stderr?.on('data', (chunk: Buffer | string) => {
         const data = chunk.toString();
         stderr += data;
+        if (stderr.length > MAX_STDERR_BYTES) {
+          stderr = stderr.slice(-MAX_STDERR_BYTES);
+        }
         this.log(`stderr: ${data.trimEnd()}`);
       });
 
@@ -212,6 +218,9 @@ export class GeminiCliExecutorService implements IAgentExecutor {
 
     proc.stderr?.on('data', (chunk: Buffer | string) => {
       stderr += chunk.toString();
+      if (stderr.length > MAX_STDERR_BYTES) {
+        stderr = stderr.slice(-MAX_STDERR_BYTES);
+      }
     });
 
     proc.on('error', (err: Error) => {

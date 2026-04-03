@@ -18,7 +18,7 @@ import { resolve } from '@/lib/server-container';
 import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/output/agents/agent-run-repository.interface';
 import type { IPhaseTimingRepository } from '@shipit-ai/core/application/ports/output/agents/phase-timing-repository.interface';
 import type { IInteractiveSessionRepository } from '@shipit-ai/core/application/ports/output/repositories/interactive-session-repository.interface';
-import type { Feature, AgentRun } from '@shipit-ai/core/domain/generated/output';
+import type { Feature, AgentRun, PhaseTiming } from '@shipit-ai/core/domain/generated/output';
 import {
   AgentRunStatus,
   InteractiveSessionStatus,
@@ -163,15 +163,33 @@ export function GET(request: Request): Response {
 
             const features = await listFeatures.execute();
 
-            // Build current state for features with agent runs
-            const entries: { feature: Feature; run: AgentRun | null }[] = await Promise.all(
-              features.map(async (feature) => {
-                const run = feature.agentRunId
-                  ? await agentRunRepo.findById(feature.agentRunId)
-                  : null;
-                return { feature, run };
+            // Build current state for features with agent runs (single batch query)
+            const runIds = features
+              .map((f) => f.agentRunId)
+              .filter((id): id is string => id != null);
+            const runs = await agentRunRepo.findByIds(runIds);
+            const runMap = new Map(runs.map((r) => [r.id, r]));
+            const entries: { feature: Feature; run: AgentRun | null }[] = features.map(
+              (feature) => ({
+                feature,
+                run: feature.agentRunId ? (runMap.get(feature.agentRunId) ?? null) : null,
               })
             );
+
+            // Batch-fetch all phase timings for active runs (single query)
+            const activeRunIds = entries.filter((e) => e.run != null).map((e) => e.run!.id);
+            let allTimings: PhaseTiming[] = [];
+            try {
+              allTimings = await phaseTimingRepo.findByRunIds(activeRunIds);
+            } catch {
+              // Ignore timing errors
+            }
+            const timingsByRunId = new Map<string, PhaseTiming[]>();
+            for (const t of allTimings) {
+              const arr = timingsByRunId.get(t.agentRunId) ?? [];
+              arr.push(t);
+              timingsByRunId.set(t.agentRunId, arr);
+            }
 
             for (const { feature, run } of entries) {
               if (!run) continue;
@@ -184,13 +202,9 @@ export function GET(request: Request): Response {
               if (!prev) {
                 // First time seeing this feature — seed cache, don't emit
                 const completedPhases = new Set<string>();
-                try {
-                  const timings = await phaseTimingRepo.findByRunId(run.id);
-                  for (const t of timings) {
-                    if (t.completedAt) completedPhases.add(t.phase);
-                  }
-                } catch {
-                  // Ignore timing errors
+                const timings = timingsByRunId.get(run.id) ?? [];
+                for (const t of timings) {
+                  if (t.completedAt) completedPhases.add(t.phase);
                 }
 
                 cache.set(feature.id, {
@@ -329,26 +343,22 @@ export function GET(request: Request): Response {
                 });
               }
 
-              // Check for new phase completions
-              try {
-                const timings = await phaseTimingRepo.findByRunId(run.id);
-                for (const t of timings) {
-                  if (t.completedAt && !prev.completedPhases.has(t.phase)) {
-                    prev.completedPhases.add(t.phase);
-                    emitEvent({
-                      eventType: NotificationEventType.PhaseCompleted,
-                      agentRunId: run.id,
-                      featureId: feature.id,
-                      featureName: feature.name,
-                      phaseName: t.phase,
-                      message: `Completed ${t.phase} phase`,
-                      severity: NotificationSeverity.Info,
-                      timestamp: new Date().toISOString(),
-                    });
-                  }
+              // Check for new phase completions (using batch-fetched timings)
+              const timings = timingsByRunId.get(run.id) ?? [];
+              for (const t of timings) {
+                if (t.completedAt && !prev.completedPhases.has(t.phase)) {
+                  prev.completedPhases.add(t.phase);
+                  emitEvent({
+                    eventType: NotificationEventType.PhaseCompleted,
+                    agentRunId: run.id,
+                    featureId: feature.id,
+                    featureName: feature.name,
+                    phaseName: t.phase,
+                    message: `Completed ${t.phase} phase`,
+                    severity: NotificationSeverity.Info,
+                    timestamp: new Date().toISOString(),
+                  });
                 }
-              } catch {
-                // Ignore timing errors
               }
             }
             // Poll interactive sessions for lifecycle status changes

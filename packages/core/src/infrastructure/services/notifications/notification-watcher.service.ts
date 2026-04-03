@@ -125,7 +125,7 @@ export class NotificationWatcherService {
 
   private async poll(): Promise<void> {
     try {
-      const runs = await this.runRepository.list();
+      const runs = await this.runRepository.listActive();
       await this.processRuns(runs);
     } catch {
       // DB not ready or query failed — skip this poll cycle

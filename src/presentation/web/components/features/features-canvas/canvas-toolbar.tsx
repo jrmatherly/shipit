@@ -92,6 +92,7 @@ function ToolbarButton({
     <button
       type="button"
       onClick={onClick}
+      aria-label={title}
       title={title}
       className={cn(
         'inline-flex items-center gap-1.5 rounded-lg px-2 py-1.5 text-xs font-medium transition-colors',

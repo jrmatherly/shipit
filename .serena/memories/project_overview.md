@@ -1,7 +1,7 @@
 # Project Overview
 
 **Name:** `@shipit-ai/cli` (v1.164.1)
-**Purpose:** Autonomous AI Native SDLC Platform. Users run `shep` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
+**Purpose:** Autonomous AI Native SDLC Platform. Users run `shipit-ai` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
 **License:** MIT
 **Repository:** https://github.com/jrmatherly/shipit.git
 **Platform:** Node.js / TypeScript (ES2022, ESM)
@@ -13,7 +13,7 @@
 - `src/presentation/web` — Web UI package (`@shipit-ai/web`)
 
 ## Entry Points
-- **CLI binary:** `shep` → `dist/src/presentation/cli/index.js`
+- **CLI binary:** `shipit-ai` → `dist/src/presentation/cli/index.js`
 - **Web UI:** Next.js app in `src/presentation/web/`
 - **Storybook:** Component explorer for web UI
 

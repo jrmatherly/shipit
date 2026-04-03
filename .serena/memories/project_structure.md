@@ -43,7 +43,9 @@ shipit/
 │   ├── e2e/               # E2E tests (vitest CLI + playwright web)
 │   ├── fixtures/          # Test fixtures
 │   ├── helpers/           # Test helpers
-│   └── manual/            # Manual test suites
+│   ├── manual/            # Manual test suites
+│   ├── dockers/           # Docker-based test environments
+│   └── scripts/           # Test scripts (CLI test harnesses)
 │
 ├── specs/                 # Feature specifications (YAML → MD)
 ├── scripts/               # Build/utility scripts

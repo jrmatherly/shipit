@@ -36,6 +36,14 @@ export interface IAgentRunRepository {
   findById(id: string): Promise<AgentRun | null>;
 
   /**
+   * Find multiple agent runs by their IDs in a single batch query.
+   *
+   * @param ids - Array of agent run IDs
+   * @returns Array of found agent runs (missing IDs are silently omitted)
+   */
+  findByIds(ids: string[]): Promise<AgentRun[]>;
+
+  /**
    * Find an agent run by its LangGraph thread ID.
    *
    * @param threadId - The LangGraph thread ID
@@ -67,6 +75,16 @@ export interface IAgentRunRepository {
    * @returns Array of all agent runs
    */
   list(): Promise<AgentRun[]>;
+
+  /**
+   * List only agent runs that are still active or recently completed.
+   * Used by polling services to avoid loading the entire history.
+   *
+   * Returns runs with active statuses (pending, running, waiting_approval)
+   * plus any runs updated within the last 5 minutes (so recently
+   * completed/failed runs still get their notifications dispatched).
+   */
+  listActive(): Promise<AgentRun[]>;
 
   /**
    * Delete an agent run by ID.

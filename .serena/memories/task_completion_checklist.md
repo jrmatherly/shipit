@@ -30,11 +30,19 @@ pnpm tsp:compile    # Regenerate domain types
 pnpm validate       # lint:fix + format + typecheck + tsp:compile
 ```
 
+## 5a. Coverage Thresholds (enforced by vitest)
+Tests must meet these minimum coverage gates:
+- Lines: 40% | Functions: 35% | Branches: 30% | Statements: 40%
+
 ## 6. Storybook (if web components changed)
 - Ensure `.stories.tsx` file exists for any new/modified web component
 - Run `pnpm dev:storybook` to verify stories render correctly
 
 ## 7. Commit
 - Use conventional commit format: `<type>(<scope>): <subject>`
-- Husky pre-commit hooks will run automatically
+- Husky pre-commit hooks run automatically:
+  1. `pnpm generate` (TypeSpec + JSON schema generation)
+  2. `git add` generated files (apis/json-schema/, domain/generated/)
+  3. `lint-staged`: per-file ESLint + Prettier + typecheck on TS; tsp:compile on .tsp
 - commitlint validates commit message format
+- Pre-commit may produce generated file changes requiring a follow-up commit

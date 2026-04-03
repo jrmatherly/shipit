@@ -189,9 +189,12 @@ export async function GET(request: Request): Promise<Response> {
       },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('[SSE route] GET /api/feature-logs error:', error);
-    return new Response(JSON.stringify({ error: String(error) }), {
+    // Log the real error server-side, return a generic message to the client
+    if (error instanceof Error) {
+      // eslint-disable-next-line no-console
+      console.error('[SSE route] GET /api/feature-logs error:', error.message);
+    }
+    return new Response(JSON.stringify({ error: 'Failed to load logs' }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' },
     });

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { scanSessionsForPath } from '@/lib/session-scanner';
+import { apiError } from '@/lib/api-helpers';
 
 export const dynamic = 'force-dynamic';
 
@@ -26,8 +27,6 @@ export async function GET(request: Request) {
       sessions: allSessions.map(({ _mtime, ...s }) => s),
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('[API] GET /api/sessions error:', error);
-    return NextResponse.json({ error: String(error) }, { status: 500 });
+    return apiError(500, 'Failed to list sessions', error);
   }
 }

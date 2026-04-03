@@ -36,6 +36,8 @@ describe('DeleteAgentRunUseCase', () => {
       updateStatus: vi.fn().mockResolvedValue(undefined),
       findRunningByPid: vi.fn().mockResolvedValue([]),
       list: vi.fn().mockResolvedValue([]),
+      listActive: vi.fn().mockResolvedValue([]),
+      findByIds: vi.fn().mockResolvedValue([]),
       delete: vi.fn().mockResolvedValue(undefined),
     };
 

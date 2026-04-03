@@ -69,6 +69,14 @@ export class SQLiteAgentRunRepository implements IAgentRunRepository {
     return fromDatabase(row);
   }
 
+  async findByIds(ids: string[]): Promise<AgentRun[]> {
+    if (ids.length === 0) return [];
+    const placeholders = ids.map(() => '?').join(', ');
+    const stmt = this.db.prepare(`SELECT * FROM agent_runs WHERE id IN (${placeholders})`);
+    const rows = stmt.all(...ids) as AgentRunRow[];
+    return rows.map(fromDatabase);
+  }
+
   async findByThreadId(threadId: string): Promise<AgentRun | null> {
     const stmt = this.db.prepare('SELECT * FROM agent_runs WHERE thread_id = ?');
     const row = stmt.get(threadId) as AgentRunRow | undefined;
@@ -147,6 +155,16 @@ export class SQLiteAgentRunRepository implements IAgentRunRepository {
   async list(): Promise<AgentRun[]> {
     const stmt = this.db.prepare('SELECT * FROM agent_runs');
     const rows = stmt.all() as AgentRunRow[];
+
+    return rows.map(fromDatabase);
+  }
+
+  async listActive(): Promise<AgentRun[]> {
+    const fiveMinutesAgo = Date.now() - 5 * 60 * 1000;
+    const stmt = this.db.prepare(
+      `SELECT * FROM agent_runs WHERE status IN ('pending', 'running', 'waiting_approval') OR updated_at > ?`
+    );
+    const rows = stmt.all(fiveMinutesAgo) as AgentRunRow[];
 
     return rows.map(fromDatabase);
   }

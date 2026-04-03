@@ -12,6 +12,7 @@ import { FabLayoutProvider } from '@/hooks/fab-layout-context';
 import { QueryProvider } from '@/components/providers/query-provider';
 import { I18nProvider } from '@/components/providers/i18n-provider';
 import { getLanguagePreference } from '@/lib/language';
+import { RouteAnnouncer } from '@/components/common/route-announcer/route-announcer';
 
 /** Force dynamic rendering for all pages since they depend on client-side context. */
 export const dynamic = 'force-dynamic';
@@ -56,6 +57,7 @@ export default async function RootLayout({
         />
       </head>
       <body className="min-h-screen antialiased">
+        <RouteAnnouncer />
         <I18nProvider initialLanguage={language}>
           <QueryProvider>
             <FeatureFlagsProvider flags={getFeatureFlags()}>

@@ -40,6 +40,9 @@ function toCursorModelName(model: string): string {
   return CURSOR_MODEL_MAP[model] ?? model;
 }
 
+/** Maximum stderr accumulation size (bytes). Keeps the tail for most-recent errors. */
+const MAX_STDERR_BYTES = 100 * 1024; // 100 KB
+
 /** Features supported by Cursor CLI */
 const SUPPORTED_FEATURES = new Set<string>(['session-resume', 'streaming']);
 
@@ -141,6 +144,9 @@ export class CursorExecutorService implements IAgentExecutor {
       proc.stderr?.on('data', (chunk: Buffer | string) => {
         const data = chunk.toString();
         stderr += data;
+        if (stderr.length > MAX_STDERR_BYTES) {
+          stderr = stderr.slice(-MAX_STDERR_BYTES);
+        }
         this.log(`stderr: ${data.trimEnd()}`);
 
         // Detect fatal errors early so callers don't waste time retrying
@@ -241,6 +247,9 @@ export class CursorExecutorService implements IAgentExecutor {
 
     proc.stderr?.on('data', (chunk: Buffer | string) => {
       stderr += chunk.toString();
+      if (stderr.length > MAX_STDERR_BYTES) {
+        stderr = stderr.slice(-MAX_STDERR_BYTES);
+      }
     });
 
     proc.on('error', (err: Error) => {

@@ -40,6 +40,8 @@ describe('ListAgentRunsUseCase', () => {
       updateStatus: vi.fn(),
       findRunningByPid: vi.fn(),
       list: vi.fn().mockResolvedValue([]),
+      listActive: vi.fn().mockResolvedValue([]),
+      findByIds: vi.fn().mockResolvedValue([]),
       delete: vi.fn(),
     };
     useCase = new ListAgentRunsUseCase(mockRepo);

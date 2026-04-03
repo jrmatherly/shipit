@@ -135,6 +135,8 @@ describe('CreateFeatureUseCase', () => {
       updateStatus: vi.fn().mockResolvedValue(undefined),
       findRunningByPid: vi.fn().mockResolvedValue(null),
       list: vi.fn().mockResolvedValue([]),
+      listActive: vi.fn().mockResolvedValue([]),
+      findByIds: vi.fn().mockResolvedValue([]),
       delete: vi.fn().mockResolvedValue(undefined),
     };
 

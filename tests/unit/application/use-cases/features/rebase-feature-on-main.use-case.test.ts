@@ -88,6 +88,7 @@ function createMockAgentRunRepo(): IAgentRunRepository {
     updateStatus: vi.fn().mockResolvedValue(undefined),
     findRunningByPid: vi.fn(),
     list: vi.fn(),
+    listActive: vi.fn(),
     delete: vi.fn(),
   } as unknown as IAgentRunRepository;
 }

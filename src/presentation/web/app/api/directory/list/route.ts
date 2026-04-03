@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { readdir, realpath, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import path from 'node:path';
+import { apiError } from '@/lib/api-helpers';
 
 interface DirectoryEntry {
   name: string;
@@ -51,8 +52,7 @@ export async function GET(request: Request): Promise<NextResponse> {
     if (isErrnoException(error) && error.code === 'ENOENT') {
       return NextResponse.json({ error: 'Directory not found' }, { status: 404 });
     }
-    const message = error instanceof Error ? error.message : 'Failed to access path';
-    return NextResponse.json({ error: message }, { status: 500 });
+    return apiError(500, 'Failed to access directory', error);
   }
 
   try {
@@ -105,8 +105,7 @@ export async function GET(request: Request): Promise<NextResponse> {
 
     return NextResponse.json({ entries, currentPath: resolvedPath });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Failed to read directory';
-    return NextResponse.json({ error: message }, { status: 500 });
+    return apiError(500, 'Failed to read directory', error);
   }
 }
 

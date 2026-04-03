@@ -413,6 +413,7 @@ export function FeatureNode({
                     <TooltipTrigger asChild>
                       <button
                         type="button"
+                        aria-label="Copy feature ID"
                         data-testid="feature-node-id"
                         className="nodrag text-muted-foreground/60 hover:text-muted-foreground flex shrink-0 cursor-pointer items-baseline gap-1 font-mono text-[10px] transition-colors active:scale-95"
                         onClick={(e) => {
