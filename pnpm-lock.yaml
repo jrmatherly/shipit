@@ -7,6 +7,11 @@ settings:
 overrides:
   minimatch: ^7.x
 
+patchedDependencies:
+  '@typespec-tools/emitter-typescript@0.3.0':
+    hash: b8de141dabc91c4cfbb4c0d5211438300227d0dd410b410712652010d02ee75d
+    path: patches/@typespec-tools__emitter-typescript@0.3.0.patch
+
 importers:
 
   .:
@@ -191,7 +196,7 @@ importers:
         version: 19.2.3(@types/react@19.2.14)
       '@typespec-tools/emitter-typescript':
         specifier: ^0.3.0
-        version: 0.3.0(@typespec/compiler@0.60.1)
+        version: 0.3.0(patch_hash=b8de141dabc91c4cfbb4c0d5211438300227d0dd410b410712652010d02ee75d)(@typespec/compiler@0.60.1)
       '@typespec/compiler':
         specifier: ^0.60.0
         version: 0.60.1
@@ -10045,7 +10050,7 @@ snapshots:
       '@typescript-eslint/types': 8.58.0
       eslint-visitor-keys: 5.0.1
 
-  '@typespec-tools/emitter-typescript@0.3.0(@typespec/compiler@0.60.1)':
+  '@typespec-tools/emitter-typescript@0.3.0(patch_hash=b8de141dabc91c4cfbb4c0d5211438300227d0dd410b410712652010d02ee75d)(@typespec/compiler@0.60.1)':
     dependencies:
       '@typespec/compiler': 0.60.1
 
