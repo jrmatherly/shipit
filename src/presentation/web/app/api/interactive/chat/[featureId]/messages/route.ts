@@ -16,7 +16,7 @@ import { resolve } from '@/lib/server-container';
 import type { SendInteractiveMessageUseCase } from '@shipit-ai/core/application/use-cases/interactive/send-interactive-message.use-case';
 import type { GetInteractiveChatStateUseCase } from '@shipit-ai/core/application/use-cases/interactive/get-interactive-chat-state.use-case';
 import type { IInteractiveSessionService } from '@shipit-ai/core/application/ports/output/services/interactive-session-service.interface';
-import { getShipitAiHomeDir } from '@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service';
+import { getShipitAiHomeDir } from '@/lib/core-utils';
 
 export const dynamic = 'force-dynamic';
 

@@ -2,20 +2,22 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const mockGetSettings = vi.fn();
 const mockResetSettings = vi.fn();
 const mockInitializeSettings = vi.fn();
-const mockResolve = vi.fn();
-const mockExecute = vi.fn();
+const mockLoadExecute = vi.fn();
+const mockUpdateExecute = vi.fn();
 
 vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
-  getSettings: mockGetSettings,
   resetSettings: mockResetSettings,
   initializeSettings: mockInitializeSettings,
 }));
 
 vi.mock('@/lib/server-container', () => ({
-  resolve: mockResolve,
+  resolve: (token: string) => {
+    if (token === 'LoadSettingsUseCase') return { execute: mockLoadExecute };
+    if (token === 'UpdateSettingsUseCase') return { execute: mockUpdateExecute };
+    throw new Error(`Unknown token: ${token}`);
+  },
 }));
 
 const { updateModel } =
@@ -30,15 +32,14 @@ const baseSettings = {
 describe('updateModel server action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetSettings.mockReturnValue(baseSettings);
-    mockResolve.mockReturnValue({ execute: mockExecute });
-    mockExecute.mockResolvedValue(undefined);
+    mockLoadExecute.mockResolvedValue(baseSettings);
+    mockUpdateExecute.mockResolvedValue(undefined);
   });
 
   it('persists the new model via UpdateSettingsUseCase', async () => {
     const result = await updateModel('claude-opus-4-6');
 
-    expect(mockExecute).toHaveBeenCalledWith({
+    expect(mockUpdateExecute).toHaveBeenCalledWith({
       ...baseSettings,
       models: { default: 'claude-opus-4-6' },
     });
@@ -55,28 +56,28 @@ describe('updateModel server action', () => {
     });
   });
 
-  it('resolves UpdateSettingsUseCase from the DI container', async () => {
+  it('loads current settings via LoadSettingsUseCase before updating', async () => {
     await updateModel('claude-opus-4-6');
 
-    expect(mockResolve).toHaveBeenCalledWith('UpdateSettingsUseCase');
+    expect(mockLoadExecute).toHaveBeenCalled();
   });
 
   it('returns error when model is empty string', async () => {
     const result = await updateModel('');
 
-    expect(mockExecute).not.toHaveBeenCalled();
+    expect(mockUpdateExecute).not.toHaveBeenCalled();
     expect(result).toEqual({ ok: false, error: 'model is required' });
   });
 
   it('returns error when model is whitespace only', async () => {
     const result = await updateModel('   ');
 
-    expect(mockExecute).not.toHaveBeenCalled();
+    expect(mockUpdateExecute).not.toHaveBeenCalled();
     expect(result).toEqual({ ok: false, error: 'model is required' });
   });
 
   it('returns error when use case throws', async () => {
-    mockExecute.mockRejectedValue(new Error('DB write failed'));
+    mockUpdateExecute.mockRejectedValue(new Error('DB write failed'));
 
     const result = await updateModel('claude-opus-4-6');
 
@@ -84,7 +85,7 @@ describe('updateModel server action', () => {
   });
 
   it('returns fallback error message when non-Error is thrown', async () => {
-    mockExecute.mockRejectedValue('unexpected');
+    mockUpdateExecute.mockRejectedValue('unexpected');
 
     const result = await updateModel('claude-opus-4-6');
 
@@ -94,7 +95,7 @@ describe('updateModel server action', () => {
   it('trims whitespace from the model value before persisting', async () => {
     await updateModel('  claude-opus-4-6  ');
 
-    expect(mockExecute).toHaveBeenCalledWith(
+    expect(mockUpdateExecute).toHaveBeenCalledWith(
       expect.objectContaining({ models: { default: 'claude-opus-4-6' } })
     );
   });

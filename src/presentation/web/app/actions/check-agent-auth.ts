@@ -4,9 +4,9 @@ import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { execFile } from 'node:child_process';
-import { IS_WINDOWS } from '@shipit-ai/core/infrastructure/platform';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { IS_WINDOWS } from '@/lib/core-utils';
 import { resolve } from '@/lib/server-container';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import type { ListToolsUseCase } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 export interface AgentAuthStatus {
@@ -123,7 +123,9 @@ function tier2AuthVerify(agentType: string, binaryName: string): Promise<boolean
 export async function checkAgentAuth(): Promise<AgentAuthStatus> {
   let agentType: string;
   try {
-    agentType = getSettings().agent.type;
+    const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const settings = await loadSettings.execute();
+    agentType = settings.agent.type;
   } catch {
     return {
       agentType: 'unknown',

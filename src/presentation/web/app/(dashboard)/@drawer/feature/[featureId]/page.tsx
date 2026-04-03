@@ -2,7 +2,7 @@ import { resolve } from '@/lib/server-container';
 import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
 import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/output/agents/agent-run-repository.interface';
 import { buildFeatureNodeData } from '@/app/build-feature-node-data';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import { computeDrawerView } from '@/components/common/control-center-drawer/drawer-view';
 import { FeatureDrawerClient } from '@/components/common/control-center-drawer/feature-drawer-client';
 
@@ -29,7 +29,8 @@ export default async function FeatureDrawerPage({ params }: FeatureDrawerPagePro
 
     const run = feature.agentRunId ? await agentRunRepo.findById(feature.agentRunId) : null;
 
-    const { workflow, interactiveAgent } = getSettings();
+    const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const { workflow, interactiveAgent } = await loadSettings.execute();
     const nodeData = buildFeatureNodeData(feature, run, {
       enableEvidence: workflow.enableEvidence,
       commitEvidence: workflow.commitEvidence,

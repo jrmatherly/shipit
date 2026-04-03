@@ -5,8 +5,7 @@ import {
   deriveProgress,
   deriveLifecycle,
 } from '@/components/common/feature-node/derive-feature-state';
-import { isProcessAlive } from '@shipit-ai/core/infrastructure/services/process/is-process-alive';
-import { computeWorktreePath } from '@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path';
+import { isProcessAlive, computeWorktreePath } from '@/lib/core-utils';
 import type { FeatureNodeData } from '@/components/common/feature-node';
 
 export interface BuildFeatureNodeDataOptions {

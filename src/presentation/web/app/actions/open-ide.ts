@@ -1,9 +1,9 @@
 'use server';
 
 import { isAbsolute } from 'node:path';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
-import type { LaunchIdeUseCase } from '@shipit-ai/core/application/use-cases/ide/launch-ide.use-case';
 import { resolve } from '@/lib/server-container';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
+import type { LaunchIdeUseCase } from '@shipit-ai/core/application/use-cases/ide/launch-ide.use-case';
 
 interface OpenIdeInput {
   repositoryPath: string;
@@ -19,7 +19,8 @@ export async function openIde(
     return { success: false, error: 'repositoryPath must be an absolute path' };
   }
 
-  const settings = getSettings();
+  const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+  const settings = await loadSettings.execute();
   const editor = settings.environment.defaultEditor;
 
   const useCase = resolve<LaunchIdeUseCase>('LaunchIdeUseCase');

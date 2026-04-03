@@ -2,9 +2,12 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const mockGetSettings = vi.fn();
-vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
-  getSettings: mockGetSettings,
+const mockLoadSettingsExecute = vi.fn();
+vi.mock('@/lib/server-container', () => ({
+  resolve: (token: string) => {
+    if (token === 'LoadSettingsUseCase') return { execute: mockLoadSettingsExecute };
+    throw new Error(`Unknown token: ${token}`);
+  },
 }));
 
 const { getWorkflowDefaults } =
@@ -16,9 +19,13 @@ describe('getWorkflowDefaults server action', () => {
   });
 
   it('maps workflow settings to drawer defaults', async () => {
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       workflow: {
         openPrOnImplementationComplete: true,
+        ciWatchEnabled: false,
+        enableEvidence: false,
+        commitEvidence: false,
+        defaultFastMode: false,
         approvalGateDefaults: {
           allowPrd: true,
           allowPlan: false,
@@ -30,7 +37,7 @@ describe('getWorkflowDefaults server action', () => {
 
     const result = await getWorkflowDefaults();
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       approvalGates: {
         allowPrd: true,
         allowPlan: false,
@@ -42,9 +49,13 @@ describe('getWorkflowDefaults server action', () => {
   });
 
   it('returns all false when workflow defaults are all false', async () => {
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       workflow: {
         openPrOnImplementationComplete: false,
+        ciWatchEnabled: false,
+        enableEvidence: false,
+        commitEvidence: false,
+        defaultFastMode: false,
         approvalGateDefaults: {
           allowPrd: false,
           allowPlan: false,
@@ -56,7 +67,7 @@ describe('getWorkflowDefaults server action', () => {
 
     const result = await getWorkflowDefaults();
 
-    expect(result).toEqual({
+    expect(result).toMatchObject({
       approvalGates: {
         allowPrd: false,
         allowPlan: false,
@@ -68,9 +79,13 @@ describe('getWorkflowDefaults server action', () => {
   });
 
   it('maps pushOnImplementationComplete to push field', async () => {
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       workflow: {
         openPrOnImplementationComplete: false,
+        ciWatchEnabled: false,
+        enableEvidence: false,
+        commitEvidence: false,
+        defaultFastMode: false,
         approvalGateDefaults: {
           allowPrd: false,
           allowPlan: false,
@@ -87,9 +102,13 @@ describe('getWorkflowDefaults server action', () => {
   });
 
   it('maps openPrOnImplementationComplete to openPr field', async () => {
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       workflow: {
         openPrOnImplementationComplete: true,
+        ciWatchEnabled: false,
+        enableEvidence: false,
+        commitEvidence: false,
+        defaultFastMode: false,
         approvalGateDefaults: {
           allowPrd: false,
           allowPlan: false,

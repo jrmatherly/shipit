@@ -1,11 +1,12 @@
 /**
  * Server-side language preference utilities for the Web UI.
  *
- * Reads the language preference from the Settings singleton
+ * Reads the language preference from the Settings via DI
  * and determines the text direction (LTR/RTL).
  */
 
-import { hasSettings, getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { resolve } from '@/lib/server-container';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import { Language } from '@shipit-ai/core/domain/generated/output';
 
 const RTL_LANGUAGES: ReadonlySet<string> = new Set([Language.Arabic, Language.Hebrew]);
@@ -26,16 +27,16 @@ interface LanguagePreference {
 /**
  * Get the user's language preference and computed text direction.
  *
- * Reads from the Settings singleton (better-sqlite3, synchronous).
+ * Reads from Settings via DI (LoadSettingsUseCase).
  * Falls back to English if settings are not available (e.g. during build).
  */
-export function getLanguagePreference(): LanguagePreference {
+export async function getLanguagePreference(): Promise<LanguagePreference> {
   let language = DEFAULT_LANGUAGE as string;
 
   try {
-    if (hasSettings()) {
-      language = getSettings().user.preferredLanguage ?? DEFAULT_LANGUAGE;
-    }
+    const useCase = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const settings = await useCase.execute();
+    language = settings.user.preferredLanguage ?? DEFAULT_LANGUAGE;
   } catch {
     // Settings not initialized (build, SSG, or first run)
   }

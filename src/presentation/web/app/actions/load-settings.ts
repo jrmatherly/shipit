@@ -4,7 +4,7 @@ import { statSync } from 'node:fs';
 import { join } from 'node:path';
 import { resolve } from '@/lib/server-container';
 import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
-import { getShipitAiHomeDir } from '@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service';
+import { getShipitAiHomeDir } from '@/lib/core-utils';
 import type { Settings } from '@shipit-ai/core/domain/generated/output';
 
 export interface LoadSettingsResult {

@@ -1,16 +1,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-// Mock the settings service before importing the module under test
-vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
-  hasSettings: vi.fn(),
-  getSettings: vi.fn(),
+const mockExecute = vi.fn();
+
+vi.mock('@/lib/server-container', () => ({
+  resolve: () => ({ execute: mockExecute }),
 }));
 
 import { isRtlLanguage, getLanguagePreference } from '@/lib/language';
-import { hasSettings, getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
-
-const mockHasSettings = vi.mocked(hasSettings);
-const mockGetSettings = vi.mocked(getSettings);
 
 describe('isRtlLanguage', () => {
   it('returns true for Arabic', () => {
@@ -41,60 +37,53 @@ describe('getLanguagePreference', () => {
     vi.clearAllMocks();
   });
 
-  it('returns language="en" and dir="ltr" when settings have English', () => {
-    mockHasSettings.mockReturnValue(true);
-    mockGetSettings.mockReturnValue({
+  it('returns language="en" and dir="ltr" when settings have English', async () => {
+    mockExecute.mockResolvedValue({
       user: { preferredLanguage: 'en' },
-    } as ReturnType<typeof getSettings>);
+    });
 
-    const result = getLanguagePreference();
+    const result = await getLanguagePreference();
     expect(result).toEqual({ language: 'en', dir: 'ltr' });
   });
 
-  it('returns language="ar" and dir="rtl" when settings have Arabic', () => {
-    mockHasSettings.mockReturnValue(true);
-    mockGetSettings.mockReturnValue({
+  it('returns language="ar" and dir="rtl" when settings have Arabic', async () => {
+    mockExecute.mockResolvedValue({
       user: { preferredLanguage: 'ar' },
-    } as ReturnType<typeof getSettings>);
+    });
 
-    const result = getLanguagePreference();
+    const result = await getLanguagePreference();
     expect(result).toEqual({ language: 'ar', dir: 'rtl' });
   });
 
-  it('returns language="he" and dir="rtl" when settings have Hebrew', () => {
-    mockHasSettings.mockReturnValue(true);
-    mockGetSettings.mockReturnValue({
+  it('returns language="he" and dir="rtl" when settings have Hebrew', async () => {
+    mockExecute.mockResolvedValue({
       user: { preferredLanguage: 'he' },
-    } as ReturnType<typeof getSettings>);
+    });
 
-    const result = getLanguagePreference();
+    const result = await getLanguagePreference();
     expect(result).toEqual({ language: 'he', dir: 'rtl' });
   });
 
-  it('defaults to English when settings are not available', () => {
-    mockHasSettings.mockReturnValue(false);
+  it('defaults to English when DI container throws', async () => {
+    mockExecute.mockRejectedValue(new Error('Container not available'));
 
-    const result = getLanguagePreference();
+    const result = await getLanguagePreference();
     expect(result).toEqual({ language: 'en', dir: 'ltr' });
   });
 
-  it('defaults to English when preferredLanguage is undefined', () => {
-    mockHasSettings.mockReturnValue(true);
-    mockGetSettings.mockReturnValue({
+  it('defaults to English when preferredLanguage is undefined', async () => {
+    mockExecute.mockResolvedValue({
       user: { preferredLanguage: undefined },
-    } as ReturnType<typeof getSettings>);
-
-    const result = getLanguagePreference();
-    expect(result).toEqual({ language: 'en', dir: 'ltr' });
-  });
-
-  it('defaults to English when getSettings throws', () => {
-    mockHasSettings.mockReturnValue(true);
-    mockGetSettings.mockImplementation(() => {
-      throw new Error('DB not available');
     });
 
-    const result = getLanguagePreference();
+    const result = await getLanguagePreference();
+    expect(result).toEqual({ language: 'en', dir: 'ltr' });
+  });
+
+  it('defaults to English when execute rejects (settings unavailable)', async () => {
+    mockExecute.mockRejectedValue(new Error('DB not available'));
+
+    const result = await getLanguagePreference();
     expect(result).toEqual({ language: 'en', dir: 'ltr' });
   });
 });

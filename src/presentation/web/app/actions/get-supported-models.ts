@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import type { IAgentExecutorFactory } from '@shipit-ai/core/application/ports/output/agents/agent-executor-factory.interface';
 
 /**
@@ -15,7 +15,8 @@ import type { IAgentExecutorFactory } from '@shipit-ai/core/application/ports/ou
  */
 export async function getSupportedModels(): Promise<string[]> {
   try {
-    const settings = getSettings();
+    const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const settings = await loadSettings.execute();
     const agentType = settings.agent.type;
     const factory = resolve<IAgentExecutorFactory>('IAgentExecutorFactory');
     return factory.getSupportedModels(agentType);

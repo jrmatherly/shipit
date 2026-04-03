@@ -12,7 +12,7 @@ interface AdoptDrawerPageProps {
 }
 
 export default async function AdoptDrawerPage({ searchParams }: AdoptDrawerPageProps) {
-  const flags = getFeatureFlags();
+  const flags = await getFeatureFlags();
   if (!flags.adoptBranch) {
     redirect('/');
   }

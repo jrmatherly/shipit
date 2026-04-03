@@ -44,7 +44,11 @@ export default async function RootLayout({
 }>) {
   const cookieStore = await cookies();
   const sidebarOpen = cookieStore.get('shipit-ai-sidebar-open')?.value === 'true';
-  const { language, dir } = getLanguagePreference();
+  const [{ language, dir }, flags, fabLayout] = await Promise.all([
+    getLanguagePreference(),
+    getFeatureFlags(),
+    getFabLayout(),
+  ]);
 
   return (
     <html lang={language} dir={dir} suppressHydrationWarning>
@@ -60,8 +64,8 @@ export default async function RootLayout({
         <RouteAnnouncer />
         <I18nProvider initialLanguage={language}>
           <QueryProvider>
-            <FeatureFlagsProvider flags={getFeatureFlags()}>
-              <FabLayoutProvider layout={getFabLayout()}>
+            <FeatureFlagsProvider flags={flags}>
+              <FabLayoutProvider layout={fabLayout}>
                 <AppShell sidebarOpen={sidebarOpen}>{children}</AppShell>
               </FabLayoutProvider>
             </FeatureFlagsProvider>

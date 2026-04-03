@@ -5,19 +5,20 @@
  * swapPosition = false (Create FAB on start side, Chat FAB on end side).
  */
 
-import { hasSettings, getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { resolve } from '@/lib/server-container';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 
 export interface FabLayoutState {
   swapPosition: boolean;
 }
 
-export function getFabLayout(): FabLayoutState {
+export async function getFabLayout(): Promise<FabLayoutState> {
   try {
-    if (hasSettings()) {
-      const fabLayout = getSettings().fabLayout;
-      if (fabLayout) {
-        return { swapPosition: fabLayout.swapPosition };
-      }
+    const useCase = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const settings = await useCase.execute();
+    const fabLayout = settings.fabLayout;
+    if (fabLayout) {
+      return { swapPosition: fabLayout.swapPosition };
     }
   } catch {
     // Settings not initialized (e.g., during build/SSG or client-side hydration)

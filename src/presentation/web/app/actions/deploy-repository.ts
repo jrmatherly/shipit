@@ -3,7 +3,7 @@
 import { existsSync } from 'node:fs';
 import { isAbsolute } from 'node:path';
 import { resolve } from '@/lib/server-container';
-import { createDeploymentLogger } from '@shipit-ai/core/infrastructure/services/deployment/deployment-logger';
+import { createDeploymentLogger } from '@/lib/core-utils';
 import type { IDeploymentService } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 import { DeploymentState } from '@shipit-ai/core/domain/generated/output';
 import { isSameShipitAiInstance } from '@/lib/is-same-shipit-ai-instance';

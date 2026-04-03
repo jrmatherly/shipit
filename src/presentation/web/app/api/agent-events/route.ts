@@ -26,7 +26,7 @@ import {
   NotificationEventType,
   NotificationSeverity,
 } from '@shipit-ai/core/domain/generated/output';
-import { isProcessAlive } from '@shipit-ai/core/infrastructure/services/process/is-process-alive';
+import { isProcessAlive } from '@/lib/core-utils';
 import type { NotificationEvent } from '@shipit-ai/core/domain/generated/output';
 import type { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 

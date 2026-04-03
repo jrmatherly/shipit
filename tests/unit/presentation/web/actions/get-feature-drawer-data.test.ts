@@ -26,6 +26,17 @@ vi.mock('@/lib/server-container', () => ({
         getCiStatus: mockGetCiStatus,
       };
     if (token === 'GetFeatureArtifactUseCase') return { execute: mockGetArtifactExecute };
+    if (token === 'LoadSettingsUseCase')
+      return {
+        execute: () =>
+          Promise.resolve({
+            workflow: {
+              enableEvidence: false,
+              commitEvidence: false,
+              hideCiStatus: false,
+            },
+          }),
+      };
     throw new Error(`Unknown token: ${token}`);
   },
 }));
@@ -40,15 +51,6 @@ vi.mock('@/app/build-feature-node-data', () => ({
       ...options,
     })
   ),
-}));
-
-vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
-  getSettings: () => ({
-    workflow: {
-      enableEvidence: false,
-      commitEvidence: false,
-    },
-  }),
 }));
 
 const { getFeatureDrawerData } =

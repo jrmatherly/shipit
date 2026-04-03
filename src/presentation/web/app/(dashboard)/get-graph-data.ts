@@ -1,6 +1,6 @@
 import { execFile as execFileCb } from 'node:child_process';
 import { promisify } from 'node:util';
-import { IS_WINDOWS } from '@shipit-ai/core/infrastructure/platform';
+import { IS_WINDOWS } from '@/lib/core-utils';
 import { resolve } from '@/lib/server-container';
 import type { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 import type { ListRepositoriesUseCase } from '@shipit-ai/core/application/use-cases/repositories/list-repositories.use-case';
@@ -8,7 +8,7 @@ import type { AutoResolveMergedBranchesUseCase } from '@shipit-ai/core/applicati
 import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/output/agents/agent-run-repository.interface';
 import type { IDeploymentService } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 import type { Repository } from '@shipit-ai/core/domain/generated/output';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import { layoutWithDagre, getCanvasLayoutDefaults } from '@/lib/layout-with-dagre';
 import { getLanguagePreference } from '@/lib/language';
 import { buildGraphNodes } from '@/app/build-graph-nodes';
@@ -182,7 +182,8 @@ export async function getGraphData(): Promise<{ nodes: CanvasNodeType[]; edges: 
     })
   );
 
-  const { workflow } = getSettings();
+  const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+  const { workflow } = await loadSettings.execute();
   const { nodes, edges } = buildGraphNodes(repositories, featuresWithRuns, {
     enableEvidence: workflow.enableEvidence,
     commitEvidence: workflow.commitEvidence,
@@ -213,6 +214,6 @@ export async function getGraphData(): Promise<{ nodes: CanvasNodeType[]; edges: 
     }
   }
 
-  const { dir } = getLanguagePreference();
+  const { dir } = await getLanguagePreference();
   return layoutWithDagre(nodes, edges, getCanvasLayoutDefaults(dir));
 }

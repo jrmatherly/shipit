@@ -1,7 +1,7 @@
 import { resolve } from '@/lib/server-container';
 import type { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 import type { ListRepositoriesUseCase } from '@shipit-ai/core/application/use-cases/repositories/list-repositories.use-case';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import { getWorkflowDefaults } from '@/app/actions/get-workflow-defaults';
 import { getViewerPermission } from '@/app/actions/get-viewer-permission';
 import { CreateDrawerClient } from '@/components/common/control-center-drawer/create-drawer-client';
@@ -18,7 +18,8 @@ export default async function CreateDrawerPage({ searchParams }: CreateDrawerPag
 
   const listFeatures = resolve<ListFeaturesUseCase>('ListFeaturesUseCase');
   const listRepos = resolve<ListRepositoriesUseCase>('ListRepositoriesUseCase');
-  const settings = getSettings();
+  const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+  const settings = await loadSettings.execute();
 
   const [features, repositories, workflowDefaults, viewerPerm] = await Promise.all([
     listFeatures.execute(),

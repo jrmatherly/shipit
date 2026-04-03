@@ -6,8 +6,8 @@ import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/outp
 import type { IRepositoryRepository } from '@shipit-ai/core/application/ports/output/repositories/repository-repository.interface';
 import type { IGitPrService } from '@shipit-ai/core/application/ports/output/services/git-pr-service.interface';
 import type { GetFeatureArtifactUseCase } from '@shipit-ai/core/application/use-cases/features/get-feature-artifact.use-case';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import { buildFeatureNodeData } from '@/app/build-feature-node-data';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 import type { FeatureNodeData } from '@/components/common/feature-node';
 
 /**
@@ -41,7 +41,8 @@ export async function getFeatureDrawerData(featureId: string): Promise<FeatureNo
       gitPrService.getRemoteUrl(feature.repositoryPath).catch(() => null),
     ]);
 
-    const { workflow } = getSettings();
+    const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const { workflow } = await loadSettings.execute();
 
     return buildFeatureNodeData(feature, run, {
       repositoryName: repo?.name,

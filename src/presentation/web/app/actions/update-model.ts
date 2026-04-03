@@ -2,10 +2,10 @@
 
 import { resolve } from '@/lib/server-container';
 import {
-  getSettings,
   resetSettings,
   initializeSettings,
 } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import type { UpdateSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/update-settings.use-case';
 
 /**
@@ -24,7 +24,8 @@ export async function updateModel(model: string): Promise<{ ok: boolean; error?:
   }
 
   try {
-    const currentSettings = getSettings();
+    const loadSettingsUseCase = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const currentSettings = await loadSettingsUseCase.execute();
     const updatedSettings = {
       ...currentSettings,
       models: { default: model.trim() },

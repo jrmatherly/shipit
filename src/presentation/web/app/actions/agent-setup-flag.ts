@@ -1,14 +1,16 @@
 'use server';
 
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { resolve } from '@/lib/server-container';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 
 /**
  * Check whether onboarding has been completed.
- * Delegates to the in-memory settings singleton (zero DB overhead).
  */
 export async function isAgentSetupComplete(): Promise<boolean> {
   try {
-    return getSettings().onboardingComplete;
+    const useCase = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const settings = await useCase.execute();
+    return settings.onboardingComplete;
   } catch {
     return false;
   }

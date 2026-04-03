@@ -2,7 +2,7 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { readFile, stat } from 'fs/promises';
 import { extname, resolve } from 'path';
-import { getShipitAiHomeDir } from '@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service';
+import { getShipitAiHomeDir } from '@/lib/core-utils';
 
 const MIME_MAP: Record<string, string> = {
   '.png': 'image/png',

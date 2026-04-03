@@ -2,11 +2,7 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const mockGetSettings = vi.fn();
-vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
-  getSettings: mockGetSettings,
-}));
-
+const mockLoadSettingsExecute = vi.fn();
 const mockGetTerminalOpenConfig = vi.fn();
 const mockResolve = vi.fn();
 vi.mock('@/lib/server-container', () => ({
@@ -48,7 +44,7 @@ const { openShell } = await import('../../../../../src/presentation/web/app/acti
 describe('openShell server action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       environment: { shellPreference: 'zsh' },
     });
     mockExistsSync.mockReturnValue(true);
@@ -56,7 +52,12 @@ describe('openShell server action', () => {
     mockPlatform.mockReturnValue('darwin');
     mockIsAbsolute.mockImplementation((p: string) => /^\//.test(p));
     mockGetTerminalOpenConfig.mockReturnValue(null);
-    mockResolve.mockReturnValue({ getTerminalOpenConfig: mockGetTerminalOpenConfig });
+    mockResolve.mockImplementation((token: string) => {
+      if (token === 'LoadSettingsUseCase') return { execute: mockLoadSettingsExecute };
+      if (token === 'IToolInstallerService')
+        return { getTerminalOpenConfig: mockGetTerminalOpenConfig };
+      throw new Error(`Unknown token: ${token}`);
+    });
   });
 
   it('returns error for empty repositoryPath', async () => {
@@ -147,7 +148,7 @@ describe('openShell server action', () => {
 
   it('returns success with correct payload', async () => {
     mockPlatform.mockReturnValue('darwin');
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       environment: { shellPreference: 'fish' },
     });
 
@@ -205,7 +206,7 @@ describe('openShell server action', () => {
 
   it('uses DI container to resolve terminal config for non-system terminal', async () => {
     mockPlatform.mockReturnValue('darwin');
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       environment: { shellPreference: 'zsh', terminalPreference: 'warp' },
     });
     mockGetTerminalOpenConfig.mockReturnValue({
@@ -226,7 +227,7 @@ describe('openShell server action', () => {
 
   it('uses DI container with shell: true for terminals requiring shell spawn', async () => {
     mockPlatform.mockReturnValue('darwin');
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       environment: { shellPreference: 'zsh', terminalPreference: 'tmux' },
     });
     mockGetTerminalOpenConfig.mockReturnValue({
@@ -246,10 +247,11 @@ describe('openShell server action', () => {
 
   it('falls back to system terminal when DI resolve fails', async () => {
     mockPlatform.mockReturnValue('darwin');
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       environment: { shellPreference: 'zsh', terminalPreference: 'warp' },
     });
-    mockResolve.mockImplementation(() => {
+    mockResolve.mockImplementation((token: string) => {
+      if (token === 'LoadSettingsUseCase') return { execute: mockLoadSettingsExecute };
       throw new Error('DI not available');
     });
 

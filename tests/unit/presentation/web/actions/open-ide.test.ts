@@ -2,14 +2,14 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const mockGetSettings = vi.fn();
-vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
-  getSettings: mockGetSettings,
-}));
-
+const mockLoadSettingsExecute = vi.fn();
 const mockExecute = vi.fn();
 vi.mock('@/lib/server-container', () => ({
-  resolve: () => ({ execute: mockExecute }),
+  resolve: (token: string) => {
+    if (token === 'LoadSettingsUseCase') return { execute: mockLoadSettingsExecute };
+    // LaunchIdeUseCase and any other use-case tokens
+    return { execute: mockExecute };
+  },
 }));
 
 const mockIsAbsolute = vi.fn<(p: string) => boolean>();
@@ -23,7 +23,7 @@ const { openIde } = await import('../../../../../src/presentation/web/app/action
 describe('openIde server action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       environment: { defaultEditor: 'vscode' },
     });
     mockExecute.mockResolvedValue({
@@ -99,7 +99,7 @@ describe('openIde server action', () => {
   });
 
   it('returns error when use case returns unknown_editor', async () => {
-    mockGetSettings.mockReturnValue({
+    mockLoadSettingsExecute.mockResolvedValue({
       environment: { defaultEditor: 'unknown-editor' },
     });
     mockExecute.mockResolvedValue({

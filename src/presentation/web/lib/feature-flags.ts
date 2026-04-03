@@ -6,11 +6,25 @@
  * The debug flag is DB-only (no env var fallback).
  */
 
-import { hasSettings, getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { resolve } from '@/lib/server-container';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 
 function isEnabled(envVar: string | undefined): boolean {
   return envVar === 'true' || envVar === '1';
 }
+
+const ENV_FALLBACK_FLAGS = {
+  skills: () => isEnabled(process.env.NEXT_PUBLIC_FLAG_SKILLS),
+  envDeploy: () =>
+    process.env.NEXT_PUBLIC_FLAG_ENV_DEPLOY !== undefined
+      ? isEnabled(process.env.NEXT_PUBLIC_FLAG_ENV_DEPLOY)
+      : true,
+  debug: () => false,
+  githubImport: () => false,
+  adoptBranch: () => false,
+  gitRebaseSync: () => false,
+  reactFileManager: () => isEnabled(process.env.NEXT_PUBLIC_FLAG_REACT_FILE_MANAGER),
+};
 
 export interface FeatureFlagsState {
   skills: boolean;
@@ -22,64 +36,61 @@ export interface FeatureFlagsState {
   reactFileManager: boolean;
 }
 
-export function getFeatureFlags(): FeatureFlagsState {
+export async function getFeatureFlags(): Promise<FeatureFlagsState> {
   try {
-    if (hasSettings()) {
-      const flags = getSettings().featureFlags;
-      if (flags) {
-        return {
-          skills: flags.skills,
-          envDeploy: flags.envDeploy,
-          debug: flags.debug,
-          githubImport: flags.githubImport,
-          adoptBranch: flags.adoptBranch,
-          gitRebaseSync: flags.gitRebaseSync,
-          reactFileManager: flags.reactFileManager,
-        };
-      }
+    const useCase = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const settings = await useCase.execute();
+    const flags = settings.featureFlags;
+    if (flags) {
+      return {
+        skills: flags.skills,
+        envDeploy: flags.envDeploy,
+        debug: flags.debug,
+        githubImport: flags.githubImport,
+        adoptBranch: flags.adoptBranch,
+        gitRebaseSync: flags.gitRebaseSync,
+        reactFileManager: flags.reactFileManager,
+      };
     }
   } catch {
     // Settings not initialized (e.g., during build/SSG or client-side hydration)
   }
 
   return {
-    skills: isEnabled(process.env.NEXT_PUBLIC_FLAG_SKILLS),
-    envDeploy:
-      process.env.NEXT_PUBLIC_FLAG_ENV_DEPLOY !== undefined
-        ? isEnabled(process.env.NEXT_PUBLIC_FLAG_ENV_DEPLOY)
-        : true,
-    debug: false,
-    githubImport: false,
-    adoptBranch: false,
-    gitRebaseSync: false,
-    reactFileManager: isEnabled(process.env.NEXT_PUBLIC_FLAG_REACT_FILE_MANAGER),
+    skills: ENV_FALLBACK_FLAGS.skills(),
+    envDeploy: ENV_FALLBACK_FLAGS.envDeploy(),
+    debug: ENV_FALLBACK_FLAGS.debug(),
+    githubImport: ENV_FALLBACK_FLAGS.githubImport(),
+    adoptBranch: ENV_FALLBACK_FLAGS.adoptBranch(),
+    gitRebaseSync: ENV_FALLBACK_FLAGS.gitRebaseSync(),
+    reactFileManager: ENV_FALLBACK_FLAGS.reactFileManager(),
   };
 }
 
 /**
  * @deprecated Use getFeatureFlags() instead for DB-primary resolution.
- * Kept for backward compatibility during migration.
+ * Kept for backward compatibility during migration. Falls back to env vars only.
  */
 export const featureFlags = {
   get skills() {
-    return getFeatureFlags().skills;
+    return ENV_FALLBACK_FLAGS.skills();
   },
   get envDeploy() {
-    return getFeatureFlags().envDeploy;
+    return ENV_FALLBACK_FLAGS.envDeploy();
   },
   get debug() {
-    return getFeatureFlags().debug;
+    return ENV_FALLBACK_FLAGS.debug();
   },
   get githubImport() {
-    return getFeatureFlags().githubImport;
+    return ENV_FALLBACK_FLAGS.githubImport();
   },
   get adoptBranch() {
-    return getFeatureFlags().adoptBranch;
+    return ENV_FALLBACK_FLAGS.adoptBranch();
   },
   get gitRebaseSync() {
-    return getFeatureFlags().gitRebaseSync;
+    return ENV_FALLBACK_FLAGS.gitRebaseSync();
   },
   get reactFileManager() {
-    return getFeatureFlags().reactFileManager;
+    return ENV_FALLBACK_FLAGS.reactFileManager();
   },
 } as const;

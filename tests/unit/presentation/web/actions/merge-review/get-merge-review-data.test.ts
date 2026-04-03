@@ -20,6 +20,17 @@ vi.mock('@/lib/server-container', () => ({
         getFileDiffs: mockGetFileDiffs,
         getDefaultBranch: mockGetDefaultBranch,
       };
+    if (token === 'LoadSettingsUseCase')
+      return {
+        execute: () =>
+          Promise.resolve({
+            workflow: {
+              enableEvidence: false,
+              commitEvidence: false,
+              hideCiStatus: false,
+            },
+          }),
+      };
     throw new Error(`Unknown token: ${token}`);
   },
 }));
@@ -40,16 +51,6 @@ vi.mock('node:fs', () => {
   };
   return { ...mock, default: mock };
 });
-
-vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
-  getSettings: () => ({
-    workflow: {
-      enableEvidence: false,
-      commitEvidence: false,
-      hideCiStatus: false,
-    },
-  }),
-}));
 
 const { getMergeReviewData } =
   await import('../../../../../../src/presentation/web/app/actions/get-merge-review-data.js');

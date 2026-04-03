@@ -10,9 +10,8 @@ import type {
   MergeReviewData,
   MergeReviewEvidence,
 } from '@/components/common/merge-review/merge-review-config';
-import { computeWorktreePath } from '@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path';
-import { getShipitAiHomeDir } from '@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { computeWorktreePath, getShipitAiHomeDir } from '@/lib/core-utils';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 
 type GetMergeReviewDataResult = MergeReviewData | { error: string };
 
@@ -64,7 +63,8 @@ export async function getMergeReviewData(featureId: string): Promise<GetMergeRev
       return { error: 'Feature not found' };
     }
 
-    const { workflow } = getSettings();
+    const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const { workflow } = await loadSettings.execute();
 
     const pr = feature.pr
       ? {

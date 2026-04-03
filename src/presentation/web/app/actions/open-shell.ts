@@ -4,9 +4,9 @@ import { existsSync } from 'node:fs';
 import { platform } from 'node:os';
 import { isAbsolute } from 'node:path';
 import { spawn } from 'node:child_process';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
-import { computeWorktreePath } from '@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path';
+import { computeWorktreePath } from '@/lib/core-utils';
 import { resolve } from '@/lib/server-container';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import type { IToolInstallerService } from '@shipit-ai/core/application/ports/output/services/tool-installer.service';
 
 // Fallback commands for the "system" terminal when no tool metadata entry exists.
@@ -39,7 +39,8 @@ export async function openShell(
   }
 
   try {
-    const settings = getSettings();
+    const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const settings = await loadSettings.execute();
     const shell = settings.environment.shellPreference;
     const terminalPref = settings.environment.terminalPreference ?? 'system';
     const targetPath = branch ? computeWorktreePath(repositoryPath, branch) : repositoryPath;

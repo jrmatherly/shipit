@@ -2,16 +2,12 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const mockGetSettings = vi.fn();
+const mockLoadSettingsExecute = vi.fn();
 const mockResolve = vi.fn();
 const mockGetSupportedModels = vi.fn();
 
-vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
-  getSettings: mockGetSettings,
-}));
-
 vi.mock('@/lib/server-container', () => ({
-  resolve: mockResolve,
+  resolve: (...args: unknown[]) => mockResolve(...args),
 }));
 
 const { getSupportedModels } =
@@ -20,11 +16,15 @@ const { getSupportedModels } =
 describe('getSupportedModels server action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockResolve.mockReturnValue({ getSupportedModels: mockGetSupportedModels });
+    mockResolve.mockImplementation((token: string) => {
+      if (token === 'LoadSettingsUseCase') return { execute: mockLoadSettingsExecute };
+      if (token === 'IAgentExecutorFactory') return { getSupportedModels: mockGetSupportedModels };
+      throw new Error(`Unknown token: ${token}`);
+    });
   });
 
   it('calls getSupportedModels with the configured agent type', async () => {
-    mockGetSettings.mockReturnValue({ agent: { type: 'claude-code' } });
+    mockLoadSettingsExecute.mockResolvedValue({ agent: { type: 'claude-code' } });
     mockGetSupportedModels.mockReturnValue(['claude-opus-4-6', 'claude-sonnet-4-6']);
 
     const result = await getSupportedModels();
@@ -34,7 +34,7 @@ describe('getSupportedModels server action', () => {
   });
 
   it('resolves IAgentExecutorFactory from the container', async () => {
-    mockGetSettings.mockReturnValue({ agent: { type: 'gemini-cli' } });
+    mockLoadSettingsExecute.mockResolvedValue({ agent: { type: 'gemini-cli' } });
     mockGetSupportedModels.mockReturnValue(['gemini-2.5-pro']);
 
     await getSupportedModels();
@@ -43,9 +43,7 @@ describe('getSupportedModels server action', () => {
   });
 
   it('returns empty array when settings are not initialized', async () => {
-    mockGetSettings.mockImplementation(() => {
-      throw new Error('Settings not initialized');
-    });
+    mockLoadSettingsExecute.mockRejectedValue(new Error('Settings not initialized'));
 
     const result = await getSupportedModels();
 
@@ -53,8 +51,9 @@ describe('getSupportedModels server action', () => {
   });
 
   it('returns empty array when factory resolve fails', async () => {
-    mockGetSettings.mockReturnValue({ agent: { type: 'claude-code' } });
-    mockResolve.mockImplementation(() => {
+    mockLoadSettingsExecute.mockResolvedValue({ agent: { type: 'claude-code' } });
+    mockResolve.mockImplementation((token: string) => {
+      if (token === 'LoadSettingsUseCase') return { execute: mockLoadSettingsExecute };
       throw new Error('DI container not available');
     });
 
@@ -64,7 +63,7 @@ describe('getSupportedModels server action', () => {
   });
 
   it('passes gemini-cli agent type to factory correctly', async () => {
-    mockGetSettings.mockReturnValue({ agent: { type: 'gemini-cli' } });
+    mockLoadSettingsExecute.mockResolvedValue({ agent: { type: 'gemini-cli' } });
     mockGetSupportedModels.mockReturnValue(['gemini-3.1-pro', 'gemini-3-flash']);
 
     const result = await getSupportedModels();
@@ -74,7 +73,7 @@ describe('getSupportedModels server action', () => {
   });
 
   it('passes cursor agent type to factory correctly', async () => {
-    mockGetSettings.mockReturnValue({ agent: { type: 'cursor' } });
+    mockLoadSettingsExecute.mockResolvedValue({ agent: { type: 'cursor' } });
     mockGetSupportedModels.mockReturnValue(['claude-opus-4-6', 'gpt-5.4-high']);
 
     const result = await getSupportedModels();

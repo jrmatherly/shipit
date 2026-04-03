@@ -1,10 +1,11 @@
 import { notFound } from 'next/navigation';
 import { getSkills } from '@/lib/skills';
 import { SkillsPageClient } from '@/components/features/skills';
-import { featureFlags } from '@/lib/feature-flags';
+import { getFeatureFlags } from '@/lib/feature-flags';
 
 export default async function SkillsPage() {
-  if (!featureFlags.skills) notFound();
+  const flags = await getFeatureFlags();
+  if (!flags.skills) notFound();
 
   const skills = await getSkills();
 

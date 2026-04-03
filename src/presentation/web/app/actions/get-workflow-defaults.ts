@@ -1,6 +1,7 @@
 'use server';
 
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { resolve } from '@/lib/server-container';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 
 export interface WorkflowDefaults {
   approvalGates: {
@@ -17,7 +18,8 @@ export interface WorkflowDefaults {
 }
 
 export async function getWorkflowDefaults(): Promise<WorkflowDefaults> {
-  const settings = getSettings();
+  const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+  const settings = await loadSettings.execute();
   const { workflow } = settings;
 
   return {

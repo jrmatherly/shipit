@@ -2,8 +2,7 @@
 
 import { existsSync } from 'node:fs';
 import { resolve } from '@/lib/server-container';
-import { createDeploymentLogger } from '@shipit-ai/core/infrastructure/services/deployment/deployment-logger';
-import { computeWorktreePath } from '@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path';
+import { createDeploymentLogger, computeWorktreePath } from '@/lib/core-utils';
 import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
 import type { IDeploymentService } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 import { DeploymentState } from '@shipit-ai/core/domain/generated/output';

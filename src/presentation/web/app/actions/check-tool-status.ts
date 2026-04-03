@@ -1,7 +1,7 @@
 'use server';
 
 import { execFile } from 'node:child_process';
-import { IS_WINDOWS } from '@shipit-ai/core/infrastructure/platform';
+import { IS_WINDOWS } from '@/lib/core-utils';
 import { resolve } from '@/lib/server-container';
 import type { ListToolsUseCase } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 

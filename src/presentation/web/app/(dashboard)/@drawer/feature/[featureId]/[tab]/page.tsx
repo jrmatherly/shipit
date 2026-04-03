@@ -5,7 +5,7 @@ import type { IRepositoryRepository } from '@shipit-ai/core/application/ports/ou
 import type { IGitPrService } from '@shipit-ai/core/application/ports/output/services/git-pr-service.interface';
 import type { GetFeatureArtifactUseCase } from '@shipit-ai/core/application/use-cases/features/get-feature-artifact.use-case';
 import { buildFeatureNodeData } from '@/app/build-feature-node-data';
-import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import {
   computeDrawerView,
   parseTabKey,
@@ -42,7 +42,8 @@ export default async function FeatureDrawerTabPage({ params }: FeatureDrawerTabP
       gitPrService.getRemoteUrl(feature.repositoryPath).catch(() => null),
     ]);
 
-    const { workflow, interactiveAgent } = getSettings();
+    const loadSettings = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
+    const { workflow, interactiveAgent } = await loadSettings.execute();
     const nodeData = buildFeatureNodeData(feature, run, {
       repositoryName: repo?.name,
       baseBranch,
