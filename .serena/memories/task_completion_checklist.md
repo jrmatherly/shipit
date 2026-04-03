@@ -22,7 +22,7 @@ pnpm test:e2e       # Run if CLI/web behavior changed
 
 ## 4. TypeSpec (if domain models changed)
 ```bash
-pnpm tsp:compile    # Regenerate domain types
+pnpm tsp:codegen    # Compile TypeSpec + format generated output
 ```
 
 ## 5. Full Validation (recommended before commits)

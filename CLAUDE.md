@@ -75,10 +75,29 @@ Several former god classes are now **facades** delegating to focused sub-service
 - **pnpm patches:** Use `pnpm patch <pkg> → edit file → pnpm patch-commit <dir>` to create patches. Never hand-write patch files or edit node_modules directly — the lockfile won't match and CI fails with `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`. Always commit `pnpm-lock.yaml` alongside patch changes.
 - **Serena MCP:** Onboarded — use for semantic symbol navigation, find references, code overview
 - **Code Review Graph:** Built — use for impact analysis, flow tracing, PR review context
+- **IDE workflow linter:** `secrets.*` and dynamic `env.*` (set via `$GITHUB_ENV`) references in GitHub Actions workflows show "context access might be invalid" — these are false positives from static analysis.
+
+## CI Patterns
+
+- **Idempotent PR comments:** Use `peter-evans/find-comment@v4` + `create-or-update-comment@v5` with hidden HTML marker (`<!-- tag -->`) and `comment-id` + `edit-mode: replace`. The `comment-tag` input does NOT exist on this action.
+
+## CI/CD Publishing
+
+- **npm publishing:** Uses OIDC trusted publishing (no NPM_TOKEN). Requires `id-token: write` permission + `--provenance` flag. Trusted publisher configured on npmjs.com for `jrmatherly/shipit` → `ci.yml`.
+- **Releases:** `RELEASE_TOKEN` (fine-grained PAT) required for semantic-release to push version commits. Scoped to `jrmatherly/shipit` with contents:write, issues:write, pull-requests:write.
+- **gh CLI accounts:** Two accounts configured — `jrmatherly` (repo owner, needed for admin ops like deleting workflow runs) and `Jason-Matherly_aarons` (default active). Switch with `gh auth switch --user <name>`, always switch back after admin ops.
 
 ## Rules
 
 Additional rules auto-loaded from `.claude/rules/`: [cicd.md](.claude/rules/cicd.md), [code-quality.md](.claude/rules/code-quality.md), [commit-conventions.md](.claude/rules/commit-conventions.md), [integrity.md](.claude/rules/integrity.md), [operational-discipline.md](.claude/rules/operational-discipline.md).
+
+## Cross-Document Consistency
+
+CLAUDE.md is the canonical reference. When updating commands, paths, scopes, or rules here, also update:
+- `AGENTS.md` — generic agent instructions (`CURSOR.md` symlinks here)
+- `CONTRIBUTING.md` — human contributor guide (Node version, pnpm version, directory paths)
+- `CONTRIBUTING-AGENTS.md` — AI agent contributor guide (commit scopes, directory paths, co-author line)
+- `.serena/memories/` — Serena onboarding memories (commands, checklist)
 
 ## Mandatory Rules
 

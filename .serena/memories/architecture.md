@@ -1,41 +1,29 @@
-# Architecture
+# Architecture Overview
 
-## Clean Architecture (4 layers, dependencies point inward)
+Clean Architecture with 3 core layers + presentation:
+- `packages/core/src/domain/` — Business logic, no external deps
+- `packages/core/src/application/` — Use cases, port interfaces
+- `packages/core/src/infrastructure/` — DB, agents, services
+- `src/presentation/` — CLI, TUI, Web UI
 
-All core logic lives in `packages/core/src/`:
+## Decomposed Services (Phase 3, 2026-04-03)
+Former god classes are now **facades** delegating to focused sub-services:
+- InteractiveSessionService → SessionStateManager, SessionBootSequence, TurnExecutor, ChatStateBuilder, SubscriberNotifier
+- GitPrService → BranchDiscoveryService, PrCreationService, DiffAnalyzerService, CiStatusService, MergeStrategyService
+- FeatureCreateDrawer → PromptSection, WorkflowOptionsSection, ParentFeatureCombobox, RepositoryCombobox + useFeatureCreateForm
 
-1. **`domain/`** — Core business logic, no external deps
-   - `generated/` — TypeSpec-generated models (NEVER edit manually)
-   - `errors/` — Domain error types
-   - `factories/` — Entity factories
-   - `value-objects/` — Value object definitions
-   - `lifecycle-gates.ts` — Lifecycle gate logic
+## Presentation Boundaries
+- Infrastructure utilities via `src/presentation/web/lib/core-utils.ts`
+- Settings via `resolve<LoadSettingsUseCase>('LoadSettingsUseCase')` — never `getSettings()` directly
+- `dev-server.ts` is bootstrap code — direct infrastructure OK
 
-2. **`application/`** — Use cases and port interfaces
-   - `use-cases/` — Application use cases (the ONLY entry point for presentation layers)
-   - `ports/` — Output port interfaces (implemented by infrastructure)
-   - `services/` — Application-level services
+## DI
+- tsyringe with constructor injection
+- Container modules in `packages/core/src/infrastructure/di/modules/`
+- 8 domain modules: database, repositories, services, agents, notifications, use-cases, interactive, web-tokens
 
-3. **`infrastructure/`** — External concerns
-   - `di/` — Dependency injection container setup (tsyringe)
-   - `repositories/` — Repository implementations
-   - `persistence/` — Database layer (better-sqlite3)
-   - `services/` — Infrastructure services (agents, tools, etc.)
-
-4. **Presentation** (`src/presentation/`):
-   - `cli/` — Command-line interface
-   - `tui/` — Terminal UI
-   - `web/` — Next.js web application
-
-## Key Rules
-- Presentation layers are THIN — UI only, no business logic
-- Use cases are the API boundary between presentation and core
-- No direct infrastructure imports in application or presentation
-- All agent interactions go through `IAgentExecutorProvider` (no hardcoded agent types)
-- Path aliases:
-  - `@shipit-ai/core` / `@shipit-ai/core/*` → `packages/core/src/`
-  - `@/application/*`, `@/infrastructure/*`, `@/domain/*` → core layer shortcuts
-  - `@domain/generated/*` → `packages/core/src/domain/generated/`
-  - `@/app/*`, `@/components/*`, `@/lib/*`, `@/hooks/*`, `@/types/*` → web layer shortcuts
-  - `@/*` → `src/*`, `@cli/*` → `src/*`
-  - `@tests/*` → `tests/*`
+## Testing
+- Shared factories: `tests/factories/` (Feature, AgentRun, Repository, AgentSession)
+- Settings factory: `createDefaultSettings()` from domain
+- TypeSpec dates: all 31 fields are `Date` objects (emitter patched)
+- 5677 tests across 395 files

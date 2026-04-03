@@ -48,7 +48,7 @@
 | `pnpm format:web:check` | Check web formatting |
 | `pnpm typecheck` | TypeScript type checking |
 | `pnpm typecheck:web` | Typecheck web workspace only |
-| `pnpm validate` | All checks: lint:fix + format + typecheck + tsp:compile |
+| `pnpm validate` | All checks: lint:fix + format + typecheck + tsp (modifies files) |
 
 ## TypeSpec
 | Command | Purpose |
