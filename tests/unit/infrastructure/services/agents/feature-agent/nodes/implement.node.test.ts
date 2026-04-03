@@ -21,6 +21,7 @@
  */
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
+import * as yaml from 'js-yaml';
 
 // Suppress logger output
 vi.spyOn(process.stdout, 'write').mockImplementation(() => true);
@@ -83,7 +84,7 @@ vi.mock('@/infrastructure/services/agents/feature-agent/nodes/node-helpers.js', 
   markPhaseComplete: mockMarkPhaseComplete,
   buildExecutorOptions: vi.fn().mockReturnValue({ cwd: '/tmp/worktree', maxTurns: 5000 }),
   readSpecFile: mockReadSpecFile,
-  safeYamlLoad: vi.fn().mockReturnValue({}),
+  safeYamlLoad: vi.fn().mockImplementation((content: string) => yaml.load(content)),
   safeYamlDump: vi.fn().mockReturnValue('status: {}'),
   shouldInterrupt: mockShouldInterrupt,
   retryExecute: mockRetryExecute,
