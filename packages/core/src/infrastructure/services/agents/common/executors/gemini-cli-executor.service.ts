@@ -14,16 +14,12 @@ import type {
   AgentConfig,
 } from '../../../../../domain/generated/output.js';
 import type {
-  IAgentExecutor,
   AgentExecutionOptions,
   AgentExecutionResult,
   AgentExecutionStreamEvent,
 } from '../../../../../application/ports/output/agents/agent-executor.interface.js';
 import type { SpawnFunction } from '../types.js';
-import { getCurrentPhase, getLogPrefix } from '../../feature-agent/log-context.js';
-
-/** Maximum stderr accumulation size (bytes). Keeps the tail for most-recent errors. */
-const MAX_STDERR_BYTES = 100 * 1024; // 100 KB
+import { ExecutorBase } from './executor-base.js';
 
 /** Features supported by Gemini CLI */
 const SUPPORTED_FEATURES = new Set<string>(['session-resume', 'streaming', 'tool-scoping']);
@@ -32,22 +28,14 @@ const SUPPORTED_FEATURES = new Set<string>(['session-resume', 'streaming', 'tool
  * Executor service for Gemini CLI agent.
  * Uses subprocess spawning to interact with the `gemini` CLI.
  */
-export class GeminiCliExecutorService implements IAgentExecutor {
+export class GeminiCliExecutorService extends ExecutorBase {
   readonly agentType: AgentType = 'gemini-cli' as AgentType;
 
-  /** When true, suppresses debug logging (set per-call via options.silent) */
-  private silent = false;
+  private readonly authConfig?: AgentConfig;
 
-  constructor(
-    private readonly spawn: SpawnFunction,
-    private readonly authConfig?: AgentConfig
-  ) {}
-
-  /** Debug logging — writes to stdout so it appears in the worker log file */
-  private log(message: string): void {
-    if (this.silent) return;
-    const ts = new Date().toISOString();
-    process.stdout.write(`[${ts}] ${getCurrentPhase()}${getLogPrefix()}${message}\n`);
+  constructor(spawn: SpawnFunction, authConfig?: AgentConfig) {
+    super(spawn);
+    this.authConfig = authConfig;
   }
 
   supportsFeature(feature: AgentFeature): boolean {
@@ -76,49 +64,33 @@ export class GeminiCliExecutorService implements IAgentExecutor {
 
     return new Promise<AgentExecutionResult>((resolve, reject) => {
       let stdout = '';
-      let stderr = '';
-      let timedOut = false;
-      let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
-      if (options?.timeout) {
-        timeoutId = setTimeout(() => {
-          timedOut = true;
-          proc.kill();
-        }, options.timeout);
-      }
+      const timeout = this.createTimeoutHandler(proc, options?.timeout);
+      const stderrHandler = this.createStderrHandler();
 
       proc.stdout?.on('data', (chunk: Buffer | string) => {
         stdout += chunk.toString();
       });
 
-      proc.stderr?.on('data', (chunk: Buffer | string) => {
-        const data = chunk.toString();
-        stderr += data;
-        if (stderr.length > MAX_STDERR_BYTES) {
-          stderr = stderr.slice(-MAX_STDERR_BYTES);
-        }
-        this.log(`stderr: ${data.trimEnd()}`);
-      });
+      proc.stderr?.on('data', stderrHandler.handler);
 
       proc.on('error', (error: Error & { code?: string }) => {
-        this.log(`Process error event: ${error.message}`);
-        if (timeoutId) clearTimeout(timeoutId);
-        if (error.code === 'ENOENT') {
-          reject(
-            new Error(
-              'Gemini CLI ("gemini") not found. Please install it: https://github.com/google-gemini/gemini-cli'
-            )
-          );
-        } else {
-          reject(error);
-        }
+        reject(
+          this.handleProcessError(
+            error,
+            timeout.clear,
+            'Gemini CLI ("gemini") not found',
+            'Please install it: https://github.com/google-gemini/gemini-cli'
+          )
+        );
       });
 
       proc.on('close', (code: number | null) => {
+        const stderr = stderrHandler.getStderr();
         this.log(`Process closed with code ${code}, stdout=${stdout.length} chars`);
-        if (timeoutId) clearTimeout(timeoutId);
+        timeout.clear();
 
-        if (timedOut) {
+        if (timeout.isTimedOut()) {
           reject(new Error('Agent execution timed out'));
           return;
         }
@@ -171,90 +143,60 @@ export class GeminiCliExecutorService implements IAgentExecutor {
       proc.stdin.end();
     }
 
-    let lineBuffer = '';
-    let stderr = '';
+    const q = this.createStreamQueue();
+    const stderrHandler = this.createStderrHandler();
     let timedOut = false;
     let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
-    const queue: (AgentExecutionStreamEvent | null)[] = [];
-    let resolve: (() => void) | null = null;
     let error: Error | null = null;
-
-    function enqueue(event: AgentExecutionStreamEvent | null) {
-      queue.push(event);
-      if (resolve) {
-        resolve();
-        resolve = null;
-      }
-    }
-
-    function waitForItem(): Promise<void> {
-      if (queue.length > 0) return Promise.resolve();
-      return new Promise<void>((r) => {
-        resolve = r;
-      });
-    }
 
     if (options?.timeout) {
       timeoutId = setTimeout(() => {
         timedOut = true;
         proc.kill();
-        enqueue({ type: 'error', content: 'Agent execution timed out', timestamp: new Date() });
-        enqueue(null);
+        q.enqueue({ type: 'error', content: 'Agent execution timed out', timestamp: new Date() });
+        q.enqueue(null);
       }, options.timeout);
     }
 
-    proc.stdout?.on('data', (chunk: Buffer | string) => {
-      lineBuffer += chunk.toString();
-      const lines = lineBuffer.split('\n');
-      lineBuffer = lines.pop() ?? '';
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed) continue;
-        const event = this.parseStreamEvent(trimmed);
-        if (event) enqueue(event);
-      }
+    const lineBuffer = this.createLineBufferHandler((line) => {
+      const event = this.parseStreamEvent(line);
+      if (event) q.enqueue(event);
     });
 
-    proc.stderr?.on('data', (chunk: Buffer | string) => {
-      stderr += chunk.toString();
-      if (stderr.length > MAX_STDERR_BYTES) {
-        stderr = stderr.slice(-MAX_STDERR_BYTES);
-      }
-    });
+    proc.stdout?.on('data', lineBuffer.handler);
+    proc.stderr?.on('data', stderrHandler.handler);
 
     proc.on('error', (err: Error) => {
       if (timeoutId) clearTimeout(timeoutId);
       error = err;
-      enqueue(null);
+      q.enqueue(null);
     });
 
     proc.on('close', (code: number | null) => {
       if (timeoutId) clearTimeout(timeoutId);
       if (timedOut) return; // already handled by timeout callback
 
-      if (lineBuffer.trim()) {
-        const event = this.parseStreamEvent(lineBuffer.trim());
-        if (event) enqueue(event);
-      }
+      lineBuffer.flush();
+
+      const stderr = stderrHandler.getStderr();
       if (code !== 0 && code !== null) {
         const msg = stderr.trim()
           ? `Process exited with code ${code}: ${stderr.trim()}`
           : `Process exited with code ${code}`;
-        enqueue({ type: 'error', content: msg, timestamp: new Date() });
+        q.enqueue({ type: 'error', content: msg, timestamp: new Date() });
       } else {
         // Gemini CLI may exit 0 despite fatal API errors (e.g. 429 rate limits)
         const fatalError = this.detectFatalStderrError(stderr);
         if (fatalError) {
-          enqueue({ type: 'error', content: fatalError, timestamp: new Date() });
+          q.enqueue({ type: 'error', content: fatalError, timestamp: new Date() });
         }
       }
-      enqueue(null);
+      q.enqueue(null);
     });
 
     while (true) {
-      await waitForItem();
-      const item = queue.shift();
+      await q.waitForItem();
+      const item = q.shift();
       if (item === null || item === undefined) {
         if (error !== null) {
           yield {
@@ -394,30 +336,11 @@ export class GeminiCliExecutorService implements IAgentExecutor {
     return args;
   }
 
-  private buildSpawnOptions(options?: AgentExecutionOptions): Record<string, unknown> {
-    const spawnOpts: Record<string, unknown> = {};
-    if (options?.cwd) spawnOpts.cwd = options.cwd;
-
-    // Explicitly pipe stdio so streams are available even when parent disconnects
-    spawnOpts.stdio = ['pipe', 'pipe', 'pipe'];
-
-    // On Windows: windowsHide=true to prevent blank console windows.
-    // Gemini CLI is a native binary, so shell=true is NOT needed.
-    if (process.platform === 'win32') {
-      spawnOpts.windowsHide = true;
-    }
-
-    // Strip CLAUDECODE env var to prevent "nested session" error when shep
-    // is invoked from within a Claude Code session.
-    const { CLAUDECODE: _, ...cleanEnv } = process.env;
-
-    // Inject GEMINI_API_KEY when using token auth
+  protected override buildSpawnEnv(): Record<string, string | undefined> {
+    const env = super.buildSpawnEnv();
     if (this.authConfig?.authMethod === 'token' && this.authConfig.token) {
-      spawnOpts.env = { ...cleanEnv, GEMINI_API_KEY: this.authConfig.token };
-    } else {
-      spawnOpts.env = cleanEnv;
+      return { ...env, GEMINI_API_KEY: this.authConfig.token };
     }
-
-    return spawnOpts;
+    return env;
   }
 }

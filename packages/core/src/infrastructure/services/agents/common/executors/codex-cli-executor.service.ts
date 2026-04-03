@@ -17,17 +17,13 @@ import type {
   AgentConfig,
 } from '../../../../../domain/generated/output.js';
 import type {
-  IAgentExecutor,
   AgentExecutionOptions,
   AgentExecutionResult,
   AgentExecutionUsage,
   AgentExecutionStreamEvent,
 } from '../../../../../application/ports/output/agents/agent-executor.interface.js';
 import type { SpawnFunction } from '../types.js';
-import { getCurrentPhase, getLogPrefix } from '../../feature-agent/log-context.js';
-
-/** Maximum stderr accumulation size (bytes). Keeps the tail for most-recent errors. */
-const MAX_STDERR_BYTES = 100 * 1024; // 100 KB
+import { ExecutorBase } from './executor-base.js';
 
 /** Features supported by Codex CLI */
 const SUPPORTED_FEATURES = new Set<string>([
@@ -53,22 +49,14 @@ const FATAL_STDERR_PATTERNS = [
  * Executor service for OpenAI Codex CLI agent.
  * Uses subprocess spawning to interact with the `codex` CLI.
  */
-export class CodexCliExecutorService implements IAgentExecutor {
+export class CodexCliExecutorService extends ExecutorBase {
   readonly agentType: AgentType = 'codex-cli' as AgentType;
 
-  /** When true, suppresses debug logging (set per-call via options.silent) */
-  private silent = false;
+  private readonly authConfig?: AgentConfig;
 
-  constructor(
-    private readonly spawn: SpawnFunction,
-    private readonly authConfig?: AgentConfig
-  ) {}
-
-  /** Debug logging — writes to stdout so it appears in the worker log file */
-  private log(message: string): void {
-    if (this.silent) return;
-    const ts = new Date().toISOString();
-    process.stdout.write(`[${ts}] ${getCurrentPhase()}${getLogPrefix()}${message}\n`);
+  constructor(spawn: SpawnFunction, authConfig?: AgentConfig) {
+    super(spawn);
+    this.authConfig = authConfig;
   }
 
   supportsFeature(feature: AgentFeature): boolean {
@@ -114,22 +102,13 @@ export class CodexCliExecutorService implements IAgentExecutor {
       }
 
       return await new Promise<AgentExecutionResult>((resolve, reject) => {
-        let lineBuffer = '';
-        let stderr = '';
-        let timedOut = false;
-        let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
         // State accumulated from JSONL events
         let resultText = '';
         let sessionId: string | undefined;
         let usage: AgentExecutionUsage | undefined;
 
-        if (options?.timeout) {
-          timeoutId = setTimeout(() => {
-            timedOut = true;
-            proc.kill();
-          }, options.timeout);
-        }
+        const timeout = this.createTimeoutHandler(proc, options?.timeout);
+        const stderrHandler = this.createStderrHandler();
 
         const processLine = (line: string) => {
           this.logStreamEvent(line);
@@ -143,8 +122,6 @@ export class CodexCliExecutorService implements IAgentExecutor {
               type === 'item.completed' &&
               CodexCliExecutorService.MESSAGE_ITEM_TYPES.has(parsed.item?.type)
             ) {
-              // Accumulate response text from completed agent messages
-              // Codex CLI uses item.text directly; fallback to content blocks
               const text = this.extractItemText(parsed);
               if (text) resultText += text;
             } else if (type === 'turn.completed' && parsed.usage) {
@@ -155,45 +132,30 @@ export class CodexCliExecutorService implements IAgentExecutor {
           }
         };
 
-        proc.stdout?.on('data', (chunk: Buffer | string) => {
-          lineBuffer += chunk.toString();
-          const lines = lineBuffer.split('\n');
-          lineBuffer = lines.pop() ?? '';
-          for (const line of lines) {
-            const trimmed = line.trim();
-            if (trimmed) processLine(trimmed);
-          }
-        });
+        const lineBuffer = this.createLineBufferHandler(processLine);
 
-        proc.stderr?.on('data', (chunk: Buffer | string) => {
-          const data = chunk.toString();
-          stderr += data;
-          if (stderr.length > MAX_STDERR_BYTES) {
-            stderr = stderr.slice(-MAX_STDERR_BYTES);
-          }
-          this.log(`stderr: ${data.trimEnd()}`);
-        });
+        proc.stdout?.on('data', lineBuffer.handler);
+        proc.stderr?.on('data', stderrHandler.handler);
 
         proc.on('error', (error: Error & { code?: string }) => {
-          this.log(`Process error event: ${error.message}`);
-          if (timeoutId) clearTimeout(timeoutId);
-          if (error.code === 'ENOENT') {
-            reject(
-              new Error('Codex CLI ("codex") not found. Please install it: npm i -g @openai/codex')
-            );
-          } else {
-            reject(error);
-          }
+          reject(
+            this.handleProcessError(
+              error,
+              timeout.clear,
+              'Codex CLI ("codex") not found',
+              'Please install it: npm i -g @openai/codex'
+            )
+          );
         });
 
         proc.on('close', (code: number | null) => {
-          // Flush remaining buffer
-          if (lineBuffer.trim()) processLine(lineBuffer.trim());
+          lineBuffer.flush();
 
+          const stderr = stderrHandler.getStderr();
           this.log(`Process closed with code ${code}, result=${resultText.length} chars`);
-          if (timeoutId) clearTimeout(timeoutId);
+          timeout.clear();
 
-          if (timedOut) {
+          if (timeout.isTimedOut()) {
             reject(new Error('Agent execution timed out'));
             return;
           }
@@ -207,7 +169,6 @@ export class CodexCliExecutorService implements IAgentExecutor {
           }
 
           // Codex CLI may exit 0 despite fatal API errors.
-          // Check stderr for known fatal patterns before trusting the output.
           const fatalError = this.detectFatalStderrError(stderr);
           if (fatalError) {
             reject(new Error(fatalError));
@@ -265,39 +226,21 @@ export class CodexCliExecutorService implements IAgentExecutor {
         proc.stdin.end();
       }
 
-      let lineBuffer = '';
-      let stderr = '';
+      const q = this.createStreamQueue();
+      const stderrHandler = this.createStderrHandler();
       let timedOut = false;
       let timeoutId: ReturnType<typeof setTimeout> | undefined;
 
       // State accumulated across events
       let resultText = '';
-
-      const queue: (AgentExecutionStreamEvent | null)[] = [];
-      let resolve: (() => void) | null = null;
       let spawnError: Error | null = null;
-
-      function enqueue(event: AgentExecutionStreamEvent | null) {
-        queue.push(event);
-        if (resolve) {
-          resolve();
-          resolve = null;
-        }
-      }
-
-      function waitForItem(): Promise<void> {
-        if (queue.length > 0) return Promise.resolve();
-        return new Promise<void>((r) => {
-          resolve = r;
-        });
-      }
 
       if (options?.timeout) {
         timeoutId = setTimeout(() => {
           timedOut = true;
           proc.kill();
-          enqueue({ type: 'error', content: 'Agent execution timed out', timestamp: new Date() });
-          enqueue(null);
+          q.enqueue({ type: 'error', content: 'Agent execution timed out', timestamp: new Date() });
+          q.enqueue(null);
         }, options.timeout);
       }
 
@@ -315,14 +258,14 @@ export class CodexCliExecutorService implements IAgentExecutor {
           const isMessage = CodexCliExecutorService.MESSAGE_ITEM_TYPES.has(parsed.item?.type);
 
           if (type === 'item.started' && isMessage) {
-            enqueue({ type: 'progress', content: '', timestamp: new Date() });
+            q.enqueue({ type: 'progress', content: '', timestamp: new Date() });
             return;
           }
 
           if (type === 'item.updated' && isMessage) {
             const delta = this.extractDeltaText(parsed);
             if (delta) {
-              enqueue({ type: 'progress', content: delta, timestamp: new Date() });
+              q.enqueue({ type: 'progress', content: delta, timestamp: new Date() });
             }
             return;
           }
@@ -335,13 +278,13 @@ export class CodexCliExecutorService implements IAgentExecutor {
 
           if (type === 'item.started' && parsed.item?.type === 'command_execution') {
             const cmd = parsed.item.command ?? parsed.item.name ?? 'command';
-            enqueue({ type: 'progress', content: `Running: ${cmd}`, timestamp: new Date() });
+            q.enqueue({ type: 'progress', content: `Running: ${cmd}`, timestamp: new Date() });
             return;
           }
 
           if (type === 'item.completed' && parsed.item?.type === 'command_execution') {
             const exitCode = parsed.item.exit_code ?? '';
-            enqueue({
+            q.enqueue({
               type: 'progress',
               content: `Command completed (exit ${exitCode})`,
               timestamp: new Date(),
@@ -350,13 +293,13 @@ export class CodexCliExecutorService implements IAgentExecutor {
           }
 
           if (type === 'item.started' && parsed.item?.type === 'file_change') {
-            enqueue({ type: 'progress', content: 'Modifying files', timestamp: new Date() });
+            q.enqueue({ type: 'progress', content: 'Modifying files', timestamp: new Date() });
             return;
           }
 
           if (type === 'item.completed' && parsed.item?.type === 'file_change') {
             const file = parsed.item.file ?? parsed.item.path ?? '';
-            enqueue({
+            q.enqueue({
               type: 'progress',
               content: file ? `Modified: ${file}` : 'File change completed',
               timestamp: new Date(),
@@ -366,7 +309,7 @@ export class CodexCliExecutorService implements IAgentExecutor {
 
           if (type === 'turn.completed') {
             // Yield final result event
-            enqueue({
+            q.enqueue({
               type: 'result',
               content: resultText,
               timestamp: new Date(),
@@ -376,74 +319,60 @@ export class CodexCliExecutorService implements IAgentExecutor {
 
           if (type === 'turn.failed') {
             const msg = parsed.error?.message ?? parsed.message ?? 'Turn failed';
-            enqueue({ type: 'error', content: msg, timestamp: new Date() });
+            q.enqueue({ type: 'error', content: msg, timestamp: new Date() });
             return;
           }
 
           if (type === 'error') {
             const msg = parsed.message ?? parsed.error ?? 'Unknown error';
-            enqueue({ type: 'error', content: msg, timestamp: new Date() });
+            q.enqueue({ type: 'error', content: msg, timestamp: new Date() });
             return;
           }
 
           // Unknown event type — skip gracefully
         } catch {
           // Non-JSON line — emit as raw progress
-          enqueue({ type: 'progress', content: line, timestamp: new Date() });
+          q.enqueue({ type: 'progress', content: line, timestamp: new Date() });
         }
       };
 
-      proc.stdout?.on('data', (chunk: Buffer | string) => {
-        lineBuffer += chunk.toString();
-        const lines = lineBuffer.split('\n');
-        lineBuffer = lines.pop() ?? '';
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) continue;
-          processStreamLine(trimmed);
-        }
-      });
+      const lineBuffer = this.createLineBufferHandler(processStreamLine);
 
-      proc.stderr?.on('data', (chunk: Buffer | string) => {
-        stderr += chunk.toString();
-        if (stderr.length > MAX_STDERR_BYTES) {
-          stderr = stderr.slice(-MAX_STDERR_BYTES);
-        }
-      });
+      proc.stdout?.on('data', lineBuffer.handler);
+      proc.stderr?.on('data', stderrHandler.handler);
 
       proc.on('error', (err: Error) => {
         if (timeoutId) clearTimeout(timeoutId);
         spawnError = err;
-        enqueue(null);
+        q.enqueue(null);
       });
 
       proc.on('close', (code: number | null) => {
         if (timeoutId) clearTimeout(timeoutId);
         if (timedOut) return; // already handled by timeout callback
 
-        if (lineBuffer.trim()) {
-          processStreamLine(lineBuffer.trim());
-        }
+        lineBuffer.flush();
 
+        const stderr = stderrHandler.getStderr();
         if (code !== 0 && code !== null) {
           const msg = stderr.trim()
             ? `Process exited with code ${code}: ${stderr.trim()}`
             : `Process exited with code ${code}`;
-          enqueue({ type: 'error', content: msg, timestamp: new Date() });
+          q.enqueue({ type: 'error', content: msg, timestamp: new Date() });
         } else {
           // Check for fatal stderr patterns on exit 0
           const fatalError = this.detectFatalStderrError(stderr);
           if (fatalError) {
-            enqueue({ type: 'error', content: fatalError, timestamp: new Date() });
+            q.enqueue({ type: 'error', content: fatalError, timestamp: new Date() });
           }
         }
-        enqueue(null);
+        q.enqueue(null);
       });
 
       // Yield events as they arrive
       while (true) {
-        await waitForItem();
-        const item = queue.shift();
+        await q.waitForItem();
+        const item = q.shift();
         if (item === null || item === undefined) {
           if (spawnError !== null) {
             yield {
@@ -656,30 +585,12 @@ export class CodexCliExecutorService implements IAgentExecutor {
     return ['exec', '-', ...baseFlags];
   }
 
-  private buildSpawnOptions(_options?: AgentExecutionOptions): Record<string, unknown> {
-    const spawnOpts: Record<string, unknown> = {};
-
-    // Explicitly pipe stdio so streams are available even when parent disconnects
-    spawnOpts.stdio = ['pipe', 'pipe', 'pipe'];
-
-    // On Windows: windowsHide=true to prevent blank console windows.
-    // Codex CLI is a native Rust binary, so shell=true is NOT needed.
-    if (process.platform === 'win32') {
-      spawnOpts.windowsHide = true;
-    }
-
-    // Strip CLAUDECODE env var to prevent "nested session" error when shep
-    // is invoked from within a Claude Code session.
-    const { CLAUDECODE: _, ...cleanEnv } = process.env;
-
-    // Inject CODEX_API_KEY when using token auth
+  protected override buildSpawnEnv(): Record<string, string | undefined> {
+    const env = super.buildSpawnEnv();
     if (this.authConfig?.authMethod === 'token' && this.authConfig.token) {
-      spawnOpts.env = { ...cleanEnv, CODEX_API_KEY: this.authConfig.token };
-    } else {
-      spawnOpts.env = cleanEnv;
+      return { ...env, CODEX_API_KEY: this.authConfig.token };
     }
-
-    return spawnOpts;
+    return env;
   }
 
   /**

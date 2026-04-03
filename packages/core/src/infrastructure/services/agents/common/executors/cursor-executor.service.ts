@@ -15,13 +15,12 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import type { AgentType, AgentFeature } from '../../../../../domain/generated/output.js';
 import type {
-  IAgentExecutor,
   AgentExecutionOptions,
   AgentExecutionResult,
   AgentExecutionStreamEvent,
 } from '../../../../../application/ports/output/agents/agent-executor.interface.js';
 import type { SpawnFunction } from '../types.js';
-import { getCurrentPhase, getLogPrefix } from '../../feature-agent/log-context.js';
+import { ExecutorBase } from './executor-base.js';
 import { IS_WINDOWS } from '../../../../platform.js';
 
 /**
@@ -40,9 +39,6 @@ function toCursorModelName(model: string): string {
   return CURSOR_MODEL_MAP[model] ?? model;
 }
 
-/** Maximum stderr accumulation size (bytes). Keeps the tail for most-recent errors. */
-const MAX_STDERR_BYTES = 100 * 1024; // 100 KB
-
 /** Features supported by Cursor CLI */
 const SUPPORTED_FEATURES = new Set<string>(['session-resume', 'streaming']);
 
@@ -50,19 +46,11 @@ const SUPPORTED_FEATURES = new Set<string>(['session-resume', 'streaming']);
  * Executor service for Cursor agent.
  * Uses subprocess spawning to interact with the `cursor-agent` CLI.
  */
-export class CursorExecutorService implements IAgentExecutor {
+export class CursorExecutorService extends ExecutorBase {
   readonly agentType: AgentType = 'cursor' as AgentType;
 
-  /** When true, suppresses debug logging (set per-call via options.silent) */
-  private silent = false;
-
-  constructor(private readonly spawn: SpawnFunction) {}
-
-  /** Debug logging — writes to stdout so it appears in the worker log file */
-  private log(message: string): void {
-    if (this.silent) return;
-    const ts = new Date().toISOString();
-    process.stdout.write(`[${ts}] ${getCurrentPhase()}${getLogPrefix()}${message}\n`);
+  constructor(spawn: SpawnFunction) {
+    super(spawn);
   }
 
   supportsFeature(feature: AgentFeature): boolean {
@@ -78,16 +66,15 @@ export class CursorExecutorService implements IAgentExecutor {
     const { proc, tmpFile } = this.spawnAgent(prompt, args, options);
 
     return new Promise<AgentExecutionResult>((resolve, reject) => {
-      let lineBuffer = '';
-      let stderr = '';
-      let timedOut = false;
-      let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
       // Accumulated from JSON events or raw text fallback
       let resultText = '';
       let rawText = '';
       let sessionId: string | undefined;
       let metadata: Record<string, unknown> | undefined;
+      let timedOut = false;
+      let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+      const stderrHandler = this.createStderrHandler();
 
       if (options?.timeout) {
         timeoutId = setTimeout(() => {
@@ -117,38 +104,25 @@ export class CursorExecutorService implements IAgentExecutor {
               if (block.type === 'text' && block.text) resultText += block.text;
             }
           } else if (parsed.type === 'result') {
-            // json format puts the full result text in parsed.result
             if (typeof parsed.result === 'string' && parsed.result) resultText = parsed.result;
             if (parsed.session_id) sessionId = parsed.session_id;
             if (parsed.duration_ms !== undefined) {
               metadata = { ...metadata, duration_ms: parsed.duration_ms };
             }
           }
-          // user, system, thinking events: logged but don't affect result
         } catch {
           // Non-JSON output — accumulate as raw text fallback
           if (line.length > 0) rawText += `${line}\n`;
         }
       };
 
-      proc.stdout?.on('data', (chunk: Buffer | string) => {
-        lineBuffer += chunk.toString();
-        const lines = lineBuffer.split('\n');
-        lineBuffer = lines.pop() ?? '';
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (trimmed) processLine(trimmed);
-        }
-      });
+      const lineBuffer = this.createLineBufferHandler(processLine);
+
+      proc.stdout?.on('data', lineBuffer.handler);
 
       proc.stderr?.on('data', (chunk: Buffer | string) => {
+        stderrHandler.handler(chunk);
         const data = chunk.toString();
-        stderr += data;
-        if (stderr.length > MAX_STDERR_BYTES) {
-          stderr = stderr.slice(-MAX_STDERR_BYTES);
-        }
-        this.log(`stderr: ${data.trimEnd()}`);
-
         // Detect fatal errors early so callers don't waste time retrying
         if (data.includes('Cannot use this model')) {
           if (timeoutId) clearTimeout(timeoutId);
@@ -158,17 +132,17 @@ export class CursorExecutorService implements IAgentExecutor {
       });
 
       proc.on('error', (error: Error & { code?: string }) => {
-        this.log(`Process error event: ${error.message}`);
-        if (timeoutId) clearTimeout(timeoutId);
-        if (error.code === 'ENOENT') {
-          reject(
-            new Error(
-              'Cursor agent CLI not found. Please install Cursor and ensure the "cursor" command is available on PATH.'
-            )
-          );
-        } else {
-          reject(error);
-        }
+        const clearFn = () => {
+          if (timeoutId) clearTimeout(timeoutId);
+        };
+        reject(
+          this.handleProcessError(
+            error,
+            clearFn,
+            'Cursor agent CLI not found',
+            'Please install Cursor and ensure the "cursor" command is available on PATH.'
+          )
+        );
       });
 
       proc.on('close', (code: number | null) => {
@@ -180,9 +154,10 @@ export class CursorExecutorService implements IAgentExecutor {
             /* already removed or inaccessible */
           }
         }
-        if (lineBuffer.trim()) processLine(lineBuffer.trim());
+        lineBuffer.flush();
         // Use raw text as fallback when no JSON result was captured
         const finalText = resultText || rawText.trim();
+        const stderr = stderrHandler.getStderr();
         this.log(`Process closed with code ${code}, result=${finalText.length} chars`);
         if (timeoutId) clearTimeout(timeoutId);
 
@@ -211,50 +186,21 @@ export class CursorExecutorService implements IAgentExecutor {
     const args = this.buildStreamArgs(prompt, options);
     const { proc, tmpFile } = this.spawnAgent(prompt, args, options);
 
-    let lineBuffer = '';
-    let stderr = '';
-
-    const queue: (AgentExecutionStreamEvent | null)[] = [];
-    let resolve: (() => void) | null = null;
+    const q = this.createStreamQueue();
+    const stderrHandler = this.createStderrHandler();
     let error: Error | null = null;
 
-    function enqueue(event: AgentExecutionStreamEvent | null) {
-      queue.push(event);
-      if (resolve) {
-        resolve();
-        resolve = null;
-      }
-    }
-
-    function waitForItem(): Promise<void> {
-      if (queue.length > 0) return Promise.resolve();
-      return new Promise<void>((r) => {
-        resolve = r;
-      });
-    }
-
-    proc.stdout?.on('data', (chunk: Buffer | string) => {
-      lineBuffer += chunk.toString();
-      const lines = lineBuffer.split('\n');
-      lineBuffer = lines.pop() ?? '';
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed) continue;
-        const event = this.parseStreamLine(trimmed);
-        if (event) enqueue(event);
-      }
+    const lineBuffer = this.createLineBufferHandler((line) => {
+      const event = this.parseStreamLine(line);
+      if (event) q.enqueue(event);
     });
 
-    proc.stderr?.on('data', (chunk: Buffer | string) => {
-      stderr += chunk.toString();
-      if (stderr.length > MAX_STDERR_BYTES) {
-        stderr = stderr.slice(-MAX_STDERR_BYTES);
-      }
-    });
+    proc.stdout?.on('data', lineBuffer.handler);
+    proc.stderr?.on('data', stderrHandler.handler);
 
     proc.on('error', (err: Error) => {
       error = err;
-      enqueue(null);
+      q.enqueue(null);
     });
 
     proc.on('close', (code: number | null) => {
@@ -265,19 +211,17 @@ export class CursorExecutorService implements IAgentExecutor {
           /* already removed */
         }
       }
-      if (lineBuffer.trim()) {
-        const event = this.parseStreamLine(lineBuffer.trim());
-        if (event) enqueue(event);
-      }
+      lineBuffer.flush();
+      const stderr = stderrHandler.getStderr();
       if (code !== 0 && code !== null && stderr.trim()) {
-        enqueue({ type: 'error', content: stderr.trim(), timestamp: new Date() });
+        q.enqueue({ type: 'error', content: stderr.trim(), timestamp: new Date() });
       }
-      enqueue(null);
+      q.enqueue(null);
     });
 
     while (true) {
-      await waitForItem();
-      const item = queue.shift();
+      await q.waitForItem();
+      const item = q.shift();
       if (item === null || item === undefined) {
         if (error !== null) {
           yield {

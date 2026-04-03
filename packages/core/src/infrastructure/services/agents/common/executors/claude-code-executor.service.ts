@@ -11,18 +11,13 @@
 
 import type { AgentType, AgentFeature } from '../../../../../domain/generated/output.js';
 import type {
-  IAgentExecutor,
   AgentExecutionOptions,
   AgentExecutionResult,
   AgentExecutionUsage,
   AgentExecutionStreamEvent,
 } from '../../../../../application/ports/output/agents/agent-executor.interface.js';
 import type { SpawnFunction } from '../types.js';
-import { getCurrentPhase, getLogPrefix } from '../../feature-agent/log-context.js';
-import { IS_WINDOWS } from '../../../../platform.js';
-
-/** Maximum stderr accumulation size (bytes). Keeps the tail for most-recent errors. */
-const MAX_STDERR_BYTES = 100 * 1024; // 100 KB
+import { ExecutorBase } from './executor-base.js';
 
 /** Features supported by Claude Code CLI */
 const SUPPORTED_FEATURES = new Set<string>([
@@ -37,19 +32,11 @@ const SUPPORTED_FEATURES = new Set<string>([
  * Executor service for Claude Code agent.
  * Uses subprocess spawning to interact with the `claude` CLI.
  */
-export class ClaudeCodeExecutorService implements IAgentExecutor {
+export class ClaudeCodeExecutorService extends ExecutorBase {
   readonly agentType: AgentType = 'claude-code' as AgentType;
 
-  /** When true, suppresses debug logging (set per-call via options.silent) */
-  private silent = false;
-
-  constructor(private readonly spawn: SpawnFunction) {}
-
-  /** Debug logging — writes to stdout so it appears in the worker log file */
-  private log(message: string): void {
-    if (this.silent) return;
-    const ts = new Date().toISOString();
-    process.stdout.write(`[${ts}] ${getCurrentPhase()}${getLogPrefix()}${message}\n`);
+  constructor(spawn: SpawnFunction) {
+    super(spawn);
   }
 
   async execute(prompt: string, options?: AgentExecutionOptions): Promise<AgentExecutionResult> {
@@ -76,24 +63,14 @@ export class ClaudeCodeExecutorService implements IAgentExecutor {
     }
 
     return new Promise<AgentExecutionResult>((resolve, reject) => {
-      // Line-based parsing: only keep the data we need, not all of stdout
-      let lineBuffer = '';
-      let stderr = '';
-      let timedOut = false;
-      let timeoutId: ReturnType<typeof setTimeout> | undefined;
-
       // Collected from the stream — only the final result line matters
       let resultText = '';
       let sessionId: string | undefined;
       let usage: { inputTokens: number; outputTokens: number } | undefined;
       let metadata: Record<string, unknown> | undefined;
 
-      if (options?.timeout) {
-        timeoutId = setTimeout(() => {
-          timedOut = true;
-          proc.kill();
-        }, options.timeout);
-      }
+      const timeout = this.createTimeoutHandler(proc, options?.timeout);
+      const stderrHandler = this.createStderrHandler();
 
       const processLine = (line: string) => {
         this.logStreamEvent(line);
@@ -112,47 +89,30 @@ export class ClaudeCodeExecutorService implements IAgentExecutor {
         }
       };
 
-      proc.stdout?.on('data', (chunk: Buffer | string) => {
-        lineBuffer += chunk.toString();
-        const lines = lineBuffer.split('\n');
-        lineBuffer = lines.pop() ?? '';
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (trimmed) processLine(trimmed);
-        }
-      });
+      const lineBuffer = this.createLineBufferHandler(processLine);
 
-      proc.stderr?.on('data', (chunk: Buffer | string) => {
-        const data = chunk.toString();
-        stderr += data;
-        if (stderr.length > MAX_STDERR_BYTES) {
-          stderr = stderr.slice(-MAX_STDERR_BYTES);
-        }
-        this.log(`stderr: ${data.trimEnd()}`);
-      });
+      proc.stdout?.on('data', lineBuffer.handler);
+      proc.stderr?.on('data', stderrHandler.handler);
 
       proc.on('error', (error: Error & { code?: string }) => {
-        this.log(`Process error event: ${error.message}`);
-        if (timeoutId) clearTimeout(timeoutId);
-        if (error.code === 'ENOENT') {
-          reject(
-            new Error(
-              'Claude Code CLI ("claude") not found. Please install it: https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview'
-            )
-          );
-        } else {
-          reject(error);
-        }
+        reject(
+          this.handleProcessError(
+            error,
+            timeout.clear,
+            'Claude Code CLI ("claude") not found',
+            'Please install it: https://docs.anthropic.com/en/docs/agents-and-tools/claude-code/overview'
+          )
+        );
       });
 
       proc.on('close', (code: number | null) => {
-        // Flush remaining buffer
-        if (lineBuffer.trim()) processLine(lineBuffer.trim());
+        lineBuffer.flush();
 
+        const stderr = stderrHandler.getStderr();
         this.log(`Process closed with code ${code}, result=${resultText.length} chars`);
-        if (timeoutId) clearTimeout(timeoutId);
+        timeout.clear();
 
-        if (timedOut) {
+        if (timeout.isTimedOut()) {
           reject(new Error('Agent execution timed out'));
           return;
         }
@@ -185,80 +145,42 @@ export class ClaudeCodeExecutorService implements IAgentExecutor {
       proc.stdin.end();
     }
 
-    // Buffer for incomplete lines
-    let lineBuffer = '';
-    let stderr = '';
-
-    // Create an async queue to bridge event-based IO to async iteration
-    const queue: (AgentExecutionStreamEvent | null)[] = [];
-    let resolve: (() => void) | null = null;
+    const q = this.createStreamQueue();
+    const stderrHandler = this.createStderrHandler();
     let error: Error | null = null;
 
-    function enqueue(event: AgentExecutionStreamEvent | null) {
-      queue.push(event);
-      if (resolve) {
-        resolve();
-        resolve = null;
-      }
-    }
-
-    function waitForItem(): Promise<void> {
-      if (queue.length > 0) return Promise.resolve();
-      return new Promise<void>((r) => {
-        resolve = r;
-      });
-    }
-
-    proc.stdout?.on('data', (chunk: Buffer | string) => {
-      lineBuffer += chunk.toString();
-      const lines = lineBuffer.split('\n');
-      // Keep the last partial line in the buffer
-      lineBuffer = lines.pop() ?? '';
-
-      for (const line of lines) {
-        const trimmed = line.trim();
-        if (!trimmed) continue;
-
-        const event = this.parseStreamLine(trimmed);
-        if (event) {
-          enqueue(event);
-        }
-      }
+    const lineBuffer = this.createLineBufferHandler((line) => {
+      const event = this.parseStreamLine(line);
+      if (event) q.enqueue(event);
     });
 
-    proc.stderr?.on('data', (chunk: Buffer | string) => {
-      stderr += chunk.toString();
-      if (stderr.length > MAX_STDERR_BYTES) {
-        stderr = stderr.slice(-MAX_STDERR_BYTES);
-      }
-    });
+    proc.stdout?.on('data', lineBuffer.handler);
+
+    proc.stderr?.on('data', stderrHandler.handler);
 
     proc.on('error', (err: Error) => {
       error = err;
-      enqueue(null); // signal end
+      q.enqueue(null); // signal end
     });
 
     proc.on('close', (code: number | null) => {
-      // Process any remaining data in the buffer
-      if (lineBuffer.trim()) {
-        const event = this.parseStreamLine(lineBuffer.trim());
-        if (event) enqueue(event);
-      }
+      lineBuffer.flush();
 
+      const stderr = stderrHandler.getStderr();
       if (code !== 0 && code !== null && stderr.trim()) {
-        enqueue({
+        q.enqueue({
           type: 'error',
           content: stderr.trim(),
           timestamp: new Date(),
         });
       }
-      enqueue(null); // signal end
+      q.enqueue(null); // signal end
     });
 
     // Yield events as they arrive
     while (true) {
-      await waitForItem();
-      const item = queue.shift();
+      await q.waitForItem();
+      const item = q.shift();
       if (item === null || item === undefined) {
         if (error !== null) {
           yield {
@@ -346,31 +268,6 @@ export class ClaudeCodeExecutorService implements IAgentExecutor {
     // --no-chrome ensures it runs in non-interactive mode without browser integration
     args.push('--verbose', '--include-partial-messages', '--no-chrome');
     return args;
-  }
-
-  private buildSpawnOptions(options?: AgentExecutionOptions): Record<string, unknown> {
-    const spawnOpts: Record<string, unknown> = {};
-    if (options?.cwd) spawnOpts.cwd = options.cwd;
-
-    // Explicitly pipe stdio so streams are available even when parent disconnects
-    spawnOpts.stdio = ['pipe', 'pipe', 'pipe'];
-
-    // On Windows: windowsHide=true to prevent blank console windows.
-    // Do NOT use shell=true — it causes DEP0190 argument escaping issues
-    // and mangles prompts with special characters. The claude CLI is a
-    // native .exe, so spawn() finds it on PATH without shell.
-    if (IS_WINDOWS) {
-      spawnOpts.windowsHide = true;
-    }
-
-    // Strip CLAUDECODE env var to prevent "nested session" error when shep
-    // is invoked from within a Claude Code session. The claude CLI checks for
-    // this variable and refuses to start if it's set.
-
-    const { CLAUDECODE: _, ...cleanEnv } = process.env;
-    spawnOpts.env = cleanEnv;
-
-    return spawnOpts;
   }
 
   private parseJsonResult(stdout: string): AgentExecutionResult {

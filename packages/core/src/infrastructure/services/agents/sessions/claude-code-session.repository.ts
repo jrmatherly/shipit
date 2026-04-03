@@ -23,17 +23,8 @@ import type {
   AgentSessionMessage,
   AgentType,
 } from '../../../../domain/generated/output.js';
-import type {
-  IAgentSessionRepository,
-  ListSessionsOptions,
-  GetSessionOptions,
-} from '../../../../application/ports/output/agents/agent-session-repository.interface.js';
-
-interface SessionFileInfo {
-  id: string;
-  filePath: string;
-  mtime: Date;
-}
+import type { ListSessionsOptions } from '../../../../application/ports/output/agents/agent-session-repository.interface.js';
+import { SessionRepositoryBase, type SessionFileInfo } from './session-repository-base.js';
 
 /**
  * A parsed line entry from a Claude Code JSONL session file.
@@ -68,11 +59,9 @@ export interface SessionMetadata {
 }
 
 @injectable()
-export class ClaudeCodeSessionRepository implements IAgentSessionRepository {
-  constructor(private readonly basePath: string = path.join(os.homedir(), '.claude', 'projects')) {}
-
-  isSupported(): boolean {
-    return true;
+export class ClaudeCodeSessionRepository extends SessionRepositoryBase {
+  constructor(basePath: string = path.join(os.homedir(), '.claude', 'projects')) {
+    super(basePath);
   }
 
   async list(options?: ListSessionsOptions): Promise<AgentSession[]> {
@@ -104,25 +93,6 @@ export class ClaudeCodeSessionRepository implements IAgentSessionRepository {
     return sessions;
   }
 
-  async findById(id: string, options?: GetSessionOptions): Promise<AgentSession | null> {
-    const messageLimit = options?.messageLimit ?? 20;
-
-    const match = await this.findSessionFile(id);
-    if (match === null) return null;
-
-    try {
-      const stat = await fs.stat(match.filePath);
-      const fileInfo: SessionFileInfo = {
-        id: match.resolvedId,
-        filePath: match.filePath,
-        mtime: stat.mtime,
-      };
-      return await this.parseSessionFile(fileInfo, { includeMessages: true, messageLimit });
-    } catch {
-      return null;
-    }
-  }
-
   /**
    * Collect session files only from the directory matching the given project path.
    * Claude Code encodes project paths as directory names by replacing '/', '\', and '.'
@@ -147,7 +117,7 @@ export class ClaudeCodeSessionRepository implements IAgentSessionRepository {
   }
 
   /** Collect all depth-1 .jsonl session files with mtime from all project directories */
-  private async collectSessionFiles(): Promise<SessionFileInfo[]> {
+  protected async collectSessionFiles(): Promise<SessionFileInfo[]> {
     let entries: Dirent[];
     try {
       entries = await fs.readdir(this.basePath, { withFileTypes: true, encoding: 'utf-8' });
@@ -200,7 +170,7 @@ export class ClaudeCodeSessionRepository implements IAgentSessionRepository {
    * Supports prefix matching so users can pass truncated IDs (e.g. first 8 chars).
    * Returns the match info or null if not found / ambiguous.
    */
-  private async findSessionFile(
+  protected async findSessionFile(
     id: string
   ): Promise<{ filePath: string; resolvedId: string } | null> {
     let entries: Dirent[];
@@ -255,7 +225,7 @@ export class ClaudeCodeSessionRepository implements IAgentSessionRepository {
    *
    * Throws on any JSON parse failure so the caller can skip the file.
    */
-  private async parseSessionFile(
+  protected async parseSessionFile(
     fileInfo: SessionFileInfo,
     options: { includeMessages: boolean; messageLimit?: number }
   ): Promise<AgentSession | null> {
@@ -413,15 +383,5 @@ export class ClaudeCodeSessionRepository implements IAgentSessionRepository {
       }
     }
     return '';
-  }
-
-  /** Replace home directory prefix with ~ in a file path */
-  private abbreviatePath(filePath: string): string {
-    const home = os.homedir();
-    if (filePath === home) return '~';
-    if (filePath.startsWith(`${home}${path.sep}`)) {
-      return `~${filePath.slice(home.length)}`;
-    }
-    return filePath;
   }
 }

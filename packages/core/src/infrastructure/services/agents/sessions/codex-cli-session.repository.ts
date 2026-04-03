@@ -25,23 +25,13 @@ import type {
   AgentSessionMessage,
   AgentType,
 } from '../../../../domain/generated/output.js';
-import type {
-  IAgentSessionRepository,
-  ListSessionsOptions,
-  GetSessionOptions,
-} from '../../../../application/ports/output/agents/agent-session-repository.interface.js';
+import type { ListSessionsOptions } from '../../../../application/ports/output/agents/agent-session-repository.interface.js';
+import { SessionRepositoryBase, type SessionFileInfo } from './session-repository-base.js';
 
 interface SessionIndexEntry {
   id: string;
   thread_name?: string;
   updated_at?: string;
-}
-
-interface SessionFileInfo {
-  id: string;
-  filePath: string;
-  mtime: Date;
-  threadName?: string;
 }
 
 /** Parsed response_item payload from a Codex rollout file */
@@ -72,8 +62,10 @@ interface SessionMetaPayload {
 }
 
 @injectable()
-export class CodexCliSessionRepository implements IAgentSessionRepository {
-  constructor(private readonly basePath: string = CodexCliSessionRepository.resolveCodexHome()) {}
+export class CodexCliSessionRepository extends SessionRepositoryBase {
+  constructor(basePath: string = CodexCliSessionRepository.resolveCodexHome()) {
+    super(basePath);
+  }
 
   /**
    * Resolve the Codex home directory.
@@ -81,10 +73,6 @@ export class CodexCliSessionRepository implements IAgentSessionRepository {
    */
   static resolveCodexHome(): string {
     return process.env.CODEX_HOME ?? path.join(os.homedir(), '.codex');
-  }
-
-  isSupported(): boolean {
-    return true;
   }
 
   async list(options?: ListSessionsOptions): Promise<AgentSession[]> {
@@ -113,43 +101,8 @@ export class CodexCliSessionRepository implements IAgentSessionRepository {
       return toReturn.map((entry) => this.indexEntryToSession(entry));
     }
 
-    // Fallback: scan rollout files directly
-    const fileInfos = await this.collectSessionFiles();
-    fileInfos.sort((a, b) => b.mtime.getTime() - a.mtime.getTime());
-
-    const toParse = limit > 0 ? fileInfos.slice(0, limit) : fileInfos;
-
-    const parseResults = await Promise.allSettled(
-      toParse.map((fi) => this.parseRolloutFile(fi, { includeMessages: false }))
-    );
-
-    const sessions: AgentSession[] = [];
-    for (const result of parseResults) {
-      if (result.status === 'fulfilled' && result.value !== null) {
-        sessions.push(result.value);
-      }
-    }
-
-    return sessions;
-  }
-
-  async findById(id: string, options?: GetSessionOptions): Promise<AgentSession | null> {
-    const messageLimit = options?.messageLimit ?? 20;
-
-    const match = await this.findSessionFile(id);
-    if (match === null) return null;
-
-    try {
-      const stat = await fs.stat(match.filePath);
-      const fileInfo: SessionFileInfo = {
-        id: match.resolvedId,
-        filePath: match.filePath,
-        mtime: stat.mtime,
-      };
-      return await this.parseRolloutFile(fileInfo, { includeMessages: true, messageLimit });
-    } catch {
-      return null;
-    }
+    // Fallback: scan rollout files directly via base class pattern
+    return super.list(options);
   }
 
   /** Read and parse the session_index.jsonl file */
@@ -191,7 +144,7 @@ export class CodexCliSessionRepository implements IAgentSessionRepository {
    * Recursively collect all rollout .jsonl files from the sessions/ directory.
    * Structure: sessions/YYYY/MM/DD/rollout-<timestamp>-<id>.jsonl
    */
-  private async collectSessionFiles(): Promise<SessionFileInfo[]> {
+  protected async collectSessionFiles(): Promise<SessionFileInfo[]> {
     const sessionsDir = path.join(this.basePath, 'sessions');
     const fileInfos: SessionFileInfo[] = [];
 
@@ -261,31 +214,17 @@ export class CodexCliSessionRepository implements IAgentSessionRepository {
    * Find a session rollout file by ID.
    * Scans the sessions/ directory recursively for a file containing the given ID.
    */
-  private async findSessionFile(
+  protected async findSessionFile(
     id: string
   ): Promise<{ filePath: string; resolvedId: string } | null> {
     const fileInfos = await this.collectSessionFiles();
-
-    // Exact match first
-    for (const fi of fileInfos) {
-      if (fi.id === id) {
-        return { filePath: fi.filePath, resolvedId: fi.id };
-      }
-    }
-
-    // Prefix match
-    const matches = fileInfos.filter((fi) => fi.id.startsWith(id));
-    if (matches.length === 1) {
-      return { filePath: matches[0].filePath, resolvedId: matches[0].id };
-    }
-
-    return null;
+    return this.findByIdInFileInfos(fileInfos, id);
   }
 
   /**
    * Parse a Codex CLI rollout JSONL file into an AgentSession.
    */
-  private async parseRolloutFile(
+  protected async parseSessionFile(
     fileInfo: SessionFileInfo,
     options: { includeMessages: boolean; messageLimit?: number }
   ): Promise<AgentSession | null> {
@@ -421,15 +360,5 @@ export class CodexCliSessionRepository implements IAgentSessionRepository {
       }
     }
     return parts.join('\n');
-  }
-
-  /** Replace home directory prefix with ~ */
-  private abbreviatePath(filePath: string): string {
-    const home = os.homedir();
-    if (filePath === home) return '~';
-    if (filePath.startsWith(`${home}${path.sep}`)) {
-      return `~${filePath.slice(home.length)}`;
-    }
-    return filePath;
   }
 }
