@@ -56,7 +56,7 @@ export class ReviewFeatureUseCase {
     // Find agent run
     if (!feature.agentRunId) return { success: false, reason: 'Feature has no agent run' };
     const run = await this.agentRunRepository.findById(feature.agentRunId);
-    if (!run || run.status !== AgentRunStatus.waitingApproval) {
+    if (run?.status !== AgentRunStatus.waitingApproval) {
       return {
         success: false,
         reason: `Feature is not waiting for approval (status: ${run?.status ?? 'unknown'})`,

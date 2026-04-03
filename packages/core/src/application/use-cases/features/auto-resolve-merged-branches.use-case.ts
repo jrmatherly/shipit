@@ -138,7 +138,7 @@ export class AutoResolveMergedBranchesUseCase {
     if (branchPr?.state === PrStatus.Merged) {
       // Update the feature's PR data to reflect the merged PR
       const freshFeature = await this.featureRepo.findById(feature.id);
-      if (freshFeature && freshFeature.lifecycle === SdlcLifecycle.Review) {
+      if (freshFeature?.lifecycle === SdlcLifecycle.Review) {
         freshFeature.pr = {
           ...(freshFeature.pr ?? {
             url: branchPr.url,
@@ -183,7 +183,7 @@ export class AutoResolveMergedBranchesUseCase {
   private async resolveFeature(feature: Feature): Promise<boolean> {
     // Re-fetch to avoid races with other processes
     const freshFeature = await this.featureRepo.findById(feature.id);
-    if (!freshFeature || freshFeature.lifecycle !== SdlcLifecycle.Review) {
+    if (freshFeature?.lifecycle !== SdlcLifecycle.Review) {
       return false;
     }
 

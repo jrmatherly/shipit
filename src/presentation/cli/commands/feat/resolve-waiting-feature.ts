@@ -60,7 +60,7 @@ async function resolveExplicit(
   }
 
   const run = await runRepo.findById(feature.agentRunId);
-  if (!run || run.status !== AgentRunStatus.waitingApproval) {
+  if (run?.status !== AgentRunStatus.waitingApproval) {
     throw new Error(
       t('cli:commands.feat.resolveWaiting.notWaitingForApproval', {
         name: feature.name,
@@ -84,7 +84,7 @@ async function resolveAuto(
   for (const feature of features) {
     if (!feature.agentRunId) continue;
     const run = await runRepo.findById(feature.agentRunId);
-    if (run && run.status === AgentRunStatus.waitingApproval) {
+    if (run?.status === AgentRunStatus.waitingApproval) {
       waiting.push({ feature, run });
     }
   }
