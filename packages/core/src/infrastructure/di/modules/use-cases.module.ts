@@ -40,6 +40,7 @@ import { UnarchiveFeatureUseCase } from '../../../application/use-cases/features
 import { RebaseFeatureOnMainUseCase } from '../../../application/use-cases/features/rebase-feature-on-main.use-case.js';
 import { GetBranchSyncStatusUseCase } from '../../../application/use-cases/features/get-branch-sync-status.use-case.js';
 import { AutoResolveMergedBranchesUseCase } from '../../../application/use-cases/features/auto-resolve-merged-branches.use-case.js';
+import { PollAgentEventsUseCase } from '../../../application/use-cases/agents/poll-agent-events.use-case.js';
 
 // Tool use cases
 import { ValidateToolAvailabilityUseCase } from '../../../application/use-cases/tools/validate-tool-availability.use-case.js';
@@ -90,6 +91,7 @@ export function registerUseCasesModule(container: DependencyContainer): void {
   container.registerSingleton(ApproveAgentRunUseCase);
   container.registerSingleton(RejectAgentRunUseCase);
   container.registerSingleton(ReviewFeatureUseCase);
+  container.registerSingleton(PollAgentEventsUseCase);
 
   // Feature creation utilities
   container.registerSingleton(MetadataGenerator);
