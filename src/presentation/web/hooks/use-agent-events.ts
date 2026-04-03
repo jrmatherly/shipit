@@ -204,7 +204,11 @@ function connectDirectEventSource(
     };
 
     es.addEventListener('notification', ((event: MessageEvent) => {
-      const parsed: NotificationEvent = JSON.parse(event.data);
+      const raw = JSON.parse(event.data);
+      const parsed: NotificationEvent = {
+        ...raw,
+        timestamp: new Date(raw.timestamp),
+      };
       setEvents((prev) => {
         const next = [...prev, parsed];
         return next.length > MAX_EVENTS ? next.slice(-PRUNE_KEEP) : next;
