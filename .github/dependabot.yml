@@ -1,0 +1,31 @@
+version: 2
+
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 10
+    groups:
+      storybook:
+        patterns:
+          - '@storybook/*'
+          - storybook
+          - eslint-plugin-storybook
+      typespec:
+        patterns:
+          - '@typespec/*'
+          - '@typespec-tools/*'
+      testing:
+        patterns:
+          - vitest
+          - '@vitejs/*'
+          - jsdom
+          - playwright
+          - '@playwright/*'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5

@@ -47,6 +47,11 @@
             "type": "command",
             "command": ".claude/hooks/check-layer-violations.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-mock-completeness.sh",
+            "timeout": 5
           }
         ]
       }
