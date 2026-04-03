@@ -287,6 +287,7 @@ jobs:
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build:release
 
@@ -294,9 +295,8 @@ jobs:
         id: semantic
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        run: npx semantic-release
+        run: npx semantic-release --provenance
 
   # ===========================================================================
   # Dev Release (PRs only, after ALL jobs pass)
@@ -320,6 +320,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
+      id-token: write
 
     steps:
       - uses: actions/checkout@v6
@@ -346,11 +347,10 @@ jobs:
 
       - name: 🚀 Publish npm dev release
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
           DEV_VERSION: ${{ steps.devver.outputs.version }}
         run: |
           npm version "$DEV_VERSION" --no-git-tag-version
-          npm publish --tag dev --access public
+          npm publish --tag dev --access public --provenance
 
       - name: 🔍 Find existing dev release comment
         uses: peter-evans/find-comment@v4
