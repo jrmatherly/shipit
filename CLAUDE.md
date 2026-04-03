@@ -62,12 +62,16 @@ See [clean-architecture](./docs/architecture/clean-architecture.md). Sub-directo
 - **Serena MCP:** Onboarded — use for semantic symbol navigation, find references, code overview
 - **Code Review Graph:** Built — use for impact analysis, flow tracing, PR review context
 
+## Rules
+
+Additional rules auto-loaded from `.claude/rules/`: [cicd.md](.claude/rules/cicd.md), [code-quality.md](.claude/rules/code-quality.md), [commit-conventions.md](.claude/rules/commit-conventions.md), [integrity.md](.claude/rules/integrity.md), [operational-discipline.md](.claude/rules/operational-discipline.md).
+
 ## Mandatory Rules
 
 - **MANDATORY — TDD**: Write failing tests FIRST (RED → GREEN → REFACTOR). Every plan phase must define explicit TDD cycles. See [tdd-guide](./docs/development/tdd-guide.md).
 - **MANDATORY — TypeSpec-first**: Domain models defined in `tsp/`. Run `pnpm tsp:codegen` to generate `packages/core/src/domain/generated/output.ts`. Never edit generated files. See [typespec-guide](./docs/development/typespec-guide.md).
 - **MANDATORY — Agent resolution**: No component may hardcode an agent type. All resolution flows through `IAgentExecutorProvider`. See [AGENTS.md](./AGENTS.md).
-- **MANDATORY — Storybook stories**: Every web UI component MUST have a colocated `.stories.tsx` file. Commits without stories will be rejected.
+- **MANDATORY — Storybook stories**: Every web UI component MUST have a colocated `.stories.tsx` file. Not yet enforced by pre-commit hooks — self-enforce.
 - **MANDATORY — Spec-driven**: All features start with `/shep-kit:new-feature`. No implementation without a spec.
 - **MANDATORY — Own every failure**: You are the ONLY developer. Every test failure, CI failure, and security scan failure is YOUR responsibility. NEVER use the words "unrelated", "pre-existing", or "not our changes". See [integrity rules](./.claude/rules/integrity.md).
 
@@ -76,7 +80,9 @@ See [clean-architecture](./docs/architecture/clean-architecture.md). Sub-directo
 [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>): <subject>`
 
 | Types | feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert |
-| Scopes | specs, shep-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
+| Scopes (recommended) | specs, shep-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
+
+Scopes are enforced at warning level by commitlint — commits succeed but prefer using listed scopes.
 
 ## Key Docs
 
@@ -114,7 +120,7 @@ See [clean-architecture](./docs/architecture/clean-architecture.md). Sub-directo
 
 Active remediation plan: [`.scratchpad/plans/technical-debt-remediation-plan.md`](./.scratchpad/plans/technical-debt-remediation-plan.md) (74 findings across 5 dimensions). Phase 0 (Security) and Phase 1 (Quick Wins) are complete. Check the plan before starting new work that touches affected areas.
 
-## General
+## Working Practices
 ### 1. Self-Improvement Loop
 - After ANY correction from the user: update `LESSONS.md` (project root) with the pattern
 - Write rules for yourself that prevent the same mistake

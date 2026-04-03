@@ -1,8 +1,34 @@
 {
   "permissions": {
-    "allow": ["mcp__plugin_playwright_playwright__browser_take_screenshot"]
+    "allow": [
+      "mcp__plugin_playwright_playwright__browser_take_screenshot",
+      "Bash(pnpm build)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm test)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm validate)",
+      "Bash(pnpm tsp:*)",
+      "Bash(pnpm dev:*)",
+      "Bash(pnpm typecheck)",
+      "Bash(gh run list *)",
+      "Bash(gh run watch *)",
+      "Bash(gh pr *)"
+    ]
   },
   "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/block-generated-files.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
     "PostToolUse": [
       {
         "matcher": "Edit|Write",
@@ -11,6 +37,16 @@
             "type": "command",
             "command": ".claude/hooks/format-tsp.sh",
             "timeout": 30
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-story-exists.sh",
+            "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/check-layer-violations.sh",
+            "timeout": 5
           }
         ]
       }

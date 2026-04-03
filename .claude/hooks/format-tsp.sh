@@ -29,10 +29,11 @@ if [[ "$FILE_PATH" == *.tsp ]]; then
   if [ -n "$PROJECT_DIR" ]; then
     cd "$PROJECT_DIR"
 
-    # Format the specific TypeSpec file
     if command -v pnpm &> /dev/null; then
-      # Use project's prettier with TypeSpec plugin
+      # Format the specific TypeSpec file
       pnpm exec prettier --write "$FILE_PATH" 2>/dev/null || true
+      # Recompile TypeSpec to keep generated output in sync
+      pnpm tsp:codegen 2>/dev/null || true
     fi
   fi
 fi
