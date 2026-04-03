@@ -275,6 +275,8 @@ export function AdoptBranchDrawer({
                     variant="outline"
                     role="combobox"
                     aria-expanded={comboboxOpen}
+                    aria-invalid={!!error}
+                    aria-describedby={error ? 'adopt-branch-error-msg' : undefined}
                     disabled={isSubmitting || !hasRepo}
                     className="w-full justify-between font-normal"
                     data-testid="adopt-branch-input"
@@ -349,7 +351,12 @@ export function AdoptBranchDrawer({
             </div>
 
             {error ? (
-              <p className="text-destructive text-sm" data-testid="adopt-branch-error">
+              <p
+                id="adopt-branch-error-msg"
+                className="text-destructive text-sm"
+                role="alert"
+                data-testid="adopt-branch-error"
+              >
                 {error}
               </p>
             ) : null}

@@ -124,6 +124,8 @@ export function AgentModelPicker({
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            aria-invalid={!!error}
+            aria-describedby={error ? 'agent-model-picker-error' : undefined}
             disabled={isDisabled}
             className="w-auto cursor-pointer justify-start font-normal hover:border-violet-300 hover:bg-violet-50/50 dark:hover:border-violet-700 dark:hover:bg-violet-950/30"
           >
@@ -238,7 +240,11 @@ export function AgentModelPicker({
           </div>
         </PopoverContent>
       </Popover>
-      {Boolean(error) && <p className="text-destructive text-sm">{error}</p>}
+      {Boolean(error) && (
+        <p id="agent-model-picker-error" className="text-destructive text-sm" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

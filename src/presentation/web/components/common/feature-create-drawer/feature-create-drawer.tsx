@@ -762,6 +762,8 @@ export function FeatureCreateDrawer({
                   onPaste={handlePaste}
                   required
                   disabled={isSubmitting}
+                  aria-invalid={!!uploadError}
+                  aria-describedby={uploadError ? 'feature-upload-error' : undefined}
                   className="min-h-0 flex-1 resize-none rounded-none border-0 shadow-none focus-visible:ring-0"
                 />
                 {/* Inline attachment chips — between textarea and controls */}
@@ -784,7 +786,13 @@ export function FeatureCreateDrawer({
                   </div>
                 )}
                 {uploadError ? (
-                  <p className="text-destructive px-3 pb-2 text-xs">{uploadError}</p>
+                  <p
+                    id="feature-upload-error"
+                    className="text-destructive px-3 pb-2 text-xs"
+                    role="alert"
+                  >
+                    {uploadError}
+                  </p>
                 ) : null}
                 <div className="border-input flex items-center gap-3 border-t px-3 py-1.5">
                   <AgentModelPicker
@@ -1466,6 +1474,8 @@ export function RepositoryCombobox({
             role="combobox"
             aria-expanded={open}
             aria-label="Repository"
+            aria-invalid={!!addError}
+            aria-describedby={addError ? 'add-repository-error-msg' : undefined}
             disabled={disabled}
             data-testid="repository-combobox"
             className={cn(
@@ -1549,7 +1559,12 @@ export function RepositoryCombobox({
               <span>Add new repository...</span>
             </button>
             {addError ? (
-              <p className="px-3 pb-2 text-xs text-red-500" data-testid="add-repository-error">
+              <p
+                id="add-repository-error-msg"
+                className="px-3 pb-2 text-xs text-red-500"
+                role="alert"
+                data-testid="add-repository-error"
+              >
                 {addError}
               </p>
             ) : null}

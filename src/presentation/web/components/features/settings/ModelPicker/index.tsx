@@ -113,6 +113,8 @@ export function ModelPicker({
             variant="outline"
             role="combobox"
             aria-expanded={open}
+            aria-invalid={!!error}
+            aria-describedby={error ? 'model-picker-error' : undefined}
             disabled={isDisabled}
             className="w-full justify-between font-normal"
           >
@@ -161,7 +163,11 @@ export function ModelPicker({
           </Command>
         </PopoverContent>
       </Popover>
-      {Boolean(error) && <p className="text-destructive text-sm">{error}</p>}
+      {Boolean(error) && (
+        <p id="model-picker-error" className="text-destructive text-sm" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   );
 }
