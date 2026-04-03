@@ -8,7 +8,7 @@
 # that the feature completed and local changes exist on the worktree branch.
 # =============================================================================
 
-name: Shipit AI E2E
+name: 🧪 Shipit AI E2E
 
 on:
   schedule:
@@ -24,7 +24,7 @@ env:
 
 jobs:
   shipit-ai-e2e:
-    name: ${{ matrix.agent }} / ${{ matrix.os }}
+    name: '🧪 E2E: ${{ matrix.agent }} / ${{ matrix.os }}'
     runs-on: ${{ matrix.os }}
     timeout-minutes: 30
 
@@ -46,7 +46,7 @@ jobs:
       # ─────────────────────────────────────────────────────────────────────
       # 1. Checkout, build, link
       # ─────────────────────────────────────────────────────────────────────
-      - name: Checkout shipit-ai CLI
+      - name: 📥 Checkout shipit-ai CLI
         uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v5
@@ -55,25 +55,25 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build shipit-ai CLI
+      - name: 🔨 Build shipit-ai CLI
         run: pnpm run build:release
 
-      - name: Link shipit-ai globally
+      - name: 📦 Link shipit-ai globally
         run: npm link
 
       # ─────────────────────────────────────────────────────────────────────
       # 2. Install agent CLI (skip for dev — no binary needed)
       # ─────────────────────────────────────────────────────────────────────
-      - name: Install Claude Code CLI (Linux/macOS)
+      - name: 📦 Install Claude Code CLI (Linux/macOS)
         if: matrix.agent == 'claude-code' && runner.os != 'Windows'
         run: |
           curl -fsSL https://claude.ai/install.sh | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Install Claude Code CLI (Windows)
+      - name: 📦 Install Claude Code CLI (Windows)
         if: matrix.agent == 'claude-code' && runner.os == 'Windows'
         shell: pwsh
         run: |
@@ -99,7 +99,7 @@ jobs:
       # ─────────────────────────────────────────────────────────────────────
       # 3. Clone shipped repo (target for feature creation)
       # ─────────────────────────────────────────────────────────────────────
-      - name: Clone shipped repo
+      - name: 📥 Clone shipped repo
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
@@ -114,7 +114,7 @@ jobs:
       # ─────────────────────────────────────────────────────────────────────
       # 4. Configure agent
       # ─────────────────────────────────────────────────────────────────────
-      - name: Configure shipit-ai agent
+      - name: ⚙️ Configure shipit-ai agent
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
         run: |
@@ -131,7 +131,7 @@ jobs:
       # ─────────────────────────────────────────────────────────────────────
       # 5. Generate prompt and create feature (no push/pr/merge)
       # ─────────────────────────────────────────────────────────────────────
-      - name: Create feature
+      - name: 🚀 Create feature
         timeout-minutes: 5
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
@@ -162,7 +162,7 @@ jobs:
       # ─────────────────────────────────────────────────────────────────────
       # 6. Verify feature listed
       # ─────────────────────────────────────────────────────────────────────
-      - name: Verify feature listed
+      - name: ✅ Verify feature listed
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
         run: |
@@ -174,7 +174,7 @@ jobs:
       # ─────────────────────────────────────────────────────────────────────
       # 7. Wait for feature to complete
       # ─────────────────────────────────────────────────────────────────────
-      - name: Wait for feature to complete
+      - name: ⏳ Wait for feature to complete
         timeout-minutes: 15
         shell: node {0}
         env:
@@ -280,7 +280,7 @@ jobs:
 
       - name: Upload shipit-ai logs
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: shipit-ai-logs-${{ matrix.agent }}-${{ matrix.os }}
           path: ~/.shipit-ai/logs/
@@ -292,7 +292,7 @@ jobs:
   # Target: jrmatherly/shipped repo
   # ===========================================================================
   claude-windows-full-sdlc:
-    name: claude-code / windows / full-sdlc
+    name: '🧪 E2E: claude-code / windows / full-sdlc'
     runs-on: windows-latest
     timeout-minutes: 30
 
@@ -300,7 +300,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout shipit-ai CLI
+      - name: 📥 Checkout shipit-ai CLI
         uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v5
@@ -309,16 +309,16 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build shipit-ai CLI
+      - name: 🔨 Build shipit-ai CLI
         run: pnpm run build:release
 
-      - name: Link shipit-ai globally
+      - name: 📦 Link shipit-ai globally
         run: npm link
 
-      - name: Install Claude Code CLI
+      - name: 📦 Install Claude Code CLI
         shell: pwsh
         run: |
           irm https://claude.ai/install.ps1 | iex
@@ -326,7 +326,7 @@ jobs:
           if (Test-Path "$env:USERPROFILE\.local\bin") { $claudePath = "$env:USERPROFILE\.local\bin" }
           echo $claudePath >> $env:GITHUB_PATH
 
-      - name: Clone shipped repo
+      - name: 📥 Clone shipped repo
         shell: bash
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
@@ -338,12 +338,12 @@ jobs:
           git config user.email "jrmatherly@users.noreply.github.com"
           echo "TARGET_DIR=$TARGET_DIR" >> $GITHUB_ENV
 
-      - name: Configure shipit-ai agent
+      - name: ⚙️ Configure shipit-ai agent
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
         run: shipit-ai settings agent --agent claude-code --auth session
 
-      - name: Create feature (full SDLC)
+      - name: 🚀 Create feature (full SDLC)
         timeout-minutes: 15
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
@@ -355,7 +355,7 @@ jobs:
             --allow-all \
             --model claude-haiku-4-5
 
-      - name: Verify feature listed
+      - name: ✅ Verify feature listed
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
         run: |
@@ -363,7 +363,7 @@ jobs:
           echo "$OUTPUT"
           echo "$OUTPUT" | grep -q "[0-9a-f]" || { echo "::error::No feature ID found"; exit 1; }
 
-      - name: Wait for feature to complete
+      - name: ⏳ Wait for feature to complete
         timeout-minutes: 25
         shell: node {0}
         env:
@@ -395,12 +395,12 @@ jobs:
           }
           poll();
 
-      - name: Show completed feature
+      - name: ✅ Show completed feature
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
         run: shipit-ai feat show "$FEATURE_ID"
 
-      - name: Verify local changes
+      - name: ✅ Verify local changes
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
         run: |
@@ -412,15 +412,15 @@ jobs:
           fi
           echo "Local changes verified!"
 
-      - name: Dump feature logs
+      - name: 📝 Dump feature logs
         if: always()
         shell: bash
         working-directory: ${{ env.TARGET_DIR }}
         run: shipit-ai feat logs "$FEATURE_ID" || echo "(no logs available)"
 
-      - name: Upload shipit-ai logs
+      - name: 📤 Upload shipit-ai logs
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: shipit-ai-logs-claude-windows-full-sdlc
           path: ~/.shipit-ai/logs/
@@ -432,7 +432,7 @@ jobs:
   # Target: jrmatherly/shipped repo
   # ===========================================================================
   claude-ubuntu-full-sdlc-pr:
-    name: claude-code / ubuntu / full-sdlc + push + pr
+    name: '🧪 E2E: claude-code / ubuntu / full-sdlc + push + pr'
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
@@ -440,7 +440,7 @@ jobs:
       contents: read
 
     steps:
-      - name: Checkout shipit-ai CLI
+      - name: 📥 Checkout shipit-ai CLI
         uses: actions/checkout@v6
 
       - uses: pnpm/action-setup@v5
@@ -449,21 +449,21 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build shipit-ai CLI
+      - name: 🔨 Build shipit-ai CLI
         run: pnpm run build:release
 
-      - name: Link shipit-ai globally
+      - name: 📦 Link shipit-ai globally
         run: npm link
 
-      - name: Install Claude Code CLI
+      - name: 📦 Install Claude Code CLI
         run: |
           curl -fsSL https://claude.ai/install.sh | bash
           echo "$HOME/.local/bin" >> $GITHUB_PATH
 
-      - name: Clone shipped repo
+      - name: 📥 Clone shipped repo
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
@@ -474,11 +474,11 @@ jobs:
           git config user.email "jrmatherly@users.noreply.github.com"
           echo "TARGET_DIR=$TARGET_DIR" >> $GITHUB_ENV
 
-      - name: Configure shipit-ai agent
+      - name: ⚙️ Configure shipit-ai agent
         working-directory: ${{ env.TARGET_DIR }}
         run: shipit-ai settings agent --agent claude-code --auth session
 
-      - name: Create feature (full SDLC + push + PR)
+      - name: 🚀 Create feature (full SDLC + push + PR)
         timeout-minutes: 15
         working-directory: ${{ env.TARGET_DIR }}
         env:
@@ -492,14 +492,14 @@ jobs:
             --pr \
             --model claude-haiku-4-5
 
-      - name: Verify feature listed
+      - name: ✅ Verify feature listed
         working-directory: ${{ env.TARGET_DIR }}
         run: |
           OUTPUT=$(shipit-ai feat ls)
           echo "$OUTPUT"
           echo "$OUTPUT" | grep -q "[0-9a-f]" || { echo "::error::No feature ID found"; exit 1; }
 
-      - name: Wait for feature to complete
+      - name: ⏳ Wait for feature to complete
         timeout-minutes: 25
         shell: node {0}
         env:
@@ -532,11 +532,11 @@ jobs:
           }
           poll();
 
-      - name: Show completed feature
+      - name: ✅ Show completed feature
         working-directory: ${{ env.TARGET_DIR }}
         run: shipit-ai feat show "$FEATURE_ID"
 
-      - name: Verify push and PR
+      - name: ✅ Verify push and PR
         working-directory: ${{ env.TARGET_DIR }}
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
@@ -556,7 +556,7 @@ jobs:
             echo "PR created successfully!"
           fi
 
-      - name: Cleanup e2e branch and PR
+      - name: 🧹 Cleanup e2e branch and PR
         if: always()
         env:
           GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
@@ -567,14 +567,14 @@ jobs:
             gh pr close "$pr_number" --repo jrmatherly/shipped --delete-branch || true
           done
 
-      - name: Dump feature logs
+      - name: 📝 Dump feature logs
         if: always()
         working-directory: ${{ env.TARGET_DIR }}
         run: shipit-ai feat logs "$FEATURE_ID" || echo "(no logs available)"
 
-      - name: Upload shipit-ai logs
+      - name: 📤 Upload shipit-ai logs
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: shipit-ai-logs-claude-ubuntu-full-sdlc-pr
           path: ~/.shipit-ai/logs/

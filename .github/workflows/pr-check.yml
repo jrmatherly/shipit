@@ -3,7 +3,7 @@
 # =============================================================================
 # Additional checks for pull requests including commit message validation.
 
-name: PR Check
+name: ✅ PR Check
 
 on:
   pull_request:
@@ -14,27 +14,27 @@ jobs:
   # Commit Message Validation
   # ===========================================================================
   commitlint:
-    name: Validate Commits
+    name: ✅ Validate Commits
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
 
-      - name: Setup pnpm
+      - name: 📦 Setup pnpm
         uses: pnpm/action-setup@v5
 
-      - name: Setup Node.js
+      - name: 📦 Setup Node.js
         uses: actions/setup-node@v6
         with:
           node-version: '22'
           cache: 'pnpm'
 
-      - name: Install dependencies
+      - name: 📦 Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Validate commit messages
+      - name: 🔍 Validate commit messages
         run: |
           pnpm exec commitlint \
             --from ${{ github.event.pull_request.base.sha }} \
@@ -45,12 +45,12 @@ jobs:
   # PR Title Validation (Conventional Commits)
   # ===========================================================================
   pr-title:
-    name: Validate PR Title
+    name: ✅ PR Title
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
     steps:
-      - name: Check PR title format
+      - name: 🔍 Check PR title format
         uses: amannn/action-semantic-pull-request@v6
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
