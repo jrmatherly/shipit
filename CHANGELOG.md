@@ -1,3 +1,10 @@
+## [1.164.2](https://github.com/jrmatherly/shipit/compare/v1.164.1...v1.164.2) (2026-04-03)
+
+
+### Bug Fixes
+
+* **ci:** use node 24 for publish jobs instead of npm upgrade ([473bbc3](https://github.com/jrmatherly/shipit/commit/473bbc373a79e64ecb2d573719e43d249ad3cf5e))
+
 # 1.0.0 (2026-04-03)
 
 
