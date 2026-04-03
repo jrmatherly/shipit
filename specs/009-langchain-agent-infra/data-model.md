@@ -273,7 +273,7 @@ enum AgentFeature {
 
 **Migration**: `003_create_agent_runs.sql`
 
-**Database scope**: Global database (`~/.shep/data`). Agent runs are stored globally (not per-repo) because: (1) simpler — reuses the existing single DB connection from `initializeContainer()`, (2) allows cross-repo agent run history, and (3) the `agent_runs` table stores the `prompt` which includes the repo path context. LangGraph checkpoints are stored in a **separate** SQLite file per repo at `~/.shep/repos/<encoded-path>/checkpoints.db` (managed by SqliteSaver, not by our migration system).
+**Database scope**: Global database (`~/.shipit-ai/data`). Agent runs are stored globally (not per-repo) because: (1) simpler — reuses the existing single DB connection from `initializeContainer()`, (2) allows cross-repo agent run history, and (3) the `agent_runs` table stores the `prompt` which includes the repo path context. LangGraph checkpoints are stored in a **separate** SQLite file per repo at `~/.shipit-ai/repos/<encoded-path>/checkpoints.db` (managed by SqliteSaver, not by our migration system).
 
 ```sql
 CREATE TABLE agent_runs (

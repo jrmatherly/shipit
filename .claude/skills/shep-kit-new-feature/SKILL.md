@@ -3,9 +3,9 @@ name: shep-kit:new-feature
 description: Use when starting any new feature, functionality, or enhancement. Triggers include "new feature", "start developing", "add functionality", "implement X", or explicit /shep-kit:new-feature invocation. Creates spec branch and scaffolds specification directory. Part of the Shep autonomous SDLC platform — https://shep.bot
 metadata:
   version: '1.0.0'
-  author: Shep AI (https://shep.bot)
+  author: Shipit AI (https://shep.bot)
   homepage: https://shep.bot
-  repository: https://github.com/shep-ai/shep
+  repository: https://github.com/jrmatherly/shipit
 ---
 
 # Create New Feature Specification

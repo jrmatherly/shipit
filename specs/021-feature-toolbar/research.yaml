@@ -96,7 +96,7 @@ decisions:
     rejected:
       - >
         packages/core/src/domain/value-objects/ — Rejected because computeWorktreePath
-        uses SHEP_HOME_DIR (an infrastructure concern from filesystem/shep-directory.service.ts)
+        uses SHIPIT_AI_HOME_DIR (an infrastructure concern from filesystem/shipit-ai-directory.service.ts)
         and node:crypto, making it an infrastructure utility, not a domain value object.
       - >
         packages/core/src/infrastructure/services/filesystem/ — Rejected because the
@@ -108,12 +108,12 @@ decisions:
     rationale: >
       The function is currently duplicated in 3 CLI commands: ide-open.command.ts (line 20),
       feat/show.command.ts (line 21), and agent/show.command.ts (line 21). It is a pure
-      function (hash + path join) with only two dependencies: SHEP_HOME_DIR and
+      function (hash + path join) with only two dependencies: SHIPIT_AI_HOME_DIR and
       node:crypto. Placing it in the ide-launchers directory alongside the launcher
-      registry keeps it co-located with its primary consumers. The @shepai/core package
+      registry keeps it co-located with its primary consumers. The @shipit-ai/core package
       exports sub-paths via wildcard (package.json: "./infrastructure/*"), so both CLI
       commands and web API routes can import it as
-      @shepai/core/infrastructure/services/ide-launchers/compute-worktree-path.
+      @shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path.
 
   - title: 'API Route Architecture Pattern'
     chosen: 'Direct service instantiation matching existing /api/dialog/* pattern'
@@ -132,9 +132,9 @@ decisions:
         operations.
     rationale: >
       The existing /api/dialog/pick-folder/route.ts and /api/dialog/pick-files/route.ts
-      demonstrate the pattern: import service class from @shepai/core, instantiate
+      demonstrate the pattern: import service class from @shipit-ai/core, instantiate
       directly in the route handler, wrap in try/catch, return NextResponse.json().
-      The IDE route imports createLauncherRegistry and getSettings from @shepai/core.
+      The IDE route imports createLauncherRegistry and getSettings from @shipit-ai/core.
       The shell route imports getSettings and uses node:child_process directly. Both
       routes import the shared computeWorktreePath utility. This is Clean Architecture
       compliant per NFR-6: "API routes MUST instantiate infrastructure services directly."
@@ -254,7 +254,7 @@ openQuestions:
       a follow-up when toasts are needed globally. This feature does not need it.
 
   - question: >
-      Can the API routes import getSettings() from @shepai/core, or does the singleton
+      Can the API routes import getSettings() from @shipit-ai/core, or does the singleton
       initialization only happen in CLI bootstrap?
     resolved: true
     answer: >
@@ -263,7 +263,7 @@ openQuestions:
       bootstrap before starting Next.js. The Next.js server runs in the same Node.js
       process, so the globalThis singleton is accessible. The use-cases-bridge (page.tsx
       line 2) already demonstrates this pattern. API routes can import getSettings from
-      @shepai/core/infrastructure/services/settings.service.
+      @shipit-ai/core/infrastructure/services/settings.service.
 
   - question: >
       Are there any issues importing from packages/core in Next.js API routes given the
@@ -274,7 +274,7 @@ openQuestions:
       createLauncherRegistry — pure function, no decorators or native modules; (2)
       getSettings — pure singleton accessor; (3) computeWorktreePath — pure function
       using node:crypto and node:path. None of these touch tsyringe, reflect-metadata,
-      or better-sqlite3. The existing dialog routes already import from @shepai/core
+      or better-sqlite3. The existing dialog routes already import from @shipit-ai/core
       (FileDialogService, FolderDialogService) proving this works. The constraint only
       applies to DI container and tsyringe-decorated classes.
 
@@ -346,14 +346,14 @@ content: |
   **Chosen:** `packages/core/src/infrastructure/services/ide-launchers/compute-worktree-path.ts`
 
   **Rejected:**
-  - domain/value-objects/ — uses SHEP_HOME_DIR (infrastructure concern), not a value object
+  - domain/value-objects/ — uses SHIPIT_AI_HOME_DIR (infrastructure concern), not a value object
   - infrastructure/services/filesystem/ — conceptually tied to IDE/worktree, not general FS
   - Inline duplication — explicitly forbidden by FR-13
 
   **Rationale:** Currently duplicated in 3 files: `ide-open.command.ts:20`, `feat/show.command.ts:21`,
-  `agent/show.command.ts:21`. Pure function with 2 deps (SHEP_HOME_DIR, node:crypto). Co-locating
+  `agent/show.command.ts:21`. Pure function with 2 deps (SHIPIT_AI_HOME_DIR, node:crypto). Co-locating
   with launcher registry keeps related code together. Importable via
-  `@shepai/core/infrastructure/services/ide-launchers/compute-worktree-path`.
+  `@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path`.
 
   ### 5. API Route Architecture
 
@@ -364,7 +364,7 @@ content: |
   - Use-cases bridge (globalThis) — no existing use cases for IDE/shell launch
 
   **Rationale:** The dialog routes (pick-files, pick-folder) establish the pattern: import from
-  `@shepai/core`, instantiate directly, try/catch, NextResponse.json(). IDE route uses
+  `@shipit-ai/core`, instantiate directly, try/catch, NextResponse.json(). IDE route uses
   `createLauncherRegistry()` + `getSettings()`. Shell route uses `getSettings()` + `child_process.spawn`.
   Compliant with NFR-6.
 
@@ -449,7 +449,7 @@ content: |
 
   1. **repositoryPath** must be a non-empty string starting with `/` (absolute path only)
   2. **branch** must be a non-empty string, must not contain `..`, must not contain null bytes (`\0`)
-  3. **computeWorktreePath** produces a deterministic path under `~/.shep/repos/` — the SHA256
+  3. **computeWorktreePath** produces a deterministic path under `~/.shipit-ai/repos/` — the SHA256
      hash of repositoryPath prevents any path injection via the repo path itself
   4. Branch slug replaces `/` with `-`, neutralizing directory traversal via branch names
 

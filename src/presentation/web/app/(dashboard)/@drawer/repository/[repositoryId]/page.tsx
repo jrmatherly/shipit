@@ -1,5 +1,5 @@
 import { resolve } from '@/lib/server-container';
-import type { IRepositoryRepository } from '@shepai/core/application/ports/output/repositories/repository-repository.interface';
+import type { IRepositoryRepository } from '@shipit-ai/core/application/ports/output/repositories/repository-repository.interface';
 import { RepositoryDrawerClient } from '@/components/common/control-center-drawer/repository-drawer-client';
 
 /** Skip static pre-rendering since we need runtime DI container. */

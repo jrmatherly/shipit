@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { ResumeFeatureUseCase } from '@shepai/core/application/use-cases/features/resume-feature.use-case';
+import type { ResumeFeatureUseCase } from '@shipit-ai/core/application/use-cases/features/resume-feature.use-case';
 
 export async function resumeFeature(
   featureId: string

@@ -176,7 +176,7 @@ content: |
   ### 4. String-token DI registration for RejectAgentRunUseCase
 
   The DI container comment at line 280 explains that Turbopack cannot resolve
-  `.js→.ts` imports inside `@shepai/core`, so all server actions use string
+  `.js→.ts` imports inside `@shipit-ai/core`, so all server actions use string
   tokens. `RejectAgentRunUseCase` is already registered as a class singleton
   (line 265) but lacks a string-token alias. One must be added alongside
   `ApproveAgentRunUseCase` at line 291-293.

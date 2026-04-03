@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ServerLogViewer } from '@/components/common/server-log-viewer';
-import type { LogEntry } from '@shepai/core/application/ports/output/services/deployment-service.interface';
+import type { LogEntry } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 
 // Mock the useDeploymentLogs hook
 const mockUseDeploymentLogs = vi.fn();

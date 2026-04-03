@@ -120,7 +120,7 @@ describe('RejectAgentRunUseCase (iteration support)', () => {
       repositoryPath: '/test/repo',
       push: false,
       openPr: false,
-      specPath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     useCase = new RejectAgentRunUseCase(
       mockRunRepo as any,
@@ -225,7 +225,7 @@ describe('RejectAgentRunUseCase (iteration support)', () => {
       'feat-001',
       'run-001',
       '/test/repo',
-      '/test/repo/.shep/wt/feat-branch',
+      '/test/repo/.shipit-ai/wt/feat-branch',
       '/computed/worktree/path', // computed fallback since feature has no worktreePath
       expect.objectContaining({
         resume: true,

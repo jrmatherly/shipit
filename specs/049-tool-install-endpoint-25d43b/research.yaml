@@ -4,7 +4,7 @@
 name: tool-install-endpoint-25d43b
 summary: >
   Investigation reveals the route file, DI registrations, and frontend call are all correctly
-  structured. The 404 is likely caused by either Turbopack's inability to resolve @shepai/core
+  structured. The 404 is likely caused by either Turbopack's inability to resolve @shipit-ai/core
   imports at route discovery time, or by TOOL_METADATA being empty when the route validates
   the tool ID. The fix involves adding diagnostic logging to distinguish between route
   discovery failure vs. handler execution failure, then addressing the specific root cause.
@@ -60,7 +60,7 @@ decisions:
     rationale: >
       The install route uses the exact same patterns as the launch route which reportedly works.
       Both routes export named POST handlers, use the same import paths for server-container
-      and @shepai/core, and follow the same params destructuring pattern for Next.js 14+.
+      and @shipit-ai/core, and follow the same params destructuring pattern for Next.js 14+.
       Changing the pattern would introduce inconsistency. The fix should focus on why this
       specific route fails while the sibling succeeds, not on restructuring working patterns.
 
@@ -115,7 +115,7 @@ openQuestions:
         selected: false
       - option: 'Import resolution difference'
         description: >
-          The install route imports TOOL_METADATA from @shepai/core while launch does not.
+          The install route imports TOOL_METADATA from @shipit-ai/core while launch does not.
           Turbopack may fail to resolve this specific import path, causing the route module
           to fail loading entirely (resulting in 404 from router, not handler).
         selected: false
@@ -281,7 +281,7 @@ content: |
   The install route imports and uses `TOOL_METADATA`:
   ```typescript
   // install/route.ts
-  import { TOOL_METADATA } from '@shepai/core/infrastructure/services/tool-installer/tool-metadata';
+  import { TOOL_METADATA } from '@shipit-ai/core/infrastructure/services/tool-installer/tool-metadata';
   // ...
   if (!TOOL_METADATA[id]) {
     return NextResponse.json({ error: 'Tool not found' }, { status: 404 });

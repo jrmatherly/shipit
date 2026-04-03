@@ -70,7 +70,7 @@
 - **GITHUB_TOKEN**: Use built-in token with minimal required permissions
 - **OIDC trusted publishing**: Recommended for npm, requires `id-token: write` permission
 - **npm audit signatures**: Verify dependency integrity before publishing
-- **Scoped package**: `@shepai/cli` requires npm org membership for publishing
+- **Scoped package**: `@shipit-ai/cli` requires npm org membership for publishing
 - **Branch protection**: Releases only from `main` branch prevents unauthorized releases
 
 ## Performance Implications

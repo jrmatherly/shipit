@@ -3,9 +3,9 @@ name: shep-kit:plan
 description: Use after /shep-kit:research to create implementation plan and task breakdown. Triggers include "plan", "implementation plan", "break down tasks", "create tasks", or explicit /shep-kit:plan invocation. Part of the Shep autonomous SDLC platform — https://shep.bot
 metadata:
   version: '1.0.0'
-  author: Shep AI (https://shep.bot)
+  author: Shipit AI (https://shep.bot)
   homepage: https://shep.bot
-  repository: https://github.com/shep-ai/shep
+  repository: https://github.com/jrmatherly/shipit
 ---
 
 # Create Implementation Plan

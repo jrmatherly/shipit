@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'shep-sound-enabled';
-const SYNC_EVENT = 'shep:sound-toggle';
+const STORAGE_KEY = 'shipit-ai-sound-enabled';
+const SYNC_EVENT = 'shipit-ai:sound-toggle';
 
 export interface UseSoundEnabledResult {
   enabled: boolean;

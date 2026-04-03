@@ -1,7 +1,7 @@
 /**
- * @module Shep.Common.Enums.Message
+ * @module ShipitAI.Common.Enums.Message
  *
- * Defines enums for message-related entities in the Shep AI platform,
+ * Defines enums for message-related entities in the Shipit AI platform,
  * particularly for conversational interactions between the user and AI.
  */
 /**

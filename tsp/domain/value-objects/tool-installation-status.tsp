@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.ValueObjects.ToolInstallationStatus
+ * @module ShipitAI.Domain.ValueObjects.ToolInstallationStatus
  *
  * Defines value objects for tool installation status and suggestions.
  * These models represent the current state of a tool's installation and

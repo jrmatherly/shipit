@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import {
   FileDialogService,
   type FileAttachment,
-} from '@shepai/core/infrastructure/services/file-dialog.service';
+} from '@shipit-ai/core/infrastructure/services/file-dialog.service';
 
 export async function POST(): Promise<NextResponse> {
   const service = new FileDialogService();

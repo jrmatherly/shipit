@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { ListToolsUseCase } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
-import type { ToolItem } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ListToolsUseCase } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
+import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 /**
  * Maps agent types to their corresponding tool IDs in the tool registry.

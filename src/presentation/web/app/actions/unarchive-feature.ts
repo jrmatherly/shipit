@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { UnarchiveFeatureUseCase } from '@shepai/core/application/use-cases/features/unarchive-feature.use-case';
-import type { Feature } from '@shepai/core/domain/generated/output';
+import type { UnarchiveFeatureUseCase } from '@shipit-ai/core/application/use-cases/features/unarchive-feature.use-case';
+import type { Feature } from '@shipit-ai/core/domain/generated/output';
 
 export async function unarchiveFeature(
   featureId: string

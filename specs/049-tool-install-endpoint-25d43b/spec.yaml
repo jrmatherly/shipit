@@ -142,8 +142,8 @@ content: |
 
   ## Dependencies
 
-  - `InstallToolUseCase` from `@shepai/core/application/use-cases/tools/install-tool.use-case`
-  - `TOOL_METADATA` from `@shepai/core/infrastructure/services/tool-installer/tool-metadata`
+  - `InstallToolUseCase` from `@shipit-ai/core/application/use-cases/tools/install-tool.use-case`
+  - `TOOL_METADATA` from `@shipit-ai/core/infrastructure/services/tool-installer/tool-metadata`
   - `IToolInstallerService` implementation registered in DI container
   - Next.js App Router dynamic route support
   - globalThis.__shepContainer initialization by dev-server.ts or CLI bootstrap

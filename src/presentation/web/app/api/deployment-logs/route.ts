@@ -15,7 +15,7 @@ import { resolve } from '@/lib/server-container';
 import type {
   IDeploymentService,
   LogEntry,
-} from '@shepai/core/application/ports/output/services/deployment-service.interface';
+} from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 
 // Force dynamic — SSE streams must never be statically optimized or cached
 export const dynamic = 'force-dynamic';

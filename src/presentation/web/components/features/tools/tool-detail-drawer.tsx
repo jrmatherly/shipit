@@ -16,7 +16,7 @@ import {
 import { Button } from '@/components/ui/button';
 import { BaseDrawer } from '@/components/common/base-drawer/base-drawer';
 import { useToolInstallStream } from '@/hooks/use-tool-install-stream';
-import type { ToolItem } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 const PLATFORM_LABELS: Record<string, string> = {
   linux: 'Linux',

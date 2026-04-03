@@ -7,7 +7,7 @@
 
 import { select, input } from '@inquirer/prompts';
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 export type MergeReviewAction = 'approve' | 'reject';
 
@@ -32,20 +32,20 @@ export async function mergeReviewWizard(): Promise<MergeReviewWizardResult> {
         description: t('tui:wizards.mergeReview.rejectDescription'),
       },
     ],
-    theme: shepTheme,
+    theme: shipitAiTheme,
   });
 
   let feedback: string | undefined;
   if (action === 'reject') {
     feedback = await input({
       message: t('tui:wizards.mergeReview.rejectFeedback'),
-      theme: shepTheme,
+      theme: shipitAiTheme,
       validate: (value) => value.trim().length > 0 || t('tui:wizards.mergeReview.feedbackRequired'),
     });
   } else {
     feedback = await input({
       message: t('tui:wizards.mergeReview.approveComment'),
-      theme: shepTheme,
+      theme: shipitAiTheme,
     });
     if (feedback?.trim().length === 0) feedback = undefined;
   }

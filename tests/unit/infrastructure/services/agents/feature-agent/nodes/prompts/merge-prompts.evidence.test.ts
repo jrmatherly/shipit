@@ -48,7 +48,7 @@ function makeEvidence(overrides: Partial<Evidence> = {}): Evidence {
     type: EvidenceType.Screenshot,
     capturedAt: '2026-03-09T12:00:00Z',
     description: 'Screenshot of dashboard page',
-    relativePath: '.shep/evidence/dashboard.png',
+    relativePath: '.shipit-ai/evidence/dashboard.png',
     ...overrides,
   };
 }
@@ -78,7 +78,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.Screenshot,
         description: 'Login page screenshot',
-        relativePath: '.shep/evidence/login.png',
+        relativePath: '.shipit-ai/evidence/login.png',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -86,7 +86,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       'feat/test',
       'main'
     );
-    expect(prompt).toContain('![Login page screenshot](.shep/evidence/login.png)');
+    expect(prompt).toContain('![Login page screenshot](.shipit-ai/evidence/login.png)');
   });
 
   it('should render video evidence as a markdown link', () => {
@@ -94,7 +94,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.Video,
         description: 'Workflow demo recording',
-        relativePath: '.shep/evidence/demo.mp4',
+        relativePath: '.shipit-ai/evidence/demo.mp4',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -102,7 +102,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       'feat/test',
       'main'
     );
-    expect(prompt).toContain('[Workflow demo recording](.shep/evidence/demo.mp4)');
+    expect(prompt).toContain('[Workflow demo recording](.shipit-ai/evidence/demo.mp4)');
     // Should NOT use image syntax for videos
     expect(prompt).not.toContain('![Workflow demo recording]');
   });
@@ -112,7 +112,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.TestOutput,
         description: 'Unit test results',
-        relativePath: '.shep/evidence/test-output.txt',
+        relativePath: '.shipit-ai/evidence/test-output.txt',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -122,7 +122,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
     );
     expect(prompt).toContain('Unit test results');
     // Should reference the file path in a code-friendly way
-    expect(prompt).toContain('.shep/evidence/test-output.txt');
+    expect(prompt).toContain('.shipit-ai/evidence/test-output.txt');
   });
 
   it('should render terminal recording evidence as a markdown link', () => {
@@ -130,7 +130,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.TerminalRecording,
         description: 'CLI session recording',
-        relativePath: '.shep/evidence/session.cast',
+        relativePath: '.shipit-ai/evidence/session.cast',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -138,7 +138,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       'feat/test',
       'main'
     );
-    expect(prompt).toContain('[CLI session recording](.shep/evidence/session.cast)');
+    expect(prompt).toContain('[CLI session recording](.shipit-ai/evidence/session.cast)');
     // Should NOT use image syntax for terminal recordings
     expect(prompt).not.toContain('![CLI session recording]');
   });
@@ -148,17 +148,17 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.Screenshot,
         description: 'First screenshot',
-        relativePath: '.shep/evidence/first.png',
+        relativePath: '.shipit-ai/evidence/first.png',
       }),
       makeEvidence({
         type: EvidenceType.TestOutput,
         description: 'Test results',
-        relativePath: '.shep/evidence/tests.txt',
+        relativePath: '.shipit-ai/evidence/tests.txt',
       }),
       makeEvidence({
         type: EvidenceType.Video,
         description: 'Demo video',
-        relativePath: '.shep/evidence/demo.mp4',
+        relativePath: '.shipit-ai/evidence/demo.mp4',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -210,17 +210,17 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.Screenshot,
         description: 'Dashboard screenshot',
-        relativePath: '.shep/evidence/dashboard.png',
+        relativePath: '.shipit-ai/evidence/dashboard.png',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
       baseState({ openPr: true, evidence }),
       'feat/test',
       'main',
-      'https://github.com/shep-ai/shep'
+      'https://github.com/jrmatherly/shipit'
     );
     expect(prompt).toContain(
-      '![Dashboard screenshot](https://raw.githubusercontent.com/shep-ai/shep/feat/test/.shep/evidence/dashboard.png)'
+      '![Dashboard screenshot](https://raw.githubusercontent.com/jrmatherly/shipit/feat/test/.shipit-ai/evidence/dashboard.png)'
     );
   });
 
@@ -229,7 +229,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.Screenshot,
         description: 'Feature screenshot',
-        relativePath: '.shep/evidence/feature.png',
+        relativePath: '.shipit-ai/evidence/feature.png',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -239,7 +239,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       'git@github.com:owner/repo.git'
     );
     expect(prompt).toContain(
-      '![Feature screenshot](https://raw.githubusercontent.com/owner/repo/feat/my-branch/.shep/evidence/feature.png)'
+      '![Feature screenshot](https://raw.githubusercontent.com/owner/repo/feat/my-branch/.shipit-ai/evidence/feature.png)'
     );
   });
 
@@ -248,7 +248,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.Screenshot,
         description: 'Fallback screenshot',
-        relativePath: '.shep/evidence/fallback.png',
+        relativePath: '.shipit-ai/evidence/fallback.png',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -256,7 +256,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       'feat/test',
       'main'
     );
-    expect(prompt).toContain('![Fallback screenshot](.shep/evidence/fallback.png)');
+    expect(prompt).toContain('![Fallback screenshot](.shipit-ai/evidence/fallback.png)');
     expect(prompt).not.toContain('raw.githubusercontent.com');
   });
 
@@ -265,7 +265,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.Video,
         description: 'Demo recording',
-        relativePath: '.shep/evidence/demo.mp4',
+        relativePath: '.shipit-ai/evidence/demo.mp4',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -275,7 +275,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       'https://github.com/org/project.git'
     );
     expect(prompt).toContain(
-      '[Demo recording](https://raw.githubusercontent.com/org/project/feat/test/.shep/evidence/demo.mp4)'
+      '[Demo recording](https://raw.githubusercontent.com/org/project/feat/test/.shipit-ai/evidence/demo.mp4)'
     );
   });
 
@@ -284,7 +284,7 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       makeEvidence({
         type: EvidenceType.TestOutput,
         description: 'Test results',
-        relativePath: '.shep/evidence/test-output.txt',
+        relativePath: '.shipit-ai/evidence/test-output.txt',
       }),
     ];
     const prompt = buildCommitPushPrPrompt(
@@ -294,15 +294,15 @@ describe('buildCommitPushPrPrompt — evidence rendering', () => {
       'https://github.com/org/project'
     );
     // Test output uses backtick code reference, not a URL link
-    expect(prompt).toContain('See: `.shep/evidence/test-output.txt`');
+    expect(prompt).toContain('See: `.shipit-ai/evidence/test-output.txt`');
   });
 });
 
 describe('parseGitHubOwnerRepo', () => {
   it('should parse HTTPS GitHub URLs', () => {
-    expect(parseGitHubOwnerRepo('https://github.com/shep-ai/shep')).toEqual({
-      owner: 'shep-ai',
-      repo: 'shep',
+    expect(parseGitHubOwnerRepo('https://github.com/jrmatherly/shipit')).toEqual({
+      owner: 'jrmatherly',
+      repo: 'shipit',
     });
   });
 

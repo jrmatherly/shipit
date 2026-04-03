@@ -1,11 +1,11 @@
 // Base agent models and enums
 /**
- * @module Shep.Agents
+ * @module ShipitAI.Agents
  *
  * Agent Module Index - Re-exports all agent models and interfaces.
  *
  * This module serves as the central entry point for all agent-related
- * TypeSpec definitions in the Shep AI system. Import this file to access
+ * TypeSpec definitions in the Shipit AI system. Import this file to access
  * all agent models, enums, and interfaces.
  *
  * ## Module Structure

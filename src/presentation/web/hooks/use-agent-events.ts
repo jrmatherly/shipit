@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import type { NotificationEvent } from '@shepai/core/domain/generated/output';
+import type { NotificationEvent } from '@shipit-ai/core/domain/generated/output';
 import { createLogger } from '@/lib/logger';
 
 export type ConnectionStatus = 'connected' | 'connecting' | 'disconnected';

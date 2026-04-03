@@ -142,7 +142,7 @@ describe('Graph State Transitions › Approve After Failed Rejection', () => {
       };
     })();
 
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-approve-failed-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-approve-failed-'));
     specDir = join(tempDir, 'specs', '001-test');
     mkdirSync(specDir, { recursive: true });
   });

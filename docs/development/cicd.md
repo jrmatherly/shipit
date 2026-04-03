@@ -85,7 +85,7 @@ Runs after **all parallel jobs pass, including security scanners**. Uses [semant
 1. **Analyze commits** - Determine version bump from conventional commits
 2. **Generate changelog** - Create release notes from commits
 3. **Update CHANGELOG.md** - Append new release section
-4. **Publish to npm** - `@shepai/cli` package
+4. **Publish to npm** - `@shipit-ai/cli` package
 5. **Build & push Docker** - Tags: `latest`, `v<version>`, `sha-<commit>`
 6. **Create GitHub release** - With changelog as release notes
 7. **Commit changes** - `chore(release): <version> [skip ci]`
@@ -97,7 +97,7 @@ Runs after **all parallel jobs pass, including security scanners**. Uses [semant
 Images are published to GitHub Container Registry (ghcr.io):
 
 ```
-ghcr.io/shep-ai/shep
+ghcr.io/jrmatherly/shipit
 ```
 
 ### Tagging Strategy
@@ -111,14 +111,14 @@ ghcr.io/shep-ai/shep
 
 ```bash
 # Latest stable
-docker pull ghcr.io/shep-ai/shep:latest
-docker run ghcr.io/shep-ai/shep --version
+docker pull ghcr.io/jrmatherly/shipit:latest
+docker run ghcr.io/jrmatherly/shipit --version
 
 # Specific version
-docker pull ghcr.io/shep-ai/shep:v1.0.0
+docker pull ghcr.io/jrmatherly/shipit:v1.0.0
 
 # Specific commit (for testing)
-docker pull ghcr.io/shep-ai/shep:sha-abc123...
+docker pull ghcr.io/jrmatherly/shipit:sha-abc123...
 ```
 
 ### Image Details

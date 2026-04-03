@@ -305,7 +305,7 @@ export function createTestContext(options?: TestContextOptions): TestContext {
 
     init: () => {
       ensureSettingsInitialized();
-      tempDir = mkdtempSync(join(tmpdir(), 'shep-gst-'));
+      tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-gst-'));
       specDir = join(tempDir, 'specs', '001-test');
       mkdirSync(specDir, { recursive: true });
 

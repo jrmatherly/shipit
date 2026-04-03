@@ -45,7 +45,7 @@ function makeFeature(overrides?: Partial<Feature>): Feature {
     commitEvidence: false,
     approvalGates: { allowPrd: false, allowPlan: false, allowMerge: false },
     agentRunId: 'run-001',
-    specPath: '/repo/.shep/specs/001-test-feature',
+    specPath: '/repo/.shipit-ai/specs/001-test-feature',
     worktreePath: '/worktrees/test-feature',
     createdAt: new Date(),
     updatedAt: new Date(),

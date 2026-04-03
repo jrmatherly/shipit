@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.ApprovalGates
+ * @module ShipitAI.Agents.ApprovalGates
  *
  * Configuration for human-in-the-loop approval gates.
  * Controls which agent phases pause for human review.

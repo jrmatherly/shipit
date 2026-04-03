@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.PhaseTiming
+ * @module ShipitAI.Agents.PhaseTiming
  *
  * Timing record for a single agent graph node execution.
  * Tracks start, completion, and duration for each phase

@@ -45,7 +45,7 @@ tasks:
       - 'No tsyringe, reflect-metadata, or better-sqlite3 imports in this file'
     tdd:
       red:
-        - 'Add assertion in smoke-imports.test.ts that createFeature resolves from bridge module (import(@shepai/core/infrastructure/di/use-cases-bridge) has createFeature as function)'
+        - 'Add assertion in smoke-imports.test.ts that createFeature resolves from bridge module (import(@shipit-ai/core/infrastructure/di/use-cases-bridge) has createFeature as function)'
       green:
         - 'Add createFeature to ShepUseCases interface with execute(input: CreateFeatureInput): Promise<CreateFeatureResult>'
         - 'Update isShepUseCases to check typeof maybe.createFeature?.execute === "function"'
@@ -94,7 +94,7 @@ tasks:
       - task-1
     acceptanceCriteria:
       - 'Test file at tests/unit/presentation/web/api/features/create/route.test.ts'
-      - 'Tests mock @shepai/core/infrastructure/di/use-cases-bridge createFeature function'
+      - 'Tests mock @shipit-ai/core/infrastructure/di/use-cases-bridge createFeature function'
       - 'Tests cover: success with feature + warning, success without warning, 400 on missing name, 400 on missing repositoryPath, 500 on use-case error, 500 generic message for non-Error throws'
       - 'Tests verify correct userInput composition (name + description + attachments)'
       - 'All tests fail initially (route does not exist yet)'

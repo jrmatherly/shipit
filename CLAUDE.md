@@ -4,7 +4,7 @@ Guidance for Claude Code working in this repository.
 
 ## Project
 
-`@shepai/cli` — Autonomous AI Native SDLC Platform. Users run `shep` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
+`@shipit-ai/cli` — Autonomous AI Native SDLC Platform (forked from shep-ai/shep). Repo: `jrmatherly/shipit`. Users run `shipit-ai` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
 
 ## Spec Workflow
 
@@ -61,7 +61,7 @@ See [clean-architecture](./docs/architecture/clean-architecture.md).
 [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>): <subject>`
 
 | Types | feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert |
-| Scopes | specs, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
+| Scopes | specs, shep-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
 
 ## Key Docs
 
@@ -81,6 +81,17 @@ See [clean-architecture](./docs/architecture/clean-architecture.md).
 | TUI architecture               | [docs/tui/architecture.md](./docs/tui/architecture.md)                                 |
 | Web UI architecture            | [docs/ui/architecture.md](./docs/ui/architecture.md)                                   |
 | pnpm workspaces + setup        | [docs/development/setup.md](./docs/development/setup.md)                               |
+
+## Naming Conventions (Post-Rename)
+
+- npm scope: `@shipit-ai/` — binary: `shipit-ai` — data dir: `~/.shipit-ai/`
+- Env vars: `SHIPIT_AI_*` prefix (e.g. `SHIPIT_AI_HOME`), Next.js: `NEXT_PUBLIC_SHIPIT_AI_*`
+- TypeSpec namespace: `ShipitAI.Domain` — `@module ShipitAI.*`
+- LocalStorage: `shipit-ai-*` prefix — DOM events: `shipit-ai:*` prefix
+- CSS classes: `shipit-ai-*` prefix — test IDs: `data-testid="shipit-ai-*"`
+- Container registry: `ghcr.io/jrmatherly/shipit`
+- E2E test target repo: `jrmatherly/shipped`
+- `/shep-kit` skill names: **kept as-is** (internal developer workflow, not user-facing)
 
 ## General
 ### 1. Self-Improvement Loop

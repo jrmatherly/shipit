@@ -1,5 +1,5 @@
 /**
- * @module Shep.Deployment.DeploySkill
+ * @module ShipitAI.Deployment.DeploySkill
  *
  * Defines the DeploySkill entity for deployment configuration and instructions.
  *

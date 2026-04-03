@@ -6,21 +6,21 @@ import { join, isAbsolute } from 'path';
 import { tmpdir } from 'os';
 import { createHash } from 'crypto';
 
-import { AttachmentStorageService } from '@shepai/core/infrastructure/services/attachment-storage.service';
+import { AttachmentStorageService } from '@shipit-ai/core/infrastructure/services/attachment-storage.service';
 
 let tmpDir: string;
 let service: AttachmentStorageService;
 
 beforeEach(() => {
-  tmpDir = mkdtempSync(join(tmpdir(), 'shep-attach-test-'));
-  // Point SHEP_HOME to tmpDir so getShepHomeDir() resolves there
-  process.env.SHEP_HOME = tmpDir;
+  tmpDir = mkdtempSync(join(tmpdir(), 'shipit-ai-attach-test-'));
+  // Point SHIPIT_AI_HOME to tmpDir so getShipitAiHomeDir() resolves there
+  process.env.SHIPIT_AI_HOME = tmpDir;
   service = new AttachmentStorageService();
 });
 
 afterEach(() => {
   rmSync(tmpDir, { recursive: true, force: true });
-  delete process.env.SHEP_HOME;
+  delete process.env.SHIPIT_AI_HOME;
 });
 
 function createTestBuffer(content = 'test file content'): Buffer {

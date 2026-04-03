@@ -1,5 +1,5 @@
 /**
- * @shepai/core Infrastructure Layer
+ * @shipit-ai/core Infrastructure Layer
  *
  * Exports DI container, repositories, and services.
  */

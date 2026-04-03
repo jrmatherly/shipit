@@ -20,7 +20,7 @@ technologies:
   - Vitest + React Testing Library
 
 relatedLinks:
-  - https://github.com/shep-ai/shep/issues/230
+  - https://github.com/jrmatherly/shipit/issues/230
 
 tasks:
   # ============================================================================
@@ -59,7 +59,7 @@ tasks:
       green:
         - 'Create src/presentation/web/app/actions/get-feature-phase-timings.ts'
         - 'Add "use server" directive, import resolve from @/lib/server-container'
-        - 'Import IPhaseTimingRepository type from @shepai/core'
+        - 'Import IPhaseTimingRepository type from @shipit-ai/core'
         - 'Define PhaseTimingData interface and GetPhaseTimingsResult type'
         - 'Implement the action: validate featureId, resolve repo, call findByFeatureId, convert bigint to number, return result'
         - 'Run tests — should pass'
@@ -99,7 +99,7 @@ tasks:
       green:
         - 'Create src/presentation/web/app/actions/get-feature-messages.ts'
         - 'Add "use server" directive, import resolve from @/lib/server-container'
-        - 'Import IFeatureRepository type from @shepai/core'
+        - 'Import IFeatureRepository type from @shipit-ai/core'
         - 'Define MessageData interface and GetMessagesResult type'
         - 'Implement the action: validate featureId, resolve repo, call findById, extract messages, return result'
         - 'Run tests — should pass'

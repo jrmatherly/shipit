@@ -157,7 +157,7 @@
       "channels": "Canaux",
       "inApp": "Dans l'application",
       "inAppLabel": "Dans l'application",
-      "inAppDescription": "Notifications dans l'interface Shep",
+      "inAppDescription": "Notifications dans l'interface Shipit AI",
       "subsections": {
         "agentEvents": "Événements d'agent",
         "pullRequestEvents": "Événements de pull request"
@@ -227,7 +227,7 @@
       "location": "Emplacement",
       "locationDescription": "Chemin vers la base de données SQLite locale",
       "size": "Taille",
-      "hint": "Tous les paramètres sont stockés dans une base de données SQLite locale dans ~/.shep/data. La base de données utilise un modèle d'enregistrement singleton avec des migrations automatiques au démarrage.",
+      "hint": "Tous les paramètres sont stockés dans une base de données SQLite locale dans ~/.shipit-ai/data. La base de données utilise un modèle d'enregistrement singleton avec des migrations automatiques au démarrage.",
       "links": {
         "settingsService": "Service de paramètres",
         "settingsSpec": "Spécification des paramètres"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "Ajouter un projet",
     "addProjectDescription": "Ajoutez votre dossier de projet pour débloquer la création de fonctionnalités.",
-    "addProjectDescriptionLine2": "Décrivez ce dont vous avez besoin \u2014 Shep s'occupe du reste.",
+    "addProjectDescriptionLine2": "Décrivez ce dont vous avez besoin \u2014 Shipit AI s'occupe du reste.",
     "checkingSetup": "Vérification de la configuration\u2026",
     "ready": "{{label}} prêt",
     "notInstalled": "{{label}} non installé",
@@ -303,7 +303,7 @@
     "loadingAgents": "Chargement des agents\u2026",
     "chooseAgent": "Choisissez votre agent",
     "pickModel": "Choisissez un modèle",
-    "selectAgentSubtitle": "Sélectionnez l'agent de codage IA que vous souhaitez que Shep utilise.",
+    "selectAgentSubtitle": "Sélectionnez l'agent de codage IA que vous souhaitez que Shipit AI utilise.",
     "chooseModelSubtitle": "Choisissez quel modèle {{label}} exécuter.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> est requis pour les capacités complètes d'auto-réparation CI/CD. <1>Installez-le ici</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "Depuis GitHub"
   },
   "chat": {
-    "shepChat": "Shep Chat",
+    "shipitAiChat": "Shipit AI Chat",
     "writeMessage": "Écrire un message...",
     "attachFiles": "Joindre des fichiers",
     "forceStopAgent": "Forcer l'arrêt de l'agent",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "Importer depuis GitHub",
-    "description": "Cloner un dépôt GitHub et l'ajouter à Shep.",
+    "description": "Cloner un dépôt GitHub et l'ajouter à Shipit AI.",
     "githubUrl": "URL GitHub",
     "urlPlaceholder": "owner/repo ou https://github.com/owner/repo",
     "searchRepositories": "Rechercher des dépôts..."

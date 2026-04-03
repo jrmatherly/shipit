@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import type { Edge } from '@xyflow/react';
-import { DeploymentState, PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { DeploymentState, PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { FeaturesCanvas } from './features-canvas';
 import type { CanvasNodeType } from './features-canvas';
 import type { FeatureNodeType } from '@/components/common/feature-node';
@@ -288,7 +288,7 @@ const repoNode: RepositoryNodeType = {
   type: 'repositoryNode',
   position: { x: 50, y: 162 },
   data: {
-    name: 'shep-ai/shep',
+    name: 'jrmatherly/shipit',
   },
 };
 
@@ -347,7 +347,7 @@ const singleRepoSingleFeatureNodes: CanvasNodeType[] = [
     id: 'repo-1',
     type: 'repositoryNode',
     position: { x: 50, y: 127 },
-    data: { name: 'shep-ai/shep' },
+    data: { name: 'jrmatherly/shipit' },
   },
   {
     id: 'feat-1',
@@ -382,7 +382,7 @@ const singleRepoMultiFeatNodes: CanvasNodeType[] = [
     id: 'repo-1',
     type: 'repositoryNode',
     position: { x: 50, y: 162 },
-    data: { name: 'shep-ai/shep' },
+    data: { name: 'jrmatherly/shipit' },
   },
   {
     id: 'feat-1',
@@ -449,7 +449,7 @@ const multiRepoNodes: CanvasNodeType[] = [
     id: 'repo-1',
     type: 'repositoryNode',
     position: { x: 50, y: 86 },
-    data: { name: 'shep-ai/shep' },
+    data: { name: 'jrmatherly/shipit' },
   },
   {
     id: 'repo-2',
@@ -506,7 +506,7 @@ const mixedRepoFeatureNodesRaw: CanvasNodeType[] = [
     id: 'repo-1',
     type: 'repositoryNode',
     position: { x: 0, y: 0 },
-    data: { name: 'shep-ai/shep' },
+    data: { name: 'jrmatherly/shipit' },
   },
   {
     id: 'repo-2',
@@ -640,7 +640,7 @@ const fastModeNodesRaw: CanvasNodeType[] = [
     id: 'repo-1',
     type: 'repositoryNode',
     position: { x: 0, y: 0 },
-    data: { name: 'shep-ai/shep' },
+    data: { name: 'jrmatherly/shipit' },
   },
   {
     id: 'feat-fast-1',

@@ -1,13 +1,13 @@
 /**
  * CLI Feature Commands E2E Tests
  *
- * Tests for the `shep feat` command group (new, ls, show).
+ * Tests for the `shipit-ai feat` command group (new, ls, show).
  * Verifies feature creation with git worktrees, listing, and detail display.
  *
- * Each test uses an isolated SHEP_HOME directory (for settings/database)
+ * Each test uses an isolated SHIPIT_AI_HOME directory (for settings/database)
  * and a temporary git repository (for worktree creation).
  *
- * Uses SHEP_MOCK_EXECUTOR=1 (set in CLI runner defaults) for deterministic
+ * Uses SHIPIT_AI_MOCK_EXECUTOR=1 (set in CLI runner defaults) for deterministic
  * AI responses — slugs, names, and branches are predictable.
  *
  * NOTE: Uses execSync intentionally for git setup in tests. All inputs are
@@ -25,16 +25,16 @@ import { createCliRunner } from '../../helpers/cli/index.js';
 const isWindows = process.platform === 'win32';
 
 describe('CLI: feat', () => {
-  let shepHome: string;
+  let shipitAiHome: string;
   let tempRepo: string;
 
   beforeEach(() => {
-    // Create isolated SHEP_HOME directory for settings/database
-    shepHome = mkdtempSync(join(tmpdir(), 'shep-feat-test-home-'));
+    // Create isolated SHIPIT_AI_HOME directory for settings/database
+    shipitAiHome = mkdtempSync(join(tmpdir(), 'shipit-ai-feat-test-home-'));
 
     // Create temporary git repository with an initial commit
     // (git worktree requires at least one commit)
-    tempRepo = mkdtempSync(join(tmpdir(), 'shep-feat-test-repo-'));
+    tempRepo = mkdtempSync(join(tmpdir(), 'shipit-ai-feat-test-repo-'));
     // Security: all execSync inputs are hardcoded test constants, not user input
     execSync('git init -b main', { cwd: tempRepo, stdio: 'pipe' });
     execSync('git config user.name "Test User"', { cwd: tempRepo, stdio: 'pipe' });
@@ -43,18 +43,23 @@ describe('CLI: feat', () => {
   });
 
   afterEach(() => {
-    // Kill any spawned agent worker processes that reference our temp SHEP_HOME
+    // Kill any spawned agent worker processes that reference our temp SHIPIT_AI_HOME
     // (feat new forks a detached background worker that holds file handles)
-    // Security: shepHome is a controlled mkdtempSync path, not user input
+    // Security: shipitAiHome is a controlled mkdtempSync path, not user input
     try {
       if (isWindows) {
         spawnSync(
           'wmic',
-          ['process', 'where', `CommandLine like '%${shepHome.replace(/\\/g, '\\\\')}%'`, 'delete'],
+          [
+            'process',
+            'where',
+            `CommandLine like '%${shipitAiHome.replace(/\\/g, '\\\\')}%'`,
+            'delete',
+          ],
           { stdio: 'pipe' }
         );
       } else {
-        execSync(`pkill -9 -f "${shepHome}"`, { stdio: 'pipe' });
+        execSync(`pkill -9 -f "${shipitAiHome}"`, { stdio: 'pipe' });
       }
     } catch {
       // No matching processes — expected when no agent was spawned
@@ -66,8 +71,8 @@ describe('CLI: feat', () => {
     // Clean up temporary directories (wrapped in try/catch so test
     // results aren't masked by cleanup failures)
     try {
-      if (existsSync(shepHome)) {
-        rmSync(shepHome, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
+      if (existsSync(shipitAiHome)) {
+        rmSync(shipitAiHome, { recursive: true, force: true, maxRetries: 3, retryDelay: 200 });
       }
     } catch {
       // OS will clean /tmp eventually
@@ -93,10 +98,10 @@ describe('CLI: feat', () => {
     return match[1];
   }
 
-  describe('shep feat new', () => {
+  describe('shipit-ai feat new', () => {
     it('should create a feature and display its details', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -110,24 +115,24 @@ describe('CLI: feat', () => {
 
     it('should create a git worktree for the feature branch', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
       runner.runOrThrow(`feat new "Worktree check" --repo ${tempRepo}`);
 
-      // Worktrees are stored at $SHEP_HOME/repos/REPO_HASH/wt/FEATURE-SLUG
+      // Worktrees are stored at $SHIPIT_AI_HOME/repos/REPO_HASH/wt/FEATURE-SLUG
       const repoHash = createHash('sha256')
         .update(tempRepo.replace(/\\/g, '/'))
         .digest('hex')
         .slice(0, 16);
-      const worktreePath = join(shepHome, 'repos', repoHash, 'wt', 'feat-worktree-check');
+      const worktreePath = join(shipitAiHome, 'repos', repoHash, 'wt', 'feat-worktree-check');
       expect(existsSync(worktreePath)).toBe(true);
     }, 60_000);
 
     it('should initialize spec directory with fast-mode YAML files by default', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -137,7 +142,7 @@ describe('CLI: feat', () => {
         .update(tempRepo.replace(/\\/g, '/'))
         .digest('hex')
         .slice(0, 16);
-      const worktreePath = join(shepHome, 'repos', repoHash, 'wt', 'feat-spec-init-check');
+      const worktreePath = join(shipitAiHome, 'repos', repoHash, 'wt', 'feat-spec-init-check');
       const specDir = join(worktreePath, 'specs', '001-spec-init-check');
 
       expect(existsSync(specDir)).toBe(true);
@@ -151,7 +156,7 @@ describe('CLI: feat', () => {
 
     it('should initialize spec directory with all YAML files when --no-fast is used', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -161,7 +166,7 @@ describe('CLI: feat', () => {
         .update(tempRepo.replace(/\\/g, '/'))
         .digest('hex')
         .slice(0, 16);
-      const worktreePath = join(shepHome, 'repos', repoHash, 'wt', 'feat-full-spec-check');
+      const worktreePath = join(shipitAiHome, 'repos', repoHash, 'wt', 'feat-full-spec-check');
       const specDir = join(worktreePath, 'specs', '001-full-spec-check');
 
       expect(existsSync(specDir)).toBe(true);
@@ -176,7 +181,7 @@ describe('CLI: feat', () => {
 
     it('should auto-resolve duplicate feature slugs with suffix', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -192,7 +197,7 @@ describe('CLI: feat', () => {
 
     it('should show error when no description is provided', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -202,10 +207,10 @@ describe('CLI: feat', () => {
     });
   });
 
-  describe('shep feat ls', () => {
+  describe('shipit-ai feat ls', () => {
     it('should show message when no features exist', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -217,7 +222,7 @@ describe('CLI: feat', () => {
 
     it('should list created features', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -232,7 +237,7 @@ describe('CLI: feat', () => {
 
     it('should filter features by repository path', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -245,10 +250,10 @@ describe('CLI: feat', () => {
     }, 60_000);
   });
 
-  describe('shep feat show', () => {
+  describe('shipit-ai feat show', () => {
     it('should display feature details', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 
@@ -266,7 +271,7 @@ describe('CLI: feat', () => {
 
     it('should show error for nonexistent feature ID', () => {
       const runner = createCliRunner({
-        env: { SHEP_HOME: shepHome },
+        env: { SHIPIT_AI_HOME: shipitAiHome },
         timeout: 30000,
       });
 

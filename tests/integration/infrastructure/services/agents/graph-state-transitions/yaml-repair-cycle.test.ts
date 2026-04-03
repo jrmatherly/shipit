@@ -32,7 +32,7 @@ describe('Graph State Transitions › YAML Repair Cycle', () => {
   let specDir: string;
 
   beforeAll(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-yaml-repair-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-yaml-repair-'));
     specDir = join(tempDir, 'specs', '001-test');
   });
 

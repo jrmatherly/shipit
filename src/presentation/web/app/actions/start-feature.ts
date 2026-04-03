@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { StartFeatureUseCase } from '@shepai/core/application/use-cases/features/start-feature.use-case';
+import type { StartFeatureUseCase } from '@shipit-ai/core/application/use-cases/features/start-feature.use-case';
 
 export async function startFeature(
   featureId: string

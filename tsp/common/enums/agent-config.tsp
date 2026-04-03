@@ -1,8 +1,8 @@
 /**
- * @module Shep.Common.Enums.AgentConfig
+ * @module ShipitAI.Common.Enums.AgentConfig
  *
- * Defines enums for agent configuration in the Shep AI platform.
- * These enums control which AI coding tool powers Shep's operations
+ * Defines enums for agent configuration in the Shipit AI platform.
+ * These enums control which AI coding tool powers Shipit AI's operations
  * and how authentication is handled for each tool.
  *
  * ## Supported Agents
@@ -12,7 +12,7 @@
  * extensibility and appear as "Coming Soon" in the TUI wizard.
  */
 /**
- * The AI coding agent tool used by Shep for all LLM-powered operations.
+ * The AI coding agent tool used by Shipit AI for all LLM-powered operations.
  *
  * ```
  * claude-code  ← Currently supported
@@ -94,7 +94,7 @@ enum AgentAuthMethod {
   Session: "session",
 
   /**
-   * Use an API token stored in the Shep settings database.
+   * Use an API token stored in the Shipit AI settings database.
    * Token is set via the TUI wizard or --token CLI flag.
    */
   @doc("Use API token stored in settings")

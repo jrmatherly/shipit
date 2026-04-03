@@ -8,7 +8,7 @@ oneLiner: fix agent executor switching between interrupts when settings change d
 userQuery: >
   Feature: LEts fix that issue
 
-  https://github.com/shep-ai/shep/issues/211
+  https://github.com/jrmatherly/shipit/issues/211
 summary: >
   When a feature agent run is paused (waitingApproval or interrupted) and the user changes
   the agent type in settings, resuming the run spawns a new worker that reads the updated
@@ -30,7 +30,7 @@ technologies:
   - SQLite (AgentRun persistence)
 
 relatedLinks:
-  - https://github.com/shep-ai/shep/issues/211
+  - https://github.com/jrmatherly/shipit/issues/211
 
 # Open questions (must be resolved before implementation)
 openQuestions:
@@ -43,7 +43,7 @@ openQuestions:
           with how other worker options (e.g. feature ID, run ID) are already passed via argv.
           Easy to inspect in process listings, simple to parse, no env namespace pollution.
         selected: true
-      - option: 'Environment variable (SHEP_AGENT_TYPE)'
+      - option: 'Environment variable (SHIPIT_AI_AGENT_TYPE)'
         description: >
           Inject via a dedicated env var on the child process. Slightly more flexible if
           the worker is invoked through shell wrappers, but adds implicit coupling through

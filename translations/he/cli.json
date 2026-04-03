@@ -1,7 +1,7 @@
 {
   "commands": {
     "settings": {
-      "description": "נהל הגדרות Shep גלובליות",
+      "description": "נהל הגדרות Shipit AI גלובליות",
       "wizardFailed": "אשף ההגדרות נכשל",
       "show": {
         "description": "הצג הגדרות נוכחיות",
@@ -11,7 +11,7 @@
       "init": {
         "description": "אתחל הגדרות לברירות מחדל",
         "forceOption": "דלג על בקשת אישור",
-        "resetWarning": "פעולה זו תאפס את כל ההגדרות לברירות מחדל. שקול לגבות את ~/.shep/data תחילה.",
+        "resetWarning": "פעולה זו תאפס את כל ההגדרות לברירות מחדל. שקול לגבות את ~/.shipit-ai/data תחילה.",
         "confirmPrompt": "האם אתה בטוח? (y/N): ",
         "cancelled": "הפעולה בוטלה.",
         "success": "ההגדרות אותחלו לברירות מחדל.",
@@ -39,7 +39,7 @@
       "model": {
         "description": "הגדר מודל LLM ברירת מחדל להרצות סוכן",
         "selectPrompt": "בחר מודל LLM ברירת מחדל",
-        "noModels": "אין מודלים זמינים עבור הסוכן \"{{agentType}}\". הגדר סוכן אחר עם: shep settings agent",
+        "noModels": "אין מודלים זמינים עבור הסוכן \"{{agentType}}\". הגדר סוכן אחר עם: shipit-ai settings agent",
         "success": "המודל הוגדר: {{model}}",
         "cancelled": "ההגדרה בוטלה.",
         "failed": "הגדרת המודל נכשלה"
@@ -78,31 +78,31 @@
       "platformLabel": "פלטפורמה:"
     },
     "start": {
-      "description": "הפעל את ממשק ה-Web של Shep כתהליך רקע",
+      "description": "הפעל את ממשק ה-Web של Shipit AI כתהליך רקע",
       "portOption": "מספר פורט (1024-65535)",
       "portValidation": "הפורט חייב להיות מספר שלם בין 1024 ל-65535"
     },
     "stop": {
-      "description": "עצור את תהליך הרקע של ממשק ה-Web של Shep",
-      "noDaemonRunning": "אין תהליך Shep פעיל."
+      "description": "עצור את תהליך הרקע של ממשק ה-Web של Shipit AI",
+      "noDaemonRunning": "אין תהליך Shipit AI פעיל."
     },
     "restart": {
-      "description": "הפעל מחדש בעדינות את תהליך ממשק ה-Web של Shep (מפעיל אם לא רץ)",
+      "description": "הפעל מחדש בעדינות את תהליך ממשק ה-Web של Shipit AI (מפעיל אם לא רץ)",
       "portOption": "מספר פורט (1024-65535)",
       "portValidation": "הפורט חייב להיות מספר שלם בין 1024 ל-65535",
       "daemonNotRunning": "התהליך לא היה פעיל — מפעיל..."
     },
     "status": {
-      "description": "הצג את סטטוס תהליך ממשק ה-Web של Shep",
+      "description": "הצג את סטטוס תהליך ממשק ה-Web של Shipit AI",
       "logsOption": "הצג N שורות אחרונות מיומן התהליך (ברירת מחדל 50)",
       "followOption": "עקוב אחר פלט יומן התהליך בזמן אמת",
       "noLogFile": "לא נמצא קובץ יומן תהליך.",
       "expectedAt": "צפוי ב: {{path}}",
       "logEmpty": "קובץ היומן ריק.",
       "followHint": "--- עוקב אחר daemon.log (Ctrl+C לעצירה) ---",
-      "notRunning": "תהליך Shep אינו פעיל.",
-      "startHint": "הרץ `shep start` להפעלתו.",
-      "title": "סטטוס תהליך Shep",
+      "notRunning": "תהליך Shipit AI אינו פעיל.",
+      "startHint": "הרץ `shipit-ai start` להפעלתו.",
+      "title": "סטטוס תהליך Shipit AI",
       "pidLabel": "PID",
       "portLabel": "פורט",
       "urlLabel": "URL",
@@ -111,7 +111,7 @@
       "cpuLabel": "CPU %",
       "memoryLabel": "זיכרון (RSS)",
       "envTitle": "סביבה",
-      "shepHomeLabel": "תיקיית Shep",
+      "shipitAiHomeLabel": "תיקיית Shipit AI",
       "cliVersionLabel": "גרסת CLI",
       "nodeVersionLabel": "גרסת Node",
       "dbPathLabel": "נתיב מסד נתונים",
@@ -119,11 +119,11 @@
       "daemonConfigLabel": "הגדרת תהליך"
     },
     "ui": {
-      "description": "הפעל את ממשק ה-Web של Shep",
+      "description": "הפעל את ממשק ה-Web של Shipit AI",
       "portOption": "מספר פורט (1024-65535)",
       "noOpenOption": "אל תפתח דפדפן אוטומטית",
       "portValidation": "הפורט חייב להיות מספר שלם בין 1024 ל-65535",
-      "heading": "ממשק Web של Shep",
+      "heading": "ממשק Web של Shipit AI",
       "startingDev": "מפעיל שרת ווב (מצב פיתוח)...",
       "starting": "מפעיל שרת ווב...",
       "serverReady": "השרת מוכן ב-{{url}}",
@@ -559,7 +559,7 @@
       }
     },
     "upgrade": {
-      "description": "שדרג את Shep CLI לגרסה האחרונה",
+      "description": "שדרג את Shipit AI CLI לגרסה האחרונה",
       "versionCheckTimeout": "לא ניתן להשלים את בדיקת הגרסה (תם הזמן)",
       "versionCheckFailed": "לא ניתן להשלים את בדיקת הגרסה",
       "alreadyUpToDate": "כבר מעודכן (v{{version}})",
@@ -568,7 +568,7 @@
       "stoppingDaemon": "עוצר תהליך לפני שדרוג...",
       "restartingDaemon": "מפעיל מחדש תהליך...",
       "daemonRestarted": "התהליך הופעל מחדש בהצלחה.",
-      "upgradeSuccess": "Shep CLI שודרג בהצלחה",
+      "upgradeSuccess": "Shipit AI CLI שודרג בהצלחה",
       "upgradeFailed": "השדרוג נכשל",
       "upgradeFailedDaemonRestored": "השדרוג נכשל — התהליך שוחזר על הגרסה הקודמת."
     },
@@ -588,17 +588,17 @@
       "installingHeading": "מתקין {{tool}}"
     },
     "daemon": {
-      "alreadyRunning": "Shep כבר פועל ב-{{url}}",
-      "heading": "ממשק Web של Shep",
+      "alreadyRunning": "Shipit AI כבר פועל ב-{{url}}",
+      "heading": "ממשק Web של Shipit AI",
       "startingServer": "מפעיל שרת",
       "daemonSpawned": "התהליך הופעל ב-{{url}}",
       "serverReady": "השרת מוכן ב-{{url}}",
       "serverMayBeStarting": "ייתכן שהשרת עדיין מופעל ב-{{url}}",
       "daemonFailed": "התהליך נכשל בהפעלה (קוד יציאה {{code}}).",
       "checkLogs": "בדוק יומנים: {{path}}",
-      "stoppingDaemon": "עוצר תהליך Shep (PID {{pid}})...",
+      "stoppingDaemon": "עוצר תהליך Shipit AI (PID {{pid}})...",
       "sigkillFallback": "התהליך לא נעצר בעדינות, שולח SIGKILL...",
-      "daemonStopped": "תהליך Shep נעצר."
+      "daemonStopped": "תהליך Shipit AI נעצר."
     },
     "logViewer": {
       "noLogFile": "לא נמצא קובץ יומן עבור {{label}}",

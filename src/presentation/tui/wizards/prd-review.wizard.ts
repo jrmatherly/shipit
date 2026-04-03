@@ -15,7 +15,7 @@ import {
 import type { OpenQuestion } from '@/application/use-cases/agents/review-feature.use-case.js';
 import type { QuestionSelectionChange } from '@/domain/generated/output.js';
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 export interface PrdReviewWizardResult {
   action: ReviewAction;
@@ -56,7 +56,7 @@ export async function prdReviewWizard(questions: OpenQuestion[]): Promise<PrdRev
   if (action === 'reject') {
     feedback = await input({
       message: getTuiI18n().t('tui:prompts.prdReview.feedbackPrompt'),
-      theme: shepTheme,
+      theme: shipitAiTheme,
       validate: (value) =>
         value.trim().length > 0 || getTuiI18n().t('tui:prompts.prdReview.feedbackRequired'),
     });

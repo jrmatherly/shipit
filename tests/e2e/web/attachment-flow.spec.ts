@@ -12,7 +12,7 @@ test.describe('Feature Create Drawer — drag-drop attachment flow', () => {
           name: 'test-doc.pdf',
           size: 5000,
           mimeType: 'application/pdf',
-          path: '/tmp/.shep/attachments/pending-abc/test-doc.pdf',
+          path: '/tmp/.shipit-ai/attachments/pending-abc/test-doc.pdf',
           createdAt: new Date().toISOString(),
         }),
       })

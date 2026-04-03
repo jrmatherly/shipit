@@ -1,5 +1,5 @@
 /**
- * @module Shep.Deployment
+ * @module ShipitAI.Deployment
  *
  * Index module that re-exports all deployment-related types from the deployment layer.
  *

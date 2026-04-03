@@ -1,5 +1,5 @@
 import { CheckCircle2, Loader2, XCircle } from 'lucide-react';
-import { CiStatus } from '@shepai/core/domain/generated/output';
+import { CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { Badge } from '@/components/ui/badge';
 
 export function CiStatusBadge({ status }: { status: CiStatus }) {

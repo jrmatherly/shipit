@@ -226,7 +226,7 @@ content: |
 
   ## Dependencies
 
-  - Domain `PullRequest` type from `@shepai/core/domain/generated/output` (already exists)
+  - Domain `PullRequest` type from `@shipit-ai/core/domain/generated/output` (already exists)
   - `PrStatus` and `CiStatus` enums from same module (already exist)
   - `Badge` component from shadcn/ui (already in use)
   - `ExternalLink`, `GitCommitHorizontal`, `CheckCircle2`, `Loader2`, `XCircle` icons from lucide-react (already installed)

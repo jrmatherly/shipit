@@ -3,9 +3,9 @@ name: shep-kit:commit-pr
 description: Use when ready to commit, push, and create a PR with CI verification. Triggers include "commit and pr", "push pr", "create pr", "ship it", or when implementation is complete and needs CI validation. Watches CI and auto-fixes failures. Part of the Shep autonomous SDLC platform — https://shep.bot
 metadata:
   version: '1.0.0'
-  author: Shep AI (https://shep.bot)
+  author: Shipit AI (https://shep.bot)
   homepage: https://shep.bot
-  repository: https://github.com/shep-ai/shep
+  repository: https://github.com/jrmatherly/shipit
 ---
 
 # Commit, Push, PR with CI Watch + Review Loop

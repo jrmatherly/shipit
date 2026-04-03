@@ -5,7 +5,7 @@ name: cli-upgrade-command
 summary: >
   Implement `shep upgrade` as a presentation-layer command that checks the latest published
   version via `npm view`, compares against the current version from IVersionService, and
-  spawns `npm i -g @shepai/cli@latest` with inherited stdio when an update is available.
+  spawns `npm i -g @shipit-ai/cli@latest` with inherited stdio when an update is available.
   All logic stays in a single command file following existing patterns. Spawn is injected
   as an optional parameter for testability. Two phases: (1) TDD implementation of the command,
   (2) CLI registration and integration verification.
@@ -55,8 +55,8 @@ content: |
   are needed.
 
   The command resolves `IVersionService` from the existing DI container to get the current
-  version, spawns `npm view @shepai/cli version` to get the latest published version, and
-  conditionally spawns `npm i -g @shepai/cli@latest` with `stdio: 'inherit'` to stream
+  version, spawns `npm view @shipit-ai/cli version` to get the latest published version, and
+  conditionally spawns `npm i -g @shipit-ai/cli@latest` with `stdio: 'inherit'` to stream
   output directly to the terminal.
 
   ## Key Design Decisions

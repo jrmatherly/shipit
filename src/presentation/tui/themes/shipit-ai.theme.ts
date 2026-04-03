@@ -1,19 +1,19 @@
 /**
- * Shep TUI Theme
+ * Shipit AI TUI Theme
  *
- * Custom theme for @inquirer/prompts that matches the Shep CLI design system.
+ * Custom theme for @inquirer/prompts that matches the Shipit AI CLI design system.
  * Uses picocolors for consistent styling with the rest of the CLI.
  */
 
 import pc from 'picocolors';
 
 /**
- * Shep-branded theme for @inquirer/prompts.
+ * Shipit AI-branded theme for @inquirer/prompts.
  *
- * Customizes the prefix icon to use the Shep brand color (cyan)
+ * Customizes the prefix icon to use the Shipit AI brand color (cyan)
  * and provides consistent styling across all TUI prompts.
  */
-export const shepTheme = {
+export const shipitAiTheme = {
   prefix: {
     idle: pc.cyan('?'),
     done: pc.green('\u2714'),

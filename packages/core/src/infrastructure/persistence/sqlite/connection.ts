@@ -1,15 +1,15 @@
 /**
  * SQLite Connection Module
  *
- * Provides singleton database connection to ~/.shep/data
+ * Provides singleton database connection to ~/.shipit-ai/data
  * Configures pragmas for optimal performance and reliability.
  */
 
 import Database from 'better-sqlite3';
 import {
-  ensureShepDirectory,
-  getShepDbPath,
-} from '../../services/filesystem/shep-directory.service.js';
+  ensureShipitAiDirectory,
+  getShipitAiDbPath,
+} from '../../services/filesystem/shipit-ai-directory.service.js';
 
 /**
  * Singleton database instance.
@@ -22,8 +22,8 @@ let dbInstance: Database.Database | null = null;
  * Singleton pattern ensures only one connection exists.
  *
  * On first call:
- * - Ensures ~/.shep/ directory exists
- * - Creates database file at ~/.shep/data
+ * - Ensures ~/.shipit-ai/ directory exists
+ * - Creates database file at ~/.shipit-ai/data
  * - Configures pragmas for performance and reliability
  *
  * @returns Database connection instance
@@ -39,11 +39,11 @@ export async function getSQLiteConnection(): Promise<Database.Database> {
     return dbInstance;
   }
 
-  // Ensure ~/.shep/ directory exists
-  await ensureShepDirectory();
+  // Ensure ~/.shipit-ai/ directory exists
+  await ensureShipitAiDirectory();
 
   // Get database path
-  const dbPath = getShepDbPath();
+  const dbPath = getShipitAiDbPath();
 
   // Create database connection
   dbInstance = new Database(dbPath, {

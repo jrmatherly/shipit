@@ -1,8 +1,8 @@
 /**
- * @module Shep.Domain.Entities.Requirement
+ * @module ShipitAI.Domain.Entities.Requirement
  *
  * Defines the Requirement entity that captures user requirements and their
- * associated research in the Shep AI platform. Requirements are gathered
+ * associated research in the Shipit AI platform. Requirements are gathered
  * during the requirements phase and form the basis for planning.
  *
  * ## Requirement Lifecycle

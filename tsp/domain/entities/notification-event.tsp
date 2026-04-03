@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.NotificationEvent
+ * @module ShipitAI.Domain.Entities.NotificationEvent
  *
  * Defines the NotificationEvent model representing a notification emitted
  * when an agent transitions through lifecycle states. This is a value object

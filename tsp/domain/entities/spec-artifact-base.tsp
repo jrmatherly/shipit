@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.SpecArtifactBase
+ * @module ShipitAI.Domain.Entities.SpecArtifactBase
  *
  * Defines the base entity for all spec artifact types in the YAML-first spec system.
  * All spec artifacts (FeatureArtifact, ResearchArtifact, TechnicalPlanArtifact,
@@ -7,7 +7,7 @@
  *
  * ## Spec Artifact System
  *
- * The Shep AI platform uses YAML-based spec artifacts as the source of truth for
+ * The Shipit AI platform uses YAML-based spec artifacts as the source of truth for
  * feature development. Each artifact type extends SpecArtifactBase with additional
  * type-specific fields while sharing common metadata.
  *

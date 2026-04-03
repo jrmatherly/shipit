@@ -63,9 +63,9 @@ openQuestions:
           control but adds friction to the import flow and introduces UX
           complexity in the Web UI (need a folder picker for destination).
         selected: false
-      - option: Managed directory under ~/.shep/repos/
+      - option: Managed directory under ~/.shipit-ai/repos/
         description: >
-          Clone into `~/.shep/repos/<hash>/main` using the same SHA256 hash
+          Clone into `~/.shipit-ai/repos/<hash>/main` using the same SHA256 hash
           scheme as worktrees (hash of remote URL). Fully managed, zero
           friction, consistent with existing path conventions. Users can still
           find repos via `shep repo show`.
@@ -80,7 +80,7 @@ openQuestions:
         selected: true
     selectionRationale: >
       A configurable default with per-import override gives the best balance.
-      Managed directories under `~/.shep/` are hidden and surprising — users
+      Managed directories under `~/.shipit-ai/` are hidden and surprising — users
       expect cloned repos in their normal code directories. A user-chosen
       directory every time adds friction. A sensible default (e.g. `~/repos/`)
       with a `--dest` override and Web UI option keeps the flow fast while
@@ -424,7 +424,7 @@ content: >
 
   | 2 | Where should cloned repos be stored? | Configurable default with
   `--dest` override | Repos in user's normal directories, not hidden in
-  `~/.shep/`, with override for flexibility |
+  `~/.shipit-ai/`, with override for flexibility |
 
   | 3 | How should CLI handle the two import flows? | Single `shep repo add`
   command with `--url` flag | Intuitive single entry point, interactive mode
@@ -500,8 +500,8 @@ content: >
   - **IRepositoryRepository**: Needs a new `findByRemoteUrl(url: string)` method
   for duplicate detection by remote URL.
 
-  - **Shep directory service**: Uses `getShepHomeDir()` from
-  `shep-directory.service.ts` for fallback clone destination.
+  - **Shep directory service**: Uses `getShipitAiHomeDir()` from
+  `shipit-ai-directory.service.ts` for fallback clone destination.
 
   - **Tool installer**: May need to verify `gh` is installed and authenticated
   before import.

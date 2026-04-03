@@ -107,7 +107,7 @@
 
 - [ ] Extract confirmation prompt to reusable `src/presentation/cli/ui/prompts.ts` utility
 - [ ] Improve error messages with actionable guidance
-- [ ] Add backup warning to confirmation prompt: "Consider backing up ~/.shep/data first"
+- [ ] Add backup warning to confirmation prompt: "Consider backing up ~/.shipit-ai/data first"
 - [ ] Run tests: `pnpm test` - **Verify all tests still PASS**
 - [ ] Run linter: `pnpm lint && pnpm typecheck`
 - [ ] Commit: `refactor(cli): improve init command UX (REFACTOR)`
@@ -178,7 +178,7 @@
   - [ ] Verify all E2E tests pass
   - [ ] Fix any failing tests
 - [ ] Run E2E tests manually in real terminal:
-  - [ ] Test `shep settings show` with real ~/.shep/data
+  - [ ] Test `shep settings show` with real ~/.shipit-ai/data
   - [ ] Test `shep settings show --output json` - verify valid JSON
   - [ ] Test `shep settings show --output yaml` - verify valid YAML
   - [ ] Test `shep settings init` - go through confirmation flow

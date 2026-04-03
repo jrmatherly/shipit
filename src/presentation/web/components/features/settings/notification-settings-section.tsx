@@ -8,7 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { updateSettingsAction } from '@/app/actions/update-settings';
-import type { NotificationPreferences } from '@shepai/core/domain/generated/output';
+import type { NotificationPreferences } from '@shipit-ai/core/domain/generated/output';
 
 const AGENT_EVENT_TOGGLES = [
   { key: 'agentStarted', label: 'Agent Started' },

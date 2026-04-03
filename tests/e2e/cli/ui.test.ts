@@ -1,7 +1,7 @@
 /**
  * CLI UI Command E2E Tests
  *
- * Tests for the `shep ui` command that starts the integrated web UI server.
+ * Tests for the `shipit-ai ui` command that starts the integrated web UI server.
  * Verifies the server starts correctly on the default port, respects custom
  * port flags, and handles port conflicts by auto-incrementing.
  *
@@ -109,7 +109,7 @@ describe('CLI: ui', { timeout: 300_000 }, () => {
       expect(response.status).toBe(200);
 
       const html = await response.text();
-      expect(html).toContain('@shepai/cli');
+      expect(html).toContain('@shipit-ai/cli');
       expect(html).toContain('Autonomous AI Native SDLC Platform');
     }, 150_000);
   });
@@ -130,7 +130,7 @@ describe('CLI: ui', { timeout: 300_000 }, () => {
       expect(response.status).toBe(200);
 
       const html = await response.text();
-      expect(html).toContain('@shepai/cli');
+      expect(html).toContain('@shipit-ai/cli');
     }, 150_000);
   });
 

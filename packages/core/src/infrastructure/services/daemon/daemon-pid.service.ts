@@ -1,7 +1,7 @@
 /**
  * DaemonPidService
  *
- * Infrastructure service for managing the daemon state file (~/.shep/daemon.json).
+ * Infrastructure service for managing the daemon state file (~/.shipit-ai/daemon.json).
  * Implements IDaemonService output port.
  *
  * Uses atomic write (write-to-temp + rename) to prevent partial-write corruption.
@@ -14,7 +14,7 @@ import type {
   IDaemonService,
   DaemonState,
 } from '../../../application/ports/output/services/daemon-service.interface.js';
-import { getDaemonStatePath } from '../filesystem/shep-directory.service.js';
+import { getDaemonStatePath } from '../filesystem/shipit-ai-directory.service.js';
 
 @injectable()
 export class DaemonPidService implements IDaemonService {

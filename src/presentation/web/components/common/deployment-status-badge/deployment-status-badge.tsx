@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { Loader2, ExternalLink, Terminal } from 'lucide-react';
-import { DeploymentState } from '@shepai/core/domain/generated/output';
+import { DeploymentState } from '@shipit-ai/core/domain/generated/output';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ServerLogViewer } from '@/components/common/server-log-viewer';
 

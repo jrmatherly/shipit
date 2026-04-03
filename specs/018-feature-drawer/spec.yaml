@@ -123,7 +123,7 @@ content: |
   - [ ] Unit tests cover drawer content rendering for all feature states
   - [ ] Integration tests cover open/close/switch behavior
   - [ ] The drawer is keyboard-accessible (Escape closes, Tab navigates content)
-  - [ ] vaul is added as a dependency to @shepai/web package.json
+  - [ ] vaul is added as a dependency to @shipit-ai/web package.json
   - [ ] Dark mode is supported with correct theme colors
 
   ## Functional Requirements
@@ -185,11 +185,11 @@ content: |
   | `components/features/control-center/control-center-inner.tsx` | Medium | Must integrate the feature drawer, passing `selectedNode` and `clearSelection` as props. Drawer renders as sibling to `FeaturesCanvas`. |
   | `components/features/control-center/use-control-center-state.ts` | Low | State already tracks `selectedNode`. May need minor adjustments if drawer requires additional state (e.g., explicit open/close boolean). |
   | `components/common/index.ts` | Low | Must export the new FeatureDrawer component. |
-  | `package.json` (@shepai/web) | Low | Must add `vaul` as a dependency. |
+  | `package.json` (@shipit-ai/web) | Low | Must add `vaul` as a dependency. |
 
   ## Dependencies
 
-  - **vaul** (npm package): Headless drawer component for React. Required by shadcn/ui Drawer. Not yet installed — must be added to @shepai/web.
+  - **vaul** (npm package): Headless drawer component for React. Required by shadcn/ui Drawer. Not yet installed — must be added to @shipit-ai/web.
   - **Existing Sheet component** (`components/ui/sheet.tsx`): Reference for Radix-based sliding panel patterns but not directly used. Drawer is a separate primitive.
   - **FeatureNodeData interface** (`components/common/feature-node/feature-node-state-config.ts`): Data contract for what the drawer displays. Already defined with name, description, featureId, lifecycle, state, progress, runtime, blockedBy, errorMessage, agentName.
   - **featureNodeStateConfig** (`feature-node-state-config.ts`): State colors, icons, border classes, badge classes, and labels for rendering status within the drawer. Already defined for all five states.

@@ -1,7 +1,7 @@
 /**
  * Feature Logs Command Unit Tests
  *
- * Tests for the `shep feat logs <id>` command.
+ * Tests for the `shipit-ai feat logs <id>` command.
  */
 
 import 'reflect-metadata';
@@ -26,8 +26,8 @@ vi.mock('../../../../../../src/presentation/cli/commands/log-viewer.js', () => (
   viewLog: (...args: unknown[]) => mockViewLog(...args),
 }));
 
-vi.mock('@/infrastructure/services/filesystem/shep-directory.service.js', () => ({
-  getShepHomeDir: () => '/home/test/.shep',
+vi.mock('@/infrastructure/services/filesystem/shipit-ai-directory.service.js', () => ({
+  getShipitAiHomeDir: () => '/home/test/.shipit-ai',
 }));
 
 import { createLogsCommand } from '../../../../../../src/presentation/cli/commands/feat/logs.command.js';

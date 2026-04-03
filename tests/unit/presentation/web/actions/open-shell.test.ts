@@ -3,7 +3,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockGetSettings = vi.fn();
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   getSettings: mockGetSettings,
 }));
 
@@ -13,8 +13,8 @@ vi.mock('@/lib/server-container', () => ({
   resolve: (...args: unknown[]) => mockResolve(...args),
 }));
 
-const MOCK_WORKTREE_PATH = '/mock/.shep/repos/abc123/wt/feat-test';
-vi.mock('@shepai/core/infrastructure/services/ide-launchers/compute-worktree-path', () => ({
+const MOCK_WORKTREE_PATH = '/mock/.shipit-ai/repos/abc123/wt/feat-test';
+vi.mock('@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path', () => ({
   computeWorktreePath: () => MOCK_WORKTREE_PATH,
 }));
 

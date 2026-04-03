@@ -1,6 +1,6 @@
 'use server';
 
-import { getSettings } from '@shepai/core/infrastructure/services/settings.service';
+import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 
 export interface WorkflowDefaults {
   approvalGates: {

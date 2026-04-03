@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import type { LogEntry } from '@shepai/core/application/ports/output/services/deployment-service.interface';
+import type { LogEntry } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 
 // --- Mock DI container ---
 
@@ -86,9 +86,8 @@ describe('SSE API Route: GET /api/deployment-logs', () => {
     logHandlers.length = 0;
     vi.clearAllMocks();
 
-    routeModule = await import(
-      '../../../../../src/presentation/web/app/api/deployment-logs/route.js'
-    );
+    routeModule =
+      await import('../../../../../src/presentation/web/app/api/deployment-logs/route.js');
   });
 
   afterEach(() => {

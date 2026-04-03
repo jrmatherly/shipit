@@ -148,13 +148,13 @@ content: |
   The pure function (SHA256 hash + path join) is currently duplicated in 3 CLI commands:
   ide-open.command.ts:20, feat/show.command.ts:21, agent/show.command.ts:21. Extracting to
   `packages/core/src/infrastructure/services/ide-launchers/compute-worktree-path.ts`
-  co-locates it with the launcher registry. Importable via the `@shepai/core/infrastructure/*`
+  co-locates it with the launcher registry. Importable via the `@shipit-ai/core/infrastructure/*`
   wildcard export in packages/core/package.json. Both CLI and web consumers import from this
   single source.
 
   ### 4. Direct Service Instantiation in API Routes
 
-  Following the /api/dialog/pick-folder pattern: import from @shepai/core, instantiate
+  Following the /api/dialog/pick-folder pattern: import from @shipit-ai/core, instantiate
   directly, try/catch, NextResponse.json(). No tsyringe (bundling issues with native modules),
   no use-cases bridge (no existing use cases for IDE/shell launch). getSettings() works because
   the Next.js server runs in the same Node process where the CLI initialized the singleton.
@@ -205,7 +205,7 @@ content: |
 
   | Risk | Mitigation |
   | ---- | ---------- |
-  | packages/core import fails in Next.js API routes | The /api/dialog/* routes already import from @shepai/core successfully. computeWorktreePath, getSettings, and createLauncherRegistry are pure functions with no tsyringe/native module deps. Verified by existing pick-folder/route.ts pattern. |
+  | packages/core import fails in Next.js API routes | The /api/dialog/* routes already import from @shipit-ai/core successfully. computeWorktreePath, getSettings, and createLauncherRegistry are pure functions with no tsyringe/native module deps. Verified by existing pick-folder/route.ts pattern. |
   | getSettings() not initialized when API route runs | The CLI bootstrap initializes the singleton before starting Next.js (WebServerService). Verified by existing use-cases-bridge pattern in page.tsx line 2. |
   | Shell spawn fails on different Linux distros | Fallback from x-terminal-emulator to xdg-terminal-emulator. Return clear 500 error with spawn failure details. 501 for unsupported platforms (NFR-8). |
   | computeWorktreePath extraction breaks existing CLI commands | The function is pure and identical across all 3 copies. Replace each copy with an import, run existing tests to verify no regression. |

@@ -283,7 +283,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: shipit-ai-logs-${{ matrix.agent }}-${{ matrix.os }}
-          path: ~/.shep/logs/
+          path: ~/.shipit-ai/logs/
           if-no-files-found: ignore
           retention-days: 7
 
@@ -423,7 +423,7 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: shipit-ai-logs-claude-windows-full-sdlc
-          path: ~/.shep/logs/
+          path: ~/.shipit-ai/logs/
           if-no-files-found: ignore
           retention-days: 7
 
@@ -577,6 +577,6 @@ jobs:
         uses: actions/upload-artifact@v5
         with:
           name: shipit-ai-logs-claude-ubuntu-full-sdlc-pr
-          path: ~/.shep/logs/
+          path: ~/.shipit-ai/logs/
           if-no-files-found: ignore
           retention-days: 7

@@ -1,16 +1,16 @@
 # Project Overview
 
-**Name:** `@shepai/cli` (v1.164.1)
+**Name:** `@shipit-ai/cli` (v1.164.1)
 **Purpose:** Autonomous AI Native SDLC Platform. Users run `shep` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
 **License:** MIT
-**Repository:** https://github.com/shep-ai/shep.git
+**Repository:** https://github.com/jrmatherly/shipit.git
 **Platform:** Node.js / TypeScript (ES2022, ESM)
 **Package Manager:** pnpm (workspace monorepo)
 
 ## Workspaces
 - `.` — Root package (main CLI)
 - `packages/core` — Core package (domain, application, infrastructure layers)
-- `src/presentation/web` — Web UI package (`@shepai/web`)
+- `src/presentation/web` — Web UI package (`@shipit-ai/web`)
 
 ## Entry Points
 - **CLI binary:** `shep` → `dist/src/presentation/cli/index.js`

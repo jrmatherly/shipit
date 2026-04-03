@@ -145,7 +145,7 @@
       "channels": "Kanäle",
       "inApp": "In-App",
       "inAppLabel": "In-App",
-      "inAppDescription": "Benachrichtigungen innerhalb der Shep-UI",
+      "inAppDescription": "Benachrichtigungen innerhalb der Shipit AI-UI",
       "subsections": {
         "agentEvents": "Agent-Ereignisse",
         "pullRequestEvents": "Pull-Request-Ereignisse"
@@ -213,7 +213,7 @@
       "location": "Speicherort",
       "locationDescription": "Pfad zur lokalen SQLite-Datenbank",
       "size": "Größe",
-      "hint": "Alle Einstellungen werden in einer lokalen SQLite-Datenbank unter ~/.shep/data gespeichert. Die Datenbank verwendet ein Singleton-Datensatz-Muster mit automatischen Migrationen beim Start.",
+      "hint": "Alle Einstellungen werden in einer lokalen SQLite-Datenbank unter ~/.shipit-ai/data gespeichert. Die Datenbank verwendet ein Singleton-Datensatz-Muster mit automatischen Migrationen beim Start.",
       "links": {
         "settingsService": "Einstellungsdienst",
         "settingsSpec": "Einstellungsspezifikation"
@@ -265,7 +265,7 @@
   "emptyState": {
     "addProject": "Projekt hinzufügen",
     "addProjectDescription": "Fügen Sie Ihren Projektordner hinzu, um die Feature-Erstellung freizuschalten.",
-    "addProjectDescriptionLine2": "Beschreiben Sie, was Sie brauchen \u2014 Shep erledigt den Rest.",
+    "addProjectDescriptionLine2": "Beschreiben Sie, was Sie brauchen \u2014 Shipit AI erledigt den Rest.",
     "checkingSetup": "Einrichtung wird geprüft\u2026",
     "ready": "{{label}} bereit",
     "notInstalled": "{{label}} nicht installiert",
@@ -289,7 +289,7 @@
     "loadingAgents": "Agenten werden geladen\u2026",
     "chooseAgent": "Wählen Sie Ihren Agenten",
     "pickModel": "Modell auswählen",
-    "selectAgentSubtitle": "Wählen Sie den KI-Coding-Agenten, den Shep verwenden soll.",
+    "selectAgentSubtitle": "Wählen Sie den KI-Coding-Agenten, den Shipit AI verwenden soll.",
     "chooseModelSubtitle": "Wählen Sie, welches {{label}}-Modell ausgeführt werden soll.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> wird für vollständige CI/CD-Selbstheilungsfähigkeiten benötigt. <1>Hier installieren</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -390,7 +390,7 @@
     "fromGithub": "Von GitHub"
   },
   "chat": {
-    "shepChat": "Shep Chat",
+    "shipitAiChat": "Shipit AI Chat",
     "writeMessage": "Nachricht schreiben...",
     "attachFiles": "Dateien anhängen",
     "forceStopAgent": "Agent-Prozess erzwingen stoppen",
@@ -549,7 +549,7 @@
   },
   "githubImport": {
     "title": "Von GitHub importieren",
-    "description": "Ein GitHub-Repository klonen und zu Shep hinzufügen.",
+    "description": "Ein GitHub-Repository klonen und zu Shipit AI hinzufügen.",
     "githubUrl": "GitHub-URL",
     "urlPlaceholder": "owner/repo oder https://github.com/owner/repo",
     "searchRepositories": "Repositories suchen..."

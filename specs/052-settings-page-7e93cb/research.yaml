@@ -175,17 +175,17 @@ decisions:
       The Settings icon from lucide-react (gear icon) is used per the spec.
 
   - title: 'Database Info Display Strategy'
-    chosen: 'Fetch SHEP_HOME path and database file size server-side in the page Server Component using getShepHomeDir() and fs.statSync(), pass as props to the client'
+    chosen: 'Fetch SHIPIT_AI_HOME path and database file size server-side in the page Server Component using getShipitAiHomeDir() and fs.statSync(), pass as props to the client'
     rejected:
       - 'Fetch via a separate server action — unnecessary network round-trip when the page Server Component already runs on the server and can access the filesystem directly'
       - 'Compute in client component — client components cannot access the filesystem (browser environment). This must be server-side.'
     rationale: >
       FR-24 requires server-side fetching using ShepDirectoryService and
       filesystem APIs. The page Server Component already runs on the server
-      (force-dynamic), so it can call getShepHomeDir() for the path and
+      (force-dynamic), so it can call getShipitAiHomeDir() for the path and
       fs.statSync() on the database file for the file size. These values are
       passed as simple string props to the client component. The database
-      path is constructed by joining getShepHomeDir() with the known database
+      path is constructed by joining getShipitAiHomeDir() with the known database
       filename.
 
   - title: 'Save UX Pattern'

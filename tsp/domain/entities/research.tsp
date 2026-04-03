@@ -1,8 +1,8 @@
 /**
- * @module Shep.Domain.Entities.Research
+ * @module ShipitAI.Domain.Entities.Research
  *
  * Defines the Research entity that represents a research activity conducted
- * during the requirements or planning phase of the Shep AI platform.
+ * during the requirements or planning phase of the Shipit AI platform.
  * Research helps gather information needed for technical decisions.
  *
  * ## Research Lifecycle

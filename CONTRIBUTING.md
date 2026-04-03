@@ -1,6 +1,6 @@
-# Contributing to Shep AI CLI
+# Contributing to Shipit AI CLI
 
-Thank you for your interest in contributing to Shep AI CLI! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to Shipit AI CLI! This document provides guidelines and instructions for contributing.
 
 ## Code of Conduct
 
@@ -18,7 +18,7 @@ This project adheres to a Code of Conduct. By participating, you are expected to
 
 ```bash
 # Clone the repository
-git clone https://github.com/shep-ai/shep.git
+git clone https://github.com/jrmatherly/shipit.git
 cd cli
 
 # Install dependencies
@@ -42,7 +42,7 @@ pnpm cli -- --help
 
 # Link globally for testing
 pnpm link --global
-shep --help
+shipit-ai --help
 ```
 
 ## How to Contribute
@@ -240,7 +240,7 @@ Releases are fully automated using [semantic-release](https://semantic-release.g
 
 1. **Commit to main** - When PRs are merged to `main`, semantic-release analyzes commits
 2. **Version bump** - Based on commit types (`feat` → minor, `fix` → patch, `BREAKING CHANGE` → major)
-3. **Publish** - Package is published to npm registry (`npm install @shepai/cli`)
+3. **Publish** - Package is published to npm registry (`npm install @shipit-ai/cli`)
 4. **Release** - GitHub Release is created with auto-generated changelog
 5. **Changelog** - `CHANGELOG.md` is updated and committed
 
@@ -258,11 +258,11 @@ Commits with types `docs`, `style`, `refactor`, `test`, `build`, `ci`, `chore` d
 ### For Maintainers
 
 - Ensure `NPM_TOKEN` secret is configured in repository settings
-- The `@shepai` npm organization must exist and have publish permissions
+- The `@shipit-ai` npm organization must exist and have publish permissions
 
 ## Questions?
 
-- Open a [Discussion](https://github.com/shep-ai/shep/discussions) for questions
+- Open a [Discussion](https://github.com/jrmatherly/shipit/discussions) for questions
 - Join our community channels (links TBD)
 
 ---

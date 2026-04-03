@@ -17,7 +17,7 @@ import { GitHubUrlParseError } from '@/application/ports/output/services/github-
 import type { ListGitHubRepositoriesUseCase } from '@/application/use-cases/repositories/list-github-repositories.use-case.js';
 import type { ListGitHubOrganizationsUseCase } from '@/application/use-cases/repositories/list-github-organizations.use-case.js';
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 /**
  * Result returned by the GitHub import wizard.
@@ -85,7 +85,7 @@ export async function githubImportWizard(
         description: t('tui:wizards.githubImport.browseReposDescription'),
       },
     ],
-    theme: shepTheme,
+    theme: shipitAiTheme,
   });
 
   let url: string;
@@ -129,7 +129,7 @@ async function promptForUrl(gitHubService: IGitHubRepositoryService): Promise<st
         return t('tui:wizards.githubImport.invalidUrlFormat');
       }
     },
-    theme: shepTheme,
+    theme: shipitAiTheme,
   });
 
   return url.trim();
@@ -163,7 +163,7 @@ async function promptForBrowse(
         const selectedOwner = await select<string>({
           message: 'Select account',
           choices: ownerChoices,
-          theme: shepTheme,
+          theme: shipitAiTheme,
         });
 
         if (selectedOwner !== PERSONAL_OWNER) {
@@ -186,7 +186,7 @@ async function promptForBrowse(
   const selected = await select<string>({
     message: t('tui:wizards.githubImport.selectRepo'),
     choices,
-    theme: shepTheme,
+    theme: shipitAiTheme,
   });
 
   return selected;
@@ -198,7 +198,7 @@ async function promptForBrowse(
 async function promptForDestination(): Promise<string | undefined> {
   const dest = await input({
     message: getTuiI18n().t('tui:wizards.githubImport.cloneDestination'),
-    theme: shepTheme,
+    theme: shipitAiTheme,
   });
 
   return dest.trim() || undefined;

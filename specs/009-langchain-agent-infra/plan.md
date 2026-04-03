@@ -219,7 +219,7 @@ describe('AgentRunRepository', () => {
 
 **GREEN** (Minimal Implementation):
 
-- Migration `003_create_agent_runs.sql` (global database `~/.shep/data`):
+- Migration `003_create_agent_runs.sql` (global database `~/.shipit-ai/data`):
   ```sql
   CREATE TABLE agent_runs (
     id TEXT PRIMARY KEY,
@@ -306,7 +306,7 @@ describe('analyzeRepositoryGraph', () => {
 - `infrastructure/services/agents/langgraph/checkpointer.ts`:
   - Wrapper around `@langchain/langgraph` SqliteSaver
   - Registered in DI container as `'Checkpointer'` token (see Phase 11)
-  - Uses separate SQLite file per repo: `~/.shep/repos/<encoded-path>/checkpoints.db`
+  - Uses separate SQLite file per repo: `~/.shipit-ai/repos/<encoded-path>/checkpoints.db`
 
 **REFACTOR**:
 
@@ -446,7 +446,7 @@ describe('DI Container - Agent Services', () => {
   // --- Agent Infrastructure (useFactory for services) ---
 
   // Checkpointer: SqliteSaver instance for LangGraph checkpoint persistence
-  // Created per-repo at ~/.shep/repos/<encoded-path>/checkpoints.db
+  // Created per-repo at ~/.shipit-ai/repos/<encoded-path>/checkpoints.db
   container.register<BaseCheckpointSaver>('Checkpointer', {
     useFactory: () => SqliteSaver.fromConnString('path-resolved-at-runtime'),
   });

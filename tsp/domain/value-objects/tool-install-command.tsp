@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.ValueObjects.ToolInstallCommand
+ * @module ShipitAI.Domain.ValueObjects.ToolInstallCommand
  *
  * Defines the ToolInstallCommand value object for tool installation execution.
  * This model represents an executable installation command with platform-specific

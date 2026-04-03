@@ -17,7 +17,7 @@ import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { cn } from '@/lib/utils';
 import { ToolDetailDrawer } from './tool-detail-drawer';
-import type { ToolItem } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 export interface ToolCardProps {
   tool: ToolItem;

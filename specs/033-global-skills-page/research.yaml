@@ -60,7 +60,7 @@ decisions:
         the relative path breaks. The next.config.ts uses this pattern for package.json but that
         is a build-time concern, not a runtime one.
       - >
-        Environment variable (e.g., SHEP_PROJECT_ROOT) — Would require changes to both the CLI
+        Environment variable (e.g., SHIPIT_AI_PROJECT_ROOT) — Would require changes to both the CLI
         bootstrap (shep ui command) and the dev-server to set the variable. Adds unnecessary
         coordination. process.cwd() already gives the right answer in both contexts since the CLI
         runs from the project root and dev:web is run from the project root.

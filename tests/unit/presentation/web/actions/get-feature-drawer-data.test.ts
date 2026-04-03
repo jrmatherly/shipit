@@ -42,7 +42,7 @@ vi.mock('@/app/build-feature-node-data', () => ({
   ),
 }));
 
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   getSettings: () => ({
     workflow: {
       enableEvidence: false,
@@ -51,9 +51,8 @@ vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
   }),
 }));
 
-const { getFeatureDrawerData } = await import(
-  '../../../../../src/presentation/web/app/actions/get-feature-drawer-data.js'
-);
+const { getFeatureDrawerData } =
+  await import('../../../../../src/presentation/web/app/actions/get-feature-drawer-data.js');
 
 describe('getFeatureDrawerData server action', () => {
   const baseFeature = {

@@ -5,11 +5,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 
 export interface DatabaseSettingsSectionProps {
-  shepHome: string;
+  shipitAiHome: string;
   dbFileSize: string;
 }
 
-export function DatabaseSettingsSection({ shepHome, dbFileSize }: DatabaseSettingsSectionProps) {
+export function DatabaseSettingsSection({
+  shipitAiHome,
+  dbFileSize,
+}: DatabaseSettingsSectionProps) {
   return (
     <Card id="database" className="scroll-mt-6" data-testid="database-settings-section">
       <CardHeader>
@@ -20,15 +23,15 @@ export function DatabaseSettingsSection({ shepHome, dbFileSize }: DatabaseSettin
         <CardDescription>
           <span className="inline-flex items-center gap-1">
             <Info className="h-3 w-3" />
-            Read-only information about your Shep data directory and database
+            Read-only information about your Shipit AI data directory and database
           </span>
         </CardDescription>
       </CardHeader>
       <CardContent className="bg-muted/50 space-y-3 rounded-b-lg">
         <div className="space-y-1">
-          <Label className="text-muted-foreground text-xs">SHEP_HOME Directory</Label>
-          <p className="font-mono text-sm" data-testid="shep-home-path">
-            {shepHome}
+          <Label className="text-muted-foreground text-xs">SHIPIT_AI_HOME Directory</Label>
+          <p className="font-mono text-sm" data-testid="shipit-ai-home-path">
+            {shipitAiHome}
           </p>
         </div>
         <div className="space-y-1">

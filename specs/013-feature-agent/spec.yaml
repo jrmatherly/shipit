@@ -54,7 +54,7 @@ openQuestions:
 content: |
   ## Problem Statement
 
-  Shep AI currently lacks a user-facing feature management system. While we have the `shep run`
+  Shipit AI currently lacks a user-facing feature management system. While we have the `shep run`
   command for executing individual agents (e.g., `shep run analyze-repository`), users cannot:
 
   1. **Create and track features** - No way to create a feature entity in the local database with
@@ -95,7 +95,7 @@ content: |
   - [ ] UpdateFeatureUseCase (updates lifecycle, status, plan)
 
   **Infrastructure**:
-  - [ ] Feature database in `~/.shep/repos/<base64-repo>/data` (SQLite)
+  - [ ] Feature database in `~/.shipit-ai/repos/<base64-repo>/data` (SQLite)
   - [ ] WorktreeService for git worktree management
   - [ ] FeatureAgent (LangGraph) with nodes: analyze, requirements, research, plan, implement
   - [ ] SQLite checkpointing for agent state persistence
@@ -147,7 +147,7 @@ content: |
   **Existing Infrastructure**:
   - ✅ TypeSpec domain models (`tsp/domain/entities/feature.tsp`)
   - ✅ Settings system with agent configuration (`Settings.agent`)
-  - ✅ Repository data storage pattern (`~/.shep/repos/<base64-repo>/`)
+  - ✅ Repository data storage pattern (`~/.shipit-ai/repos/<base64-repo>/`)
   - ✅ DI container (tsyringe) with existing repository/use case registration patterns
   - ✅ LangGraph foundation (`analyze-repository-graph.ts` example)
   - ✅ Agent execution framework (`IAgentExecutor`, `RunAgentUseCase`)
@@ -213,7 +213,7 @@ content: |
   - **Current Node Tracking**: Each graph node reports its name to DB via `reportNodeStart()`
   - **Process Liveness**: `list` and `show` commands check `process.kill(pid, 0)` to detect dead workers
   - **Logging Foundation**: All graph nodes use shared `createNodeLogger()` + `executeNode()` wrapper
-  - **Log Files**: Written to `~/.shep/logs/worker-{runId}.log` with timestamps
+  - **Log Files**: Written to `~/.shipit-ai/logs/worker-{runId}.log` with timestamps
 
   ### Architecture
 

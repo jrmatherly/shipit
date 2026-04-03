@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ToolDetailDrawer } from '@/components/features/tools/tool-detail-drawer';
-import type { ToolItem } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 const mockStartInstall = vi.fn();
 

@@ -1,7 +1,7 @@
 /**
- * @module Shep.Domain.ValueObjects.SpecMetadata
+ * @module ShipitAI.Domain.ValueObjects.SpecMetadata
  *
- * Defines value objects for spec artifact metadata in the Shep AI platform.
+ * Defines value objects for spec artifact metadata in the Shipit AI platform.
  * These models represent structured metadata for feature specifications, research,
  * plans, and task breakdowns in the YAML-first spec system.
  *

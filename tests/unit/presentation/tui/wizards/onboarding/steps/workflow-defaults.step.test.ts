@@ -47,7 +47,7 @@ describe('buildWorkflowDefaultsConfig', () => {
     expect(values).toContain('openPrOnImplementationComplete');
   });
 
-  it('should use shepTheme', () => {
+  it('should use shipitAiTheme', () => {
     const config = buildWorkflowDefaultsConfig();
     expect(config.theme).toBeDefined();
   });

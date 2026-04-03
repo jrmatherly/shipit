@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { OverviewTab } from '@/components/common/feature-drawer-tabs/overview-tab';
 import type { FeatureNodeData } from '@/components/common/feature-node';
 
@@ -172,7 +172,7 @@ describe('OverviewTab', () => {
     it('renders inline attachment image when userQuery contains @/path reference', () => {
       renderOverviewTab({
         ...defaultData,
-        userQuery: 'Fix this bug @/home/user/.shep/attachments/pending-abc/screenshot.png',
+        userQuery: 'Fix this bug @/home/user/.shipit-ai/attachments/pending-abc/screenshot.png',
       });
       expect(screen.getByTestId('inline-attachment-image')).toBeInTheDocument();
     });

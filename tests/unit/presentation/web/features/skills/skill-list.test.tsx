@@ -79,7 +79,7 @@ describe('SkillList', () => {
     const skills = [
       makeSkill({ name: 'ref-skill', displayName: 'ref-skill', category: 'Reference' }),
       makeSkill({ name: 'reviewer', displayName: 'reviewer', category: 'Analysis' }),
-      makeSkill({ name: 'shep:ui', displayName: 'ui', category: 'Code Generation' }),
+      makeSkill({ name: 'shipit-ai:ui', displayName: 'ui', category: 'Code Generation' }),
       makeSkill({ name: 'shep-kit:plan', displayName: 'plan', category: 'Workflow' }),
     ];
     render(<SkillList skills={skills} onSkillSelect={vi.fn()} />);

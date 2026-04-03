@@ -33,7 +33,7 @@ openQuestions:
   - question: >
       Where should evidence artifacts be stored — committed to the feature
       branch, uploaded as GitHub release assets, or stored in
-      ~/.shep/repos/<hash>/evidence/?
+      ~/.shipit-ai/repos/<hash>/evidence/?
     resolved: true
     options:
       - option: Commit to feature branch
@@ -55,7 +55,7 @@ openQuestions:
         selected: true
       - option: Local ~/.shep directory
         description: >
-          Store in ~/.shep/repos/<hash>/evidence/. Trade-off: files are only
+          Store in ~/.shipit-ai/repos/<hash>/evidence/. Trade-off: files are only
           accessible locally, cannot be rendered in PR bodies on GitHub without
           a separate upload step, defeating the purpose of embedding evidence in
           PRs.
@@ -550,7 +550,7 @@ rejectionFeedback:
   - iteration: 4
     message: >-
       I've test and created a feature but the screenshots seems to be broken
-      https://github.com/shep-ai/shep/pull/258 fix
+      https://github.com/jrmatherly/shipit/pull/258 fix
     phase: merge
     timestamp: '2026-03-09T13:43:16.681Z'
   - iteration: 5

@@ -1,6 +1,6 @@
 'use server';
 
-import { getSettings } from '@shepai/core/infrastructure/services/settings.service';
+import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 
 /**
  * Check whether onboarding has been completed.

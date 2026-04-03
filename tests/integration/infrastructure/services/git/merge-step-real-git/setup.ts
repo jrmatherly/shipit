@@ -82,14 +82,14 @@ export interface GitHarness {
 export async function createGitHarness(): Promise<GitHarness> {
   const realExec = makeRealExec();
 
-  const bareDir = mkdtempSync(join(tmpdir(), 'shep-merge-bare-'));
+  const bareDir = mkdtempSync(join(tmpdir(), 'shipit-ai-merge-bare-'));
   await realExec('git', ['init', '--bare'], { cwd: bareDir });
 
-  const cloneDir = mkdtempSync(join(tmpdir(), 'shep-merge-clone-'));
+  const cloneDir = mkdtempSync(join(tmpdir(), 'shipit-ai-merge-clone-'));
   await realExec('git', ['clone', bareDir, cloneDir], {});
 
-  await realExec('git', ['config', 'user.email', 'test@shep.test'], { cwd: cloneDir });
-  await realExec('git', ['config', 'user.name', 'Shep Test'], { cwd: cloneDir });
+  await realExec('git', ['config', 'user.email', 'test@shipit-ai.test'], { cwd: cloneDir });
+  await realExec('git', ['config', 'user.name', 'Shipit AI Test'], { cwd: cloneDir });
 
   writeFileSync(join(cloneDir, 'README.md'), '# Test Repo\n');
   await realExec('git', ['add', 'README.md'], { cwd: cloneDir });
@@ -120,11 +120,11 @@ export async function createLocalOnlyHarness(): Promise<{
   runGit: (args: string[]) => Promise<{ stdout: string; stderr: string }>;
 }> {
   const realExec = makeRealExec();
-  const repoDir = mkdtempSync(join(tmpdir(), 'shep-merge-local-'));
+  const repoDir = mkdtempSync(join(tmpdir(), 'shipit-ai-merge-local-'));
 
   await realExec('git', ['init'], { cwd: repoDir });
-  await realExec('git', ['config', 'user.email', 'test@shep.test'], { cwd: repoDir });
-  await realExec('git', ['config', 'user.name', 'Shep Test'], { cwd: repoDir });
+  await realExec('git', ['config', 'user.email', 'test@shipit-ai.test'], { cwd: repoDir });
+  await realExec('git', ['config', 'user.name', 'Shipit AI Test'], { cwd: repoDir });
 
   writeFileSync(join(repoDir, 'README.md'), '# Test Repo\n');
   await realExec('git', ['add', 'README.md'], { cwd: repoDir });

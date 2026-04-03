@@ -1,7 +1,7 @@
 {
   "commands": {
     "settings": {
-      "description": "Administrar la configuración global de Shep",
+      "description": "Administrar la configuración global de Shipit AI",
       "wizardFailed": "El asistente de configuración falló",
       "show": {
         "description": "Mostrar la configuración actual",
@@ -11,7 +11,7 @@
       "init": {
         "description": "Inicializar la configuración a los valores predeterminados",
         "forceOption": "Omitir la solicitud de confirmación",
-        "resetWarning": "Esto restablecerá toda la configuración a los valores predeterminados. Considera hacer una copia de seguridad de ~/.shep/data primero.",
+        "resetWarning": "Esto restablecerá toda la configuración a los valores predeterminados. Considera hacer una copia de seguridad de ~/.shipit-ai/data primero.",
         "confirmPrompt": "¿Estás seguro? (s/N): ",
         "cancelled": "Operación cancelada.",
         "success": "Configuración inicializada a los valores predeterminados.",
@@ -39,7 +39,7 @@
       "model": {
         "description": "Configurar el modelo LLM predeterminado para las ejecuciones del agente",
         "selectPrompt": "Selecciona el modelo LLM predeterminado",
-        "noModels": "No hay modelos disponibles para el agente \"{{agentType}}\". Configura un agente diferente con: shep settings agent",
+        "noModels": "No hay modelos disponibles para el agente \"{{agentType}}\". Configura un agente diferente con: shipit-ai settings agent",
         "success": "Modelo configurado: {{model}}",
         "cancelled": "Configuración cancelada.",
         "failed": "Error al configurar el modelo"
@@ -78,31 +78,31 @@
       "platformLabel": "Plataforma:"
     },
     "start": {
-      "description": "Iniciar la interfaz web de Shep como un demonio en segundo plano",
+      "description": "Iniciar la interfaz web de Shipit AI como un demonio en segundo plano",
       "portOption": "Número de puerto (1024-65535)",
       "portValidation": "El puerto debe ser un entero entre 1024 y 65535"
     },
     "stop": {
-      "description": "Detener el demonio de la interfaz web de Shep en ejecución",
-      "noDaemonRunning": "No hay ningún demonio de Shep en ejecución."
+      "description": "Detener el demonio de la interfaz web de Shipit AI en ejecución",
+      "noDaemonRunning": "No hay ningún demonio de Shipit AI en ejecución."
     },
     "restart": {
-      "description": "Reiniciar graciosamente el demonio de la interfaz web de Shep (lo inicia si no está en ejecución)",
+      "description": "Reiniciar graciosamente el demonio de la interfaz web de Shipit AI (lo inicia si no está en ejecución)",
       "portOption": "Número de puerto (1024-65535)",
       "portValidation": "El puerto debe ser un entero entre 1024 y 65535",
       "daemonNotRunning": "El demonio no estaba en ejecución — iniciando..."
     },
     "status": {
-      "description": "Mostrar el estado del demonio de la interfaz web de Shep",
+      "description": "Mostrar el estado del demonio de la interfaz web de Shipit AI",
       "logsOption": "Mostrar las últimas N líneas del registro del demonio (predeterminado 50)",
       "followOption": "Seguir la salida del registro del demonio en tiempo real",
       "noLogFile": "No se encontró archivo de registro del demonio.",
       "expectedAt": "Esperado en: {{path}}",
       "logEmpty": "El archivo de registro está vacío.",
       "followHint": "--- siguiendo daemon.log (Ctrl+C para detener) ---",
-      "notRunning": "El demonio de Shep no está en ejecución.",
-      "startHint": "Ejecuta `shep start` para iniciarlo.",
-      "title": "Estado del demonio de Shep",
+      "notRunning": "El demonio de Shipit AI no está en ejecución.",
+      "startHint": "Ejecuta `shipit-ai start` para iniciarlo.",
+      "title": "Estado del demonio de Shipit AI",
       "pidLabel": "PID",
       "portLabel": "Puerto",
       "urlLabel": "URL",
@@ -111,7 +111,7 @@
       "cpuLabel": "CPU %",
       "memoryLabel": "Memoria (RSS)",
       "envTitle": "Entorno",
-      "shepHomeLabel": "Directorio de Shep",
+      "shipitAiHomeLabel": "Directorio de Shipit AI",
       "cliVersionLabel": "Versión de CLI",
       "nodeVersionLabel": "Versión de Node",
       "dbPathLabel": "Ruta de BD",
@@ -119,11 +119,11 @@
       "daemonConfigLabel": "Configuración del demonio"
     },
     "ui": {
-      "description": "Iniciar la interfaz web de Shep",
+      "description": "Iniciar la interfaz web de Shipit AI",
       "portOption": "Número de puerto (1024-65535)",
       "noOpenOption": "No abrir el navegador automáticamente",
       "portValidation": "El puerto debe ser un entero entre 1024 y 65535",
-      "heading": "Interfaz web de Shep",
+      "heading": "Interfaz web de Shipit AI",
       "startingDev": "Iniciando servidor web (modo desarrollo)...",
       "starting": "Iniciando servidor web...",
       "serverReady": "Servidor listo en {{url}}",
@@ -559,7 +559,7 @@
       }
     },
     "upgrade": {
-      "description": "Actualizar Shep CLI a la última versión",
+      "description": "Actualizar Shipit AI CLI a la última versión",
       "versionCheckTimeout": "No se pudo completar la verificación de versión (tiempo agotado)",
       "versionCheckFailed": "No se pudo completar la verificación de versión",
       "alreadyUpToDate": "Ya está actualizado (v{{version}})",
@@ -568,7 +568,7 @@
       "stoppingDaemon": "Deteniendo el demonio antes de actualizar...",
       "restartingDaemon": "Reiniciando el demonio...",
       "daemonRestarted": "Demonio reiniciado exitosamente.",
-      "upgradeSuccess": "Shep CLI actualizado exitosamente",
+      "upgradeSuccess": "Shipit AI CLI actualizado exitosamente",
       "upgradeFailed": "Error en la actualización",
       "upgradeFailedDaemonRestored": "Error en la actualización — demonio restaurado en la versión anterior."
     },
@@ -588,17 +588,17 @@
       "installingHeading": "Instalando {{tool}}"
     },
     "daemon": {
-      "alreadyRunning": "Shep ya está en ejecución en {{url}}",
-      "heading": "Interfaz web de Shep",
+      "alreadyRunning": "Shipit AI ya está en ejecución en {{url}}",
+      "heading": "Interfaz web de Shipit AI",
       "startingServer": "Iniciando servidor",
       "daemonSpawned": "Demonio iniciado en {{url}}",
       "serverReady": "Servidor listo en {{url}}",
       "serverMayBeStarting": "El servidor puede estar todavía iniciando en {{url}}",
       "daemonFailed": "El demonio no pudo iniciar (código de salida {{code}}).",
       "checkLogs": "Revisa los registros: {{path}}",
-      "stoppingDaemon": "Deteniendo el demonio de Shep (PID {{pid}})...",
+      "stoppingDaemon": "Deteniendo el demonio de Shipit AI (PID {{pid}})...",
       "sigkillFallback": "El demonio no se detuvo graciosamente, enviando SIGKILL...",
-      "daemonStopped": "Demonio de Shep detenido."
+      "daemonStopped": "Demonio de Shipit AI detenido."
     },
     "logViewer": {
       "noLogFile": "No se encontró archivo de registro para {{label}}",

@@ -117,7 +117,7 @@ describe('RejectAgentRunUseCase', () => {
       repositoryPath: '/test/repo',
       push: false,
       openPr: false,
-      specPath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     useCase = new RejectAgentRunUseCase(
       mockRunRepo as any,

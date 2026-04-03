@@ -1,6 +1,6 @@
 # Building Guide
 
-Guide to building Shep AI CLI for development and distribution.
+Guide to building Shipit AI CLI for development and distribution.
 
 ## Build System
 

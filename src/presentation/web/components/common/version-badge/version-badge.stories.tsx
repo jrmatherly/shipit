@@ -79,7 +79,7 @@ export const Production: Story = {
   decorators: [withNpmVersion('1.90.0')],
   args: {
     version: '1.90.0',
-    packageName: '@shepai/cli',
+    packageName: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
   },
 };
@@ -92,7 +92,7 @@ export const Development: Story = {
     isDev: true,
     branch: 'feat/version-badge',
     commitHash: '5a84c148b3e2f1a9c7d6e8b4a2f1c3d5e7f9a1b3',
-    packageName: '@shepai/cli',
+    packageName: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
     instancePath: '/home/user/projects/shep',
   },
@@ -106,7 +106,7 @@ export const LongBranch: Story = {
     isDev: true,
     branch: 'feat/056-version-badge-with-tooltip-and-build-info',
     commitHash: 'abc1234def5678',
-    packageName: '@shepai/cli',
+    packageName: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
     instancePath: '/home/user/very/deep/nested/project/path',
   },
@@ -125,7 +125,7 @@ export const UpdateAvailable: Story = {
   decorators: [withNpmVersion('2.0.0')],
   args: {
     version: '1.90.0',
-    packageName: '@shepai/cli',
+    packageName: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
   },
 };
@@ -138,7 +138,7 @@ export const UpdateAvailableDev: Story = {
     isDev: true,
     branch: 'feat/npm-version-checker',
     commitHash: '5a84c148b3e2f1a9c7d6e8b4a2f1c3d5e7f9a1b3',
-    packageName: '@shepai/cli',
+    packageName: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
     instancePath: '/home/user/projects/shep',
   },
@@ -149,7 +149,7 @@ export const FetchError: Story = {
   decorators: [withNpmVersionError],
   args: {
     version: '1.90.0',
-    packageName: '@shepai/cli',
+    packageName: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
   },
 };

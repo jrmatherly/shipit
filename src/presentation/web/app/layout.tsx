@@ -17,7 +17,7 @@ import { getLanguagePreference } from '@/lib/language';
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Shep AI',
+  title: 'Shipit AI',
   description:
     'Autonomous AI Native SDLC Platform - Automate the development cycle from idea to deploy',
   icons: [
@@ -42,7 +42,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const cookieStore = await cookies();
-  const sidebarOpen = cookieStore.get('shep-sidebar-open')?.value === 'true';
+  const sidebarOpen = cookieStore.get('shipit-ai-sidebar-open')?.value === 'true';
   const { language, dir } = getLanguagePreference();
 
   return (
@@ -51,7 +51,7 @@ export default async function RootLayout({
         {/* Theme init script — uses only hardcoded string literals, no user input */}
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var d=document.documentElement,t=localStorage.getItem('shep-theme'),s=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(t==='system'&&s)||(!t&&s)){d.classList.add('dark')}}catch(e){}})();`,
+            __html: `(function(){try{var d=document.documentElement,t=localStorage.getItem('shipit-ai-theme'),s=window.matchMedia('(prefers-color-scheme: dark)').matches;if(t==='dark'||(t==='system'&&s)||(!t&&s)){d.classList.add('dark')}}catch(e){}})();`,
           }}
         />
       </head>

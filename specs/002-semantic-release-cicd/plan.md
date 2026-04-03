@@ -111,7 +111,7 @@ Update `package.json` with `publishConfig` for public access (required for scope
 
 If a bad version is published:
 
-1. **npm**: `npm unpublish @shepai/cli@<version>` (within 72 hours)
+1. **npm**: `npm unpublish @shipit-ai/cli@<version>` (within 72 hours)
 2. **GitHub Release**: Delete release from GitHub UI
 3. **CHANGELOG.md**: Revert commit that added bad entry
 4. **Prevent future**: semantic-release won't re-release same commits

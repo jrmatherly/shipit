@@ -81,7 +81,7 @@ content: |
 
   ## Dependencies
 
-  - Uses existing generated domain models from `@shepai/core/domain/generated/output`
+  - Uses existing generated domain models from `@shipit-ai/core/domain/generated/output`
   - Uses existing `deriveNodeState`, `deriveProgress` from `derive-feature-state.ts`
   - Uses existing `layoutWithDagre` for positioning
   - Depends on fixes from 049-agent-executor-stability branch (SSE `replace` filter fix)

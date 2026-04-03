@@ -3,7 +3,7 @@
 /**
  * Upgrade Command Unit Tests
  *
- * Tests for the `shep upgrade` command.
+ * Tests for the `shipit-ai upgrade` command.
  *
  * TDD Phase: RED → GREEN → REFACTOR
  */
@@ -102,7 +102,7 @@ function makeDaemonService(overrides: Partial<IDaemonService> = {}): IDaemonServ
 const VERSION_SERVICE_MOCK = {
   getVersion: () => ({
     version: '1.20.0',
-    name: '@shepai/cli',
+    name: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
   }),
 };
@@ -136,10 +136,10 @@ describe('Upgrade Command', () => {
       expect(cmd.name()).toBe('upgrade');
     });
 
-    it('should have description "Upgrade Shep CLI to the latest version"', () => {
+    it('should have description "Upgrade Shipit AI CLI to the latest version"', () => {
       const { spawnFn } = createMockSpawn();
       const cmd = createUpgradeCommand(spawnFn as any);
-      expect(cmd.description()).toBe('Upgrade Shep CLI to the latest version');
+      expect(cmd.description()).toBe('Upgrade Shipit AI CLI to the latest version');
     });
   });
 
@@ -228,7 +228,7 @@ describe('Upgrade Command', () => {
       // Check the second spawn call is npm install with inherit
       expect(spawnFn).toHaveBeenCalledWith(
         'npm',
-        ['i', '-g', '@shepai/cli@latest'],
+        ['i', '-g', '@shipit-ai/cli@latest'],
         expect.objectContaining({ stdio: 'inherit' })
       );
     });

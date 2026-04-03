@@ -5,11 +5,11 @@ import { resolve } from 'node:path';
 
 /**
  * Provide fallback env vars for standalone dev mode (pnpm dev:web).
- * When run via `shep ui`, these are already set by the CLI's setVersionEnvVars()
+ * When run via `shipit-ai ui`, these are already set by the CLI's setVersionEnvVars()
  * before Next.js starts, so this returns an empty object.
  */
 function loadDevFallbacks(): Record<string, string> {
-  if (process.env.NEXT_PUBLIC_SHEP_VERSION) {
+  if (process.env.NEXT_PUBLIC_SHIPIT_AI_VERSION) {
     return {};
   }
 
@@ -31,18 +31,18 @@ function loadDevFallbacks(): Record<string, string> {
     }
 
     return {
-      NEXT_PUBLIC_SHEP_VERSION: pkg.version ?? 'unknown',
-      NEXT_PUBLIC_SHEP_PACKAGE_NAME: pkg.name ?? '@shepai/cli',
-      NEXT_PUBLIC_SHEP_DESCRIPTION: pkg.description ?? 'Autonomous AI Native SDLC Platform',
-      NEXT_PUBLIC_SHEP_BRANCH: branch,
-      NEXT_PUBLIC_SHEP_COMMIT: commitHash,
-      NEXT_PUBLIC_SHEP_INSTANCE_PATH: process.cwd(),
+      NEXT_PUBLIC_SHIPIT_AI_VERSION: pkg.version ?? 'unknown',
+      NEXT_PUBLIC_SHIPIT_AI_PACKAGE_NAME: pkg.name ?? '@shipit-ai/cli',
+      NEXT_PUBLIC_SHIPIT_AI_DESCRIPTION: pkg.description ?? 'Autonomous AI Native SDLC Platform',
+      NEXT_PUBLIC_SHIPIT_AI_BRANCH: branch,
+      NEXT_PUBLIC_SHIPIT_AI_COMMIT: commitHash,
+      NEXT_PUBLIC_SHIPIT_AI_INSTANCE_PATH: process.cwd(),
     };
   } catch {
     return {
-      NEXT_PUBLIC_SHEP_VERSION: 'unknown',
-      NEXT_PUBLIC_SHEP_PACKAGE_NAME: '@shepai/cli',
-      NEXT_PUBLIC_SHEP_DESCRIPTION: 'Autonomous AI Native SDLC Platform',
+      NEXT_PUBLIC_SHIPIT_AI_VERSION: 'unknown',
+      NEXT_PUBLIC_SHIPIT_AI_PACKAGE_NAME: '@shipit-ai/cli',
+      NEXT_PUBLIC_SHIPIT_AI_DESCRIPTION: 'Autonomous AI Native SDLC Platform',
     };
   }
 }

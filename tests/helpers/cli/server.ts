@@ -2,7 +2,7 @@
  * CLI Server Test Helper
  *
  * Utility for starting and stopping long-running CLI server commands in E2E tests.
- * Designed for commands like `shep ui` that spawn an HTTP server and run until terminated.
+ * Designed for commands like `shipit-ai ui` that spawn an HTTP server and run until terminated.
  *
  * Uses spawn() for non-blocking process management with stdout monitoring
  * to detect server readiness.
@@ -47,7 +47,7 @@ const FORCE_KILL_TIMEOUT = 5_000;
 const SERVER_READY_PATTERN = /Server ready at http:\/\/localhost:(\d+)/;
 
 /**
- * Start a CLI server process (e.g., `shep ui`) and wait for it to be ready.
+ * Start a CLI server process (e.g., `shipit-ai ui`) and wait for it to be ready.
  *
  * Spawns the CLI via tsx, monitors stdout for the "Server ready" message,
  * and returns a handle to control the process.

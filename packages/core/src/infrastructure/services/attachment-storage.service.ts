@@ -3,7 +3,7 @@ import { mkdirSync, writeFileSync, renameSync, rmSync, existsSync, readdirSync }
 import { join, basename } from 'path';
 import { createHash, randomUUID } from 'crypto';
 import type { Attachment } from '../../domain/generated/output.js';
-import { getShepHomeDir } from './filesystem/shep-directory.service.js';
+import { getShipitAiHomeDir } from './filesystem/shipit-ai-directory.service.js';
 
 /** Attachment record extended with SHA-256 hash for dedup tracking. */
 export interface StoredAttachment extends Attachment {
@@ -16,7 +16,7 @@ export class AttachmentStorageService {
   private readonly dedupIndex = new Map<string, Map<string, StoredAttachment>>();
 
   /**
-   * Store a file buffer in the pending attachment directory within SHEP_HOME.
+   * Store a file buffer in the pending attachment directory within SHIPIT_AI_HOME.
    * Returns existing record if SHA-256 matches (dedup within same session).
    */
   store(buffer: Buffer, filename: string, mimeType: string, sessionId: string): StoredAttachment {
@@ -117,15 +117,15 @@ export class AttachmentStorageService {
   }
 
   private getAttachmentsRoot(): string {
-    return join(getShepHomeDir(), 'attachments');
+    return join(getShipitAiHomeDir(), 'attachments');
   }
 
   private getPendingDir(sessionId: string): string {
-    return join(getShepHomeDir(), 'attachments', `pending-${sessionId}`);
+    return join(getShipitAiHomeDir(), 'attachments', `pending-${sessionId}`);
   }
 
   private getSlugDir(featureSlug: string): string {
-    return join(getShepHomeDir(), 'attachments', featureSlug);
+    return join(getShipitAiHomeDir(), 'attachments', featureSlug);
   }
 
   /** Generate unique filename by appending content hash when name collides (e.g. clipboard "image.png"). */

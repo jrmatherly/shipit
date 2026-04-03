@@ -1,6 +1,6 @@
 # Testing Guide
 
-Comprehensive guide to testing in Shep AI CLI.
+Comprehensive guide to testing in Shipit AI CLI.
 
 ## Testing Philosophy
 

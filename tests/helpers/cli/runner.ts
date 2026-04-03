@@ -4,7 +4,7 @@
  * Utility for executing CLI commands in E2E tests.
  * Provides consistent interface for running commands and capturing output.
  *
- * ISOLATION: Each runner uses a unique SHEP_HOME temp directory by default,
+ * ISOLATION: Each runner uses a unique SHIPIT_AI_HOME temp directory by default,
  * ensuring parallel test files never share database state.
  *
  * NOTE: Uses execSync intentionally for test simplicity. All inputs are
@@ -88,8 +88,8 @@ export interface CliRunner {
 export interface IsolatedCliRunner {
   /** The CLI runner instance */
   runner: CliRunner;
-  /** Path to the isolated SHEP_HOME directory */
-  shepHome: string;
+  /** Path to the isolated SHIPIT_AI_HOME directory */
+  shipitAiHome: string;
   /** Cleanup function to remove the temp directory */
   cleanup: () => void;
 }
@@ -104,10 +104,10 @@ const CLI_PATH_DEV = resolve(PROJECT_ROOT, 'src/presentation/cli/index.ts');
 const CLI_PATH_DIST = resolve(PROJECT_ROOT, 'dist/src/presentation/cli/index.js');
 
 /**
- * Whether to use compiled dist/ by default (set via SHEP_E2E_USE_DIST=1).
+ * Whether to use compiled dist/ by default (set via SHIPIT_AI_E2E_USE_DIST=1).
  * Running against dist/ is ~3.5x faster per spawn since it skips tsx compilation.
  */
-const USE_DIST_BY_DEFAULT = !!process.env.SHEP_E2E_USE_DIST;
+const USE_DIST_BY_DEFAULT = !!process.env.SHIPIT_AI_E2E_USE_DIST;
 
 /**
  * Default runner options
@@ -116,14 +116,14 @@ const DEFAULT_OPTIONS: Required<CliRunnerOptions> = {
   cwd: PROJECT_ROOT,
   env: {
     // Use deterministic mock executor for E2E tests (no real AI calls)
-    SHEP_MOCK_EXECUTOR: '1',
+    SHIPIT_AI_MOCK_EXECUTOR: '1',
   },
   timeout: process.platform === 'win32' ? 30000 : 15000,
 };
 
-/** Creates a unique temp directory for SHEP_HOME isolation */
-function createTempShepHome(): string {
-  return mkdtempSync(join(tmpdir(), 'shep-e2e-'));
+/** Creates a unique temp directory for SHIPIT_AI_HOME isolation */
+function createTempShipitAiHome(): string {
+  return mkdtempSync(join(tmpdir(), 'shipit-ai-e2e-'));
 }
 
 /**
@@ -131,11 +131,11 @@ function createTempShepHome(): string {
  * Shared across all runCli() calls in the same test file (vitest worker).
  * Each test file runs in its own worker, so this provides file-level isolation.
  */
-let moduleShepHome: string | null = null;
+let moduleShipitAiHome: string | null = null;
 
-function getModuleShepHome(): string {
-  moduleShepHome ??= createTempShepHome();
-  return moduleShepHome;
+function getModuleShipitAiHome(): string {
+  moduleShipitAiHome ??= createTempShipitAiHome();
+  return moduleShipitAiHome;
 }
 
 /**
@@ -193,7 +193,7 @@ function executeCommand(
 
 /**
  * Create a CLI runner with custom options.
- * Automatically sets SHEP_HOME to a temp directory unless explicitly provided.
+ * Automatically sets SHIPIT_AI_HOME to a temp directory unless explicitly provided.
  *
  * @param options - Runner configuration
  * @param useDist - Use compiled dist instead of tsx (for production testing)
@@ -203,11 +203,11 @@ export function createCliRunner(
   options: CliRunnerOptions = {},
   useDist = USE_DIST_BY_DEFAULT
 ): CliRunner {
-  // Auto-isolate: set SHEP_HOME to a module-level temp dir unless caller provides one or HOME override.
+  // Auto-isolate: set SHIPIT_AI_HOME to a module-level temp dir unless caller provides one or HOME override.
   // Uses a shared dir per test file (vitest worker) so the database is initialized once per file.
-  const needsIsolation = !options.env?.SHEP_HOME && !options.env?.HOME;
+  const needsIsolation = !options.env?.SHIPIT_AI_HOME && !options.env?.HOME;
   const isolationEnv: Record<string, string> = needsIsolation
-    ? { SHEP_HOME: getModuleShepHome() }
+    ? { SHIPIT_AI_HOME: getModuleShipitAiHome() }
     : {};
 
   const mergedOptions: Required<CliRunnerOptions> = {
@@ -224,7 +224,7 @@ export function createCliRunner(
       if (!result.success) {
         throw new Error(
           `CLI command failed with exit code ${result.exitCode}:\n` +
-            `Command: shep ${args}\n` +
+            `Command: shipit-ai ${args}\n` +
             `Stdout: ${result.stdout}\n` +
             `Stderr: ${result.stderr}`
         );
@@ -240,7 +240,7 @@ export function createCliRunner(
  * (e.g., configure agent then verify settings).
  *
  * @param options - Runner configuration
- * @returns Runner, shepHome path, and cleanup function
+ * @returns Runner, shipitAiHome path, and cleanup function
  *
  * @example
  * const { runner, cleanup } = createIsolatedCliRunner();
@@ -252,18 +252,18 @@ export function createCliRunner(
  * }
  */
 export function createIsolatedCliRunner(options: CliRunnerOptions = {}): IsolatedCliRunner {
-  const shepHome = createTempShepHome();
+  const shipitAiHome = createTempShipitAiHome();
   const runner = createCliRunner({
     ...options,
-    env: { ...options.env, SHEP_HOME: shepHome },
+    env: { ...options.env, SHIPIT_AI_HOME: shipitAiHome },
   });
 
   return {
     runner,
-    shepHome,
+    shipitAiHome,
     cleanup: () => {
       try {
-        rmSync(shepHome, { recursive: true, force: true });
+        rmSync(shipitAiHome, { recursive: true, force: true });
       } catch {
         // best-effort cleanup
       }
@@ -274,7 +274,7 @@ export function createIsolatedCliRunner(options: CliRunnerOptions = {}): Isolate
 /**
  * Run a CLI command with default options (auto-isolated)
  *
- * NOTE: Each call creates a new temp SHEP_HOME. For tests that need
+ * NOTE: Each call creates a new temp SHIPIT_AI_HOME. For tests that need
  * state to persist between commands, use createIsolatedCliRunner() instead.
  *
  * @param args - Command arguments
@@ -292,7 +292,7 @@ export function runCli(args: string): CliResult {
  * All command arguments come from test code, not user input.
  */
 export async function runCliAsync(args: string): Promise<CliResult> {
-  const shepHome = getModuleShepHome();
+  const shipitAiHome = getModuleShipitAiHome();
   const cliPath = USE_DIST_BY_DEFAULT ? CLI_PATH_DIST : CLI_PATH_DEV;
   const runner = USE_DIST_BY_DEFAULT ? 'node' : 'npx tsx';
   const command = `${runner} ${cliPath} ${args}`;
@@ -304,7 +304,7 @@ export async function runCliAsync(args: string): Promise<CliResult> {
     env: {
       ...process.env,
       ...DEFAULT_OPTIONS.env,
-      SHEP_HOME: shepHome,
+      SHIPIT_AI_HOME: shipitAiHome,
       NO_COLOR: '1',
       FORCE_COLOR: '0',
     },

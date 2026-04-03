@@ -1,7 +1,7 @@
 /**
- * @module Shep.Common.Enums.Deployment
+ * @module ShipitAI.Common.Enums.Deployment
  *
- * Defines enums for deployment-related entities in the Shep AI platform,
+ * Defines enums for deployment-related entities in the Shipit AI platform,
  * including deployment states, methods, and network protocols.
  */
 /**

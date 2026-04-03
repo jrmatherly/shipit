@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.InteractiveMessage
+ * @module ShipitAI.Agents.InteractiveMessage
  *
  * A single chat message in a per-feature interactive agent session.
  * Messages are scoped to a feature (not a session) so that history

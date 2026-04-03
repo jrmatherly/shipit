@@ -272,8 +272,8 @@ content: |
   ```typescript
   'use server';
   import { resolve } from '@/lib/server-container';
-  import type { IFeatureRepository } from '@shepai/core/...';
-  import type { IGitPrService } from '@shepai/core/...';
+  import type { IFeatureRepository } from '@shipit-ai/core/...';
+  import type { IGitPrService } from '@shipit-ai/core/...';
 
   export async function getMergeReviewData(featureId: string): Promise<GetMergeReviewDataResult> {
     const featureRepo = resolve<IFeatureRepository>('IFeatureRepository');
@@ -441,8 +441,8 @@ content: |
 
   ```typescript
   // merge-review-config.ts
-  import type { PullRequest } from '@shepai/core/domain/generated/output';
-  import type { DiffSummary } from '@shepai/core/application/ports/output/services/git-pr-service.interface';
+  import type { PullRequest } from '@shipit-ai/core/domain/generated/output';
+  import type { DiffSummary } from '@shipit-ai/core/application/ports/output/services/git-pr-service.interface';
 
   interface MergeReviewData {
     pr: PullRequest;           // { url, number, status, commitHash?, ciStatus? }

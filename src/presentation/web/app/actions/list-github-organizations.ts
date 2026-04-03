@@ -1,9 +1,9 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { ListGitHubOrganizationsUseCase } from '@shepai/core/application/use-cases/repositories/list-github-organizations.use-case';
-import type { GitHubOrganization } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
-import { GitHubAuthError } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
+import type { ListGitHubOrganizationsUseCase } from '@shipit-ai/core/application/use-cases/repositories/list-github-organizations.use-case';
+import type { GitHubOrganization } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
+import { GitHubAuthError } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
 
 export async function listGitHubOrganizations(): Promise<{
   orgs?: GitHubOrganization[];

@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { IFeatureRepository } from '@shepai/core/application/ports/output/repositories/feature-repository.interface';
+import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
 
 export interface AcceptanceCriterionData {
   description: string;

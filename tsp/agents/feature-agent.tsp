@@ -1,7 +1,7 @@
 /**
- * @module Shep.Agents.FeatureAgent
+ * @module ShipitAI.Agents.FeatureAgent
  *
- * Feature Agent - The MAIN ORCHESTRATING AGENT of the Shep AI system.
+ * Feature Agent - The MAIN ORCHESTRATING AGENT of the Shipit AI system.
  *
  * The FeatureAgent is the central "brain" that manages the entire SDLC workflow
  * for a feature. It orchestrates sub-agents, gathers requirements, conducts
@@ -85,7 +85,7 @@ import "./base.tsp";
  * The main orchestrating agent for feature development.
  *
  * FeatureAgent is the central coordinator that manages the entire SDLC workflow
- * for a feature. It is the PRIMARY "BRAIN" of the Shep AI system, responsible
+ * for a feature. It is the PRIMARY "BRAIN" of the Shipit AI system, responsible
  * for understanding user intent and driving features from idea to deployment.
  *
  * ## Key Characteristics

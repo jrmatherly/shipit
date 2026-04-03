@@ -46,12 +46,12 @@ pnpm test:manual -- --reporter=verbose
 
 ### Agent Configuration
 
-Manual tests use **your local agent settings** (stored in `~/.shep/data`).
+Manual tests use **your local agent settings** (stored in `~/.shipit-ai/data`).
 
 **No environment variables needed!** Tests automatically use whatever agent is configured in your settings:
 
 ```bash
-# Your settings are automatically loaded from: ~/.shep/data
+# Your settings are automatically loaded from: ~/.shipit-ai/data
 # Just run the tests with your agent already configured
 pnpm test:manual
 ```
@@ -68,7 +68,7 @@ pnpm test:manual
 
 ### Database
 
-Tests use your real SQLite database at `~/.shep/data` with your configured agent defaults. This is the same database your CLI uses—no test-specific setup needed!
+Tests use your real SQLite database at `~/.shipit-ai/data` with your configured agent defaults. This is the same database your CLI uses—no test-specific setup needed!
 
 ## Test Naming Convention
 
@@ -155,8 +155,8 @@ describe('MetadataGenerator (MANUAL - Real Agent)', () => {
 
 ### Database permission errors
 
-- Check `~/.shep/` directory exists and is readable
-- Delete `~/.shep/data` and let the test recreate it
+- Check `~/.shipit-ai/` directory exists and is readable
+- Delete `~/.shipit-ai/data` and let the test recreate it
 
 ## Adding New Manual Tests
 

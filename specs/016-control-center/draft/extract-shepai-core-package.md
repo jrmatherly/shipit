@@ -1,4 +1,4 @@
-# Plan: Extract @shepai/core + Simplify Control Center Data Layer
+# Plan: Extract @shipit-ai/core + Simplify Control Center Data Layer
 
 ## Context
 
@@ -8,13 +8,13 @@ Two problems need solving together as part of 016-control-center:
 
 2. **The control center data layer violated policies** — created `ListDashboardFeaturesUseCase` (unnecessary), `DashboardFeature` DTO (duplicates domain), modified CLI folder (forbidden), and hand-crafted `FeatureNodeData` instead of extending the generated `Feature` type.
 
-**Solution**: Extract `domain/`, `application/`, and `infrastructure/` into a `@shepai/core` workspace package. Both `@shepai/cli` and `@shepai/web` depend on `@shepai/core` directly. This eliminates the globalThis bridge for types, removes the CLI dependency, and naturally solves the data layer issues.
+**Solution**: Extract `domain/`, `application/`, and `infrastructure/` into a `@shipit-ai/core` workspace package. Both `@shipit-ai/cli` and `@shipit-ai/web` depend on `@shipit-ai/core` directly. This eliminates the globalThis bridge for types, removes the CLI dependency, and naturally solves the data layer issues.
 
 ---
 
 ## Key Decision: Pre-Compiled Package
 
-`@shepai/core` exports **compiled JavaScript** (not TypeScript source).
+`@shipit-ai/core` exports **compiled JavaScript** (not TypeScript source).
 
 - Core has its own `tsc` build step → `packages/core/dist/`
 - Turbopack resolves it like any npm package (no `transpilePackages` needed)
@@ -23,11 +23,11 @@ Two problems need solving together as part of 016-control-center:
 
 ---
 
-## @shepai/core Package Structure
+## @shipit-ai/core Package Structure
 
 ```
 packages/core/
-├── package.json          (@shepai/core, private, type: module)
+├── package.json          (@shipit-ai/core, private, type: module)
 ├── tsconfig.json         (IDE/typecheck, noEmit)
 ├── tsconfig.build.json   (compilation to dist/)
 └── src/
@@ -76,7 +76,7 @@ packages/core/
 
 ```json
 {
-  "name": "@shepai/core",
+  "name": "@shipit-ai/core",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -167,7 +167,7 @@ packages/core/
 2. Create `packages/core/src/domain/index.ts` barrel
 3. Update `tspconfig.yaml`: emitter output → `{cwd}/packages/core/src/domain/generated`
 4. Update `tsp:codegen` script: `prettier --write packages/core/src/domain/generated/`
-5. Update root `src/index.ts` to re-export from `@shepai/core/domain`
+5. Update root `src/index.ts` to re-export from `@shipit-ai/core/domain`
 6. Update all imports across CLI, web, infrastructure, and tests
 
 ### Phase C: Move application layer
@@ -184,24 +184,24 @@ packages/core/
 2. Create `packages/core/src/infrastructure/index.ts` barrel
 3. Convert all `@/` alias imports within core to relative paths (~30 files)
 4. Remove `ListDashboardFeaturesUseCase` from DI container registrations
-5. Update CLI imports: `../../infrastructure/di/container.js` → `@shepai/core/infrastructure/di`
-6. Update web imports: `@cli/*` → `@shepai/core/*`
-7. Add `@shepai/core` dependency to `@shepai/web/package.json`
+5. Update CLI imports: `../../infrastructure/di/container.js` → `@shipit-ai/core/infrastructure/di`
+6. Update web imports: `@cli/*` → `@shipit-ai/core/*`
+7. Add `@shipit-ai/core` dependency to `@shipit-ai/web/package.json`
 8. Remove `@cli/*` path from web `tsconfig.json`
 
 ### Phase E: Clean up root package
 
 1. Remove moved dependencies from root `package.json` (keep `commander`, `@inquirer/prompts`, `cli-table3`, `picocolors` + all React/UI deps)
 2. Update root `tsconfig.build.json`: include only `src/presentation/**/*` and `src/index.ts`
-3. Update root `tsconfig.json` paths: add `@shepai/core` → `packages/core/src`
-4. Update `vitest.config.ts`: add `@shepai/core` → `packages/core/src` alias
+3. Update root `tsconfig.json` paths: add `@shipit-ai/core` → `packages/core/src`
+4. Update `vitest.config.ts`: add `@shipit-ai/core` → `packages/core/src` alias
 5. Remove `tsc-alias` entries no longer needed
 
 ### Phase F: Control center data layer (from previous plan)
 
 1. **FeatureNodeData extends Feature**: Update `feature-node-state-config.ts` — `FeatureNodeData extends Feature` with UI-only extras
 2. **State derivation**: Add `deriveNodeState()` and `deriveProgress()` in feature-node component (derive from `Feature.plan.tasks`)
-3. **Web bridge module**: Rewrite `lib/use-cases.ts` — import `Feature` from `@shepai/core/domain/generated`, call `ListFeaturesUseCase` via globalThis bridge
+3. **Web bridge module**: Rewrite `lib/use-cases.ts` — import `Feature` from `@shipit-ai/core/domain/generated`, call `ListFeaturesUseCase` via globalThis bridge
 4. **Simplify page.tsx**: `getFeatures()` returns `Feature[]`, spread directly into node data
 5. **Delete** `src/presentation/web/app/derive-state.ts`
 6. **Update hook**: `createFeatureNode()` creates Feature-compatible defaults with `SdlcLifecycle.Requirements`
@@ -220,12 +220,12 @@ const listFeatures = container.resolve(ListFeaturesUseCase);
 
 **CLI `index.ts`** — remove the globalThis bridge setup (it's now in WebServerService)
 
-**Web `dev-server.ts`** — import from `@shepai/core` instead of relative paths:
+**Web `dev-server.ts`** — import from `@shipit-ai/core` instead of relative paths:
 
 ```typescript
-import { initializeContainer, container } from '@shepai/core/infrastructure/di';
-import { InitializeSettingsUseCase } from '@shepai/core/application';
-import { initializeSettings } from '@shepai/core/infrastructure/services/settings.service';
+import { initializeContainer, container } from '@shipit-ai/core/infrastructure/di';
+import { InitializeSettingsUseCase } from '@shipit-ai/core/application';
+import { initializeSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 ```
 
 ---
@@ -236,18 +236,18 @@ import { initializeSettings } from '@shepai/core/infrastructure/services/setting
 | ---------------------------------------------------------- | ------------------------------------------------------------------ |
 | `pnpm-workspace.yaml`                                      | Add `packages/core`                                                |
 | `tspconfig.yaml`                                           | Output dir → `packages/core/src/domain/generated`                  |
-| `package.json` (root)                                      | Add `@shepai/core: workspace:*`, remove moved deps, update scripts |
-| `tsconfig.json` (root)                                     | Add `@shepai/core` path mapping                                    |
+| `package.json` (root)                                      | Add `@shipit-ai/core: workspace:*`, remove moved deps, update scripts |
+| `tsconfig.json` (root)                                     | Add `@shipit-ai/core` path mapping                                    |
 | `tsconfig.build.json` (root)                               | Include only `src/presentation/**/*` + `src/index.ts`              |
-| `vitest.config.ts`                                         | Add `@shepai/core` alias → `packages/core/src`                     |
-| `src/presentation/cli/index.ts`                            | Import from `@shepai/core`, remove globalThis bridge               |
-| `src/presentation/web/package.json`                        | Add `@shepai/core: workspace:*`                                    |
-| `src/presentation/web/tsconfig.json`                       | Replace `@cli/*` with `@shepai/core` paths                         |
-| `src/presentation/web/dev-server.ts`                       | Import from `@shepai/core`                                         |
-| `src/presentation/web/lib/use-cases.ts`                    | Import `Feature` from `@shepai/core/domain/generated`              |
+| `vitest.config.ts`                                         | Add `@shipit-ai/core` alias → `packages/core/src`                     |
+| `src/presentation/cli/index.ts`                            | Import from `@shipit-ai/core`, remove globalThis bridge               |
+| `src/presentation/web/package.json`                        | Add `@shipit-ai/core: workspace:*`                                    |
+| `src/presentation/web/tsconfig.json`                       | Replace `@cli/*` with `@shipit-ai/core` paths                         |
+| `src/presentation/web/dev-server.ts`                       | Import from `@shipit-ai/core`                                         |
+| `src/presentation/web/lib/use-cases.ts`                    | Import `Feature` from `@shipit-ai/core/domain/generated`              |
 | `src/presentation/web/app/page.tsx`                        | Use `getFeatures()`, spread Feature directly                       |
-| `src/presentation/web/app/api/dialog/pick-folder/route.ts` | `@cli/...` → `@shepai/core/...`                                    |
-| ~20 CLI command files                                      | Relative imports → `@shepai/core/*`                                |
+| `src/presentation/web/app/api/dialog/pick-folder/route.ts` | `@cli/...` → `@shipit-ai/core/...`                                    |
+| ~20 CLI command files                                      | Relative imports → `@shipit-ai/core/*`                                |
 | ~30 infrastructure files                                   | `@/` aliases → relative paths (within core)                        |
 | All feature-node stories/tests                             | Feature-compatible data shapes                                     |
 
@@ -279,19 +279,19 @@ import { initializeSettings } from '@shepai/core/infrastructure/services/setting
 **Dev workflow:**
 
 - `pnpm dev:core` — `tsc -w` watches core source
-- `pnpm dev:cli` — `tsx` resolves `@shepai/core` via workspace symlink
-- `pnpm dev:web` — Turbopack resolves `@shepai/core` via workspace symlink
+- `pnpm dev:cli` — `tsx` resolves `@shipit-ai/core` via workspace symlink
+- `pnpm dev:web` — Turbopack resolves `@shipit-ai/core` via workspace symlink
 
 ---
 
 ## Verification
 
 ```bash
-pnpm install              # Workspace links @shepai/core
+pnpm install              # Workspace links @shipit-ai/core
 pnpm generate             # TypeSpec compiles to packages/core/
-pnpm --filter @shepai/core build  # Core compiles to dist/
+pnpm --filter @shipit-ai/core build  # Core compiles to dist/
 pnpm typecheck            # CLI types valid
-pnpm typecheck:web        # Web types valid with @shepai/core imports
+pnpm typecheck:web        # Web types valid with @shipit-ai/core imports
 pnpm test:unit            # All unit tests pass
 pnpm lint                 # No lint errors
 pnpm lint:web             # No web lint errors

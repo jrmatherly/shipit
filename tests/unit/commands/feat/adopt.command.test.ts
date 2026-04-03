@@ -1,7 +1,7 @@
 /**
  * adopt command unit tests
  *
- * Tests for the `shep feat adopt <branch>` CLI command.
+ * Tests for the `shipit-ai feat adopt <branch>` CLI command.
  * Covers: command structure, successful adoption output, error handling.
  */
 
@@ -86,7 +86,7 @@ describe('adopt command', () => {
       name: 'Login Bug',
       branch: 'fix/login-bug',
       lifecycle: 'Maintain' as Feature['lifecycle'],
-      worktreePath: '/home/user/.shep/repos/abc/wt/fix-login-bug',
+      worktreePath: '/home/user/.shipit-ai/repos/abc/wt/fix-login-bug',
     };
 
     beforeEach(() => {
@@ -126,7 +126,7 @@ describe('adopt command', () => {
       expect(allOutput).toContain('Login Bug');
       expect(allOutput).toContain('fix/login-bug');
       expect(allOutput).toContain('Maintain');
-      expect(allOutput).toContain('/home/user/.shep/repos/abc/wt/fix-login-bug');
+      expect(allOutput).toContain('/home/user/.shipit-ai/repos/abc/wt/fix-login-bug');
 
       consoleSpy.mockRestore();
     });

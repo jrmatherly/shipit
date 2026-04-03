@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { IWorktreeService } from '@shepai/core/application/ports/output/services/worktree-service.interface';
+import type { IWorktreeService } from '@shipit-ai/core/application/ports/output/services/worktree-service.interface';
 
 /**
  * Server action that returns all branch names (local + remote) for a repository.

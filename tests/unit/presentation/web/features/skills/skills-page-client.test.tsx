@@ -31,7 +31,7 @@ const sampleSkills: SkillData[] = [
     category: 'Workflow',
   }),
   makeSkill({
-    name: 'shep:ui-component',
+    name: 'shipit-ai:ui-component',
     displayName: 'ui-component',
     description: 'Create web UI components',
     category: 'Code Generation',
@@ -60,7 +60,7 @@ describe('SkillsPageClient', () => {
     render(<SkillsPageClient skills={sampleSkills} />);
     expect(screen.getByTestId('skill-card-shep-kit:plan')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-shep-kit:implement')).toBeInTheDocument();
-    expect(screen.getByTestId('skill-card-shep:ui-component')).toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-ai:ui-component')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-architecture-reviewer')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-shadcn-ui')).toBeInTheDocument();
   });
@@ -78,7 +78,7 @@ describe('SkillsPageClient', () => {
     await user.type(searchInput, 'plan');
 
     expect(screen.getByTestId('skill-card-shep-kit:plan')).toBeInTheDocument();
-    expect(screen.queryByTestId('skill-card-shep:ui-component')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('skill-card-shipit-ai:ui-component')).not.toBeInTheDocument();
     expect(screen.queryByTestId('skill-card-shadcn-ui')).not.toBeInTheDocument();
   });
 

@@ -1,8 +1,8 @@
 /**
- * @module Shep.Domain.Entities.Repository
+ * @module ShipitAI.Domain.Entities.Repository
  *
  * Defines the Repository entity - a first-class domain entity representing
- * a code repository tracked by the Shep platform.
+ * a code repository tracked by the Shipit AI platform.
  *
  * Repositories are the organizational unit for Features. Each Feature belongs
  * to exactly one Repository via a repositoryId foreign key.
@@ -13,11 +13,11 @@ import "../../common/scalars.tsp";
 /**
  * Repository Entity
  *
- * Represents a code repository tracked by the Shep platform.
+ * Represents a code repository tracked by the Shipit AI platform.
  * Features reference repositories by ID, enabling persistence
  * and independent lifecycle management.
  */
-@doc("A code repository tracked by the Shep platform")
+@doc("A code repository tracked by the Shipit AI platform")
 model Repository extends SoftDeletableEntity {
   @doc("Human-readable name for the repository (typically the directory name)")
   name: string;

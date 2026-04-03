@@ -26,7 +26,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { IAgentExecutorFactory } from '@shepai/core/application/ports/output/agents/agent-executor-factory.interface';
+import type { IAgentExecutorFactory } from '@shipit-ai/core/application/ports/output/agents/agent-executor-factory.interface';
 
 export interface AgentModelGroup {
   agentType: string;
@@ -113,8 +113,8 @@ import {
   getSettings,
   resetSettings,
   initializeSettings,
-} from '@shepai/core/infrastructure/services/settings.service';
-import type { UpdateSettingsUseCase } from '@shepai/core/application/use-cases/settings/update-settings.use-case';
+} from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { UpdateSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/update-settings.use-case';
 
 export async function updateAgentAndModel(
   agentType: string,

@@ -34,12 +34,12 @@ vi.mock('chalk', () => {
   return { default: fn };
 });
 
-vi.mock('@/infrastructure/services/filesystem/shep-directory.service.js', () => ({
-  getShepHomeDir: () => '/home/test/.shep',
+vi.mock('@/infrastructure/services/filesystem/shipit-ai-directory.service.js', () => ({
+  getShipitAiHomeDir: () => '/home/test/.shipit-ai',
 }));
 
 vi.mock('@/infrastructure/services/ide-launchers/compute-worktree-path.js', () => ({
-  computeWorktreePath: (repo: string, branch: string) => `${repo}/.shep/wt/${branch}`,
+  computeWorktreePath: (repo: string, branch: string) => `${repo}/.shipit-ai/wt/${branch}`,
 }));
 
 import { renderPhaseTimings } from '../../../../../../src/presentation/cli/commands/feat/show.command.js';

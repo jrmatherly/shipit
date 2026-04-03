@@ -224,7 +224,7 @@ content: |
   ```
 
   **Key Design Decisions:**
-  - Feature storage in global SQLite DB (~/.shep/data) with repositoryPath filtering
+  - Feature storage in global SQLite DB (~/.shipit-ai/data) with repositoryPath filtering
   - Git worktree management via native execFile (zero new dependencies)
   - LangGraph StateGraph with minimal state, nodes read spec files directly
   - Background execution via Node.js fork() with detached + unref()

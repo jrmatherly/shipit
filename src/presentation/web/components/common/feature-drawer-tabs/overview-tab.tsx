@@ -20,7 +20,7 @@ import {
   Zap,
 } from 'lucide-react';
 import { InlineAttachments } from '@/components/common/inline-attachments';
-import { PrStatus } from '@shepai/core/domain/generated/output';
+import { PrStatus } from '@shipit-ai/core/domain/generated/output';
 import { cn } from '@/lib/utils';
 import { CiStatusBadge } from '@/components/common/ci-status-badge';
 import { CometSpinner } from '@/components/ui/comet-spinner';

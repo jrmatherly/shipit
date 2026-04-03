@@ -175,7 +175,7 @@ decisions:
     rejected:
       - >-
         Register with class token only — The web layer (Next.js with
-        Turbopack) cannot resolve .ts → .js imports from @shepai/core.
+        Turbopack) cannot resolve .ts → .js imports from @shipit-ai/core.
         All use cases consumed by server actions need string-token aliases
         (e.g., 'StartFeatureUseCase') registered in the container. Skipping
         this would cause runtime errors in the web layer.

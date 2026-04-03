@@ -4,7 +4,7 @@
  * Tests that when a node throws an error, resuming the graph with the same
  * thread_id continues from the LAST SUCCESSFUL node — not from the beginning.
  *
- * This is the critical path for `shep feat resume` after a failed run.
+ * This is the critical path for `shipit-ai feat resume` after a failed run.
  *
  * Mechanism:
  * - Nodes mark completedPhases in feature.yaml on success
@@ -181,7 +181,7 @@ describe('Graph State Transitions › Resume After Error', () => {
       };
     })();
 
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-resume-err-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-resume-err-'));
     specDir = join(tempDir, 'specs', '001-test');
     mkdirSync(specDir, { recursive: true });
   });

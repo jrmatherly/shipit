@@ -1,7 +1,7 @@
 {
   "commands": {
     "settings": {
-      "description": "Manage Shep global settings",
+      "description": "Manage Shipit AI global settings",
       "wizardFailed": "Settings wizard failed",
       "show": {
         "description": "Display current settings",
@@ -11,7 +11,7 @@
       "init": {
         "description": "Initialize settings to defaults",
         "forceOption": "Skip confirmation prompt",
-        "resetWarning": "This will reset all settings to defaults. Consider backing up ~/.shep/data first.",
+        "resetWarning": "This will reset all settings to defaults. Consider backing up ~/.shipit-ai/data first.",
         "confirmPrompt": "Are you sure? (y/N): ",
         "cancelled": "Operation cancelled.",
         "success": "Settings initialized to defaults.",
@@ -39,7 +39,7 @@
       "model": {
         "description": "Configure the default LLM model for agent runs",
         "selectPrompt": "Select default LLM model",
-        "noModels": "No models available for agent \"{{agentType}}\". Configure a different agent with: shep settings agent",
+        "noModels": "No models available for agent \"{{agentType}}\". Configure a different agent with: shipit-ai settings agent",
         "success": "Model configured: {{model}}",
         "cancelled": "Configuration cancelled.",
         "failed": "Failed to configure model"
@@ -78,31 +78,31 @@
       "platformLabel": "Platform:"
     },
     "start": {
-      "description": "Start the Shep web UI as a background daemon",
+      "description": "Start the Shipit AI web UI as a background daemon",
       "portOption": "Port number (1024-65535)",
       "portValidation": "Port must be an integer between 1024 and 65535"
     },
     "stop": {
-      "description": "Stop the running Shep web UI daemon",
-      "noDaemonRunning": "No Shep daemon is running."
+      "description": "Stop the running Shipit AI web UI daemon",
+      "noDaemonRunning": "No Shipit AI daemon is running."
     },
     "restart": {
-      "description": "Gracefully restart the Shep web UI daemon (starts it if not running)",
+      "description": "Gracefully restart the Shipit AI web UI daemon (starts it if not running)",
       "portOption": "Port number (1024-65535)",
       "portValidation": "Port must be an integer between 1024 and 65535",
       "daemonNotRunning": "Daemon was not running — starting..."
     },
     "status": {
-      "description": "Show the status of the Shep web UI daemon",
+      "description": "Show the status of the Shipit AI web UI daemon",
       "logsOption": "Show last N lines of daemon log (default 50)",
       "followOption": "Follow daemon log output in real-time",
       "noLogFile": "No daemon log file found.",
       "expectedAt": "Expected at: {{path}}",
       "logEmpty": "Log file is empty.",
       "followHint": "--- following daemon.log (Ctrl+C to stop) ---",
-      "notRunning": "Shep daemon is not running.",
-      "startHint": "Run `shep start` to launch it.",
-      "title": "Shep Daemon Status",
+      "notRunning": "Shipit AI daemon is not running.",
+      "startHint": "Run `shipit-ai start` to launch it.",
+      "title": "Shipit AI Daemon Status",
       "pidLabel": "PID",
       "portLabel": "Port",
       "urlLabel": "URL",
@@ -111,7 +111,7 @@
       "cpuLabel": "CPU %",
       "memoryLabel": "Memory (RSS)",
       "envTitle": "Environment",
-      "shepHomeLabel": "Shep Home",
+      "shipitAiHomeLabel": "Shipit AI Home",
       "cliVersionLabel": "CLI Version",
       "nodeVersionLabel": "Node Version",
       "dbPathLabel": "DB Path",
@@ -119,11 +119,11 @@
       "daemonConfigLabel": "Daemon Config"
     },
     "ui": {
-      "description": "Start the Shep web UI",
+      "description": "Start the Shipit AI web UI",
       "portOption": "Port number (1024-65535)",
       "noOpenOption": "Do not auto-open browser",
       "portValidation": "Port must be an integer between 1024 and 65535",
-      "heading": "Shep Web UI",
+      "heading": "Shipit AI Web UI",
       "startingDev": "Starting web server (dev mode)...",
       "starting": "Starting web server...",
       "serverReady": "Server ready at {{url}}",
@@ -559,7 +559,7 @@
       }
     },
     "upgrade": {
-      "description": "Upgrade Shep CLI to the latest version",
+      "description": "Upgrade Shipit AI CLI to the latest version",
       "versionCheckTimeout": "Could not complete version check (timed out)",
       "versionCheckFailed": "Could not complete version check",
       "alreadyUpToDate": "Already up to date (v{{version}})",
@@ -568,7 +568,7 @@
       "stoppingDaemon": "Stopping daemon before upgrade...",
       "restartingDaemon": "Restarting daemon...",
       "daemonRestarted": "Daemon restarted successfully.",
-      "upgradeSuccess": "Shep CLI upgraded successfully",
+      "upgradeSuccess": "Shipit AI CLI upgraded successfully",
       "upgradeFailed": "Upgrade failed",
       "upgradeFailedDaemonRestored": "Upgrade failed — daemon restored on previous version."
     },
@@ -588,17 +588,17 @@
       "installingHeading": "Installing {{tool}}"
     },
     "daemon": {
-      "alreadyRunning": "Shep is already running at {{url}}",
-      "heading": "Shep Web UI",
+      "alreadyRunning": "Shipit AI is already running at {{url}}",
+      "heading": "Shipit AI Web UI",
       "startingServer": "Starting server",
       "daemonSpawned": "Daemon spawned at {{url}}",
       "serverReady": "Server ready at {{url}}",
       "serverMayBeStarting": "Server may still be starting at {{url}}",
       "daemonFailed": "Daemon failed to start (exit code {{code}}).",
       "checkLogs": "Check logs: {{path}}",
-      "stoppingDaemon": "Stopping Shep daemon (PID {{pid}})...",
+      "stoppingDaemon": "Stopping Shipit AI daemon (PID {{pid}})...",
       "sigkillFallback": "Daemon did not stop gracefully, sending SIGKILL...",
-      "daemonStopped": "Shep daemon stopped."
+      "daemonStopped": "Shipit AI daemon stopped."
     },
     "logViewer": {
       "noLogFile": "No log file found for {{label}}",

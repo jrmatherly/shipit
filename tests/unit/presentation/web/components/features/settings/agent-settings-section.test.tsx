@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { AgentSettingsSection } from '@/components/features/settings/agent-settings-section';
-import { AgentType, AgentAuthMethod } from '@shepai/core/domain/generated/output';
+import { AgentType, AgentAuthMethod } from '@shipit-ai/core/domain/generated/output';
 
 const mockUpdateSettingsAction = vi.fn();
 

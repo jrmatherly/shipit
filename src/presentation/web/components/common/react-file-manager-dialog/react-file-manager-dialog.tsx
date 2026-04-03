@@ -157,7 +157,7 @@ export function ReactFileManagerDialog({
             {currentPath || 'Loading...'}
           </DialogDescription>
         </DialogHeader>
-        <div className="shep-file-manager min-h-0 flex-1 overflow-hidden rounded-md border">
+        <div className="shipit-ai-file-manager min-h-0 flex-1 overflow-hidden rounded-md border">
           <FileManager
             key={currentPath}
             files={toFileManagerFiles(entries)}

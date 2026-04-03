@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { IPhaseTimingRepository } from '@shepai/core/application/ports/output/agents/phase-timing-repository.interface';
-import type { IFeatureRepository } from '@shepai/core/application/ports/output/repositories/feature-repository.interface';
+import type { IPhaseTimingRepository } from '@shipit-ai/core/application/ports/output/agents/phase-timing-repository.interface';
+import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
 
 export interface PhaseTimingData {
   agentRunId: string;

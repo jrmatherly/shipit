@@ -1,6 +1,6 @@
 # Tool JSON Definitions
 
-Each `.json` file defines a development tool that shep can install, verify, and launch.
+Each `.json` file defines a development tool that shipit-ai can install, verify, and launch.
 Files are loaded dynamically by `tool-metadata.ts` — the filename (minus `.json`) becomes the tool ID.
 
 ## Schema

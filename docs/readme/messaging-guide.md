@@ -1,4 +1,4 @@
-# Shep AI Messaging Guide
+# Shipit AI Messaging Guide
 
 Core messaging framework for consistent communication across README, website, npm, social media, and docs.
 

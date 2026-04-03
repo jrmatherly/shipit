@@ -12,14 +12,14 @@ function computeWorktreePath(repoPath: string, branch: string): string {
   const normalizedRepoPath = repoPath.replace(/\\/g, '/');
   const repoHash = createHash('sha256').update(normalizedRepoPath).digest('hex').slice(0, 16);
   const slug = branch.replace(/\//g, '-');
-  const shepHome = process.env.SHEP_HOME ?? join(homedir(), '.shep');
-  return join(shepHome, 'repos', repoHash, 'wt', slug).replace(/\\/g, '/');
+  const shipitAiHome = process.env.SHIPIT_AI_HOME ?? join(homedir(), '.shipit-ai');
+  return join(shipitAiHome, 'repos', repoHash, 'wt', slug).replace(/\\/g, '/');
 }
 
 function getDb(): Database.Database {
-  const dbPath = process.env.SHEP_HOME
-    ? join(process.env.SHEP_HOME, 'data')
-    : join(homedir(), '.shep', 'data');
+  const dbPath = process.env.SHIPIT_AI_HOME
+    ? join(process.env.SHIPIT_AI_HOME, 'data')
+    : join(homedir(), '.shipit-ai', 'data');
   return new Database(dbPath);
 }
 

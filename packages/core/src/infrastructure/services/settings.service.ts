@@ -17,14 +17,14 @@
 import type { Settings } from '../../domain/generated/output.js';
 
 /** The globalThis / process key for the settings singleton. */
-const SHEP_SETTINGS_KEY = '__shepSettings';
+const SHIPIT_AI_SETTINGS_KEY = '__shipitAiSettings';
 
 /** Read the settings instance from globalThis, falling back to process. */
 function readSettings(): Settings | null {
-  const fromGlobal = (globalThis as Record<string, unknown>)[SHEP_SETTINGS_KEY];
+  const fromGlobal = (globalThis as Record<string, unknown>)[SHIPIT_AI_SETTINGS_KEY];
   if (fromGlobal != null) return fromGlobal as Settings;
 
-  const fromProcess = (process as unknown as Record<string, unknown>)[SHEP_SETTINGS_KEY];
+  const fromProcess = (process as unknown as Record<string, unknown>)[SHIPIT_AI_SETTINGS_KEY];
   if (fromProcess != null) return fromProcess as Settings;
 
   return null;
@@ -32,8 +32,8 @@ function readSettings(): Settings | null {
 
 /** Write the settings instance to both globalThis and process. */
 function writeSettings(value: Settings | null): void {
-  (globalThis as Record<string, unknown>)[SHEP_SETTINGS_KEY] = value;
-  (process as unknown as Record<string, unknown>)[SHEP_SETTINGS_KEY] = value;
+  (globalThis as Record<string, unknown>)[SHIPIT_AI_SETTINGS_KEY] = value;
+  (process as unknown as Record<string, unknown>)[SHIPIT_AI_SETTINGS_KEY] = value;
 }
 
 /**

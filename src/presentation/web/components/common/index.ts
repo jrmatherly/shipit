@@ -49,7 +49,7 @@ export {
   type PrdOption,
   type PrdQuestionnaireData,
 } from './prd-questionnaire';
-export { ShepLogo, type ShepLogoProps } from './shep-logo';
+export { ShipitAiLogo, type ShipitAiLogoProps } from './shipit-ai-logo';
 export {
   TechDecisionsReview,
   type TechDecisionsReviewProps,

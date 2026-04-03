@@ -98,7 +98,7 @@ decisions:
   - title: 'Web Route Resolution Pattern'
     chosen: 'Use existing resolve() from @/lib/server-container with string token'
     rejected:
-      - 'Import container directly from @shepai/core — server-container wrapper handles Turbopack compatibility'
+      - 'Import container directly from @shipit-ai/core — server-container wrapper handles Turbopack compatibility'
       - 'Keep direct launchIde() import — the Clean Architecture violation being fixed'
     rationale: >
       Follows the exact pattern of features/create/route.ts which uses

@@ -15,7 +15,7 @@ beforeEach(() => {
         json: () =>
           Promise.resolve({
             version: '1.101.0',
-            packageName: '@shepai/cli',
+            packageName: '@shipit-ai/cli',
             description: 'Test',
             branch: '',
             commitHash: '',

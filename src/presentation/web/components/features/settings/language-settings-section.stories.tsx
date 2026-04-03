@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { LanguageSettingsSection } from './language-settings-section';
-import { Language } from '@shepai/core/domain/generated/output';
+import { Language } from '@shipit-ai/core/domain/generated/output';
 
 const meta = {
   title: 'Features/Settings/LanguageSettingsSection',

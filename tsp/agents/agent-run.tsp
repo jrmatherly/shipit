@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.AgentRun
+ * @module ShipitAI.Agents.AgentRun
  *
  * Persistent record of an agent execution session.
  * Tracks the entire lifecycle from pending to completion/failure

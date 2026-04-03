@@ -1,6 +1,6 @@
 # API Reference
 
-Technical reference documentation for Shep AI CLI interfaces and models.
+Technical reference documentation for Shipit AI CLI interfaces and models.
 
 ## Contents
 

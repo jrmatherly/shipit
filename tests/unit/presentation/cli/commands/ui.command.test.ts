@@ -1,7 +1,7 @@
 /**
  * UI Command Unit Tests
  *
- * Tests for the `shep ui` command.
+ * Tests for the `shipit-ai ui` command.
  *
  * TDD Phase: GREEN
  */
@@ -29,7 +29,7 @@ vi.mock('@/infrastructure/di/container.js', () => ({
         return {
           getVersion: vi.fn().mockReturnValue({
             version: '1.0.0',
-            name: '@shepai/cli',
+            name: '@shipit-ai/cli',
             description: 'Test description',
           }),
         };

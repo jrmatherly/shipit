@@ -1,7 +1,7 @@
 /**
  * Agent Command Unit Tests
  *
- * Tests for the `shep settings agent` command.
+ * Tests for the `shipit-ai settings agent` command.
  *
  * TDD Phase: RED → GREEN
  */

@@ -1,7 +1,7 @@
 /**
  * Upgrade Command
  *
- * Self-upgrades Shep CLI to the latest published version.
+ * Self-upgrades Shipit AI CLI to the latest published version.
  * Checks current vs latest version before running npm install.
  *
  * Usage: shep upgrade
@@ -25,7 +25,7 @@ const VERSION_CHECK_TIMEOUT_MS = 10_000;
 const IS_WINDOWS = process.platform === 'win32';
 
 /**
- * Get the latest published version of @shepai/cli from npm registry.
+ * Get the latest published version of @shipit-ai/cli from npm registry.
  * Returns null if the check fails (fail-open).
  */
 function getLatestVersion(spawnFn: SpawnFn): Promise<string | null> {
@@ -33,7 +33,7 @@ function getLatestVersion(spawnFn: SpawnFn): Promise<string | null> {
     let output = '';
     let settled = false;
 
-    const child: ChildProcess = spawnFn('npm', ['view', '@shepai/cli', 'version'], {
+    const child: ChildProcess = spawnFn('npm', ['view', '@shipit-ai/cli', 'version'], {
       stdio: ['ignore', 'pipe', 'pipe'],
       ...(IS_WINDOWS && { shell: true }),
     });
@@ -75,12 +75,12 @@ function getLatestVersion(spawnFn: SpawnFn): Promise<string | null> {
 }
 
 /**
- * Run npm i -g @shepai/cli@latest with inherited stdio.
+ * Run npm i -g @shipit-ai/cli@latest with inherited stdio.
  * Returns the exit code, or rejects on spawn error.
  */
 function runNpmInstall(spawnFn: SpawnFn): Promise<number> {
   return new Promise((resolve, reject) => {
-    const child = spawnFn('npm', ['i', '-g', '@shepai/cli@latest'], {
+    const child = spawnFn('npm', ['i', '-g', '@shipit-ai/cli@latest'], {
       stdio: 'inherit',
       ...(IS_WINDOWS && { shell: true }),
     });
@@ -139,7 +139,7 @@ export function createUpgradeCommand(spawnFn: SpawnFn = defaultSpawn): Command {
           await stopDaemon(daemonService);
         }
 
-        // 5. Run npm i -g @shepai/cli@latest; always restore daemon in finally (FR-2, FR-3)
+        // 5. Run npm i -g @shipit-ai/cli@latest; always restore daemon in finally (FR-2, FR-3)
         let installExitCode = 1;
         try {
           installExitCode = await runNpmInstall(spawnFn);

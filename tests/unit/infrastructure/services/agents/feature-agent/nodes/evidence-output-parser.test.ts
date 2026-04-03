@@ -34,14 +34,14 @@ describe('evidence-output-parser', () => {
     "type": "Screenshot",
     "capturedAt": "2026-03-09T12:00:00Z",
     "description": "Homepage after login",
-    "relativePath": ".shep/evidence/homepage.png",
+    "relativePath": ".shipit-ai/evidence/homepage.png",
     "taskRef": "task-1"
   },
   {
     "type": "TestOutput",
     "capturedAt": "2026-03-09T12:01:00Z",
     "description": "Unit test results",
-    "relativePath": ".shep/evidence/test-output.txt"
+    "relativePath": ".shipit-ai/evidence/test-output.txt"
   }
 ]
 \`\`\`
@@ -54,14 +54,14 @@ Evidence collection complete.`;
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Homepage after login',
-          relativePath: '.shep/evidence/homepage.png',
+          relativePath: '.shipit-ai/evidence/homepage.png',
           taskRef: 'task-1',
         },
         {
           type: EvidenceType.TestOutput,
           capturedAt: '2026-03-09T12:01:00Z',
           description: 'Unit test results',
-          relativePath: '.shep/evidence/test-output.txt',
+          relativePath: '.shipit-ai/evidence/test-output.txt',
         },
       ]);
     });
@@ -88,22 +88,22 @@ Evidence collection complete.`;
     "type": "Screenshot",
     "capturedAt": "2026-03-09T12:00:00Z",
     "description": "Valid screenshot",
-    "relativePath": ".shep/evidence/valid.png"
+    "relativePath": ".shipit-ai/evidence/valid.png"
   },
   {
     "type": "Screenshot",
     "description": "Missing capturedAt",
-    "relativePath": ".shep/evidence/missing.png"
+    "relativePath": ".shipit-ai/evidence/missing.png"
   },
   {
     "capturedAt": "2026-03-09T12:00:00Z",
     "description": "Missing type",
-    "relativePath": ".shep/evidence/no-type.png"
+    "relativePath": ".shipit-ai/evidence/no-type.png"
   },
   {
     "type": "Screenshot",
     "capturedAt": "2026-03-09T12:00:00Z",
-    "relativePath": ".shep/evidence/no-desc.png"
+    "relativePath": ".shipit-ai/evidence/no-desc.png"
   },
   {
     "type": "Screenshot",
@@ -125,7 +125,7 @@ Evidence collection complete.`;
     "type": "Screenshot",
     "capturedAt": "2026-03-09T12:00:00Z",
     "description": "Safe path",
-    "relativePath": ".shep/evidence/safe.png"
+    "relativePath": ".shipit-ai/evidence/safe.png"
   },
   {
     "type": "Screenshot",
@@ -137,7 +137,7 @@ Evidence collection complete.`;
     "type": "Screenshot",
     "capturedAt": "2026-03-09T12:00:00Z",
     "description": "Sneaky traversal",
-    "relativePath": ".shep/evidence/../../secret.txt"
+    "relativePath": ".shipit-ai/evidence/../../secret.txt"
   }
 ]
 \`\`\``;
@@ -154,7 +154,7 @@ Evidence collection complete.`;
     "type": "Screenshot",
     "capturedAt": "2026-03-09T12:00:00Z",
     "description": "Valid one",
-    "relativePath": ".shep/evidence/one.png"
+    "relativePath": ".shipit-ai/evidence/one.png"
   },
   "not an object",
   null,
@@ -162,7 +162,7 @@ Evidence collection complete.`;
     "type": "Screenshot",
     "capturedAt": "2026-03-09T12:02:00Z",
     "description": "Valid two",
-    "relativePath": ".shep/evidence/two.png",
+    "relativePath": ".shipit-ai/evidence/two.png",
     "taskRef": "task-3"
   },
   42,
@@ -170,7 +170,7 @@ Evidence collection complete.`;
     "type": "InvalidType",
     "capturedAt": "2026-03-09T12:00:00Z",
     "description": "Bad type",
-    "relativePath": ".shep/evidence/bad-type.png"
+    "relativePath": ".shipit-ai/evidence/bad-type.png"
   }
 ]
 \`\`\``;
@@ -202,7 +202,7 @@ Evidence collection complete.`;
   "type": "Screenshot",
   "capturedAt": "2026-03-09T12:00:00Z",
   "description": "Single object, not array",
-  "relativePath": ".shep/evidence/single.png"
+  "relativePath": ".shipit-ai/evidence/single.png"
 }
 \`\`\``;
 
@@ -216,25 +216,25 @@ Evidence collection complete.`;
     "type": "Screenshot",
     "capturedAt": "2026-03-09T12:00:00Z",
     "description": "Screenshot evidence",
-    "relativePath": ".shep/evidence/screenshot.png"
+    "relativePath": ".shipit-ai/evidence/screenshot.png"
   },
   {
     "type": "Video",
     "capturedAt": "2026-03-09T12:01:00Z",
     "description": "Video evidence",
-    "relativePath": ".shep/evidence/video.mp4"
+    "relativePath": ".shipit-ai/evidence/video.mp4"
   },
   {
     "type": "TestOutput",
     "capturedAt": "2026-03-09T12:02:00Z",
     "description": "Test output evidence",
-    "relativePath": ".shep/evidence/tests.txt"
+    "relativePath": ".shipit-ai/evidence/tests.txt"
   },
   {
     "type": "TerminalRecording",
     "capturedAt": "2026-03-09T12:03:00Z",
     "description": "Terminal recording evidence",
-    "relativePath": ".shep/evidence/terminal.txt"
+    "relativePath": ".shipit-ai/evidence/terminal.txt"
   }
 ]
 \`\`\``;
@@ -254,7 +254,7 @@ Evidence collection complete.`;
         type: EvidenceType.Screenshot,
         capturedAt: '2026-03-09T12:00:00Z',
         description: 'App: dashboard page showing new toggle',
-        relativePath: '.shep/evidence/app-dashboard.png',
+        relativePath: '.shipit-ai/evidence/app-dashboard.png',
         ...overrides,
       };
     }
@@ -265,7 +265,7 @@ Evidence collection complete.`;
         makeEvidence({
           type: EvidenceType.TestOutput,
           description: 'Unit tests passing',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         }),
       ];
 
@@ -281,11 +281,11 @@ Evidence collection complete.`;
       const evidence: Evidence[] = [
         makeEvidence({
           description: 'Storybook: toggle component in default state',
-          relativePath: '.shep/evidence/storybook-toggle.png',
+          relativePath: '.shipit-ai/evidence/storybook-toggle.png',
         }),
         makeEvidence({
           description: 'Storybook: toggle component in active state',
-          relativePath: '.shep/evidence/storybook-toggle-active.png',
+          relativePath: '.shipit-ai/evidence/storybook-toggle-active.png',
         }),
       ];
 
@@ -303,7 +303,7 @@ Evidence collection complete.`;
         makeEvidence({ description: 'App: dashboard page with new toggle' }),
         makeEvidence({
           description: 'Storybook: toggle component isolated view',
-          relativePath: '.shep/evidence/storybook-toggle.png',
+          relativePath: '.shipit-ai/evidence/storybook-toggle.png',
         }),
       ];
 
@@ -320,12 +320,12 @@ Evidence collection complete.`;
         makeEvidence({
           type: EvidenceType.TestOutput,
           description: 'Unit tests',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         }),
         makeEvidence({
           type: EvidenceType.TerminalRecording,
           description: 'CLI output',
-          relativePath: '.shep/evidence/cli.txt',
+          relativePath: '.shipit-ai/evidence/cli.txt',
         }),
       ];
 
@@ -346,7 +346,7 @@ Evidence collection complete.`;
       const evidence: Evidence[] = [
         makeEvidence({
           description: 'Component in default state',
-          relativePath: '.shep/evidence/storybook-component.png',
+          relativePath: '.shipit-ai/evidence/storybook-component.png',
         }),
       ];
 
@@ -359,7 +359,7 @@ Evidence collection complete.`;
       const evidence: Evidence[] = [
         makeEvidence({
           description: 'Story view of the button component',
-          relativePath: '.shep/evidence/button.png',
+          relativePath: '.shipit-ai/evidence/button.png',
         }),
       ];
 
@@ -372,7 +372,7 @@ Evidence collection complete.`;
       const evidence: Evidence[] = [
         makeEvidence({
           description: 'Component at localhost:6006',
-          relativePath: '.shep/evidence/component.png',
+          relativePath: '.shipit-ai/evidence/component.png',
         }),
       ];
 
@@ -385,7 +385,7 @@ Evidence collection complete.`;
       const evidence: Evidence[] = [
         makeEvidence({
           description: 'Homepage showing new feature banner',
-          relativePath: '.shep/evidence/homepage.png',
+          relativePath: '.shipit-ai/evidence/homepage.png',
         }),
       ];
 
@@ -400,7 +400,7 @@ Evidence collection complete.`;
         makeEvidence({
           type: EvidenceType.Video,
           description: 'Storybook: recording of component interaction',
-          relativePath: '.shep/evidence/storybook-recording.mp4',
+          relativePath: '.shipit-ai/evidence/storybook-recording.mp4',
         }),
       ];
 
@@ -434,7 +434,7 @@ Evidence collection complete.`;
       const evidence: Evidence[] = [
         makeEvidence({
           description: 'Component stories showing all variants',
-          relativePath: '.shep/evidence/component-stories.png',
+          relativePath: '.shipit-ai/evidence/component-stories.png',
         }),
       ];
 
@@ -692,7 +692,7 @@ Evidence collection complete.`;
         type: EvidenceType.Screenshot,
         capturedAt: '2026-03-09T12:00:00Z',
         description: 'App: dashboard page showing new toggle',
-        relativePath: '.shep/evidence/app-dashboard.png',
+        relativePath: '.shipit-ai/evidence/app-dashboard.png',
         ...overrides,
       };
     }
@@ -735,13 +735,13 @@ Evidence collection complete.`;
         makeEvidence({
           type: EvidenceType.TestOutput,
           description: 'Unit test results',
-          relativePath: '.shep/evidence/test-results.txt',
+          relativePath: '.shipit-ai/evidence/test-results.txt',
           taskRef: 'task-2',
         }),
         makeEvidence({
           type: EvidenceType.TerminalRecording,
           description: 'CLI export command output',
-          relativePath: '.shep/evidence/cli-output.txt',
+          relativePath: '.shipit-ai/evidence/cli-output.txt',
           taskRef: 'task-3',
         }),
       ];
@@ -755,7 +755,7 @@ Evidence collection complete.`;
         makeEvidence({
           type: EvidenceType.TestOutput,
           description: 'Test results',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         }),
       ];
       const result = validateEvidenceCompleteness(evidence, [uiTask]);
@@ -771,7 +771,7 @@ Evidence collection complete.`;
       const evidence: Evidence[] = [
         makeEvidence({
           description: 'Storybook: toggle component in default state',
-          relativePath: '.shep/evidence/storybook-toggle.png',
+          relativePath: '.shipit-ai/evidence/storybook-toggle.png',
         }),
       ];
       const result = validateEvidenceCompleteness(evidence, [uiTask]);
@@ -849,7 +849,7 @@ Evidence collection complete.`;
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Homepage screenshot',
-          relativePath: '.shep/evidence/homepage.png',
+          relativePath: '.shipit-ai/evidence/homepage.png',
         },
       ];
       const errors = await validateFileExistence(evidence);
@@ -866,12 +866,12 @@ Evidence collection complete.`;
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Missing screenshot',
-          relativePath: '.shep/evidence/missing.png',
+          relativePath: '.shipit-ai/evidence/missing.png',
         },
       ];
       const errors = await validateFileExistence(evidence);
       expect(errors).toHaveLength(1);
-      expect(errors[0]).toContain('.shep/evidence/missing.png');
+      expect(errors[0]).toContain('.shipit-ai/evidence/missing.png');
     });
 
     it('should return error when file has zero size', async () => {
@@ -882,7 +882,7 @@ Evidence collection complete.`;
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Empty file',
-          relativePath: '.shep/evidence/empty.png',
+          relativePath: '.shipit-ai/evidence/empty.png',
         },
       ];
       const errors = await validateFileExistence(evidence);
@@ -900,12 +900,12 @@ Evidence collection complete.`;
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Protected file',
-          relativePath: '.shep/evidence/protected.png',
+          relativePath: '.shipit-ai/evidence/protected.png',
         },
       ];
       const errors = await validateFileExistence(evidence);
       expect(errors).toHaveLength(1);
-      expect(errors[0]).toContain('.shep/evidence/protected.png');
+      expect(errors[0]).toContain('.shipit-ai/evidence/protected.png');
     });
 
     it('should return error for each missing file when multiple are missing', async () => {
@@ -918,13 +918,13 @@ Evidence collection complete.`;
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Missing 1',
-          relativePath: '.shep/evidence/a.png',
+          relativePath: '.shipit-ai/evidence/a.png',
         },
         {
           type: EvidenceType.TestOutput,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Missing 2',
-          relativePath: '.shep/evidence/b.txt',
+          relativePath: '.shipit-ai/evidence/b.txt',
         },
       ];
       const errors = await validateFileExistence(evidence);
@@ -945,7 +945,7 @@ Evidence collection complete.`;
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Bad file',
-          relativePath: '.shep/evidence/bad.png',
+          relativePath: '.shipit-ai/evidence/bad.png',
         },
       ];
       // Should not throw
@@ -967,7 +967,7 @@ Evidence collection complete.`;
         type: EvidenceType.Screenshot,
         capturedAt: '2026-03-09T12:00:00Z',
         description: 'App: dashboard page',
-        relativePath: '.shep/evidence/app-dashboard.png',
+        relativePath: '.shipit-ai/evidence/app-dashboard.png',
         ...overrides,
       };
     }
@@ -996,7 +996,7 @@ Evidence collection complete.`;
         makeEv({
           type: EvidenceType.TestOutput,
           description: 'Test results',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         }),
       ];
       const result = await validateEvidence(evidence, [uiTask]);
@@ -1039,7 +1039,7 @@ Evidence collection complete.`;
         makeEv({
           type: EvidenceType.Screenshot,
           description: 'App: dashboard',
-          relativePath: '.shep/evidence/missing.png',
+          relativePath: '.shipit-ai/evidence/missing.png',
         }),
       ];
       const result = await validateEvidence(evidence, [testTask]);

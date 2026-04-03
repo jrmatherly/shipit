@@ -8,7 +8,7 @@
 
 import { getIdeEntries } from '@/infrastructure/services/tool-installer/tool-metadata.js';
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 /**
  * Creates the @inquirer/select configuration for selecting a preferred IDE.
@@ -23,6 +23,6 @@ export function createIdeSelectConfig() {
   return {
     message: getTuiI18n().t('tui:prompts.selectIde.message'),
     choices,
-    theme: shepTheme,
+    theme: shipitAiTheme,
   };
 }

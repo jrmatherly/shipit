@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { DeploymentState } from '@shepai/core/domain/generated/output';
+import { DeploymentState } from '@shipit-ai/core/domain/generated/output';
 import { DeploymentStatusBadge } from '@/components/common/deployment-status-badge';
 
 // Mock the ServerLogViewer component

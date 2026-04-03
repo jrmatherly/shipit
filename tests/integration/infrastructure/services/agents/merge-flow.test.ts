@@ -103,7 +103,7 @@ describe('Merge Flow (Graph-level)', () => {
   let stderrSpy: ReturnType<typeof vi.spyOn>;
 
   beforeAll(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-merge-flow-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-merge-flow-test-'));
     specDir = join(tempDir, 'specs', '001-test');
     mkdirSync(specDir, { recursive: true });
 

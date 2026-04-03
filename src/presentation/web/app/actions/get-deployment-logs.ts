@@ -4,7 +4,7 @@ import { resolve } from '@/lib/server-container';
 import type {
   IDeploymentService,
   LogEntry,
-} from '@shepai/core/application/ports/output/services/deployment-service.interface';
+} from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 
 export async function getDeploymentLogs(targetId: string): Promise<LogEntry[] | null> {
   if (!targetId?.trim()) {

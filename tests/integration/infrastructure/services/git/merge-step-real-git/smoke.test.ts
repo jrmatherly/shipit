@@ -89,7 +89,7 @@ describe('Merge Step — Smoke Tests', () => {
     });
 
     it('should pass git commands through to real binary', async () => {
-      const tempDir = mkdtempSync(join(tmpdir(), 'shep-selective-test-'));
+      const tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-selective-test-'));
       harnessToCleanup.push(tempDir);
       const realExec = makeRealExec();
       await realExec('git', ['init'], { cwd: tempDir });
@@ -101,7 +101,7 @@ describe('Merge Step — Smoke Tests', () => {
 
   describe('makeSpecDir', () => {
     it('should create specDir with feature.yaml containing empty completedPhases', () => {
-      const tempDir = mkdtempSync(join(tmpdir(), 'shep-specdir-test-'));
+      const tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-specdir-test-'));
       harnessToCleanup.push(tempDir);
 
       const specDir = makeSpecDir(tempDir);
@@ -110,7 +110,7 @@ describe('Merge Step — Smoke Tests', () => {
     });
 
     it('should write completedPhases when specified', () => {
-      const tempDir = mkdtempSync(join(tmpdir(), 'shep-specdir-test-'));
+      const tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-specdir-test-'));
       harnessToCleanup.push(tempDir);
 
       const specDir = makeSpecDir(tempDir, ['merge']);

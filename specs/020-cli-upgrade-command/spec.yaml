@@ -4,9 +4,9 @@
 name: cli-upgrade-command
 number: 020
 branch: feat/020-cli-upgrade-command
-oneLiner: Add 'shep upgrade' CLI command that runs npm i -g @shepai/cli to self-upgrade
+oneLiner: Add 'shep upgrade' CLI command that runs npm i -g @shipit-ai/cli to self-upgrade
 summary: >
-  Add a new top-level CLI command 'shep upgrade' that executes 'npm i -g @shepai/cli@latest'
+  Add a new top-level CLI command 'shep upgrade' that executes 'npm i -g @shipit-ai/cli@latest'
   as a child process, streams its output to the terminal, and reports success or failure.
   Compares current vs latest version before running. Purely presentation-layer addition
   following existing command patterns.
@@ -29,7 +29,7 @@ openQuestions:
       Recommend yes — display current version and confirm an upgrade is available before
       running npm install. This avoids a no-op install when already on latest and gives
       the user useful feedback. Use the existing IVersionService to get the current version
-      and a simple `npm view @shepai/cli version` call to get the latest. If already on
+      and a simple `npm view @shipit-ai/cli version` call to get the latest. If already on
       latest, print a message and exit successfully without running install.
 
   - question: 'Should the command support upgrading to a specific version (e.g., shep upgrade 1.5.0)?'
@@ -37,7 +37,7 @@ openQuestions:
     answer: >
       Recommend no for v1. Keep the command simple — always upgrade to @latest. A version
       argument adds complexity (validation, error messages for invalid versions) with little
-      benefit since users can always run `npm i -g @shepai/cli@<version>` directly. Can be
+      benefit since users can always run `npm i -g @shipit-ai/cli@<version>` directly. Can be
       added in a future iteration if requested.
 
   - question: 'Should the command use npm, pnpm, or detect the package manager?'
@@ -68,13 +68,13 @@ content: |
   ## Problem Statement
 
   Users currently have no built-in way to upgrade the Shep CLI to the latest version from within
-  the tool itself. They must manually run `npm i -g @shepai/cli` in their terminal. A `shep upgrade`
+  the tool itself. They must manually run `npm i -g @shipit-ai/cli` in their terminal. A `shep upgrade`
   command provides a convenient self-upgrade mechanism that also shows whether an upgrade is available.
 
   ## Success Criteria
 
   - [ ] `shep upgrade` command is registered and appears in `shep --help` output
-  - [ ] Running `shep upgrade` when behind latest version executes `npm i -g @shepai/cli@latest` and streams output
+  - [ ] Running `shep upgrade` when behind latest version executes `npm i -g @shipit-ai/cli@latest` and streams output
   - [ ] Running `shep upgrade` when already on latest version prints an "already up to date" message and exits 0
   - [ ] Command exits with code 0 on success, non-zero on failure
   - [ ] npm spawn failure (e.g., npm not found) is caught and reported with `messages.error()`
@@ -85,9 +85,9 @@ content: |
 
   - **FR-1**: The CLI SHALL register a top-level `upgrade` command accessible via `shep upgrade`
   - **FR-2**: The command SHALL resolve the current installed version using `IVersionService` from the DI container
-  - **FR-3**: The command SHALL check the latest published version by spawning `npm view @shepai/cli version`
+  - **FR-3**: The command SHALL check the latest published version by spawning `npm view @shipit-ai/cli version`
   - **FR-4**: If the current version matches the latest version, the command SHALL print an "already up to date" message including the version number and exit with code 0
-  - **FR-5**: If a newer version is available, the command SHALL print the current and target versions, then spawn `npm i -g @shepai/cli@latest` with stdout and stderr piped to the terminal
+  - **FR-5**: If a newer version is available, the command SHALL print the current and target versions, then spawn `npm i -g @shipit-ai/cli@latest` with stdout and stderr piped to the terminal
   - **FR-6**: On successful npm install (exit code 0), the command SHALL print a success message
   - **FR-7**: On failed npm install (non-zero exit code), the command SHALL print an error message and set `process.exitCode = 1`
   - **FR-8**: If the version check itself fails (e.g., network error, npm not found), the command SHALL print a warning and proceed with the upgrade anyway (fail-open for version check)
@@ -107,7 +107,7 @@ content: |
   | # | Question | AI Recommendation | Rationale |
   | - | -------- | ----------------- | --------- |
   | 1 | Pre-upgrade version check? | Yes — compare current vs latest | Avoids no-op installs, gives useful UX feedback |
-  | 2 | Support specific version arg? | No — always @latest | Keep simple; `npm i -g @shepai/cli@x.y.z` works for advanced users |
+  | 2 | Support specific version arg? | No — always @latest | Keep simple; `npm i -g @shipit-ai/cli@x.y.z` works for advanced users |
   | 3 | Which package manager? | Always npm | Canonical, universal, simple — no detection logic needed |
   | 4 | Interactive confirmation? | No | CLI tools should be scriptable; typing the command is the confirmation |
   | 5 | Spinner vs streaming output? | Stream npm output directly | More informative, simpler to implement, matches install UX expectations |

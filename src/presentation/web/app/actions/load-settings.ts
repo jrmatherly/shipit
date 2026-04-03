@@ -3,13 +3,13 @@
 import { statSync } from 'node:fs';
 import { join } from 'node:path';
 import { resolve } from '@/lib/server-container';
-import type { LoadSettingsUseCase } from '@shepai/core/application/use-cases/settings/load-settings.use-case';
-import { getShepHomeDir } from '@shepai/core/infrastructure/services/filesystem/shep-directory.service';
-import type { Settings } from '@shepai/core/domain/generated/output';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
+import { getShipitAiHomeDir } from '@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service';
+import type { Settings } from '@shipit-ai/core/domain/generated/output';
 
 export interface LoadSettingsResult {
   settings?: Settings;
-  shepHome?: string;
+  shipitAiHome?: string;
   dbFileSize?: string;
   error?: string;
 }
@@ -25,17 +25,17 @@ export async function loadSettings(): Promise<LoadSettingsResult> {
     const useCase = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
     const settings = await useCase.execute();
 
-    const shepHome = getShepHomeDir();
+    const shipitAiHome = getShipitAiHomeDir();
     let dbFileSize = 'Unknown';
     try {
-      const dbPath = join(shepHome, 'data');
+      const dbPath = join(shipitAiHome, 'data');
       const stat = statSync(dbPath);
       dbFileSize = formatFileSize(stat.size);
     } catch {
       // DB file may not exist yet
     }
 
-    return { settings, shepHome, dbFileSize };
+    return { settings, shipitAiHome, dbFileSize };
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Failed to load settings';
     return { error: message };

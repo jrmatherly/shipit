@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.Enums.AgentFeature
+ * @module ShipitAI.Agents.Enums.AgentFeature
  *
  * Capability declarations for agent executors.
  * Used by IAgentExecutor.supportsFeature() to enable

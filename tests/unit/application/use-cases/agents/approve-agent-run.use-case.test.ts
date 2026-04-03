@@ -95,8 +95,8 @@ describe('ApproveAgentRunUseCase', () => {
       id: 'feat-001',
       branch: 'feat/test-feature',
       repositoryPath: '/test/repo',
-      specPath: '/test/repo/.shep/wt/feat-branch',
-      worktreePath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
+      worktreePath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     useCase = new ApproveAgentRunUseCase(
       mockRunRepo as any,
@@ -119,7 +119,7 @@ describe('ApproveAgentRunUseCase', () => {
         updatedAt: expect.any(Date),
       })
     );
-    const wt = '/test/repo/.shep/wt/feat-branch';
+    const wt = '/test/repo/.shipit-ai/wt/feat-branch';
     expect(mockProcessService.spawn).toHaveBeenCalledWith(
       'feat-001',
       'run-001',

@@ -24,13 +24,13 @@ decisions:
   - title: Externalization strategy
     chosen: Externalize leaf packages only (tsyringe, reflect-metadata, better-sqlite3)
     rejected:
-      - Externalize entire @shepai/core package
+      - Externalize entire @shipit-ai/core package
       - Keep the globalThis bridge pattern
       - Custom Express server to bypass bundling
     rationale: >
       Externalizing only the problematic leaf packages keeps domain types and pure TS code
       bundleable/tree-shakeable while solving the native module and decorator metadata issues.
-      Externalizing all of @shepai/core would break client components importing domain types.
+      Externalizing all of @shipit-ai/core would break client components importing domain types.
 
   - title: Container initialization for Next.js
     chosen: instrumentation.ts with idempotent initializeContainer()
@@ -86,13 +86,13 @@ content: |
   **Options considered:**
 
   1. **Externalize leaf packages only** — add `tsyringe`, `reflect-metadata`, `better-sqlite3` to `serverExternalPackages`
-  2. **Externalize entire @shepai/core** — simpler but prevents bundling/tree-shaking of domain types
+  2. **Externalize entire @shipit-ai/core** — simpler but prevents bundling/tree-shaking of domain types
   3. **Keep the globalThis bridge** — current approach, works but is a maintenance burden
   4. **Custom Express server** — bypass bundling entirely, but loses Turbopack dev speed
 
   **Decision:** Externalize leaf packages only
 
-  **Rationale:** Only the problematic native/decorator packages are excluded from bundling. Pure TypeScript code from @shepai/core is still bundled normally, keeping domain type imports working for both server and client components.
+  **Rationale:** Only the problematic native/decorator packages are excluded from bundling. Pure TypeScript code from @shipit-ai/core is still bundled normally, keeping domain type imports working for both server and client components.
 
   ### Container Initialization
 
@@ -155,7 +155,7 @@ content: |
   | next build with native modules | Medium | Test early; serverExternalPackages skips bundling |
   | Double container initialization | Low | Idempotency guard in initializeContainer() |
   | SWC decorator compilation | Low | Irrelevant — externalized packages bypass SWC |
-  | Client components importing @shepai/core types | Low | Only leaf packages externalized, domain types still bundleable |
+  | Client components importing @shipit-ai/core types | Low | Only leaf packages externalized, domain types still bundleable |
 
   ## Existing Patterns to Preserve
 

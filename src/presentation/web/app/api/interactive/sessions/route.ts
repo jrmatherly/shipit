@@ -9,8 +9,8 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
-import type { StartInteractiveSessionUseCase } from '@shepai/core/application/use-cases/interactive/start-interactive-session.use-case';
-import { ConcurrentSessionLimitError } from '@shepai/core/domain/errors/concurrent-session-limit.error';
+import type { StartInteractiveSessionUseCase } from '@shipit-ai/core/application/use-cases/interactive/start-interactive-session.use-case';
+import { ConcurrentSessionLimitError } from '@shipit-ai/core/domain/errors/concurrent-session-limit.error';
 
 export const dynamic = 'force-dynamic';
 

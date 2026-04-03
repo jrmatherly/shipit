@@ -1,6 +1,6 @@
 # TUI Architecture
 
-Architecture patterns for the Shep AI terminal UI layer.
+Architecture patterns for the Shipit AI terminal UI layer.
 
 ## Design Principles
 
@@ -78,7 +78,7 @@ export const agentSelectConfig = {
 Custom Inquirer theme integrates with the CLI design system colors:
 
 ```typescript
-// src/presentation/tui/themes/shep.theme.ts
+// src/presentation/tui/themes/shipit-ai.theme.ts
 import { colors } from '@/presentation/cli/ui';
 
 export const shepTheme = {
@@ -114,7 +114,7 @@ src/presentation/tui/
 │   ├── prd-review-question.prompt.ts
 │   └── prd-review-summary.prompt.ts
 └── themes/                     # Custom Inquirer themes
-    └── shep.theme.ts
+    └── shipit-ai.theme.ts
 ```
 
 ## Testing Strategy

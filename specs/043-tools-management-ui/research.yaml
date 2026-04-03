@@ -148,7 +148,7 @@ decisions:
         stateless use cases.
     rationale: >
       The container.ts file has an explicit comment: "String-token aliases for web routes
-      (Turbopack can't resolve .js→.ts imports inside @shepai/core, so routes use string tokens
+      (Turbopack can't resolve .js→.ts imports inside @shipit-ai/core, so routes use string tokens
       instead of class refs)." Every use case exposed to web routes follows this exact two-step
       pattern. LaunchIdeUseCase is the direct precedent: registerSingleton(LaunchIdeUseCase) then
       register('LaunchIdeUseCase', { useFactory: (c) => c.resolve(LaunchIdeUseCase) }).
@@ -300,7 +300,7 @@ openQuestions:
         selected: false
       - option: 'Export from packages/core index barrel'
         description: >
-          Add ToolItem and ListToolsResult to the @shepai/core package public index.ts export.
+          Add ToolItem and ListToolsResult to the @shipit-ai/core package public index.ts export.
           Makes types available to the presentation layer without direct imports into core internals.
           But the barrel export is thin by design (only generated types) and adding application DTOs
           there conflates layers unnecessarily.

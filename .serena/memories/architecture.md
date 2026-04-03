@@ -32,4 +32,4 @@ All core logic lives in `packages/core/src/`:
 - Use cases are the API boundary between presentation and core
 - No direct infrastructure imports in application or presentation
 - All agent interactions go through `IAgentExecutorProvider` (no hardcoded agent types)
-- Path aliases: `@shepai/core`, `@/application/*`, `@/infrastructure/*`, `@/domain/*`, `@/*`, `@cli/*`
+- Path aliases: `@shipit-ai/core`, `@/application/*`, `@/infrastructure/*`, `@/domain/*`, `@/*`, `@cli/*`

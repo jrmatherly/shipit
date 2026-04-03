@@ -278,7 +278,7 @@ tasks:
     dependencies:
       - task-7
     acceptanceCriteria:
-      - 'No import from @shepai/core/infrastructure/services/ide-launchers/ in route.ts'
+      - 'No import from @shipit-ai/core/infrastructure/services/ide-launchers/ in route.ts'
       - 'resolve<LaunchIdeUseCase>("LaunchIdeUseCase") used to get use case instance'
       - 'HTTP response shape unchanged (success: true/error field, same status codes)'
       - 'Existing web route test updated to mock LaunchIdeUseCase'

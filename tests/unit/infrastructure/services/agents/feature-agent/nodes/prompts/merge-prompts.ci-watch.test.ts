@@ -76,8 +76,8 @@ describe('buildCiWatchPrompt', () => {
   it('does not contain repo-specific references', () => {
     const prompt = buildCiWatchPrompt('feat/test');
 
-    expect(prompt).not.toContain('shep-ai');
-    expect(prompt).not.toContain('shep');
+    expect(prompt).not.toContain('jrmatherly');
+    expect(prompt).not.toContain('shipit-ai');
     expect(prompt).not.toMatch(/our repo|this repo/i);
   });
 });

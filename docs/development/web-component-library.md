@@ -2,11 +2,11 @@
 
 > **See also:** [docs/ui/](../ui/) for comprehensive UI documentation including [architecture](../ui/architecture.md), [design system](../ui/design-system.md), and [component catalog](../ui/components.md).
 
-This document describes the web UI component library for Shep AI CLI, built with Next.js 16, React 19, Tailwind CSS v4, and shadcn/ui.
+This document describes the web UI component library for Shipit AI CLI, built with Next.js 16, React 19, Tailwind CSS v4, and shadcn/ui.
 
 ## Overview
 
-The web component library provides a consistent design system for the Shep AI web interface. It uses:
+The web component library provides a consistent design system for the Shipit AI web interface. It uses:
 
 - **Next.js 16** with App Router
 - **React 19** for the UI framework

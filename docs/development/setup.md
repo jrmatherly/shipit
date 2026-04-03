@@ -1,6 +1,6 @@
 # Development Setup
 
-Complete guide to setting up a development environment for Shep AI CLI.
+Complete guide to setting up a development environment for Shipit AI CLI.
 
 ## Prerequisites
 
@@ -28,7 +28,7 @@ Install pnpm: `npm install -g pnpm`
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/shep-ai/shep.git
+git clone https://github.com/jrmatherly/shipit.git
 cd cli
 ```
 
@@ -174,18 +174,18 @@ pnpm link --global
 shep --help
 
 # Unlink when done
-pnpm unlink --global @shepai/cli
+pnpm unlink --global @shipit-ai/cli
 ```
 
 ### Database Development
 
-Development database location: `~/.shep/repos/...`
+Development database location: `~/.shipit-ai/repos/...`
 
 Database migrations run automatically via the `user_version` pragma when the CLI bootstraps. To inspect the database manually:
 
 ```bash
 # Using sqlite3 CLI
-sqlite3 ~/.shep/repos/<encoded-path>/data
+sqlite3 ~/.shipit-ai/repos/<encoded-path>/data
 
 # Common queries
 .tables
@@ -269,7 +269,7 @@ NEXT_PUBLIC_DEBUG=1
 
 ```bash
 # Using sqlite3 CLI
-sqlite3 ~/.shep/repos/<encoded-path>/data
+sqlite3 ~/.shipit-ai/repos/<encoded-path>/data
 
 # Common queries
 .tables

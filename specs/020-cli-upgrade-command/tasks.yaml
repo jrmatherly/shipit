@@ -56,7 +56,7 @@ tasks:
       - task-1
     acceptanceCriteria:
       - 'When latest version is newer, prints "Upgrading from vX to vY" message'
-      - 'Spawns npm i -g @shepai/cli@latest with stdio inherit'
+      - 'Spawns npm i -g @shipit-ai/cli@latest with stdio inherit'
       - 'On npm exit code 0, prints success message'
       - 'process.exitCode remains unset (0)'
     tdd:

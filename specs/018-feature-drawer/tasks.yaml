@@ -28,7 +28,7 @@ tasks:
     phaseId: phase-1
     title: 'Install vaul dependency'
     description: >
-      Add vaul as a dependency to @shepai/web package.json and install it. Verify the installed
+      Add vaul as a dependency to @shipit-ai/web package.json and install it. Verify the installed
       version is compatible with React 19 by checking peer dependencies. Run pnpm install to
       update the lockfile.
     state: Done

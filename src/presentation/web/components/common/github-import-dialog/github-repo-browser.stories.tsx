@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
 import { GitHubRepoBrowser } from './github-repo-browser';
-import type { GitHubRepo } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
-import type { GitHubOrganization } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
+import type { GitHubRepo } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
+import type { GitHubOrganization } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
 
 const mockRepos: GitHubRepo[] = [
   {

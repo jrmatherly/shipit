@@ -1,5 +1,5 @@
 import { resolve } from '@/lib/server-container';
-import type { InstallToolUseCase } from '@shepai/core/application/use-cases/tools/install-tool.use-case';
+import type { InstallToolUseCase } from '@shipit-ai/core/application/use-cases/tools/install-tool.use-case';
 
 // Force dynamic — SSE streams must never be statically optimized or cached
 export const dynamic = 'force-dynamic';

@@ -2,10 +2,10 @@
 
 import { revalidatePath } from 'next/cache';
 import { resolve } from '@/lib/server-container';
-import type { LoadSettingsUseCase } from '@shepai/core/application/use-cases/settings/load-settings.use-case';
-import type { UpdateSettingsUseCase } from '@shepai/core/application/use-cases/settings/update-settings.use-case';
-import { updateSettings as updateSettingsSingleton } from '@shepai/core/infrastructure/services/settings.service';
-import type { Settings } from '@shepai/core/domain/generated/output';
+import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
+import type { UpdateSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/update-settings.use-case';
+import { updateSettings as updateSettingsSingleton } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { Settings } from '@shipit-ai/core/domain/generated/output';
 
 type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];

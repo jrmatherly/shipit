@@ -1,7 +1,7 @@
 /**
  * Custom Scalar Types
  *
- * Defines custom scalar types used throughout the Shep AI domain models.
+ * Defines custom scalar types used throughout the Shipit AI domain models.
  * Scalars provide type-safe aliases for primitive types with semantic meaning.
  *
  * These scalar types serve as the foundational building blocks for all domain

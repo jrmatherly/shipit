@@ -30,7 +30,7 @@ import {
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { SidebarNavItem } from '@/components/common/sidebar-nav-item';
 import { SidebarCollapseToggle } from '@/components/common/sidebar-collapse-toggle';
-import { ShepLogo } from '@/components/common/shep-logo';
+import { ShipitAiLogo } from '@/components/common/shipit-ai-logo';
 import { VersionBadge } from '@/components/common/version-badge';
 import { FeatureListItem } from '@/components/common/feature-list-item';
 import { useSoundEnabled } from '@/hooks/use-sound-enabled';
@@ -131,7 +131,7 @@ export function AppSidebar({
                   ].join(' ')}
                   aria-hidden={!expandedVisible}
                 >
-                  <ShepLogo
+                  <ShipitAiLogo
                     className="shrink-0"
                     size={20}
                     variant={versionData.isDev ? 'dev' : 'default'}

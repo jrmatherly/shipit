@@ -13,7 +13,7 @@
  */
 
 import { resolve } from '@/lib/server-container';
-import type { IFeatureRepository } from '@shepai/core/application/ports/output/repositories/feature-repository.interface';
+import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 import { readFile, stat } from 'node:fs/promises';
@@ -66,7 +66,7 @@ export async function GET(request: Request): Promise<Response> {
       return sseError(`Feature "${feature.name}" has no agent run`);
     }
 
-    const logPath = join(homedir(), '.shep', 'logs', `worker-${feature.agentRunId}.log`);
+    const logPath = join(homedir(), '.shipit-ai', 'logs', `worker-${feature.agentRunId}.log`);
 
     const stream = new ReadableStream<Uint8Array>({
       start(controller) {

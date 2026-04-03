@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.AcceptanceCriteria
+ * @module ShipitAI.Domain.Entities.AcceptanceCriteria
  *
  * Defines the AcceptanceCriteria entity for validating completion of action items.
  * Acceptance criteria are specific, testable conditions that must be satisfied

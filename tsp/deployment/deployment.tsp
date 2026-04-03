@@ -1,5 +1,5 @@
 /**
- * @module Shep.Deployment.Deployment
+ * @module ShipitAI.Deployment.Deployment
  *
  * Defines the Deployment entity representing a running deployment instance.
  *

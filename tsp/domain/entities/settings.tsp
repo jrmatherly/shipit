@@ -1,14 +1,14 @@
 /**
- * @module Shep.Domain.Entities.Settings
+ * @module ShipitAI.Domain.Entities.Settings
  *
- * Defines the global Settings entity for the Shep AI platform. Settings is a
+ * Defines the global Settings entity for the Shipit AI platform. Settings is a
  * singleton entity that stores user preferences, model configuration, and
  * system parameters.
  *
  * ## Singleton Pattern
  *
  * The Settings entity follows a singleton pattern - only one instance exists
- * per Shep installation. This is enforced at the database level with a
+ * per Shipit AI installation. This is enforced at the database level with a
  * unique constraint on a sentinel value.
  *
  * ## Settings Structure
@@ -42,7 +42,7 @@ import "../../common/enums/terminal.tsp";
 /**
  * Model Configuration
  *
- * Specifies the default AI model to use for all agents in the Shep SDLC
+ * Specifies the default AI model to use for all agents in the Shipit AI SDLC
  * workflow. The single `default` field replaces the previous per-phase fields
  * (analyze, requirements, plan, implement), simplifying configuration.
  *
@@ -109,7 +109,7 @@ model UserProfile {
 
   /**
    * Preferred UI language for internationalization.
-   * Controls which language Shep uses for all user-facing strings
+   * Controls which language Shipit AI uses for all user-facing strings
    * across CLI, TUI, and Web UI. Defaults to English.
    */
   @doc("Preferred UI language (default: English)")
@@ -120,11 +120,11 @@ model UserProfile {
  * Environment Configuration
  *
  * Specifies user preferences for development tooling and shell environment.
- * These settings affect how Shep opens files and runs commands.
+ * These settings affect how Shipit AI opens files and runs commands.
  *
  * ## Editor Integration
  *
- * The defaultEditor setting controls which editor opens when Shep
+ * The defaultEditor setting controls which editor opens when Shipit AI
  * needs to show code or allow manual edits.
  *
  * ## Shell Preference
@@ -152,7 +152,7 @@ model EnvironmentConfig {
 
   /**
    * Preferred terminal emulator.
-   * Controls which terminal application opens when Shep launches
+   * Controls which terminal application opens when Shipit AI launches
    * shell sessions (e.g., from the web UI "Open Terminal" button).
    * "system" uses the OS default (Terminal.app, x-terminal-emulator, PowerShell).
    */
@@ -166,11 +166,11 @@ model EnvironmentConfig {
 /**
  * System Configuration
  *
- * Controls system-level behavior of the Shep CLI.
+ * Controls system-level behavior of the Shipit AI CLI.
  *
  * ## Auto-Update
  *
- * When enabled, Shep checks for updates on startup and prompts
+ * When enabled, Shipit AI checks for updates on startup and prompts
  * the user to upgrade when a new version is available.
  *
  * ## Log Level
@@ -201,7 +201,7 @@ model SystemConfig {
 /**
  * Agent Configuration
  *
- * Specifies which AI coding agent tool Shep uses for all LLM-powered
+ * Specifies which AI coding agent tool Shipit AI uses for all LLM-powered
  * operations and how authentication is handled for that agent.
  *
  * ## Agent Selection
@@ -213,7 +213,7 @@ model SystemConfig {
  *
  * Each agent supports different auth methods:
  * - session: Use the agent's existing auth (e.g., Claude Code OAuth)
- * - token: Provide an API token stored in the Shep settings database
+ * - token: Provide an API token stored in the Shipit AI settings database
  */
 /**
  * Workflow Configuration
@@ -577,7 +577,7 @@ model InteractiveAgentConfig {
  * Controls the horizontal placement of the two floating action buttons (FABs)
  * in the web UI control center:
  * - Create FAB (+): opens the new-feature/add-repo speed-dial
- * - Chat FAB: opens the global Shep Chat popup
+ * - Chat FAB: opens the global Shipit AI Chat popup
  *
  * By default the Create FAB sits on the start side (left in LTR) and the
  * Chat FAB sits on the end side (right in LTR). When `swapPosition` is true
@@ -598,7 +598,7 @@ model FabLayoutConfig {
 /**
  * Settings Entity
  *
- * Global Shep platform settings stored as a singleton. This entity contains
+ * Global Shipit AI platform settings stored as a singleton. This entity contains
  * all user preferences, model configurations, and system parameters.
  *
  * ## Properties
@@ -655,7 +655,7 @@ model FabLayoutConfig {
  * - Updates modify the single row
  * - Initialization creates the row if it doesn't exist
  */
-@doc("Global Shep platform settings (singleton)")
+@doc("Global Shipit AI platform settings (singleton)")
 model Settings extends BaseEntity {
   /**
    * AI model configuration for different SDLC agents.
@@ -675,7 +675,7 @@ model Settings extends BaseEntity {
 
   /**
    * Environment and tooling preferences.
-   * Controls which editor and shell Shep uses.
+   * Controls which editor and shell Shipit AI uses.
    */
   @doc("Environment and tooling preferences")
   environment: EnvironmentConfig;
@@ -689,7 +689,7 @@ model Settings extends BaseEntity {
 
   /**
    * AI coding agent configuration.
-   * Controls which agent tool Shep uses and how it authenticates.
+   * Controls which agent tool Shipit AI uses and how it authenticates.
    */
   @doc("AI coding agent selection and authentication")
   agent: AgentConfig;

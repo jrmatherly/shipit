@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.Artifact
+ * @module ShipitAI.Domain.Entities.Artifact
  *
  * Defines the Artifact entity representing generated documents and files
  * attached to Features. Artifacts capture the documentation, specifications,
@@ -222,7 +222,7 @@ model Artifact extends BaseEntity {
   /**
    * File system path where the artifact is stored.
    *
-   * Relative to the repository's Shep data directory. The path follows
+   * Relative to the repository's Shipit AI data directory. The path follows
    * a structured convention based on artifact category:
    *
    * - PRD: `docs/prd/<name>.md`

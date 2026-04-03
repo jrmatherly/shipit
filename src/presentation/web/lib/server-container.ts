@@ -3,12 +3,12 @@
  *
  * Provides a `resolve()` helper for server components and API routes to
  * obtain DI-managed instances. The tsyringe container is placed on globalThis
- * by the CLI bootstrap (`shep ui`) or the dev-server (`pnpm dev:web`).
+ * by the CLI bootstrap (`shipit-ai ui`) or the dev-server (`pnpm dev:web`).
  */
 
 import type { DependencyContainer, InjectionToken } from 'tsyringe';
 
-const CONTAINER_KEY = '__shepContainer';
+const CONTAINER_KEY = '__shipitAiContainer';
 
 /**
  * Resolve a dependency from the DI container.
@@ -16,7 +16,7 @@ const CONTAINER_KEY = '__shepContainer';
  * Usage in server components / API routes:
  * ```ts
  * import { resolve } from '@/lib/server-container';
- * import { ListFeaturesUseCase } from '@shepai/core/application/use-cases/features/list-features.use-case';
+ * import { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
  *
  * const features = await resolve(ListFeaturesUseCase).execute();
  * ```

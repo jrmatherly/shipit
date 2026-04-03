@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { createLogger } from '@/lib/logger';
-import type { DeploymentState } from '@shepai/core/domain/generated/output';
+import type { DeploymentState } from '@shipit-ai/core/domain/generated/output';
 import { deployFeature } from '@/app/actions/deploy-feature';
 import { deployRepository } from '@/app/actions/deploy-repository';
 import { stopDeployment } from '@/app/actions/stop-deployment';

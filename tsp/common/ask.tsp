@@ -2,7 +2,7 @@
  * Askable Pattern - Conversational AI Interface
  *
  * Defines the foundational request/response models and interface for
- * conversational AI interactions within the Shep AI platform. The Askable
+ * conversational AI interactions within the Shipit AI platform. The Askable
  * pattern enables domain entities to participate in natural language
  * conversations with users and AI agents.
  *

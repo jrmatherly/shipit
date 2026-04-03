@@ -1,7 +1,7 @@
 /**
- * @module Shep.Domain.ValueObjects.Gantt
+ * @module ShipitAI.Domain.ValueObjects.Gantt
  *
- * Defines value objects for Gantt chart visualization in the Shep AI platform.
+ * Defines value objects for Gantt chart visualization in the Shipit AI platform.
  * These models represent scheduling and progress data for work plan visualization.
  *
  * Gantt charts provide a visual timeline of tasks, their durations, dependencies,

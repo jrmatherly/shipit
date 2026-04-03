@@ -96,7 +96,7 @@ import "../common/enums/log-level.tsp";
 
 /**
  * Global application settings (singleton).
- * Stored at ~/.shep/data as single SQLite record.
+ * Stored at ~/.shipit-ai/data as single SQLite record.
  */
 model Settings extends BaseEntity {
   /** Singleton ID (always 'singleton') */
@@ -249,7 +249,7 @@ import "./agents/analyze.tsp";
 import "./agents/requirements.tsp";
 
 @service({
-  title: "Shep AI CLI - Domain Models",
+  title: "Shipit AI CLI - Domain Models",
 })
 namespace ShepAI;
 ```

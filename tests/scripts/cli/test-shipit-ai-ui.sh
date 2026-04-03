@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Tests that shep works after npm pack + global install in a clean Docker container.
+# Tests that shipit-ai works after npm pack + global install in a clean Docker container.
 # Validates package structure, version command, and ui server startup.
 #
 # Requirements: Docker
@@ -11,7 +11,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$SCRIPT_DIR/_helpers.sh"
 source "$SCRIPT_DIR/_setup.sh"
 
-log_section "Test: shep ui (Docker packaged install)"
+log_section "Test: shipit-ai ui (Docker packaged install)"
 
 # --- Preconditions ---
 if ! docker_available; then
@@ -22,8 +22,8 @@ fi
 # --- Setup ---
 create_tarball
 
-IMAGE_TAG="shep-e2e-test:$$"
-CONTAINER_NAME="shep-e2e-$$"
+IMAGE_TAG="shipit-ai-e2e-test:$$"
+CONTAINER_NAME="shipit-ai-e2e-$$"
 cleanup_register "docker rm -f $CONTAINER_NAME 2>/dev/null || true"
 cleanup_register "docker rmi $IMAGE_TAG 2>/dev/null || true"
 
@@ -37,8 +37,8 @@ cp "$TARBALL_PATH" "$DOCKER_CTX/"
 docker build -q -t "$IMAGE_TAG" -f - "$DOCKER_CTX" <<'DOCKERFILE'
 FROM node:22-slim
 WORKDIR /app
-COPY shepai-cli-*.tgz /app/
-RUN npm install -g /app/shepai-cli-*.tgz 2>&1 | tail -3
+COPY shipit-ai-cli-*.tgz /app/
+RUN npm install -g /app/shipit-ai-cli-*.tgz 2>&1 | tail -3
 RUN mkdir -p /root/.shep
 DOCKERFILE
 
@@ -48,33 +48,33 @@ log_info "Image built: $IMAGE_TAG"
 log_section "Package structure"
 
 STRUCTURE=$(docker run --rm "$IMAGE_TAG" sh -c '
-  PKG=$(npm root -g)/@shepai/cli
+  PKG=$(npm root -g)/@shipit-ai/cli
   echo "HAS_DIST=$([ -d "$PKG/dist" ] && echo yes || echo no)"
   echo "HAS_WEB=$([ -d "$PKG/web" ] && echo yes || echo no)"
   echo "HAS_WEB_NEXT=$([ -d "$PKG/web/.next" ] && echo yes || echo no)"
-  echo "HAS_BIN=$(which shep >/dev/null 2>&1 && echo yes || echo no)"
+  echo "HAS_BIN=$(which shipit-ai >/dev/null 2>&1 && echo yes || echo no)"
 ')
 
 assert_contains "$STRUCTURE" "HAS_DIST=yes" "dist/ directory present"
 assert_contains "$STRUCTURE" "HAS_WEB=yes" "web/ directory present"
 assert_contains "$STRUCTURE" "HAS_WEB_NEXT=yes" "web/.next/ directory present"
-assert_contains "$STRUCTURE" "HAS_BIN=yes" "shep binary on PATH"
+assert_contains "$STRUCTURE" "HAS_BIN=yes" "shipit-ai binary on PATH"
 
-# --- Test 2: shep --version ---
-log_section "shep --version"
+# --- Test 2: shipit-ai --version ---
+log_section "shipit-ai --version"
 
 VERSION_OUTPUT=""
 VERSION_EXIT=0
-VERSION_OUTPUT=$(docker run --rm "$IMAGE_TAG" shep version 2>&1) || VERSION_EXIT=$?
+VERSION_OUTPUT=$(docker run --rm "$IMAGE_TAG" shipit-ai version 2>&1) || VERSION_EXIT=$?
 
-assert_exit_code "0" "$VERSION_EXIT" "shep version exits cleanly"
-assert_contains "$VERSION_OUTPUT" "@shepai/cli" "version output contains package name"
+assert_exit_code "0" "$VERSION_EXIT" "shipit-ai version exits cleanly"
+assert_contains "$VERSION_OUTPUT" "@shipit-ai/cli" "version output contains package name"
 
-# --- Test 3: shep ui server startup ---
-log_section "shep ui server startup"
+# --- Test 3: shipit-ai ui server startup ---
+log_section "shipit-ai ui server startup"
 
 docker run -d --name "$CONTAINER_NAME" "$IMAGE_TAG" \
-  sh -c 'shep ui --port 4050 2>&1' >/dev/null
+  sh -c 'shipit-ai ui --port 4050 2>&1' >/dev/null
 
 # Poll container logs for "Server ready" or failure
 WAIT_SECONDS=120

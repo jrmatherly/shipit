@@ -1,8 +1,8 @@
 /**
- * @module Shep.Common.Enums.Terminal
+ * @module ShipitAI.Common.Enums.Terminal
  *
  * Defines the TerminalType enum for supported terminal emulator selections.
- * Controls which terminal Shep uses to open shell sessions.
+ * Controls which terminal Shipit AI uses to open shell sessions.
  */
 /**
  * Supported terminal emulator types.

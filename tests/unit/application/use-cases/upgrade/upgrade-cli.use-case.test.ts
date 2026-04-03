@@ -34,7 +34,7 @@ function createVersionService(version = '1.20.0'): IVersionService {
   return {
     getVersion: () => ({
       version,
-      name: '@shepai/cli',
+      name: '@shipit-ai/cli',
       description: 'Autonomous AI Native SDLC Platform',
     }),
   };
@@ -154,7 +154,7 @@ describe('UpgradeCliUseCase', () => {
       await promise;
 
       expect(processes[1].cmd).toBe('npm');
-      expect(processes[1].args).toEqual(['i', '-g', '@shepai/cli@latest']);
+      expect(processes[1].args).toEqual(['i', '-g', '@shipit-ai/cli@latest']);
     });
   });
 
@@ -241,7 +241,7 @@ describe('UpgradeCliUseCase', () => {
 
       process.execPath = '/usr/local/bin/node';
       process.execArgv = [];
-      process.argv = ['node', '/usr/local/bin/shep'];
+      process.argv = ['node', '/usr/local/bin/shipit-ai'];
 
       exitSpy = vi.spyOn(process, 'exit').mockImplementation(() => undefined as never);
     });
@@ -265,7 +265,7 @@ describe('UpgradeCliUseCase', () => {
 
       expect(mockSpawn).toHaveBeenCalledWith(
         '/usr/local/bin/node',
-        ['/usr/local/bin/shep', '_serve', '--port', '4050'],
+        ['/usr/local/bin/shipit-ai', '_serve', '--port', '4050'],
         expect.objectContaining({
           detached: true,
           stdio: 'ignore',
@@ -280,7 +280,7 @@ describe('UpgradeCliUseCase', () => {
 
       expect(mockSpawn).toHaveBeenCalledWith(
         '/usr/local/bin/node',
-        ['/usr/local/bin/shep', '_serve'],
+        ['/usr/local/bin/shipit-ai', '_serve'],
         expect.objectContaining({
           detached: true,
           stdio: 'ignore',

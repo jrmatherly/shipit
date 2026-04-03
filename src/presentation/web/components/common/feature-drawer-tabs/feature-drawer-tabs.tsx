@@ -21,7 +21,7 @@ import {
   Zap,
   Layers,
 } from 'lucide-react';
-import type { NotificationEvent } from '@shepai/core/domain/generated/output';
+import type { NotificationEvent } from '@shipit-ai/core/domain/generated/output';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { getFeaturePhaseTimings } from '@/app/actions/get-feature-phase-timings';

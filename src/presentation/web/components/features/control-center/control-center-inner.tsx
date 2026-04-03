@@ -239,9 +239,9 @@ export function ControlCenterInner({ initialNodes, initialEdges }: ControlCenter
       const path = (e as CustomEvent<{ path: string }>).detail.path;
       addRepoAndFocus(path);
     };
-    window.addEventListener('shep:add-repository', handler);
+    window.addEventListener('shipit-ai:add-repository', handler);
     return () => {
-      window.removeEventListener('shep:add-repository', handler);
+      window.removeEventListener('shipit-ai:add-repository', handler);
       if (drawerTimerRef.current != null) {
         clearTimeout(drawerTimerRef.current);
       }
@@ -294,8 +294,8 @@ export function ControlCenterInner({ initialNodes, initialEdges }: ControlCenter
         repositoryPath: detail.repositoryPath,
       });
     };
-    window.addEventListener('shep:feature-created', handler);
-    return () => window.removeEventListener('shep:feature-created', handler);
+    window.addEventListener('shipit-ai:feature-created', handler);
+    return () => window.removeEventListener('shipit-ai:feature-created', handler);
   }, [nodes, createFeatureNode]);
 
   // Listen for delete requests from the feature drawer (fires when the user
@@ -313,8 +313,8 @@ export function ControlCenterInner({ initialNodes, initialEdges }: ControlCenter
       ).detail;
       handleDeleteFeature(featureId, cleanup, cascadeDelete, closePr);
     };
-    window.addEventListener('shep:feature-delete-requested', handler);
-    return () => window.removeEventListener('shep:feature-delete-requested', handler);
+    window.addEventListener('shipit-ai:feature-delete-requested', handler);
+    return () => window.removeEventListener('shipit-ai:feature-delete-requested', handler);
   }, [handleDeleteFeature]);
 
   // Listen for archive requests from the feature drawer.
@@ -323,8 +323,8 @@ export function ControlCenterInner({ initialNodes, initialEdges }: ControlCenter
       const { featureId } = (e as CustomEvent<{ featureId: string }>).detail;
       handleArchiveFeature(featureId);
     };
-    window.addEventListener('shep:feature-archive-requested', handler);
-    return () => window.removeEventListener('shep:feature-archive-requested', handler);
+    window.addEventListener('shipit-ai:feature-archive-requested', handler);
+    return () => window.removeEventListener('shipit-ai:feature-archive-requested', handler);
   }, [handleArchiveFeature]);
 
   // Listen for unarchive requests from the feature drawer.
@@ -333,8 +333,8 @@ export function ControlCenterInner({ initialNodes, initialEdges }: ControlCenter
       const { featureId } = (e as CustomEvent<{ featureId: string }>).detail;
       handleUnarchiveFeature(featureId);
     };
-    window.addEventListener('shep:feature-unarchive-requested', handler);
-    return () => window.removeEventListener('shep:feature-unarchive-requested', handler);
+    window.addEventListener('shipit-ai:feature-unarchive-requested', handler);
+    return () => window.removeEventListener('shipit-ai:feature-unarchive-requested', handler);
   }, [handleUnarchiveFeature]);
 
   // Wire callbacks into derived node data (via ref — no re-render).
@@ -423,7 +423,7 @@ export function ControlCenterInner({ initialNodes, initialEdges }: ControlCenter
   }, [nodes, isCreateDrawerOpen]);
 
   const handlePickFolder = useCallback(() => {
-    window.dispatchEvent(new CustomEvent('shep:pick-folder'));
+    window.dispatchEvent(new CustomEvent('shipit-ai:pick-folder'));
   }, []);
 
   const featureFlags = useFeatureFlags();
@@ -463,7 +463,7 @@ export function ControlCenterInner({ initialNodes, initialEdges }: ControlCenter
         label: t('fab.fromGithub'),
         icon: <Github className="h-4 w-4" />,
         onClick: () => {
-          window.dispatchEvent(new CustomEvent('shep:open-github-import'));
+          window.dispatchEvent(new CustomEvent('shipit-ai:open-github-import'));
         },
       });
     }

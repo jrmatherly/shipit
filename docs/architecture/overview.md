@@ -1,6 +1,6 @@
 # System Architecture Overview
 
-High-level architecture of the Shep AI CLI platform.
+High-level architecture of the Shipit AI CLI platform.
 
 ## System Context
 
@@ -17,7 +17,7 @@ flowchart LR
         TUI[TUI]
     end
 
-    subgraph Core["Shep AI Core"]
+    subgraph Core["Shipit AI Core"]
         direction TB
         App["<b>Application</b><br/>Use Cases and Ports"]
         Dom["<b>Domain</b><br/>Feature, Task, Artifact"]
@@ -26,7 +26,7 @@ flowchart LR
 
     subgraph Ext["External"]
         direction TB
-        FS[("~/.shep/")]
+        FS[("~/.shipit-ai/")]
         DB[("SQLite")]
         AI[("AI Agents")]
     end
@@ -129,7 +129,7 @@ Started --> Analyze --> Requirements --> Research --> Planning --> Implementatio
 ## File System Structure
 
 ```
-~/.shep/
+~/.shipit-ai/
 +-- data                           # SQLite database (global settings)
 +-- repos/
     +-- <base64-encoded-repo-path>/

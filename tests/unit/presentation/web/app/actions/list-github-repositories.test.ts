@@ -10,9 +10,8 @@ vi.mock('@/lib/server-container', () => ({
 
 const { listGitHubRepositories } = await import('@/app/actions/list-github-repositories');
 
-const { GitHubAuthError } = await import(
-  '@shepai/core/application/ports/output/services/github-repository-service.interface'
-);
+const { GitHubAuthError } =
+  await import('@shipit-ai/core/application/ports/output/services/github-repository-service.interface');
 
 describe('listGitHubRepositories', () => {
   beforeEach(() => {

@@ -9,7 +9,7 @@
  * - Metadata generation delegated to MetadataGenerator service
  * - Slug uniqueness delegated to SlugResolver service
  * - Full user input is preserved as-is in spec.yaml
- * - A git worktree is created at ~/.shep/repos/HASH/wt/SLUG/
+ * - A git worktree is created at ~/.shipit-ai/repos/HASH/wt/SLUG/
  * - Spec YAML files are scaffolded at WORKTREE/specs/NNN-SLUG/
  * - Feature agent is spawned with the spec dir path
  * - specPath is persisted on the Feature record
@@ -324,7 +324,7 @@ export class CreateFeatureUseCase {
       // Skip validation when using mock executor (E2E tests, CI without real agents).
       const settings = getSettings();
       const effectiveAgentType = (input.agentType as AgentType) ?? settings.agent.type;
-      const isMockExecutor = process.env.SHEP_MOCK_EXECUTOR === '1';
+      const isMockExecutor = process.env.SHIPIT_AI_MOCK_EXECUTOR === '1';
       const validation = isMockExecutor
         ? { available: true as const }
         : await this.agentValidator.isAvailable(effectiveAgentType);

@@ -15,21 +15,21 @@ const sampleState: DaemonState = {
 
 describe('DaemonPidService', () => {
   let tmpDir: string;
-  let originalShepHome: string | undefined;
+  let originalShipitAiHome: string | undefined;
   let service: DaemonPidService;
 
   beforeEach(async () => {
-    tmpDir = await mkdtemp(join(tmpdir(), 'shep-daemon-test-'));
-    originalShepHome = process.env.SHEP_HOME;
-    process.env.SHEP_HOME = tmpDir;
+    tmpDir = await mkdtemp(join(tmpdir(), 'shipit-ai-daemon-test-'));
+    originalShipitAiHome = process.env.SHIPIT_AI_HOME;
+    process.env.SHIPIT_AI_HOME = tmpDir;
     service = new DaemonPidService();
   });
 
   afterEach(async () => {
-    if (originalShepHome === undefined) {
-      delete process.env.SHEP_HOME;
+    if (originalShipitAiHome === undefined) {
+      delete process.env.SHIPIT_AI_HOME;
     } else {
-      process.env.SHEP_HOME = originalShepHome;
+      process.env.SHIPIT_AI_HOME = originalShipitAiHome;
     }
     await rm(tmpDir, { recursive: true, force: true });
     vi.restoreAllMocks();

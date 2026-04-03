@@ -101,7 +101,7 @@ function mergeCommitResult(): string {
   const hash = randomCommitHash();
   return (
     `[feat/dev-branch ${hash}] feat: dev implementation\n` +
-    `https://github.com/shep-ai/shep/pull/${pr}\nPull request #${pr} created successfully.`
+    `https://github.com/jrmatherly/shipit/pull/${pr}\nPull request #${pr} created successfully.`
   );
 }
 

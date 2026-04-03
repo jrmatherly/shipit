@@ -1,7 +1,7 @@
 // @vitest-environment node
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createDefaultSettings } from '@shepai/core/domain/factories/settings-defaults.factory';
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
 
 const mockLoadExecute = vi.fn();
 const mockUpdateExecute = vi.fn();
@@ -13,15 +13,15 @@ vi.mock('@/lib/server-container', () => ({
   resolve: (...args: unknown[]) => mockResolve(...args),
 }));
 
-vi.mock('@shepai/core/application/use-cases/settings/load-settings.use-case', () => ({
+vi.mock('@shipit-ai/core/application/use-cases/settings/load-settings.use-case', () => ({
   LoadSettingsUseCase: class LoadSettingsUseCase {},
 }));
 
-vi.mock('@shepai/core/application/use-cases/settings/update-settings.use-case', () => ({
+vi.mock('@shipit-ai/core/application/use-cases/settings/update-settings.use-case', () => ({
   UpdateSettingsUseCase: class UpdateSettingsUseCase {},
 }));
 
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   updateSettings: (...args: unknown[]) => mockUpdateSettingsSingleton(...args),
 }));
 
@@ -29,9 +29,8 @@ vi.mock('next/cache', () => ({
   revalidatePath: (...args: unknown[]) => mockRevalidatePath(...args),
 }));
 
-const { updateSettingsAction } = await import(
-  '../../../../../src/presentation/web/app/actions/update-settings.js'
-);
+const { updateSettingsAction } =
+  await import('../../../../../src/presentation/web/app/actions/update-settings.js');
 
 describe('updateSettingsAction server action', () => {
   const defaults = createDefaultSettings();

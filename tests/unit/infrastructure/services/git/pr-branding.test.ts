@@ -2,21 +2,21 @@ import { describe, it, expect } from 'vitest';
 import { PR_BRANDING, applyPrBranding } from '@/infrastructure/services/git/pr-branding.js';
 
 describe('PR_BRANDING', () => {
-  it('should contain the Shep branding text', () => {
-    expect(PR_BRANDING).toContain('Shep');
-    expect(PR_BRANDING).toContain('https://github.com/shep-ai/shep');
+  it('should contain the Shipit AI branding text', () => {
+    expect(PR_BRANDING).toContain('Shipit AI');
+    expect(PR_BRANDING).toContain('https://github.com/jrmatherly/shipit');
   });
 });
 
 describe('applyPrBranding', () => {
-  it('should append Shep branding to a plain body', () => {
+  it('should append Shipit AI branding to a plain body', () => {
     const result = applyPrBranding('## Summary\n\nSome changes');
     expect(result).toContain('## Summary');
     expect(result).toContain('Some changes');
     expect(result.endsWith(PR_BRANDING)).toBe(true);
   });
 
-  it('should strip Claude Code branding and add Shep branding', () => {
+  it('should strip Claude Code branding and add Shipit AI branding', () => {
     const body =
       '## Summary\n\nSome changes\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)';
     const result = applyPrBranding(body);

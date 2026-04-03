@@ -1,4 +1,4 @@
-import type { FileAttachment } from '@shepai/core/infrastructure/services/file-dialog.service';
+import type { FileAttachment } from '@shipit-ai/core/infrastructure/services/file-dialog.service';
 
 /**
  * Opens a native OS file picker dialog via API route.

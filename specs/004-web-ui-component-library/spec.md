@@ -16,7 +16,7 @@ The web UI presentation layer (`src/presentation/web/`) doesn't exist yet. While
 - No reusable UI components for building web interfaces
 - No design system for consistent styling and theming
 - No component documentation via Storybook
-- No way to build web-based interfaces for the Shep AI platform
+- No way to build web-based interfaces for the Shipit AI platform
 
 This feature establishes the foundational component library using shadcn/ui (Radix primitives + Tailwind) with Storybook for documentation.
 

@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.ResearchArtifact
+ * @module ShipitAI.Domain.Entities.ResearchArtifact
  *
  * Defines the ResearchArtifact entity representing a technical research document.
  * This maps to the `research.yaml` file in the YAML-first spec system.

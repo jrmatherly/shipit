@@ -1,7 +1,7 @@
 /**
  * Show Settings Command
  *
- * Displays current Shep settings with multiple output format support.
+ * Displays current Shipit AI settings with multiple output format support.
  *
  * Usage:
  *   shep settings show                 # Display as table (default)
@@ -11,7 +11,7 @@
 
 import { Command, Option } from 'commander';
 import { OutputFormatter, type OutputFormat } from '../../ui/output.js';
-import { getShepDbPath } from '@/infrastructure/services/filesystem/shep-directory.service.js';
+import { getShipitAiDbPath } from '@/infrastructure/services/filesystem/shipit-ai-directory.service.js';
 import { getSettings } from '@/infrastructure/services/settings.service.js';
 import { statSync } from 'node:fs';
 import { messages } from '../../ui/index.js';
@@ -54,7 +54,7 @@ Examples:
 }
 
 function getDatabaseMeta() {
-  const dbPath = getShepDbPath();
+  const dbPath = getShipitAiDbPath();
   let size = 'unknown';
   try {
     const stats = statSync(dbPath);

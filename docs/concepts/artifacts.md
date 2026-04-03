@@ -280,7 +280,7 @@ Artifacts are stored in the Shep data directory:
 
 ```
 
-~/.shep/repos/<encoded-repo-path>/
+~/.shipit-ai/repos/<encoded-repo-path>/
 └── artifacts/
 └── <feature-id>/
 ├── prd.md

@@ -12,7 +12,7 @@ Replace the "Messages" tab in the feature drawer with a terminal-style "Log" tab
 ### 1. SSE Endpoint: `/api/feature-logs/route.ts`
 
 - Accepts `?featureId=X`
-- Resolves feature → gets `agentRunId` → reads `~/.shep/logs/worker-{agentRunId}.log`
+- Resolves feature → gets `agentRunId` → reads `~/.shipit-ai/logs/worker-{agentRunId}.log`
 - Streams existing content + watches for new lines via `fs.watch()`
 - Heartbeat every 30s
 - Modeled after existing `/api/deployment-logs/route.ts`

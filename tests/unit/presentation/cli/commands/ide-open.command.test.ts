@@ -3,7 +3,7 @@
 /**
  * IDE Open Command Unit Tests
  *
- * Tests for the `shep ide <feat-id>` command.
+ * Tests for the `shipit-ai ide <feat-id>` command.
  */
 
 import 'reflect-metadata';
@@ -94,7 +94,7 @@ describe('IDE Open Command', () => {
     mockLaunchIdeExecute = vi.fn().mockResolvedValue({
       ok: true,
       editorName: 'VS Code',
-      worktreePath: '/mock/.shep/repos/abc123/wt/feat-test-feature',
+      worktreePath: '/mock/.shipit-ai/repos/abc123/wt/feat-test-feature',
     });
 
     vi.mocked(container.resolve).mockImplementation((token: unknown) => {
@@ -155,7 +155,7 @@ describe('IDE Open Command', () => {
       mockLaunchIdeExecute.mockResolvedValue({
         ok: true,
         editorName: 'Cursor',
-        worktreePath: '/mock/.shep/repos/abc123/wt/feat-test-feature',
+        worktreePath: '/mock/.shipit-ai/repos/abc123/wt/feat-test-feature',
       });
 
       const cmd = createIdeOpenCommand();
@@ -174,7 +174,7 @@ describe('IDE Open Command', () => {
       mockLaunchIdeExecute.mockResolvedValue({
         ok: true,
         editorName: 'Antigravity',
-        worktreePath: '/mock/.shep/repos/abc123/wt/feat-test-feature',
+        worktreePath: '/mock/.shipit-ai/repos/abc123/wt/feat-test-feature',
       });
 
       const cmd = createIdeOpenCommand();
@@ -193,7 +193,7 @@ describe('IDE Open Command', () => {
       mockLaunchIdeExecute.mockResolvedValue({
         ok: true,
         editorName: 'Claude Code',
-        worktreePath: '/mock/.shep/repos/abc123/wt/feat-test-feature',
+        worktreePath: '/mock/.shipit-ai/repos/abc123/wt/feat-test-feature',
       });
 
       const cmd = createIdeOpenCommand();

@@ -2,11 +2,11 @@
 
 ## Summary
 
-Redirect daemon stdout/stderr to `~/.shep/daemon.log` via spawn stdio fd. Enhance `shep status` with environment info, agent versions, and `--logs`/`--follow` flags.
+Redirect daemon stdout/stderr to `~/.shipit-ai/daemon.log` via spawn stdio fd. Enhance `shep status` with environment info, agent versions, and `--logs`/`--follow` flags.
 
 ## Daemon Logging
 
-- Open `~/.shep/daemon.log` as writable fd before spawning child process
+- Open `~/.shipit-ai/daemon.log` as writable fd before spawning child process
 - Pass as stdout+stderr: `stdio: ['ignore', logFd, logFd]`
 - On start, rotate existing log to `daemon.log.old` (keep 1 backup)
 - All console output from daemon child lands in the file automatically
@@ -29,5 +29,5 @@ Add two new sections:
 
 1. `src/presentation/cli/commands/daemon/start-daemon.ts` — log fd, rotation, spawn stdio
 2. `src/presentation/cli/commands/status.command.ts` — --logs, --follow, env section, agent versions
-3. `packages/core/src/infrastructure/services/filesystem/shep-directory.service.ts` — `getDaemonLogPath()`
+3. `packages/core/src/infrastructure/services/filesystem/shipit-ai-directory.service.ts` — `getDaemonLogPath()`
 4. Directory service interface if needed

@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { IToolInstallerService } from '@shepai/core/application/ports/output/services/tool-installer.service';
+import type { IToolInstallerService } from '@shipit-ai/core/application/ports/output/services/tool-installer.service';
 
 export interface AvailableTerminal {
   id: string;

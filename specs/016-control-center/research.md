@@ -138,7 +138,7 @@ No security implications identified. This feature is purely presentational UI wi
 
 **Decision:** LEFT JOIN features with agent_runs
 
-**Rationale:** The feature-agent graph updates `agent_runs.status` as it progresses but does NOT update `feature.lifecycle` (stays at "Requirements"). Both tables live in `~/.shep/data`. A simple SQL JOIN provides real operational state without filesystem coupling. Maps: running→running, completed→done, failed→error, waiting_approval→action-required.
+**Rationale:** The feature-agent graph updates `agent_runs.status` as it progresses but does NOT update `feature.lifecycle` (stays at "Requirements"). Both tables live in `~/.shipit-ai/data`. A simple SQL JOIN provides real operational state without filesystem coupling. Maps: running→running, completed→done, failed→error, waiting_approval→action-required.
 
 **Key finding:** Agent graph nodes do NOT update `feature.lifecycle` in the DB. The `agent_runs.status` column is the real source of truth for operational state.
 

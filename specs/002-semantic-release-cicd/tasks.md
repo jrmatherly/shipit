@@ -81,7 +81,7 @@ After merging to main, verify:
 
 - [ ] GitHub Actions release job runs
 - [ ] Version bumped correctly (based on commits)
-- [ ] Package published to npm (`npm info @shepai/cli`)
+- [ ] Package published to npm (`npm info @shipit-ai/cli`)
 - [ ] GitHub Release created with changelog
 - [ ] CHANGELOG.md updated in repo
 - [ ] package.json version committed back

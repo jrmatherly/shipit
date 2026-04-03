@@ -68,11 +68,11 @@
 │  │  - migrations/001_create_settings_table.sql                 │   │
 │  │                                                             │   │
 │  │  src/infrastructure/services/filesystem/                    │   │
-│  │  - shep-directory.service.ts (~/.shep/ initialization)      │   │
+│  │  - shep-directory.service.ts (~/.shipit-ai/ initialization)      │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 │                              ↓                                      │
 │  ┌─────────────────────────────────────────────────────────────┐   │
-│  │  Data Store: ~/.shep/data (SQLite)                          │   │
+│  │  Data Store: ~/.shipit-ai/data (SQLite)                          │   │
 │  │  - settings table (singleton with UNIQUE constraint on id)  │   │
 │  └─────────────────────────────────────────────────────────────┘   │
 └─────────────────────────────────────────────────────────────────────┘
@@ -338,7 +338,7 @@ Build Pipeline Flow:
 1. **RED**: Write failing tests first
 
    - Create tests/e2e/cli/settings-initialization.test.ts
-     - Test: first run creates ~/.shep/ directory
+     - Test: first run creates ~/.shipit-ai/ directory
      - Test: first run creates database file
      - Test: first run initializes settings with defaults
      - Test: second run loads existing settings (doesn't re-initialize)
@@ -441,7 +441,7 @@ Build Pipeline Flow:
 | `src/application/use-cases/settings/update-settings.use-case.ts`                   | Update settings use case                   |
 | `src/application/use-cases/settings/index.ts`                                      | Barrel export for settings use cases       |
 | **Infrastructure Layer**                                                           |                                            |
-| `src/infrastructure/services/filesystem/shep-directory.service.ts`                 | ~/.shep/ directory initialization          |
+| `src/infrastructure/services/filesystem/shep-directory.service.ts`                 | ~/.shipit-ai/ directory initialization          |
 | `src/infrastructure/services/settings.service.ts`                                  | Global settings access singleton           |
 | `src/infrastructure/persistence/sqlite/connection.ts`                              | SQLite connection manager                  |
 | `src/infrastructure/persistence/sqlite/migrations.ts`                              | SQLite migration runner                    |
@@ -536,7 +536,7 @@ Build Pipeline Flow:
 **Phase 7 - CLI Integration (RED → GREEN → REFACTOR):**
 
 - settings-initialization.test.ts (written FIRST)
-  - First run creates ~/.shep/ directory
+  - First run creates ~/.shipit-ai/ directory
   - First run creates database file
   - First run initializes settings with defaults
   - Second run loads existing settings
@@ -553,7 +553,7 @@ Build Pipeline Flow:
 | **better-sqlite3 native compilation fails** | High   | Document build requirements (Python, C++ compiler), provide prebuilt binaries for common platforms, fallback to node:sqlite in future |
 | **DI container adds complexity**            | Medium | Extensive documentation, simple registration pattern, provide examples in CLAUDE.md                                                   |
 | **Migration system fails**                  | Medium | Comprehensive integration tests, idempotent migrations, manual SQL rollback documented                                                |
-| **~/.shep/ permission issues**              | Medium | Graceful error handling, clear error messages, document manual directory creation                                                     |
+| **~/.shipit-ai/ permission issues**              | Medium | Graceful error handling, clear error messages, document manual directory creation                                                     |
 | **Settings corruption**                     | Low    | Validation before save, backup mechanism (future), re-initialization recovery flow                                                    |
 | **Generated types don't match runtime**     | Medium | Runtime validation with zod (future), integration tests verify mapping, TypeSpec defaults match factory                               |
 

@@ -23,8 +23,8 @@ vi.mock('@/application/use-cases/features/create-feature.use-case.js', () => ({
   },
 }));
 
-vi.mock('@/infrastructure/services/filesystem/shep-directory.service.js', () => ({
-  getShepHomeDir: () => '/home/test/.shep',
+vi.mock('@/infrastructure/services/filesystem/shipit-ai-directory.service.js', () => ({
+  getShipitAiHomeDir: () => '/home/test/.shipit-ai',
 }));
 
 vi.mock('../../../../../../src/presentation/cli/ui/index.js', () => ({
@@ -230,7 +230,7 @@ describe('createNewCommand', () => {
       .map((args) => args.join(' '))
       .join('\n');
     expect(logCalls).toMatch(/worktree/i);
-    expect(logCalls).toMatch(/\.shep/);
+    expect(logCalls).toMatch(/\.shipit-ai/);
   });
 
   it('should show spec path in output', async () => {
@@ -303,9 +303,8 @@ describe('createNewCommand', () => {
 
     it('should display error and set exit code 1 when parent prefix is not found', async () => {
       mockFindByIdPrefix.mockResolvedValue(null);
-      const { messages: mockMessages } = await import(
-        '../../../../../../src/presentation/cli/ui/index.js'
-      );
+      const { messages: mockMessages } =
+        await import('../../../../../../src/presentation/cli/ui/index.js');
 
       const cmd = createNewCommand();
       await cmd.parseAsync(['Add feature', '--parent', 'nonexistent'], { from: 'user' });
@@ -328,9 +327,8 @@ describe('createNewCommand', () => {
           specPath: null,
         },
       });
-      const { messages: mockMessages } = await import(
-        '../../../../../../src/presentation/cli/ui/index.js'
-      );
+      const { messages: mockMessages } =
+        await import('../../../../../../src/presentation/cli/ui/index.js');
 
       const cmd = createNewCommand();
       await cmd.parseAsync(['Child feature', '--parent', 'parent-fe'], { from: 'user' });
@@ -340,9 +338,8 @@ describe('createNewCommand', () => {
 
     it('should not show blocked-state message when created feature has non-Blocked lifecycle', async () => {
       mockFindByIdPrefix.mockResolvedValue(parentFeature);
-      const { messages: mockMessages } = await import(
-        '../../../../../../src/presentation/cli/ui/index.js'
-      );
+      const { messages: mockMessages } =
+        await import('../../../../../../src/presentation/cli/ui/index.js');
 
       const cmd = createNewCommand();
       await cmd.parseAsync(['Add feature', '--parent', 'parent-fe'], { from: 'user' });
@@ -477,9 +474,8 @@ describe('createNewCommand', () => {
           specPath: '/specs/001-pending-feature',
         },
       });
-      const { messages: mockMessages } = await import(
-        '../../../../../../src/presentation/cli/ui/index.js'
-      );
+      const { messages: mockMessages } =
+        await import('../../../../../../src/presentation/cli/ui/index.js');
 
       const cmd = createNewCommand();
       await cmd.parseAsync(['Add feature', '--pending'], { from: 'user' });
@@ -553,7 +549,7 @@ describe('createNewCommand', () => {
       const { mkdtempSync, writeFileSync } = await import('fs');
       const { join } = await import('path');
       const { tmpdir } = await import('os');
-      const tmp = mkdtempSync(join(tmpdir(), 'shep-cli-attach-'));
+      const tmp = mkdtempSync(join(tmpdir(), 'shipit-ai-cli-attach-'));
       const filePath = join(tmp, 'test.png');
       writeFileSync(filePath, 'fake image data');
 
@@ -571,9 +567,8 @@ describe('createNewCommand', () => {
     });
 
     it('should exit with code 1 when --attach path does not exist', async () => {
-      const { messages: mockMessages } = await import(
-        '../../../../../../src/presentation/cli/ui/index.js'
-      );
+      const { messages: mockMessages } =
+        await import('../../../../../../src/presentation/cli/ui/index.js');
 
       const cmd = createNewCommand();
       await cmd.parseAsync(['Add feature', '--attach', '/nonexistent/file.png'], { from: 'user' });
@@ -587,7 +582,7 @@ describe('createNewCommand', () => {
       const { mkdtempSync, writeFileSync } = await import('fs');
       const { join } = await import('path');
       const { tmpdir } = await import('os');
-      const tmp = mkdtempSync(join(tmpdir(), 'shep-cli-attach-'));
+      const tmp = mkdtempSync(join(tmpdir(), 'shipit-ai-cli-attach-'));
       const file1 = join(tmp, 'a.png');
       const file2 = join(tmp, 'b.pdf');
       writeFileSync(file1, 'data1');

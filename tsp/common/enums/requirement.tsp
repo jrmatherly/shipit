@@ -1,7 +1,7 @@
 /**
- * @module Shep.Common.Enums.Requirement
+ * @module ShipitAI.Common.Enums.Requirement
  *
- * Defines enums for requirement classification in the Shep AI platform.
+ * Defines enums for requirement classification in the Shipit AI platform.
  * Requirements are categorized to help prioritize and organize feature specifications.
  */
 /**

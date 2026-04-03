@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 import { FeatureCreateDrawer } from '@/components/common/feature-create-drawer';
 import type { FeatureCreateDrawerProps } from '@/components/common/feature-create-drawer';
 import { DrawerCloseGuardProvider } from '@/hooks/drawer-close-guard';
-import type { FileAttachment } from '@shepai/core/infrastructure/services/file-dialog.service';
+import type { FileAttachment } from '@shipit-ai/core/infrastructure/services/file-dialog.service';
 import type { WorkflowDefaults } from '@/app/actions/get-workflow-defaults';
 
 // Mock pickFiles client helper
@@ -122,7 +122,7 @@ function makeUploadFromPathFetch() {
           name,
           size: knownFile?.size ?? 1000,
           mimeType: 'application/octet-stream',
-          path: `/tmp/.shep/attachments/pending/${name}`,
+          path: `/tmp/.shipit-ai/attachments/pending/${name}`,
           createdAt: '2026-03-08T10:00:00.000Z',
         }),
     };
@@ -237,7 +237,7 @@ describe('FeatureCreateDrawer', () => {
       expect(submittedData.attachments[0]).toMatchObject({
         name: 'requirements.pdf',
         size: 42000,
-        path: '/tmp/.shep/attachments/pending/requirements.pdf',
+        path: '/tmp/.shipit-ai/attachments/pending/requirements.pdf',
       });
       expect(submittedData.repositoryPath).toBe('/Users/dev/my-repo');
       expect(submittedData).not.toHaveProperty('name');
@@ -907,7 +907,7 @@ describe('FeatureCreateDrawer', () => {
         name,
         size: 5000,
         mimeType,
-        path: `/tmp/repo/.shep/attachments/pending-abc/${name}`,
+        path: `/tmp/repo/.shipit-ai/attachments/pending-abc/${name}`,
         createdAt: '2026-03-08T10:00:00.000Z',
       };
     }

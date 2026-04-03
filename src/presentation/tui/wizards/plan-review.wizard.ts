@@ -7,7 +7,7 @@
 
 import { select, input } from '@inquirer/prompts';
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 export type PlanReviewAction = 'approve' | 'reject';
 
@@ -32,20 +32,20 @@ export async function planReviewWizard(): Promise<PlanReviewWizardResult> {
         description: t('tui:wizards.planReview.rejectDescription'),
       },
     ],
-    theme: shepTheme,
+    theme: shipitAiTheme,
   });
 
   let feedback: string | undefined;
   if (action === 'reject') {
     feedback = await input({
       message: t('tui:wizards.planReview.rejectFeedback'),
-      theme: shepTheme,
+      theme: shipitAiTheme,
       validate: (value) => value.trim().length > 0 || t('tui:wizards.planReview.feedbackRequired'),
     });
   } else {
     feedback = await input({
       message: t('tui:wizards.planReview.approveComment'),
-      theme: shepTheme,
+      theme: shipitAiTheme,
     });
     if (feedback?.trim().length === 0) feedback = undefined;
   }

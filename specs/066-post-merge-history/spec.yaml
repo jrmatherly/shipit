@@ -70,7 +70,7 @@ content: >
   `feature.pr` in SQLite
 
   - Evidence manifest at
-  `~/.shep/repos/<hash>/evidence/<featureId>/manifest.json`
+  `~/.shipit-ai/repos/<hash>/evidence/<featureId>/manifest.json`
 
   - Worktree path computable via `computeWorktreePath()` for diff retrieval
   (though worktree is deleted after merge)

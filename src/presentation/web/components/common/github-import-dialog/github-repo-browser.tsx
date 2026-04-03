@@ -14,8 +14,8 @@ import {
 } from '@/components/ui/select';
 import { listGitHubRepositories } from '@/app/actions/list-github-repositories';
 import { listGitHubOrganizations } from '@/app/actions/list-github-organizations';
-import type { GitHubRepo } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
-import type { GitHubOrganization } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
+import type { GitHubRepo } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
+import type { GitHubOrganization } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
 
 /** Sentinel value representing the authenticated user's personal account */
 const PERSONAL_OWNER = '__personal__';

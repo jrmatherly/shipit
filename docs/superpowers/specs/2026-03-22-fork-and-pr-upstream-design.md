@@ -84,10 +84,10 @@ The new `AwaitingUpstream` state affects these existing consumers:
 
 ### 2. Spec Storage
 
-**When `commitSpecs` is `false`:** Specs are stored under SHEP_HOME instead of the worktree:
+**When `commitSpecs` is `false`:** Specs are stored under SHIPIT_AI_HOME instead of the worktree:
 
 ```
-~/.shep/specs/<feature-id>/
+~/.shipit-ai/specs/<feature-id>/
   ├── spec.yaml
   ├── research.yaml
   ├── plan.yaml
@@ -100,12 +100,12 @@ The new `AwaitingUpstream` state affects these existing consumers:
 
 **Key details:**
 
-- The `specPath` field on Feature already exists and currently points to the worktree spec directory. It will now point to either the worktree path or the SHEP_HOME path based on the `commitSpecs` flag.
+- The `specPath` field on Feature already exists and currently points to the worktree spec directory. It will now point to either the worktree path or the SHIPIT_AI_HOME path based on the `commitSpecs` flag.
 - All spec reads/writes already go through `specPath`, so the agent and use cases follow that pointer with no special branching needed in most places.
-- The SHEP_HOME spec directory is created when the feature is initialized and persists independently of the worktree lifecycle (worktree cleanup does not delete specs from SHEP_HOME).
+- The SHIPIT_AI_HOME spec directory is created when the feature is initialized and persists independently of the worktree lifecycle (worktree cleanup does not delete specs from SHIPIT_AI_HOME).
 - The `commitSpecs` flag is set at feature creation time and does not change mid-feature.
 
-**Spec initializer changes:** `ISpecInitializerService.initialize()` currently takes a `basePath` (worktree path) and creates `specs/NNN-SLUG/` within it. When `commitSpecs=false`, the `create-feature.use-case.ts` passes the SHEP_HOME-based path (`~/.shep/specs/<feature-id>/`) as `basePath` instead. The initializer itself needs no interface change — only the caller changes which path it provides.
+**Spec initializer changes:** `ISpecInitializerService.initialize()` currently takes a `basePath` (worktree path) and creates `specs/NNN-SLUG/` within it. When `commitSpecs=false`, the `create-feature.use-case.ts` passes the SHIPIT_AI_HOME-based path (`~/.shipit-ai/specs/<feature-id>/`) as `basePath` instead. The initializer itself needs no interface change — only the caller changes which path it provides.
 
 ### 3. Fork Service & Merge Flow
 
@@ -143,7 +143,7 @@ Implementation complete
 
 **When `forkAndPr` is `false`:** Existing flow unchanged (push to origin, create PR, merge, transition to Maintain).
 
-**Spec exclusion during commit:** When `commitSpecs` is `false`, `specPath` points to SHEP_HOME, so specs are never in the worktree — nothing to exclude from git operations.
+**Spec exclusion during commit:** When `commitSpecs` is `false`, `specPath` points to SHIPIT_AI_HOME, so specs are never in the worktree — nothing to exclude from git operations.
 
 ### 4. Upstream PR Polling & Lifecycle Transition
 
@@ -238,7 +238,7 @@ Key TDD cycles for implementation:
 - Upstream PR open -> no-op
 
 **Spec storage:**
-- `commitSpecs=false`: specPath points to SHEP_HOME, specs created there
+- `commitSpecs=false`: specPath points to SHIPIT_AI_HOME, specs created there
 - `commitSpecs=true`: specPath points to worktree (existing behavior)
 - `commitSpecs` immutability: update use case rejects changes
 

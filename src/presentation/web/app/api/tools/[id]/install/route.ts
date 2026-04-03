@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
-import type { InstallToolUseCase } from '@shepai/core/application/use-cases/tools/install-tool.use-case';
-import type { ToolInstallationStatus } from '@shepai/core/domain/generated/output';
+import type { InstallToolUseCase } from '@shipit-ai/core/application/use-cases/tools/install-tool.use-case';
+import type { ToolInstallationStatus } from '@shipit-ai/core/domain/generated/output';
 
 // NOTE: Do NOT import TOOL_METADATA directly in API routes.
 // The module uses import.meta.url + fs.readdirSync to load JSON files,

@@ -4,8 +4,8 @@ import { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import type { ThreadMessageLike, AppendMessage } from '@assistant-ui/react';
 import { useExternalStoreRuntime } from '@assistant-ui/react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import type { InteractiveMessage } from '@shepai/core/domain/generated/output';
-import { InteractiveMessageRole } from '@shepai/core/domain/generated/output';
+import type { InteractiveMessage } from '@shipit-ai/core/domain/generated/output';
+import { InteractiveMessageRole } from '@shipit-ai/core/domain/generated/output';
 
 /** Chat state returned by the backend — matches ChatState from service interface */
 interface ChatState {

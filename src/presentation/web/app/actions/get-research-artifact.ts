@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { GetResearchArtifactUseCase } from '@shepai/core/application/use-cases/features/get-research-artifact.use-case';
-import type { ResearchArtifact, TechDecision } from '@shepai/core/domain/generated/output';
+import type { GetResearchArtifactUseCase } from '@shipit-ai/core/application/use-cases/features/get-research-artifact.use-case';
+import type { ResearchArtifact, TechDecision } from '@shipit-ai/core/domain/generated/output';
 
 export interface TechDecisionsReviewData {
   name: string;

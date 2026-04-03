@@ -40,7 +40,7 @@ const REALISTIC_LINT_FAILURE = `
 2024-01-15T10:22:31.1234567Z ##[group]Run pnpm lint
 2024-01-15T10:22:31.1234567Z pnpm lint
 2024-01-15T10:22:31.1234567Z ##[endgroup]
-2024-01-15T10:22:45.1234567Z /home/runner/work/shep/shep/packages/core/src/domain/generated/output.ts
+2024-01-15T10:22:45.1234567Z /home/runner/work/shipit/shipit/packages/core/src/domain/generated/output.ts
 2024-01-15T10:22:45.1234567Z   47:1  error  'CiFixRecord' is defined but never used  @typescript-eslint/no-unused-vars
 2024-01-15T10:22:45.1234567Z ✖ 1 problem (1 error, 0 warnings)
 2024-01-15T10:22:45.1234567Z ##[error]Process completed with exit code 1.

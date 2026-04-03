@@ -220,7 +220,7 @@ tasks:
     phaseId: phase-4
     title: 'Install node-notifier dependency'
     description: >
-      Add node-notifier v10.0.1 as a production dependency of the root CLI package (@shepai/cli).
+      Add node-notifier v10.0.1 as a production dependency of the root CLI package (@shipit-ai/cli).
       Install via pnpm add node-notifier and pnpm add -D @types/node-notifier for type definitions.
     state: Todo
     dependencies: []

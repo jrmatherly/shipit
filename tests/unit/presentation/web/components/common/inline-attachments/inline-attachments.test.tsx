@@ -13,11 +13,11 @@ describe('parseAttachmentRefs', () => {
 
   it('parses a single attachment reference', () => {
     const result = parseAttachmentRefs(
-      'See screenshot:\n@/home/user/.shep/attachments/pending-abc/image.png'
+      'See screenshot:\n@/home/user/.shipit-ai/attachments/pending-abc/image.png'
     );
     expect(result).toEqual([
       { type: 'text', value: 'See screenshot:\n' },
-      { type: 'attachment', path: '/home/user/.shep/attachments/pending-abc/image.png' },
+      { type: 'attachment', path: '/home/user/.shipit-ai/attachments/pending-abc/image.png' },
     ]);
   });
 
@@ -54,7 +54,7 @@ describe('InlineAttachments', () => {
 
   it('renders inline image for image attachment reference', () => {
     render(
-      <InlineAttachments text="See: @/home/user/.shep/attachments/pending-abc/screenshot.png" />
+      <InlineAttachments text="See: @/home/user/.shipit-ai/attachments/pending-abc/screenshot.png" />
     );
     const img = screen.getByTestId('inline-attachment-image');
     expect(img).toBeInTheDocument();
@@ -62,7 +62,9 @@ describe('InlineAttachments', () => {
   });
 
   it('renders file link for non-image attachment reference', () => {
-    render(<InlineAttachments text="Log: @/home/user/.shep/attachments/pending-abc/error.log" />);
+    render(
+      <InlineAttachments text="Log: @/home/user/.shipit-ai/attachments/pending-abc/error.log" />
+    );
     const link = screen.getByTestId('inline-attachment-file');
     expect(link).toBeInTheDocument();
     expect(link).toHaveTextContent('error.log');
@@ -72,7 +74,7 @@ describe('InlineAttachments', () => {
     render(
       <InlineAttachments
         text="Please fix this"
-        attachmentPaths={['/home/user/.shep/attachments/pending-abc/fix.png']}
+        attachmentPaths={['/home/user/.shipit-ai/attachments/pending-abc/fix.png']}
       />
     );
     const img = screen.getByTestId('inline-attachment-image');
@@ -97,7 +99,7 @@ describe('InlineAttachments', () => {
 
   it('shows error fallback when image fails to load', () => {
     render(
-      <InlineAttachments text="See: @/home/user/.shep/attachments/pending-abc/screenshot.png" />
+      <InlineAttachments text="See: @/home/user/.shipit-ai/attachments/pending-abc/screenshot.png" />
     );
     const img = screen.getByTestId('inline-attachment-image');
     fireEvent.error(img);

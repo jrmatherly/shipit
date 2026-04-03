@@ -1,7 +1,7 @@
 /**
- * @module Shep.Agents.Base
+ * @module ShipitAI.Agents.Base
  *
- * Base agent model definitions for the Shep AI CLI.
+ * Base agent model definitions for the Shipit AI CLI.
  *
  * This module defines the foundational AgentInstance model that represents
  * a running agent in the system. All specialized agents derive from or

@@ -2,12 +2,12 @@
 
 import { existsSync } from 'node:fs';
 import { resolve } from '@/lib/server-container';
-import { createDeploymentLogger } from '@shepai/core/infrastructure/services/deployment/deployment-logger';
-import { computeWorktreePath } from '@shepai/core/infrastructure/services/ide-launchers/compute-worktree-path';
-import type { IFeatureRepository } from '@shepai/core/application/ports/output/repositories/feature-repository.interface';
-import type { IDeploymentService } from '@shepai/core/application/ports/output/services/deployment-service.interface';
-import { DeploymentState } from '@shepai/core/domain/generated/output';
-import { isSameShepInstance } from '@/lib/is-same-shep-instance';
+import { createDeploymentLogger } from '@shipit-ai/core/infrastructure/services/deployment/deployment-logger';
+import { computeWorktreePath } from '@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path';
+import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
+import type { IDeploymentService } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
+import { DeploymentState } from '@shipit-ai/core/domain/generated/output';
+import { isSameShipitAiInstance } from '@/lib/is-same-shipit-ai-instance';
 
 const log = createDeploymentLogger('[deployFeature]');
 
@@ -42,7 +42,7 @@ export async function deployFeature(
       return { success: false, error: `Worktree path does not exist: ${worktreePath}` };
     }
 
-    if (isSameShepInstance(feature.repositoryPath)) {
+    if (isSameShipitAiInstance(feature.repositoryPath)) {
       log.warn('rejected — feature belongs to the running shep instance');
       return {
         success: false,

@@ -161,7 +161,7 @@ describe('buildAnalyzePrompt', () => {
     const prompt = buildAnalyzePrompt('/any/path');
     expect(prompt).toContain('Technology stack');
     expect(prompt).toContain('Architecture patterns');
-    expect(prompt).toContain('shep-analysis.md');
+    expect(prompt).toContain('shipit-ai-analysis.md');
   });
 });
 

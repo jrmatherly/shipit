@@ -12,7 +12,7 @@ describe('writeSpecFileAtomic', () => {
   let tempDir: string;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-test-'));
   });
 
   afterEach(() => {

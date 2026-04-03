@@ -1,6 +1,6 @@
 # Feature: shep-kit
 
-> Spec-driven development workflow for Shep AI contributors
+> Spec-driven development workflow for Shipit AI contributors
 
 ## Status
 

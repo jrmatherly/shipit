@@ -1,6 +1,6 @@
 # Getting Started
 
-This guide walks you through installing Shep AI CLI and creating your first feature.
+This guide walks you through installing Shipit AI CLI and creating your first feature.
 
 ## Prerequisites
 
@@ -14,13 +14,13 @@ This guide walks you through installing Shep AI CLI and creating your first feat
 Install Shep globally via pnpm:
 
 ```bash
-pnpm add -g @shepai/cli
+pnpm add -g @shipit-ai/cli
 ```
 
 Or with npm:
 
 ```bash
-npm install -g @shepai/cli
+npm install -g @shipit-ai/cli
 ```
 
 Verify installation:
@@ -46,7 +46,7 @@ On first run, Shep launches a TUI wizard to configure your agent provider.
 
 ```
 ┌─────────────────────────────────────────────┐
-│      Shep AI CLI Setup                      │
+│      Shipit AI CLI Setup                      │
 ├─────────────────────────────────────────────┤
 │                                             │
 │  Welcome to Shep!                           │
@@ -72,7 +72,7 @@ After selecting a provider, Shep prompts for authentication:
 
 ```
 ┌─────────────────────────────────────────────┐
-│      Shep AI CLI Setup                      │
+│      Shipit AI CLI Setup                      │
 ├─────────────────────────────────────────────┤
 │                                             │
 │  Configure Claude Code authentication       │

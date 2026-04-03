@@ -67,14 +67,14 @@
   },
   "wizards": {
     "onboarding": {
-      "welcomeTitle": "مرحبًا بك في Shep AI CLI",
+      "welcomeTitle": "مرحبًا بك في Shipit AI AI CLI",
       "welcomeSubtitle": "لنقم بإعداد بيئتك في 3 خطوات سريعة.",
       "prerequisiteWarning": "متطلب أساسي: ",
       "prerequisiteLabel": "GitHub CLI (gh)",
       "prerequisiteDescription": "مطلوب لإمكانيات الإصلاح الذاتي الكاملة لـ CI/CD.",
       "installFrom": "قم بتثبيته من: ",
       "installUrl": "https://cli.github.com/",
-      "setupComplete": "اكتمل الإعداد! أنت جاهز لاستخدام Shep."
+      "setupComplete": "اكتمل الإعداد! أنت جاهز لاستخدام Shipit AI."
     },
     "agentConfig": {
       "enterApiKey": "أدخل مفتاح API الخاص بك من Anthropic"

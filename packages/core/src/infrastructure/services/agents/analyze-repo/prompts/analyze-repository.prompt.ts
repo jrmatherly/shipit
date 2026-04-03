@@ -12,7 +12,7 @@ Your analysis should include:
 5. Build system and development workflow
 6. Testing strategy
 
-Output a complete shep-analysis.md document.`;
+Output a complete shipit-ai-analysis.md document.`;
 
 export function buildAnalyzePrompt(repositoryPath: string): string {
   return ANALYZE_REPOSITORY_PROMPT.replace('{{repositoryPath}}', repositoryPath);

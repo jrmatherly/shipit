@@ -169,14 +169,14 @@ const sampleEvidence: Evidence[] = [
     type: EvidenceType.Screenshot,
     capturedAt: '2026-03-09T12:00:00Z',
     description: 'Homepage showing new feature',
-    relativePath: '.shep/evidence/homepage.png',
+    relativePath: '.shipit-ai/evidence/homepage.png',
     taskRef: 'task-1',
   },
   {
     type: EvidenceType.TestOutput,
     capturedAt: '2026-03-09T12:01:00Z',
     description: 'Unit tests passing',
-    relativePath: '.shep/evidence/test-results.txt',
+    relativePath: '.shipit-ai/evidence/test-results.txt',
     taskRef: 'task-2',
   },
 ];
@@ -201,9 +201,8 @@ describe('createEvidenceNode', () => {
     });
 
     it('should pass executor options from buildExecutorOptions', async () => {
-      const { retryExecute } = await import(
-        '@/infrastructure/services/agents/feature-agent/nodes/node-helpers.js'
-      );
+      const { retryExecute } =
+        await import('@/infrastructure/services/agents/feature-agent/nodes/node-helpers.js');
       const node = createEvidenceNode(executor);
       await node(baseState());
 
@@ -444,7 +443,7 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Storybook: toggle component',
-          relativePath: '.shep/evidence/storybook-toggle.png',
+          relativePath: '.shipit-ai/evidence/storybook-toggle.png',
         },
       ];
       mockParseEvidenceRecords.mockReturnValueOnce(storybookOnlyEvidence);
@@ -490,7 +489,7 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Storybook: component view',
-          relativePath: '.shep/evidence/storybook.png',
+          relativePath: '.shipit-ai/evidence/storybook.png',
         },
       ];
       mockParseEvidenceRecords.mockReturnValueOnce(storybookEvidence);
@@ -585,7 +584,7 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.TestOutput,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Test results only',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         },
       ];
       const attempt2Evidence: Evidence[] = [
@@ -593,7 +592,7 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:01:00Z',
           description: 'App: settings page with toggle',
-          relativePath: '.shep/evidence/app-settings.png',
+          relativePath: '.shipit-ai/evidence/app-settings.png',
         },
       ];
 
@@ -654,7 +653,7 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.TestOutput,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Test results only',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         },
       ];
 
@@ -742,7 +741,7 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.TestOutput,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Test results',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         },
       ];
       const attempt2Evidence: Evidence[] = [
@@ -750,7 +749,7 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:01:00Z',
           description: 'App: settings page screenshot',
-          relativePath: '.shep/evidence/app-settings.png',
+          relativePath: '.shipit-ai/evidence/app-settings.png',
         },
       ];
 
@@ -779,7 +778,7 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.TestOutput,
           capturedAt: '2026-03-09T12:00:00Z',
           description: 'Test results',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         },
       ];
       const attempt2Evidence: Evidence[] = [
@@ -788,14 +787,14 @@ describe('createEvidenceNode', () => {
           type: EvidenceType.TestOutput,
           capturedAt: '2026-03-09T12:01:00Z',
           description: 'Test results (updated)',
-          relativePath: '.shep/evidence/tests.txt',
+          relativePath: '.shipit-ai/evidence/tests.txt',
         },
         // New file only in attempt 2
         {
           type: EvidenceType.Screenshot,
           capturedAt: '2026-03-09T12:01:00Z',
           description: 'App screenshot',
-          relativePath: '.shep/evidence/app.png',
+          relativePath: '.shipit-ai/evidence/app.png',
         },
       ];
 
@@ -815,11 +814,11 @@ describe('createEvidenceNode', () => {
         expect.arrayContaining([
           expect.objectContaining({
             description: 'Test results (updated)',
-            relativePath: '.shep/evidence/tests.txt',
+            relativePath: '.shipit-ai/evidence/tests.txt',
           }),
           expect.objectContaining({
             description: 'App screenshot',
-            relativePath: '.shep/evidence/app.png',
+            relativePath: '.shipit-ai/evidence/app.png',
           }),
         ])
       );

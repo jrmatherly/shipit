@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 
 const mockFindById = vi.fn();
 const mockGetPrDiffSummary = vi.fn();
@@ -24,13 +24,13 @@ vi.mock('@/lib/server-container', () => ({
   },
 }));
 
-vi.mock('@shepai/core/infrastructure/services/ide-launchers/compute-worktree-path', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path', () => ({
   computeWorktreePath: (...args: unknown[]) =>
     mockComputeWorktreePath(...(args as [string, string])),
 }));
 
-vi.mock('@shepai/core/infrastructure/services/filesystem/shep-directory.service', () => ({
-  getShepHomeDir: () => '/home/test/.shep',
+vi.mock('@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service', () => ({
+  getShipitAiHomeDir: () => '/home/test/.shipit-ai',
 }));
 
 vi.mock('node:fs', () => {
@@ -41,7 +41,7 @@ vi.mock('node:fs', () => {
   return { ...mock, default: mock };
 });
 
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   getSettings: () => ({
     workflow: {
       enableEvidence: false,
@@ -51,9 +51,8 @@ vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
   }),
 }));
 
-const { getMergeReviewData } = await import(
-  '../../../../../../src/presentation/web/app/actions/get-merge-review-data.js'
-);
+const { getMergeReviewData } =
+  await import('../../../../../../src/presentation/web/app/actions/get-merge-review-data.js');
 
 const basePr = {
   url: 'https://github.com/org/repo/pull/42',
@@ -313,12 +312,12 @@ describe('getMergeReviewData server action', () => {
         type: 'Screenshot',
         capturedAt: '2026-01-01T12:00:00Z',
         description: 'Homepage screenshot',
-        relativePath: '/home/test/.shep/repos/abcdef0123456789/evidence/feat-123/homepage.png',
+        relativePath: '/home/test/.shipit-ai/repos/abcdef0123456789/evidence/feat-123/homepage.png',
         taskRef: 'task-1',
       },
     ];
 
-    it('loads evidence from shep evidence dir using repositoryPath', async () => {
+    it('loads evidence from shipit-ai evidence dir using repositoryPath', async () => {
       mockFindById.mockResolvedValue(baseFeature);
       mockGetPrDiffSummary.mockResolvedValue(baseDiffSummary);
       mockExistsSync.mockReturnValue(true);
@@ -385,21 +384,23 @@ describe('getMergeReviewData server action', () => {
           type: 'Screenshot',
           capturedAt: '2026-01-01T12:00:00Z',
           description: 'Homepage screenshot',
-          relativePath: '/home/test/.shep/repos/abcdef0123456789/evidence/feat-123/homepage.png',
+          relativePath:
+            '/home/test/.shipit-ai/repos/abcdef0123456789/evidence/feat-123/homepage.png',
           taskRef: 'task-1',
         },
         {
           type: 'Screenshot',
           capturedAt: '2026-01-01T12:01:00Z',
           description: 'Homepage screenshot (duplicate)',
-          relativePath: '/home/test/.shep/repos/abcdef0123456789/evidence/feat-123/homepage.png',
+          relativePath:
+            '/home/test/.shipit-ai/repos/abcdef0123456789/evidence/feat-123/homepage.png',
           taskRef: 'task-1',
         },
         {
           type: 'Video',
           capturedAt: '2026-01-01T12:02:00Z',
           description: 'Demo video',
-          relativePath: '/home/test/.shep/repos/abcdef0123456789/evidence/feat-123/demo.mp4',
+          relativePath: '/home/test/.shipit-ai/repos/abcdef0123456789/evidence/feat-123/demo.mp4',
         },
       ];
       mockFindById.mockResolvedValue(baseFeature);

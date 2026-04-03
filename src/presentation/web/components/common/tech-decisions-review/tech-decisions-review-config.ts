@@ -1,4 +1,4 @@
-import type { TechDecision } from '@shepai/core/domain/generated/output';
+import type { TechDecision } from '@shipit-ai/core/domain/generated/output';
 
 export type { TechDecision };
 

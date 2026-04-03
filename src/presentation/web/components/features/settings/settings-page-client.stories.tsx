@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { SettingsPageClient } from './settings-page-client';
-import { createDefaultSettings } from '@shepai/core/domain/factories/settings-defaults.factory';
-import { AgentType } from '@shepai/core/domain/generated/output';
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
+import { AgentType } from '@shipit-ai/core/domain/generated/output';
 
 const defaultSettings = createDefaultSettings();
 
@@ -20,7 +20,7 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     settings: defaultSettings,
-    shepHome: '/home/user/.shep',
+    shipitAiHome: '/home/user/.shipit-ai',
     dbFileSize: '2.4 MB',
   },
 };
@@ -43,7 +43,7 @@ export const AllSections: Story = {
         reactFileManager: false,
       },
     },
-    shepHome: '/opt/shep',
+    shipitAiHome: '/opt/shipit-ai',
     dbFileSize: '12.8 MB',
   },
 };
@@ -58,7 +58,7 @@ export const EvidenceEnabled: Story = {
         commitEvidence: true,
       },
     },
-    shepHome: '/home/user/.shep',
+    shipitAiHome: '/home/user/.shipit-ai',
     dbFileSize: '2.4 MB',
   },
 };
@@ -82,7 +82,7 @@ export const CustomTimeouts: Story = {
         },
       },
     },
-    shepHome: '/home/user/.shep',
+    shipitAiHome: '/home/user/.shipit-ai',
     dbFileSize: '2.4 MB',
   },
 };

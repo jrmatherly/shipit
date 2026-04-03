@@ -1,7 +1,7 @@
 /**
  * Show Command Unit Tests
  *
- * Tests for the `shep settings show` command.
+ * Tests for the `shipit-ai settings show` command.
  *
  * TDD Phase: GREEN
  * - Tests now verify actual show command behavior
@@ -17,9 +17,9 @@ vi.mock('@/infrastructure/services/settings.service.js', () => ({
   getSettings: vi.fn(),
 }));
 
-// Mock the shep directory service
-vi.mock('@/infrastructure/services/filesystem/shep-directory.service.js', () => ({
-  getShepDbPath: vi.fn().mockReturnValue('/home/test/.shep/data'),
+// Mock the shipit-ai directory service
+vi.mock('@/infrastructure/services/filesystem/shipit-ai-directory.service.js', () => ({
+  getShipitAiDbPath: vi.fn().mockReturnValue('/home/test/.shipit-ai/data'),
 }));
 
 import { getSettings } from '@/infrastructure/services/settings.service.js';

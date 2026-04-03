@@ -1,6 +1,6 @@
 # Development Documentation
 
-Guides for developing and contributing to Shep AI CLI.
+Guides for developing and contributing to Shipit AI CLI.
 
 ## Contents
 
@@ -23,7 +23,7 @@ Guides for developing and contributing to Shep AI CLI.
 
 ```bash
 # Clone repository
-git clone https://github.com/shep-ai/shep.git
+git clone https://github.com/jrmatherly/shipit.git
 cd cli
 
 # Install dependencies

@@ -1,9 +1,9 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { GetFeatureArtifactUseCase } from '@shepai/core/application/use-cases/features/get-feature-artifact.use-case';
-import type { FeatureArtifact } from '@shepai/core/domain/generated/output';
-import type { PrdQuestionnaireData } from '@shepai/core/domain/generated/output';
+import type { GetFeatureArtifactUseCase } from '@shipit-ai/core/application/use-cases/features/get-feature-artifact.use-case';
+import type { FeatureArtifact } from '@shipit-ai/core/domain/generated/output';
+import type { PrdQuestionnaireData } from '@shipit-ai/core/domain/generated/output';
 import type { ProductDecisionsSummaryData } from '@/components/common/product-decisions-summary';
 
 interface GetFeatureArtifactResult {

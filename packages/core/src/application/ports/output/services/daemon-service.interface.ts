@@ -1,12 +1,12 @@
 /**
  * Daemon Service Interface
  *
- * Output port for managing the daemon state file (~/.shep/daemon.json).
+ * Output port for managing the daemon state file (~/.shipit-ai/daemon.json).
  * Infrastructure layer provides the concrete DaemonPidService implementation.
  */
 
 /**
- * Shape of the daemon state persisted to ~/.shep/daemon.json.
+ * Shape of the daemon state persisted to ~/.shipit-ai/daemon.json.
  */
 export interface DaemonState {
   /** PID of the running daemon process */

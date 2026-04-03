@@ -243,7 +243,7 @@ tasks:
       process, call createUpgradeCommand with a fake spawnFn that returns exit code 0,
       verify stopDaemon was called (daemon.json removed before install) and startDaemon
       was invoked after. Also cover the not-running variant: upgrade with no daemon.json
-      should not call stop or restart. Use SHEP_SKIP_READINESS_CHECK=1 to bypass the
+      should not call stop or restart. Use SHIPIT_AI_SKIP_READINESS_CHECK=1 to bypass the
       server readiness poll in E2E context.
     state: Todo
     dependencies:

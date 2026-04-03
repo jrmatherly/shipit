@@ -5,14 +5,13 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 const mockHasSettings = vi.fn();
 const mockGetSettings = vi.fn();
 
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   hasSettings: () => mockHasSettings(),
   getSettings: () => mockGetSettings(),
 }));
 
-const { getFeatureFlags, featureFlags } = await import(
-  '../../../../../src/presentation/web/lib/feature-flags.js'
-);
+const { getFeatureFlags, featureFlags } =
+  await import('../../../../../src/presentation/web/lib/feature-flags.js');
 
 describe('getFeatureFlags', () => {
   beforeEach(() => {

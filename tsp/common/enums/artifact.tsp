@@ -1,8 +1,8 @@
 /**
- * @module Shep.Common.Enums.Artifact
+ * @module ShipitAI.Common.Enums.Artifact
  *
  * Defines enums for categorizing and formatting artifacts generated
- * by the Shep AI platform during the development lifecycle.
+ * by the Shipit AI platform during the development lifecycle.
  */
 /**
  * Categorizes artifacts by their purpose in the development process.

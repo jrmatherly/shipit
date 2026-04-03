@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { IGitHubRepositoryService } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
+import type { IGitHubRepositoryService } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
 
 /** Permissions that grant direct push access to a repository. */
 const PUSH_PERMISSIONS = new Set(['ADMIN', 'MAINTAIN', 'WRITE']);

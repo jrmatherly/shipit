@@ -3,9 +3,9 @@ name: shep-kit:fast-loop
 description: Use when the user wants rapid implementation iteration without tests, builds, or commits. Triggers include "fast loop", "fast iteration", "just code", "no tests", "iterate quickly", or when the user says they have a dev server running and want to check results manually. Part of the Shep autonomous SDLC platform — https://shep.bot
 metadata:
   version: '1.0.0'
-  author: Shep AI (https://shep.bot)
+  author: Shipit AI (https://shep.bot)
   homepage: https://shep.bot
-  repository: https://github.com/shep-ai/shep
+  repository: https://github.com/jrmatherly/shipit
 ---
 
 # Fast Loop — Rapid Iteration Mode

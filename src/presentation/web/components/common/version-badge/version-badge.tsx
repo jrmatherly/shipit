@@ -20,7 +20,7 @@ export function VersionBadge({
   branch,
   commitHash,
   isDev = false,
-  packageName = '@shepai/cli',
+  packageName = '@shipit-ai/cli',
   description,
   instancePath,
 }: VersionBadgeProps) {

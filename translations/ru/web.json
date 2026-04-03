@@ -157,7 +157,7 @@
       "channels": "Каналы",
       "inApp": "В приложении",
       "inAppLabel": "В приложении",
-      "inAppDescription": "Уведомления внутри интерфейса Shep",
+      "inAppDescription": "Уведомления внутри интерфейса Shipit AI",
       "subsections": {
         "agentEvents": "События агента",
         "pullRequestEvents": "События запросов на слияние"
@@ -227,7 +227,7 @@
       "location": "Расположение",
       "locationDescription": "Путь к локальной базе данных SQLite",
       "size": "Размер",
-      "hint": "Все настройки хранятся в локальной базе данных SQLite по пути ~/.shep/data. База данных использует шаблон единственной записи с автоматическими миграциями при запуске.",
+      "hint": "Все настройки хранятся в локальной базе данных SQLite по пути ~/.shipit-ai/data. База данных использует шаблон единственной записи с автоматическими миграциями при запуске.",
       "links": {
         "settingsService": "Сервис настроек",
         "settingsSpec": "Спецификация настроек"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "Добавить проект",
     "addProjectDescription": "Добавьте папку проекта для создания функций.",
-    "addProjectDescriptionLine2": "Опишите, что вам нужно \u2014 Shep сделает остальное.",
+    "addProjectDescriptionLine2": "Опишите, что вам нужно \u2014 Shipit AI сделает остальное.",
     "checkingSetup": "Проверка настройки\u2026",
     "ready": "{{label}} готов",
     "notInstalled": "{{label}} не установлен",
@@ -303,7 +303,7 @@
     "loadingAgents": "Загрузка агентов\u2026",
     "chooseAgent": "Выберите вашего агента",
     "pickModel": "Выберите модель",
-    "selectAgentSubtitle": "Выберите AI-агента для кодирования, который будет использовать Shep.",
+    "selectAgentSubtitle": "Выберите AI-агента для кодирования, который будет использовать Shipit AI.",
     "chooseModelSubtitle": "Выберите модель {{label}} для запуска.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> необходим для полноценных возможностей CI/CD самовосстановления. <1>Установите здесь</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "Из GitHub"
   },
   "chat": {
-    "shepChat": "Shep Чат",
+    "shipitAiChat": "Shipit AI Чат",
     "writeMessage": "Напишите сообщение...",
     "attachFiles": "Прикрепить файлы",
     "forceStopAgent": "Принудительно остановить агента",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "Импорт из GitHub",
-    "description": "Клонировать репозиторий GitHub и добавить в Shep.",
+    "description": "Клонировать репозиторий GitHub и добавить в Shipit AI.",
     "githubUrl": "URL GitHub",
     "urlPlaceholder": "owner/repo или https://github.com/owner/repo",
     "searchRepositories": "Поиск репозиториев..."

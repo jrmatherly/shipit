@@ -3,13 +3,12 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockGetSettings = vi.fn();
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   getSettings: mockGetSettings,
 }));
 
-const { getWorkflowDefaults } = await import(
-  '../../../../../src/presentation/web/app/actions/get-workflow-defaults.js'
-);
+const { getWorkflowDefaults } =
+  await import('../../../../../src/presentation/web/app/actions/get-workflow-defaults.js');
 
 describe('getWorkflowDefaults server action', () => {
   beforeEach(() => {

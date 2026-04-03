@@ -30,8 +30,8 @@ vi.mock('@/application/use-cases/features/show-feature.use-case.js', () => ({
   },
 }));
 
-vi.mock('@/infrastructure/services/filesystem/shep-directory.service.js', () => ({
-  getShepHomeDir: () => '/home/test/.shep',
+vi.mock('@/infrastructure/services/filesystem/shipit-ai-directory.service.js', () => ({
+  getShipitAiHomeDir: () => '/home/test/.shipit-ai',
 }));
 
 vi.mock('@/infrastructure/services/ide-launchers/compute-worktree-path.js', () => ({
@@ -350,7 +350,7 @@ describe('createShowCommand - phase timing & approval', () => {
       await cmd.parseAsync(['feat-001'], { from: 'user' });
 
       const output = logOutput.join('\n');
-      expect(output).not.toMatch(/shep feat approve/);
+      expect(output).not.toMatch(/shipit-ai feat approve/);
     });
   });
 });

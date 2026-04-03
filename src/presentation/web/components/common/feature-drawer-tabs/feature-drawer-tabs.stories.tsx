@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { FeatureDrawerTabs } from './feature-drawer-tabs';
 import type { FeatureNodeData } from '@/components/common/feature-node';
 import type { PrdQuestionnaireData } from '@/components/common/prd-questionnaire';
@@ -135,7 +135,7 @@ const mergeReviewFeature: FeatureNodeData = {
   baseBranch: 'main',
   hasPlan: true,
   pr: {
-    url: 'https://github.com/shep-ai/shep/pull/42',
+    url: 'https://github.com/jrmatherly/shipit/pull/42',
     number: 42,
     status: PrStatus.Open,
     ciStatus: CiStatus.Success,
@@ -253,7 +253,7 @@ const productFixture: ProductDecisionsSummaryData = {
 
 const mergeFixture: MergeReviewData = {
   pr: {
-    url: 'https://github.com/shep-ai/shep/pull/42',
+    url: 'https://github.com/jrmatherly/shipit/pull/42',
     number: 42,
     status: PrStatus.Open,
     commitHash: 'a1b2c3d4e5f6789',

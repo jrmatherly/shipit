@@ -1,7 +1,7 @@
 /**
  * stop command unit tests
  *
- * Tests for the `shep stop` CLI command.
+ * Tests for the `shipit-ai stop` CLI command.
  * Covers: no-daemon path, SIGTERM success, SIGKILL fallback, daemon.json always deleted.
  */
 

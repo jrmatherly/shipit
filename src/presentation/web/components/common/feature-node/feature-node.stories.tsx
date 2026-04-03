@@ -3,7 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react';
 import { expect, fn, userEvent, waitFor, within } from '@storybook/test';
 import { ReactFlowProvider, ReactFlow, useNodesState } from '@xyflow/react';
 import { Eye } from 'lucide-react';
-import { DeploymentState, PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { DeploymentState, PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { FeatureNode } from './feature-node';
 import type { AgentTypeValue } from './agent-type-icons';
 import type {

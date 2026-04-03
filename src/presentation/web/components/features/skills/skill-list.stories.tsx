@@ -54,7 +54,7 @@ const workflowSkills: SkillData[] = [
 
 const codeGenSkills: SkillData[] = [
   {
-    name: 'shep:ui-component',
+    name: 'shipit-ai:ui-component',
     displayName: 'ui-component',
     description: 'Use when creating, modifying, or reviewing web UI components.',
     context: 'fork',

@@ -152,11 +152,11 @@ describe('parseWorkerArgs', () => {
       '--spec-dir',
       '/path/to/specs',
       '--worktree-path',
-      '/home/user/.shep/repos/abc/wt/feat-test',
+      '/home/user/.shipit-ai/repos/abc/wt/feat-test',
     ];
 
     const parsed = parseWorkerArgs(args);
-    expect(parsed.worktreePath).toBe('/home/user/.shep/repos/abc/wt/feat-test');
+    expect(parsed.worktreePath).toBe('/home/user/.shipit-ai/repos/abc/wt/feat-test');
   });
 
   it('should throw if feature-id is missing', () => {

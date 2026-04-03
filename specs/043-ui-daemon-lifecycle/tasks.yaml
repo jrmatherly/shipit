@@ -18,31 +18,31 @@ tasks:
 
   - id: task-1
     phaseId: phase-1
-    title: 'Add getDaemonStatePath() to shep-directory.service'
+    title: 'Add getDaemonStatePath() to shipit-ai-directory.service'
     description: >
       Add a single exported function getDaemonStatePath(): string to
-      packages/core/src/infrastructure/services/filesystem/shep-directory.service.ts
+      packages/core/src/infrastructure/services/filesystem/shipit-ai-directory.service.ts
       that returns path.join(resolveShepHomeDir(), 'daemon.json'). This respects the
-      SHEP_HOME environment variable used for test isolation. Follow the exact pattern
+      SHIPIT_AI_HOME environment variable used for test isolation. Follow the exact pattern
       of the existing getShepDbPath() function.
     state: Todo
     dependencies: []
     acceptanceCriteria:
-      - 'getDaemonStatePath() is exported from shep-directory.service.ts'
+      - 'getDaemonStatePath() is exported from shipit-ai-directory.service.ts'
       - 'Return value is path.join(resolveShepHomeDir(), "daemon.json")'
-      - 'When SHEP_HOME=/tmp/test, getDaemonStatePath() returns /tmp/test/daemon.json'
-      - 'Unit test verifies both default path and SHEP_HOME override'
+      - 'When SHIPIT_AI_HOME=/tmp/test, getDaemonStatePath() returns /tmp/test/daemon.json'
+      - 'Unit test verifies both default path and SHIPIT_AI_HOME override'
     tdd:
       red:
-        - 'In the existing shep-directory.service test file, write a test that imports getDaemonStatePath and asserts it returns join(homedir(), ".shep", "daemon.json") when SHEP_HOME is unset'
-        - 'Write a second test that sets process.env.SHEP_HOME to a temp path and asserts getDaemonStatePath returns that path + "/daemon.json"'
+        - 'In the existing shipit-ai-directory.service test file, write a test that imports getDaemonStatePath and asserts it returns join(homedir(), ".shep", "daemon.json") when SHIPIT_AI_HOME is unset'
+        - 'Write a second test that sets process.env.SHIPIT_AI_HOME to a temp path and asserts getDaemonStatePath returns that path + "/daemon.json"'
         - 'Run tests — they fail because getDaemonStatePath does not exist yet'
       green:
-        - 'Add export function getDaemonStatePath(): string { return join(resolveShepHomeDir(), "daemon.json"); } to shep-directory.service.ts'
+        - 'Add export function getDaemonStatePath(): string { return join(resolveShepHomeDir(), "daemon.json"); } to shipit-ai-directory.service.ts'
         - 'Run tests — they pass'
       refactor:
         - 'Verify the function is colocated with getShepDbPath() for consistency'
-        - 'Ensure the env var teardown in tests uses afterEach to restore SHEP_HOME'
+        - 'Ensure the env var teardown in tests uses afterEach to restore SHIPIT_AI_HOME'
     estimatedEffort: '30min'
 
   - id: task-2
@@ -98,7 +98,7 @@ tasks:
       - 'isAlive() validates pid is a positive finite integer before calling process.kill'
       - 'Registered as IDaemonService singleton in container.ts'
       - 'Unit tests cover: write + read roundtrip, write atomicity (spy on rename), read when absent, delete when absent, isAlive true/false'
-      - 'Tests use SHEP_HOME env var for file isolation'
+      - 'Tests use SHIPIT_AI_HOME env var for file isolation'
     tdd:
       red:
         - 'Create packages/core/src/infrastructure/services/daemon/__tests__/daemon-pid.service.test.ts'
@@ -424,7 +424,7 @@ tasks:
     phaseId: phase-5
     title: 'Update README.md — Quick Start rewrite and CLI reference table'
     description: >
-      Rewrite the Quick Start section to exactly 3 steps: (1) npm install -g @shepai/cli,
+      Rewrite the Quick Start section to exactly 3 steps: (1) npm install -g @shipit-ai/cli,
       (2) run shep, (3) browser opens. Add a brief "Daemon Management" section explaining
       shep start/stop/status in 3-4 sentences. Update the CLI reference table to include
       shep start (with --port option), shep stop, and shep status with accurate descriptions.
@@ -446,10 +446,10 @@ tasks:
     title: 'Write E2E test for full daemon lifecycle'
     description: >
       Create tests/e2e/cli/daemon-lifecycle.spec.ts using Playwright test runner.
-      The test sets SHEP_HOME to a temp directory (os.tmpdir() + unique suffix), runs
+      The test sets SHIPIT_AI_HOME to a temp directory (os.tmpdir() + unique suffix), runs
       the compiled shep binary, and exercises the full lifecycle:
       (1) shep start: assert exit code 0, assert stdout contains localhost URL,
-          assert daemon.json is written in SHEP_HOME,
+          assert daemon.json is written in SHIPIT_AI_HOME,
       (2) shep status: assert exit code 0, assert stdout contains PID and port,
       (3) shep stop: assert exit code 0, assert daemon.json is deleted,
       (4) shep status again: assert output contains "not running".
@@ -459,7 +459,7 @@ tasks:
       - task-11
     acceptanceCriteria:
       - 'E2E test file exists at tests/e2e/cli/daemon-lifecycle.spec.ts'
-      - 'Tests use isolated SHEP_HOME temp directory, not real ~/.shep/'
+      - 'Tests use isolated SHIPIT_AI_HOME temp directory, not real ~/.shipit-ai/'
       - 'shep start exit code 0 and URL printed to stdout'
       - 'daemon.json is written with correct shape after start'
       - 'shep status exit code 0 and contains PID and port'

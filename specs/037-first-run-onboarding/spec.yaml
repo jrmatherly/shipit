@@ -224,8 +224,8 @@ content: |
   The monorepo uses pnpm workspaces with three packages:
 
   ```
-  . (@shepai/cli)              — CLI entry point + presentation layer
-  packages/core/ (@shepai/core) — Domain, Application, Infrastructure
+  . (@shipit-ai/cli)              — CLI entry point + presentation layer
+  packages/core/ (@shipit-ai/core) — Domain, Application, Infrastructure
   src/presentation/web/         — Next.js web UI
   ```
 

@@ -1,28 +1,28 @@
 #!/usr/bin/env node
 
 /**
- * Shep AI CLI Entry Point
+ * Shipit AI CLI Entry Point
  *
  * Autonomous AI Native SDLC Platform - CLI Interface
  *
  * Usage:
- *   shep [command] [options]
+ *   shipit-ai [command] [options]
  *
  * Commands:
- *   shep              Start the web UI daemon (or run onboarding on first run)
- *   shep start        Start the web UI as a background daemon
- *   shep stop         Stop the running web UI daemon
- *   shep restart      Restart (or start) the web UI daemon
- *   shep status       Show status and metrics of the running daemon
- *   shep version      Display version information
- *   shep ui           Start the web UI (foreground, interactive)
- *   shep run          Run an AI agent workflow
- *   shep agent        Manage and view agent runs
- *   shep feat         Manage features through the SDLC lifecycle
- *   shep repo         Manage tracked repositories
- *   shep settings     Configure Shep settings
- *   shep upgrade      Upgrade Shep CLI to the latest version
- *   shep --version    Display version number only
+ *   shipit-ai              Start the web UI daemon (or run onboarding on first run)
+ *   shipit-ai start        Start the web UI as a background daemon
+ *   shipit-ai stop         Stop the running web UI daemon
+ *   shipit-ai restart      Restart (or start) the web UI daemon
+ *   shipit-ai status       Show status and metrics of the running daemon
+ *   shipit-ai version      Display version information
+ *   shipit-ai ui           Start the web UI (foreground, interactive)
+ *   shipit-ai run          Run an AI agent workflow
+ *   shipit-ai agent        Manage and view agent runs
+ *   shipit-ai feat         Manage features through the SDLC lifecycle
+ *   shipit-ai repo         Manage tracked repositories
+ *   shipit-ai settings     Configure Shipit AI settings
+ *   shipit-ai upgrade      Upgrade Shipit AI CLI to the latest version
+ *   shipit-ai --version    Display version number only
  *
  * Global Options:
  *   -v, --version  Display version number
@@ -73,7 +73,7 @@ async function bootstrap() {
     try {
       await initializeContainer();
       // Expose the DI container on globalThis for the web UI's server-side code
-      (globalThis as Record<string, unknown>).__shepContainer = container;
+      (globalThis as Record<string, unknown>).__shipitAiContainer = container;
     } catch (error) {
       const err = error instanceof Error ? error : new Error(String(error));
       messages.error('Failed to initialize database', err);
@@ -106,7 +106,7 @@ async function bootstrap() {
     const { version, description } = versionService.getVersion();
 
     const program = new Command()
-      .name('shep')
+      .name('shipit-ai')
       .description(description)
       .version(version, '-v, --version', 'Display version number')
       // task-10: Default action starts the daemon (or shows already-running URL).

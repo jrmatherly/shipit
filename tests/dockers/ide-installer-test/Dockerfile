@@ -1,4 +1,4 @@
-# Multi-stage build for testing Shep CLI installation
+# Multi-stage build for testing Shipit AI CLI installation
 # This Dockerfile validates that the CLI builds correctly and can install all supported tools
 
 FROM node:22-bookworm
@@ -41,49 +41,49 @@ RUN echo "=== Checking build output ===" && \
 
 # Make CLI globally available
 RUN pnpm link --global && \
-    echo "=== Verifying shep command location ===" && \
-    which shep && \
+    echo "=== Verifying shipit-ai command location ===" && \
+    which shipit-ai && \
     ls -la /root/.local/bin/
 
 # Test installations for all supported tools (excluding manual-install-only tools)
 # vscode
 RUN echo "=== Installing vscode ===" && \
-    shep install vscode
+    shipit-ai install vscode
 
 RUN echo "=== Verifying vscode installation ===" && \
     code --version --no-sandbox --user-data-dir=/tmp/vscode-test
 
 # windsurf
 RUN echo "=== Installing windsurf ===" && \
-    shep install windsurf
+    shipit-ai install windsurf
 
 RUN echo "=== Verifying windsurf installation ===" && \
     windsurf --version --no-sandbox --user-data-dir=/tmp/windsurf-test
 
 # zed
 RUN echo "=== Installing zed ===" && \
-    shep install zed
+    shipit-ai install zed
 
 RUN echo "=== Verifying zed installation ===" && \
     ZED_ALLOW_ROOT=true zed --version
 
 # cursor-cli
 RUN echo "=== Installing cursor-cli ===" && \
-    shep install cursor-cli
+    shipit-ai install cursor-cli
 
 RUN echo "=== Verifying cursor-cli installation ===" && \
     cursor-agent --version
 
 # claude-code
 RUN echo "=== Installing claude-code ===" && \
-    shep install claude-code
+    shipit-ai install claude-code
 
 RUN echo "=== Verifying claude-code installation ===" && \
     claude --version
 
 # antigravity (note: autoInstall=false, so this will show instructions only)
 RUN echo "=== Installing antigravity (manual install tool) ===" && \
-    shep install antigravity
+    shipit-ai install antigravity
 
 # Manual installation tests for tools that require manual download
 # cursor IDE (manual AppImage installation for testing)
@@ -95,5 +95,5 @@ RUN echo "=== Manually installing Cursor IDE for testing ===" && \
 
 # Final verification that CLI is working
 RUN echo "=== Final CLI verification ===" && \
-    shep --version && \
+    shipit-ai --version && \
     echo "=== CLI build and tool installation test completed successfully ==="

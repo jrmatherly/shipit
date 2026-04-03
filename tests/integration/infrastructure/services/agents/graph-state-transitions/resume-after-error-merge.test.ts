@@ -178,7 +178,7 @@ describe('Graph State Transitions › Resume After Error at Merge', () => {
       };
     })();
 
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-resume-merge-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-resume-merge-'));
     specDir = join(tempDir, 'specs', '001-test');
     mkdirSync(specDir, { recursive: true });
   });

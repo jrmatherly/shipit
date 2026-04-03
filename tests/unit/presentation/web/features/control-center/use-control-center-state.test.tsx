@@ -69,7 +69,7 @@ const mockRepoNode: RepositoryNodeType = {
   type: 'repositoryNode',
   position: { x: 0, y: 0 },
   data: {
-    name: 'shep-ai/shep',
+    name: 'jrmatherly/shipit',
     repositoryPath: '/home/user/my-repo',
   },
 };
@@ -420,7 +420,7 @@ describe('useControlCenterState', () => {
     });
   });
 
-  describe('optimistic approve/reject (shep:feature-approved)', () => {
+  describe('optimistic approve/reject (shipit-ai:feature-approved)', () => {
     const actionRequiredFeature: FeatureNodeType = {
       id: 'feat-1',
       type: 'featureNode',
@@ -436,7 +436,7 @@ describe('useControlCenterState', () => {
       },
     };
 
-    it('transitions feature node to running state on shep:feature-approved event', () => {
+    it('transitions feature node to running state on shipit-ai:feature-approved event', () => {
       let capturedState: ControlCenterState | null = null;
       renderHook([actionRequiredFeature, mockRepoNode] as CanvasNodeType[], [], (state) => {
         capturedState = state;
@@ -449,7 +449,7 @@ describe('useControlCenterState', () => {
       // Dispatch the optimistic approval event
       act(() => {
         window.dispatchEvent(
-          new CustomEvent('shep:feature-approved', {
+          new CustomEvent('shipit-ai:feature-approved', {
             detail: { featureId: '1' },
           })
         );
@@ -475,7 +475,7 @@ describe('useControlCenterState', () => {
       // Dispatch the optimistic approval event (engages mutation guard)
       act(() => {
         window.dispatchEvent(
-          new CustomEvent('shep:feature-approved', {
+          new CustomEvent('shipit-ai:feature-approved', {
             detail: { featureId: '1' },
           })
         );
@@ -765,7 +765,7 @@ describe('useControlCenterState', () => {
       id: 'repo-1',
       type: 'repositoryNode',
       position: { x: 0, y: 0 },
-      data: { name: 'shep-ai/shep', repositoryPath: '/home/user/my-repo' },
+      data: { name: 'jrmatherly/shipit', repositoryPath: '/home/user/my-repo' },
     };
 
     const edgeRepoToFeat1: Edge = {
@@ -909,7 +909,7 @@ describe('useControlCenterState', () => {
         id: 'repo-1',
         type: 'repositoryNode',
         position: { x: 0, y: 100 },
-        data: { name: 'shep-ai/shep', repositoryPath: '/home/user/my-repo' },
+        data: { name: 'jrmatherly/shipit', repositoryPath: '/home/user/my-repo' },
       };
 
       const chainFeat1: FeatureNodeType = {

@@ -3,7 +3,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockGetSettings = vi.fn();
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   getSettings: mockGetSettings,
 }));
 
@@ -29,7 +29,7 @@ describe('openIde server action', () => {
     mockExecute.mockResolvedValue({
       ok: true,
       editorName: 'VS Code',
-      worktreePath: '/mock/.shep/repos/abc123/wt/feat-test',
+      worktreePath: '/mock/.shipit-ai/repos/abc123/wt/feat-test',
     });
     mockIsAbsolute.mockImplementation((p: string) => /^\//.test(p));
   });
@@ -83,7 +83,7 @@ describe('openIde server action', () => {
     expect(result).toEqual({
       success: true,
       editor: 'VS Code',
-      path: '/mock/.shep/repos/abc123/wt/feat-test',
+      path: '/mock/.shipit-ai/repos/abc123/wt/feat-test',
     });
   });
 
@@ -123,7 +123,7 @@ describe('openIde server action', () => {
     expect(result).toEqual({
       success: true,
       editor: 'VS Code',
-      path: '/mock/.shep/repos/abc123/wt/feat-test',
+      path: '/mock/.shipit-ai/repos/abc123/wt/feat-test',
     });
   });
 

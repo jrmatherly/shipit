@@ -1,5 +1,5 @@
 /**
- * @module Shep.UI.PrdQuestionnaire
+ * @module ShipitAI.UI.PrdQuestionnaire
  *
  * Defines value objects for the PRD questionnaire component used in the
  * requirements discovery phase. These models represent the structured

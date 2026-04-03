@@ -182,7 +182,7 @@ class AgentExecutorFactory implements IAgentExecutorFactory {
 
 **Decision:** `@langchain/langgraph-checkpoint-sqlite` (SqliteSaver) for production, `MemorySaver` for tests
 
-**Rationale:** SqliteSaver uses `better-sqlite3` — the same driver already in our dependency tree. It provides automatic checkpointing at every graph super-step, enabling crash-resume and time-travel debugging. The checkpoint tables live in the repo-level SQLite database (`~/.shep/repos/<encoded-path>/data`). MemorySaver is used in unit/integration tests for fast, isolated execution.
+**Rationale:** SqliteSaver uses `better-sqlite3` — the same driver already in our dependency tree. It provides automatic checkpointing at every graph super-step, enabling crash-resume and time-travel debugging. The checkpoint tables live in the repo-level SQLite database (`~/.shipit-ai/repos/<encoded-path>/data`). MemorySaver is used in unit/integration tests for fast, isolated execution.
 
 **Compatibility note:** `@langchain/langgraph-checkpoint-sqlite` depends on `better-sqlite3@^11.7.0`. Our project uses `^12.6.2`. We need to verify compatibility. If incompatible, we can use `MemorySaver` initially and implement a thin custom SqliteSaver adapter using our existing `better-sqlite3` connection.
 
@@ -199,7 +199,7 @@ class AgentExecutorFactory implements IAgentExecutorFactory {
 
 **Rationale:** LangGraph's checkpoint system already provides the "save state, crash, resume" pattern. Each graph invocation with a `thread_id` IS a job. Adding a thin `agent_runs` table stores user-facing metadata (job ID, agent name, status, start/end times, error messages) and an `agent_run_events` table provides an append-only observability log. BullMQ requires Redis (disqualified for CLI). Third-party SQLite queues add dependencies for functionality LangGraph provides natively.
 
-**Database scope:** The `agent_runs` table lives in the **global database** (`~/.shep/data`), NOT the per-repo database. Reasoning: (1) simpler — reuses the existing single DB connection from `initializeContainer()`, (2) enables cross-repo agent run history, (3) agent_runs stores the repo path in the prompt context. LangGraph checkpoints are stored in a **separate** per-repo SQLite file at `~/.shep/repos/<encoded-path>/checkpoints.db` (managed by SqliteSaver, outside our migration system).
+**Database scope:** The `agent_runs` table lives in the **global database** (`~/.shipit-ai/data`), NOT the per-repo database. Reasoning: (1) simpler — reuses the existing single DB connection from `initializeContainer()`, (2) enables cross-repo agent run history, (3) agent_runs stores the repo path in the prompt context. LangGraph checkpoints are stored in a **separate** per-repo SQLite file at `~/.shipit-ai/repos/<encoded-path>/checkpoints.db` (managed by SqliteSaver, outside our migration system).
 
 **Phase 2 (future):** Background execution via `child_process.fork()` with detached mode.
 
@@ -416,7 +416,7 @@ CREATE TABLE agent_runs (
 ## Security Considerations
 
 - **Auth is agent-specific**: Each `IAgentExecutor` implementation handles authentication per its agent type. Claude Code uses session auth (zero API key). Gemini CLI may use `gcloud` auth. Token-based agents receive tokens via environment variables in the subprocess (never CLI args, never logged).
-- **Token-based auth fallback**: If `Settings.agent.authMethod === 'token'`, the token from `Settings.agent.token` is passed via the appropriate environment variable to the subprocess (e.g., `ANTHROPIC_API_KEY` for Claude Code). Token stored in `~/.shep/data` SQLite with 0700 directory permissions.
+- **Token-based auth fallback**: If `Settings.agent.authMethod === 'token'`, the token from `Settings.agent.token` is passed via the appropriate environment variable to the subprocess (e.g., `ANTHROPIC_API_KEY` for Claude Code). Token stored in `~/.shipit-ai/data` SQLite with 0700 directory permissions.
 - **Subprocess isolation**: Each agent invocation runs in a separate child process. Crashes in the agent CLI do not crash the Shep CLI. This holds for all agent implementations.
 - **Tool scoping**: For agents that support it (checked via `supportsFeature('tool-scoping')`), tools are restricted per node. Analysis nodes get read-only tools. Report nodes get read/write. Agents without tool scoping run with their default permissions.
 - **Checkpoint Data**: LangGraph checkpoints contain graph state (analysis results, session IDs). Stored in repo-level SQLite database. No raw LLM conversation history in checkpoints — that stays in the agent's own session storage.

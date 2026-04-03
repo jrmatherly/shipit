@@ -6,7 +6,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { createQuestionSelectConfig } from '../../../../../src/presentation/tui/prompts/prd-review-question.prompt.js';
-import { shepTheme } from '../../../../../src/presentation/tui/themes/shep.theme.js';
+import { shipitAiTheme } from '../../../../../src/presentation/tui/themes/shipit-ai.theme.js';
 
 describe('createQuestionSelectConfig', () => {
   const options = [
@@ -47,8 +47,8 @@ describe('createQuestionSelectConfig', () => {
     expect(config.default).toBeUndefined();
   });
 
-  it('should use shepTheme', () => {
+  it('should use shipitAiTheme', () => {
     const config = createQuestionSelectConfig('Which approach?', options);
-    expect(config.theme).toBe(shepTheme);
+    expect(config.theme).toBe(shipitAiTheme);
   });
 });

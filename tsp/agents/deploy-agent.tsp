@@ -1,7 +1,7 @@
 /**
- * @module Shep.Agents.DeployAgent
+ * @module ShipitAI.Agents.DeployAgent
  *
- * Local Deployment Agent for the Shep AI system.
+ * Local Deployment Agent for the Shipit AI system.
  *
  * The LocalDeployAgent handles deployment of features, tasks, or action items
  * to local development environments. It can analyze repositories to determine

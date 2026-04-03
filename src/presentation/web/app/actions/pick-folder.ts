@@ -1,6 +1,6 @@
 'use server';
 
-import { FolderDialogService } from '@shepai/core/infrastructure/services/folder-dialog.service';
+import { FolderDialogService } from '@shipit-ai/core/infrastructure/services/folder-dialog.service';
 
 export async function pickFolder(): Promise<{ path: string | null; error?: string }> {
   const service = new FolderDialogService();

@@ -59,7 +59,7 @@ decisions:
     chosen: '--no-open as a standalone negatable flag (default: browser opens)'
     rejected:
       - '--open with --no-open negatable pair — Commander supports .option("--no-open") which creates options.open defaulting to undefined. However, .option("--open/--no-open") creates a true/false toggle. Since auto-open should be the default (on), a standalone --no-open flag is cleaner. Users only need to opt out, not opt in.'
-      - 'Environment variable SHEP_NO_OPEN — adds indirection. CLI flags are the standard pattern in this codebase. An env var could be added later if CI/headless use cases demand it, but YAGNI for now.'
+      - 'Environment variable SHIPIT_AI_NO_OPEN — adds indirection. CLI flags are the standard pattern in this codebase. An env var could be added later if CI/headless use cases demand it, but YAGNI for now.'
     rationale: >
       Commander.js supports boolean flags natively. Adding .option('--no-open', 'Do not auto-open browser')
       creates options.open which is undefined by default (treated as true/auto-open) and false

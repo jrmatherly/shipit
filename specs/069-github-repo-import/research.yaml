@@ -174,7 +174,7 @@ decisions:
     chosen: 'Add optional defaultCloneDirectory to EnvironmentConfig in TypeSpec settings model'
     rejected:
       - >
-        Use a CLI-only config file (~/.shep/clone-config.json) — Fragments
+        Use a CLI-only config file (~/.shipit-ai/clone-config.json) — Fragments
         configuration across two systems. Settings already has
         EnvironmentConfig for tooling preferences. A separate file would not
         be visible in the Web UI settings page.
@@ -353,14 +353,14 @@ openQuestions:
           Settings type. Stored in the settings JSON blob in SQLite. Editable
           via Web UI settings page and CLI settings command.
         selected: true
-      - option: Store in a separate ~/.shep/config.json file
+      - option: Store in a separate ~/.shipit-ai/config.json file
         description: >
           Create a lightweight JSON config file outside the Settings entity.
           Avoids a model change but fragments configuration across two
           persistence mechanisms. Web UI settings page would need separate
           read/write logic.
         selected: false
-      - option: Environment variable SHEP_CLONE_DIR only
+      - option: Environment variable SHIPIT_AI_CLONE_DIR only
         description: >
           Support only an environment variable for the clone directory.
           Zero persistence code needed but forces users to set env vars

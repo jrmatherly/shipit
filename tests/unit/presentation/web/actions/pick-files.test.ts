@@ -1,15 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockPickFiles = vi.fn<() => { path: string; name: string; size: number }[] | null>();
-vi.mock('@shepai/core/infrastructure/services/file-dialog.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/file-dialog.service', () => ({
   FileDialogService: class {
     pickFiles = mockPickFiles;
   },
 }));
 
-const { POST } = await import(
-  '../../../../../src/presentation/web/app/api/dialog/pick-files/route.js'
-);
+const { POST } =
+  await import('../../../../../src/presentation/web/app/api/dialog/pick-files/route.js');
 
 describe('POST /api/dialog/pick-files', () => {
   beforeEach(() => {

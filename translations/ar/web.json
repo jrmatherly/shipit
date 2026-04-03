@@ -157,7 +157,7 @@
       "channels": "القنوات",
       "inApp": "داخل التطبيق",
       "inAppLabel": "داخل التطبيق",
-      "inAppDescription": "الإشعارات داخل واجهة Shep",
+      "inAppDescription": "الإشعارات داخل واجهة Shipit AI",
       "subsections": {
         "agentEvents": "أحداث الوكيل",
         "pullRequestEvents": "أحداث طلب السحب"
@@ -227,7 +227,7 @@
       "location": "الموقع",
       "locationDescription": "مسار قاعدة بيانات SQLite المحلية",
       "size": "الحجم",
-      "hint": "جميع الإعدادات مخزنة في قاعدة بيانات SQLite محلية في ~/.shep/data. تستخدم قاعدة البيانات نمط سجل مفرد مع ترحيلات تلقائية عند البدء.",
+      "hint": "جميع الإعدادات مخزنة في قاعدة بيانات SQLite محلية في ~/.shipit-ai/data. تستخدم قاعدة البيانات نمط سجل مفرد مع ترحيلات تلقائية عند البدء.",
       "links": {
         "settingsService": "خدمة الإعدادات",
         "settingsSpec": "مواصفات الإعدادات"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "إضافة مشروع",
     "addProjectDescription": "أضف مجلد مشروعك لفتح إمكانية إنشاء الميزات.",
-    "addProjectDescriptionLine2": "صِف ما تحتاجه \u2014 Shep يتولى الباقي.",
+    "addProjectDescriptionLine2": "صِف ما تحتاجه \u2014 Shipit AI يتولى الباقي.",
     "checkingSetup": "جارٍ التحقق من الإعداد\u2026",
     "ready": "{{label}} جاهز",
     "notInstalled": "{{label}} غير مثبت",
@@ -303,7 +303,7 @@
     "loadingAgents": "جارٍ تحميل الوكلاء\u2026",
     "chooseAgent": "اختر وكيلك",
     "pickModel": "اختر نموذجًا",
-    "selectAgentSubtitle": "اختر وكيل البرمجة بالذكاء الاصطناعي الذي تريد أن يستخدمه Shep.",
+    "selectAgentSubtitle": "اختر وكيل البرمجة بالذكاء الاصطناعي الذي تريد أن يستخدمه Shipit AI.",
     "chooseModelSubtitle": "اختر نموذج {{label}} المراد تشغيله.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> مطلوب لإمكانيات الإصلاح الذاتي الكاملة لـ CI/CD. <1>قم بتثبيته من هنا</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "من GitHub"
   },
   "chat": {
-    "shepChat": "محادثة Shep",
+    "shipitAiChat": "محادثة Shipit AI",
     "writeMessage": "اكتب رسالة...",
     "attachFiles": "إرفاق ملفات",
     "forceStopAgent": "إيقاف الوكيل إجبارياً",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "استيراد من GitHub",
-    "description": "استنساخ مستودع GitHub وإضافته إلى Shep.",
+    "description": "استنساخ مستودع GitHub وإضافته إلى Shipit AI.",
     "githubUrl": "رابط GitHub",
     "urlPlaceholder": "owner/repo أو https://github.com/owner/repo",
     "searchRepositories": "البحث عن مستودعات..."

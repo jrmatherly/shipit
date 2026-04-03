@@ -16,7 +16,7 @@ const sampleAttachment: Attachment = {
   name: 'screenshot.png',
   size: BigInt(150000),
   mimeType: 'image/png',
-  path: '.shep/attachments/my-feature/screenshot.png',
+  path: '.shipit-ai/attachments/my-feature/screenshot.png',
   createdAt: new Date('2026-03-08T10:00:00Z'),
 };
 

@@ -369,7 +369,7 @@ describe('StartFeatureUseCase (integration)', () => {
     expect(initial!.lifecycle).toBe(SdlcLifecycle.Pending);
     expect(processService.spawn).not.toHaveBeenCalled();
 
-    // 4. Start the feature (as `shep feat start <fid>` would)
+    // 4. Start the feature (as `shipit-ai feat start <fid>` would)
     const result = await useCase.execute(feature.id);
 
     // 5. Verify transition

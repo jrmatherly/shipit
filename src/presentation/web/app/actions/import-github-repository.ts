@@ -1,13 +1,13 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { ImportGitHubRepositoryUseCase } from '@shepai/core/application/use-cases/repositories/import-github-repository.use-case';
-import type { Repository } from '@shepai/core/domain/generated/output';
+import type { ImportGitHubRepositoryUseCase } from '@shipit-ai/core/application/use-cases/repositories/import-github-repository.use-case';
+import type { Repository } from '@shipit-ai/core/domain/generated/output';
 import {
   GitHubAuthError,
   GitHubUrlParseError,
   GitHubCloneError,
-} from '@shepai/core/application/ports/output/services/github-repository-service.interface';
+} from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
 
 interface ImportGitHubRepositoryInput {
   url: string;

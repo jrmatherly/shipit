@@ -1,7 +1,7 @@
 /**
- * @module Shep.Common.Enums.Agent
+ * @module ShipitAI.Common.Enums.Agent
  *
- * Defines enums for agent status tracking in the Shep AI platform.
+ * Defines enums for agent status tracking in the Shipit AI platform.
  * Agents are AI-powered components that perform autonomous tasks.
  */
 /**

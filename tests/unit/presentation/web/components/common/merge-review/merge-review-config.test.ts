@@ -1,5 +1,5 @@
 import { describe, it, expectTypeOf, vi } from 'vitest';
-import { PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import type {
   MergeReviewData,
   MergeReviewProps,

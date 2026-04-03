@@ -4,25 +4,25 @@ import { createHash } from 'node:crypto';
 import { readFileSync, existsSync } from 'node:fs';
 import { basename, join, dirname } from 'node:path';
 import { resolve } from '@/lib/server-container';
-import type { IFeatureRepository } from '@shepai/core/application/ports/output/repositories/feature-repository.interface';
-import type { IGitPrService } from '@shepai/core/application/ports/output/services/git-pr-service.interface';
+import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
+import type { IGitPrService } from '@shipit-ai/core/application/ports/output/services/git-pr-service.interface';
 import type {
   MergeReviewData,
   MergeReviewEvidence,
 } from '@/components/common/merge-review/merge-review-config';
-import { computeWorktreePath } from '@shepai/core/infrastructure/services/ide-launchers/compute-worktree-path';
-import { getShepHomeDir } from '@shepai/core/infrastructure/services/filesystem/shep-directory.service';
-import { getSettings } from '@shepai/core/infrastructure/services/settings.service';
+import { computeWorktreePath } from '@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path';
+import { getShipitAiHomeDir } from '@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service';
+import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 
 type GetMergeReviewDataResult = MergeReviewData | { error: string };
 
 /**
  * Compute the shep evidence directory for a given repository and feature.
- * Path: ~/.shep/repos/<sha256-hash-prefix>/evidence/<featureId>/
+ * Path: ~/.shipit-ai/repos/<sha256-hash-prefix>/evidence/<featureId>/
  */
 function computeEvidenceDir(repositoryPath: string, featureId: string): string {
   const repoHash = createHash('sha256').update(repositoryPath).digest('hex').slice(0, 16);
-  return join(getShepHomeDir(), 'repos', repoHash, 'evidence', featureId).replace(/\\/g, '/');
+  return join(getShipitAiHomeDir(), 'repos', repoHash, 'evidence', featureId).replace(/\\/g, '/');
 }
 
 /**
@@ -99,7 +99,7 @@ export async function getMergeReviewData(featureId: string): Promise<GetMergeRev
 
     // Load evidence manifest (best-effort).
     // Evidence is stored independently of the worktree at:
-    //   ~/.shep/repos/<hash>/evidence/<featureId>/manifest.json
+    //   ~/.shipit-ai/repos/<hash>/evidence/<featureId>/manifest.json
     // We compute this path from repositoryPath so evidence is accessible
     // even after the worktree has been deleted post-merge.
     let evidence: MergeReviewEvidence[] | undefined;

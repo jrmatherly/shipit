@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.InteractiveSession
+ * @module ShipitAI.Agents.InteractiveSession
  *
  * Persistent record of a per-feature interactive agent session.
  * Each session corresponds to a single long-lived OS process spawned

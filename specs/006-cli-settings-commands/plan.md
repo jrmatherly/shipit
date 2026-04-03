@@ -32,7 +32,7 @@ graph TB
 
     subgraph "Infrastructure Layer (Existing)"
         SETTINGS_REPO[SQLiteSettingsRepository]
-        DB[SQLite DB<br/>~/.shep/data]
+        DB[SQLite DB<br/>~/.shipit-ai/data]
     end
 
     CLI --> SETTINGS_CMD
@@ -308,7 +308,7 @@ Since CLI commands integrate use cases with UI, E2E tests serve as integration t
 
 **Test Framework:** Playwright (already configured for E2E)
 
-**Test Setup:** Use test database in `~/.shep-test/`
+**Test Setup:** Use test database in `~/.shipit-ai-test/`
 
 ## Risk Mitigation
 

@@ -4,7 +4,7 @@ Guidance for AI coding agents (Cursor, Windsurf, Copilot, etc.) working in this 
 
 ## Project
 
-`@shepai/cli` — Autonomous AI Native SDLC Platform. Users run `shep` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
+`@shipit-ai/cli` — Autonomous AI Native SDLC Platform. Users run `shipit-ai` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
 
 ## Spec Workflow
 

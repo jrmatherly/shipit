@@ -29,7 +29,7 @@ export interface SkillData {
 
 const CATEGORY_RULES: { test: (name: string) => boolean; category: SkillCategory }[] = [
   { test: (name) => name.startsWith('shep-kit:'), category: 'Workflow' },
-  { test: (name) => name.startsWith('shep:'), category: 'Code Generation' },
+  { test: (name) => name.startsWith('shipit-ai:'), category: 'Code Generation' },
   { test: (name) => /(?:review|validate|cross-validate)/.test(name), category: 'Analysis' },
 ];
 
@@ -42,7 +42,7 @@ export function deriveCategory(name: string): SkillCategory {
 
 // ── Display Name ─────────────────────────────────────────────────────────────
 
-const DISPLAY_NAME_PREFIXES = ['shep-kit:', 'shep:'];
+const DISPLAY_NAME_PREFIXES = ['shep-kit:', 'shipit-ai:'];
 
 export function getDisplayName(name: string): string {
   for (const prefix of DISPLAY_NAME_PREFIXES) {
@@ -169,7 +169,7 @@ async function getSkillsFromDirectory(dirPath: string, source: SkillSource): Pro
 }
 
 export async function getSkills(projectRoot?: string, homeDir?: string): Promise<SkillData[]> {
-  const root = projectRoot ?? process.env.NEXT_PUBLIC_SHEP_INSTANCE_PATH ?? process.cwd();
+  const root = projectRoot ?? process.env.NEXT_PUBLIC_SHIPIT_AI_INSTANCE_PATH ?? process.cwd();
   const home = homeDir ?? homedir();
 
   const projectDir = join(root, '.claude', 'skills');

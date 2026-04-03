@@ -1,5 +1,5 @@
 /**
- * @shepai/core Application Layer
+ * @shipit-ai/core Application Layer
  *
  * Exports all use cases and port interfaces.
  */

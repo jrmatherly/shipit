@@ -8,7 +8,7 @@
 export interface VersionInfo {
   /** Package version (e.g., "1.6.1") */
   version: string;
-  /** Package name (e.g., "@shepai/cli") */
+  /** Package name (e.g., "@shipit-ai/cli") */
   name: string;
   /** Package description */
   description: string;
@@ -17,6 +17,6 @@ export interface VersionInfo {
 /** Default version info when package.json cannot be read */
 export const DEFAULT_VERSION_INFO: VersionInfo = {
   version: 'unknown',
-  name: '@shepai/cli',
+  name: '@shipit-ai/cli',
   description: 'Autonomous AI Native SDLC Platform',
 };

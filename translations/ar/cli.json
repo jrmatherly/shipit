@@ -1,7 +1,7 @@
 {
   "commands": {
     "settings": {
-      "description": "إدارة إعدادات Shep العامة",
+      "description": "إدارة إعدادات Shipit AI العامة",
       "wizardFailed": "فشل معالج الإعدادات",
       "show": {
         "description": "عرض الإعدادات الحالية",
@@ -11,7 +11,7 @@
       "init": {
         "description": "تهيئة الإعدادات إلى القيم الافتراضية",
         "forceOption": "تخطي مطالبة التأكيد",
-        "resetWarning": "سيؤدي هذا إلى إعادة تعيين جميع الإعدادات إلى القيم الافتراضية. يُنصح بعمل نسخة احتياطية من ~/.shep/data أولاً.",
+        "resetWarning": "سيؤدي هذا إلى إعادة تعيين جميع الإعدادات إلى القيم الافتراضية. يُنصح بعمل نسخة احتياطية من ~/.shipit-ai/data أولاً.",
         "confirmPrompt": "هل أنت متأكد؟ (y/N): ",
         "cancelled": "تم إلغاء العملية.",
         "success": "تمت تهيئة الإعدادات إلى القيم الافتراضية.",
@@ -39,7 +39,7 @@
       "model": {
         "description": "تكوين نموذج LLM الافتراضي لتشغيل الوكيل",
         "selectPrompt": "اختر نموذج LLM الافتراضي",
-        "noModels": "لا توجد نماذج متاحة للوكيل \"{{agentType}}\". قم بتكوين وكيل مختلف باستخدام: shep settings agent",
+        "noModels": "لا توجد نماذج متاحة للوكيل \"{{agentType}}\". قم بتكوين وكيل مختلف باستخدام: shipit-ai settings agent",
         "success": "تم تكوين النموذج: {{model}}",
         "cancelled": "تم إلغاء التكوين.",
         "failed": "فشل تكوين النموذج"
@@ -78,31 +78,31 @@
       "platformLabel": "المنصة:"
     },
     "start": {
-      "description": "بدء واجهة Shep الويب كخدمة خلفية",
+      "description": "بدء واجهة Shipit AI الويب كخدمة خلفية",
       "portOption": "رقم المنفذ (1024-65535)",
       "portValidation": "يجب أن يكون المنفذ عددًا صحيحًا بين 1024 و 65535"
     },
     "stop": {
-      "description": "إيقاف خدمة Shep الويب الخلفية العاملة",
-      "noDaemonRunning": "لا توجد خدمة Shep خلفية قيد التشغيل."
+      "description": "إيقاف خدمة Shipit AI الويب الخلفية العاملة",
+      "noDaemonRunning": "لا توجد خدمة Shipit AI خلفية قيد التشغيل."
     },
     "restart": {
-      "description": "إعادة تشغيل خدمة Shep الويب الخلفية بسلاسة (تبدأها إذا لم تكن قيد التشغيل)",
+      "description": "إعادة تشغيل خدمة Shipit AI الويب الخلفية بسلاسة (تبدأها إذا لم تكن قيد التشغيل)",
       "portOption": "رقم المنفذ (1024-65535)",
       "portValidation": "يجب أن يكون المنفذ عددًا صحيحًا بين 1024 و 65535",
       "daemonNotRunning": "الخدمة الخلفية لم تكن قيد التشغيل — جارٍ البدء..."
     },
     "status": {
-      "description": "عرض حالة خدمة Shep الويب الخلفية",
+      "description": "عرض حالة خدمة Shipit AI الويب الخلفية",
       "logsOption": "عرض آخر N سطر من سجل الخدمة الخلفية (الافتراضي 50)",
       "followOption": "متابعة مخرجات سجل الخدمة الخلفية في الوقت الفعلي",
       "noLogFile": "لم يتم العثور على ملف سجل الخدمة الخلفية.",
       "expectedAt": "المتوقع في: {{path}}",
       "logEmpty": "ملف السجل فارغ.",
       "followHint": "--- متابعة daemon.log (Ctrl+C للإيقاف) ---",
-      "notRunning": "خدمة Shep الخلفية ليست قيد التشغيل.",
-      "startHint": "شغّل `shep start` لتشغيلها.",
-      "title": "حالة خدمة Shep الخلفية",
+      "notRunning": "خدمة Shipit AI الخلفية ليست قيد التشغيل.",
+      "startHint": "شغّل `shipit-ai start` لتشغيلها.",
+      "title": "حالة خدمة Shipit AI الخلفية",
       "pidLabel": "PID",
       "portLabel": "المنفذ",
       "urlLabel": "URL",
@@ -111,7 +111,7 @@
       "cpuLabel": "المعالج %",
       "memoryLabel": "الذاكرة (RSS)",
       "envTitle": "البيئة",
-      "shepHomeLabel": "مجلد Shep الرئيسي",
+      "shipitAiHomeLabel": "مجلد Shipit AI الرئيسي",
       "cliVersionLabel": "إصدار CLI",
       "nodeVersionLabel": "إصدار Node",
       "dbPathLabel": "مسار قاعدة البيانات",
@@ -119,11 +119,11 @@
       "daemonConfigLabel": "تكوين الخدمة الخلفية"
     },
     "ui": {
-      "description": "بدء واجهة Shep الويب",
+      "description": "بدء واجهة Shipit AI الويب",
       "portOption": "رقم المنفذ (1024-65535)",
       "noOpenOption": "عدم فتح المتصفح تلقائيًا",
       "portValidation": "يجب أن يكون المنفذ عددًا صحيحًا بين 1024 و 65535",
-      "heading": "واجهة Shep الويب",
+      "heading": "واجهة Shipit AI الويب",
       "startingDev": "جارٍ بدء خادم الويب (وضع التطوير)...",
       "starting": "جارٍ بدء خادم الويب...",
       "serverReady": "الخادم جاهز على {{url}}",
@@ -559,7 +559,7 @@
       }
     },
     "upgrade": {
-      "description": "ترقية Shep CLI إلى أحدث إصدار",
+      "description": "ترقية Shipit AI CLI إلى أحدث إصدار",
       "versionCheckTimeout": "تعذر إكمال فحص الإصدار (انتهت المهلة)",
       "versionCheckFailed": "تعذر إكمال فحص الإصدار",
       "alreadyUpToDate": "محدّث بالفعل (v{{version}})",
@@ -568,7 +568,7 @@
       "stoppingDaemon": "جارٍ إيقاف الخدمة الخلفية قبل الترقية...",
       "restartingDaemon": "جارٍ إعادة تشغيل الخدمة الخلفية...",
       "daemonRestarted": "تمت إعادة تشغيل الخدمة الخلفية بنجاح.",
-      "upgradeSuccess": "تمت ترقية Shep CLI بنجاح",
+      "upgradeSuccess": "تمت ترقية Shipit AI CLI بنجاح",
       "upgradeFailed": "فشلت الترقية",
       "upgradeFailedDaemonRestored": "فشلت الترقية — تمت استعادة الخدمة الخلفية على الإصدار السابق."
     },
@@ -588,17 +588,17 @@
       "installingHeading": "جارٍ تثبيت {{tool}}"
     },
     "daemon": {
-      "alreadyRunning": "Shep يعمل بالفعل على {{url}}",
-      "heading": "واجهة Shep الويب",
+      "alreadyRunning": "Shipit AI يعمل بالفعل على {{url}}",
+      "heading": "واجهة Shipit AI الويب",
       "startingServer": "جارٍ بدء الخادم",
       "daemonSpawned": "تم تشغيل الخدمة الخلفية على {{url}}",
       "serverReady": "الخادم جاهز على {{url}}",
       "serverMayBeStarting": "قد يكون الخادم لا يزال في مرحلة البدء على {{url}}",
       "daemonFailed": "فشلت الخدمة الخلفية في البدء (رمز الخروج {{code}}).",
       "checkLogs": "تحقق من السجلات: {{path}}",
-      "stoppingDaemon": "جارٍ إيقاف خدمة Shep الخلفية (PID {{pid}})...",
+      "stoppingDaemon": "جارٍ إيقاف خدمة Shipit AI الخلفية (PID {{pid}})...",
       "sigkillFallback": "لم تتوقف الخدمة الخلفية بسلاسة، جارٍ إرسال SIGKILL...",
-      "daemonStopped": "تم إيقاف خدمة Shep الخلفية."
+      "daemonStopped": "تم إيقاف خدمة Shipit AI الخلفية."
     },
     "logViewer": {
       "noLogFile": "لم يتم العثور على ملف سجل لـ {{label}}",

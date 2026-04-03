@@ -1,7 +1,7 @@
 /**
  * Model Settings Command Unit Tests
  *
- * Tests for the `shep settings model` command.
+ * Tests for the `shipit-ai settings model` command.
  *
  * TDD Phase: RED → GREEN
  */

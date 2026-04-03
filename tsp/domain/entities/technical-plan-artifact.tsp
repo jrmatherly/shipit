@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.TechnicalPlanArtifact
+ * @module ShipitAI.Domain.Entities.TechnicalPlanArtifact
  *
  * Defines the TechnicalPlanArtifact entity representing a technical implementation plan.
  * This maps to the `plan.yaml` file in the YAML-first spec system.

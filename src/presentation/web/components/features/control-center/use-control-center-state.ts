@@ -233,8 +233,8 @@ export function useControlCenterState(
       updateFeature(`feat-${featureId}`, { state: 'running' });
       endMutation();
     };
-    window.addEventListener('shep:feature-approved', handler);
-    return () => window.removeEventListener('shep:feature-approved', handler);
+    window.addEventListener('shipit-ai:feature-approved', handler);
+    return () => window.removeEventListener('shipit-ai:feature-approved', handler);
   }, [updateFeature, beginMutation, endMutation]);
 
   // Separate effect: fetch metadata (name + description) when SSE reports it changed

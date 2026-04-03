@@ -19,7 +19,7 @@ status:
   lastUpdated: '2026-02-16T18:15:00Z'
   lastUpdatedBy: 'shep-kit:commit-pr'
 
-prUrl: 'https://github.com/shep-ai/shep/pull/49'
+prUrl: 'https://github.com/jrmatherly/shipit/pull/49'
 
 validation:
   lastRun: '2026-02-16T22:35:00Z'
@@ -64,7 +64,7 @@ checkpoints:
     completedAt: '2026-02-16T18:00:00Z'
     completedBy: 'manual'
     notes: >
-      Extract @shepai/core workspace package plan added. Tasks 8 and 10 superseded by
+      Extract @shipit-ai/core workspace package plan added. Tasks 8 and 10 superseded by
       tasks 15-22 covering: scaffold core package, move domain/application/infrastructure
       layers, clean up root package, control center data layer, globalThis bridge, and
       final validation. Size estimate upgraded to XL.
@@ -72,7 +72,7 @@ checkpoints:
     completedAt: '2026-02-16T22:35:00Z'
     completedBy: 'shep-kit:implement'
     notes: >
-      All 8 extraction tasks (15-22) completed. @shepai/core workspace package created with
+      All 8 extraction tasks (15-22) completed. @shipit-ai/core workspace package created with
       domain, application, and infrastructure layers. Control center now derives state from
       Feature.plan.tasks via deriveNodeState()/deriveProgress(). globalThis bridge updated
       to use ListFeaturesUseCase. 841 unit tests + 117 integration tests pass. All typechecks clean.

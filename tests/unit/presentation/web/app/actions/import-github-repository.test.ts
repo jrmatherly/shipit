@@ -11,9 +11,8 @@ vi.mock('@/lib/server-container', () => ({
 const { importGitHubRepository } = await import('@/app/actions/import-github-repository');
 
 // Import error classes after vi.mock (they are real classes, not mocked)
-const { GitHubAuthError, GitHubUrlParseError, GitHubCloneError } = await import(
-  '@shepai/core/application/ports/output/services/github-repository-service.interface'
-);
+const { GitHubAuthError, GitHubUrlParseError, GitHubCloneError } =
+  await import('@shipit-ai/core/application/ports/output/services/github-repository-service.interface');
 
 describe('importGitHubRepository', () => {
   beforeEach(() => {

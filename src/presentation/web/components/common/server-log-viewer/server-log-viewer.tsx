@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 import { Terminal } from 'lucide-react';
-import type { LogEntry } from '@shepai/core/application/ports/output/services/deployment-service.interface';
+import type { LogEntry } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useDeploymentLogs } from '@/hooks/use-deployment-logs';
 

@@ -7,7 +7,7 @@
 
 import { AgentAuthMethod } from '@/domain/generated/output.js';
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 /**
  * Creates the @inquirer/select configuration for selecting an authentication method.
@@ -31,6 +31,6 @@ export function createAuthMethodConfig() {
         description: t('tui:prompts.selectAuthMethod.choices.token.description'),
       },
     ],
-    theme: shepTheme,
+    theme: shipitAiTheme,
   };
 }

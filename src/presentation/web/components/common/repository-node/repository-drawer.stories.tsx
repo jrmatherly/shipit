@@ -19,8 +19,8 @@ type Story = StoryObj<typeof RepositoryDrawer>;
 
 const repoData: RepositoryNodeData = {
   id: 'repo-1',
-  name: 'shep-ai/shep',
-  repositoryPath: '/home/user/shep-ai/shep',
+  name: 'jrmatherly/shipit',
+  repositoryPath: '/home/user/jrmatherly/shipit',
 };
 
 function DrawerTrigger({ data, label }: { data: RepositoryNodeData; label: string }) {
@@ -45,7 +45,7 @@ export const LongPath: Story = {
     <DrawerTrigger
       data={{
         ...repoData,
-        repositoryPath: '/home/user/projects/company/some-very-long-path/shep-ai/shep',
+        repositoryPath: '/home/user/projects/company/some-very-long-path/jrmatherly/shipit',
       }}
       label="Open Long Path"
     />

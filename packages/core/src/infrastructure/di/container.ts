@@ -276,7 +276,7 @@ export async function initializeContainer(): Promise<typeof container> {
     },
   });
 
-  if (process.env.SHEP_MOCK_EXECUTOR === '1') {
+  if (process.env.SHIPIT_AI_MOCK_EXECUTOR === '1') {
     container.register<IAgentExecutorFactory>('IAgentExecutorFactory', {
       useFactory: () => new MockAgentExecutorFactory(),
     });
@@ -432,7 +432,7 @@ export async function initializeContainer(): Promise<typeof container> {
   container.registerSingleton(GetAgentSessionUseCase);
 
   // String-token aliases for web routes (Turbopack can't resolve .js→.ts
-  // imports inside @shepai/core, so routes use string tokens instead of class refs)
+  // imports inside @shipit-ai/core, so routes use string tokens instead of class refs)
   container.register('CreateFeatureUseCase', {
     useFactory: (c) => c.resolve(CreateFeatureUseCase),
   });
@@ -579,7 +579,7 @@ export async function initializeContainer(): Promise<typeof container> {
   container.registerSingleton(GetInteractiveChatStateUseCase);
 
   // String-token aliases for web routes (Turbopack can't resolve .js→.ts
-  // imports inside @shepai/core, so routes use string tokens instead of class refs)
+  // imports inside @shipit-ai/core, so routes use string tokens instead of class refs)
   container.register('StartInteractiveSessionUseCase', {
     useFactory: (c) => c.resolve(StartInteractiveSessionUseCase),
   });

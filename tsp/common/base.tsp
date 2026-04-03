@@ -1,7 +1,7 @@
 /**
  * Base Entity Templates
  *
- * Provides foundational model templates for all domain entities in the Shep AI
+ * Provides foundational model templates for all domain entities in the Shipit AI
  * system. These base models establish consistent patterns for identity management,
  * timestamps, soft deletion, and audit trails.
  *

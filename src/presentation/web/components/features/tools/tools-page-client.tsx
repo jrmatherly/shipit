@@ -5,7 +5,7 @@ import { Wrench } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { cn } from '@/lib/utils';
 import { ToolCard } from './tool-card';
-import type { ToolItem } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 export interface ToolsPageClientProps {
   tools: ToolItem[];

@@ -1,12 +1,12 @@
-import type { Feature, AgentRun } from '@shepai/core/domain/generated/output';
-import { AgentRunStatus } from '@shepai/core/domain/generated/output';
+import type { Feature, AgentRun } from '@shipit-ai/core/domain/generated/output';
+import { AgentRunStatus } from '@shipit-ai/core/domain/generated/output';
 import {
   deriveNodeState,
   deriveProgress,
   deriveLifecycle,
 } from '@/components/common/feature-node/derive-feature-state';
-import { isProcessAlive } from '@shepai/core/infrastructure/services/process/is-process-alive';
-import { computeWorktreePath } from '@shepai/core/infrastructure/services/ide-launchers/compute-worktree-path';
+import { isProcessAlive } from '@shipit-ai/core/infrastructure/services/process/is-process-alive';
+import { computeWorktreePath } from '@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path';
 import type { FeatureNodeData } from '@/components/common/feature-node';
 
 export interface BuildFeatureNodeDataOptions {

@@ -1,7 +1,7 @@
 /**
- * @module Shep.Common.Enums.States
+ * @module ShipitAI.Common.Enums.States
  *
- * Defines state enums for various entities in the Shep AI platform.
+ * Defines state enums for various entities in the Shipit AI platform.
  * Each state enum represents the lifecycle states of a specific entity type.
  */
 /**

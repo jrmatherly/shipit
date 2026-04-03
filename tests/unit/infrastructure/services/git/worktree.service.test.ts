@@ -363,12 +363,16 @@ describe('WorktreeService', () => {
       expect(mockExecFile).toHaveBeenCalledWith('git', ['init', '-b', 'main'], {
         cwd: '/plain/dir',
       });
-      expect(mockExecFile).toHaveBeenCalledWith('git', ['config', 'user.name', 'shep-ai[bot]'], {
+      expect(mockExecFile).toHaveBeenCalledWith('git', ['config', 'user.name', 'shipit-ai[bot]'], {
         cwd: '/plain/dir',
       });
-      expect(mockExecFile).toHaveBeenCalledWith('git', ['config', 'user.email', 'bot@shep.bot'], {
-        cwd: '/plain/dir',
-      });
+      expect(mockExecFile).toHaveBeenCalledWith(
+        'git',
+        ['config', 'user.email', 'bot@shipit-ai.bot'],
+        {
+          cwd: '/plain/dir',
+        }
+      );
       expect(mockExecFile).toHaveBeenCalledWith('git', ['add', '.'], { cwd: '/plain/dir' });
       expect(mockExecFile).toHaveBeenCalledWith(
         'git',
@@ -432,12 +436,12 @@ describe('WorktreeService', () => {
   });
 
   describe('getWorktreePath', () => {
-    it('should compute path under ~/.shep/repos/HASH/wt/SLUG', () => {
+    it('should compute path under ~/.shipit-ai/repos/HASH/wt/SLUG', () => {
       const result = service.getWorktreePath('/home/user/repo', 'feat/my-feature');
       // Should NOT be inside the repo
       expect(result).not.toContain('/home/user/repo/');
-      // Should be under ~/.shep/repos/
-      expect(result).toContain('.shep/repos/');
+      // Should be under ~/.shipit-ai/repos/
+      expect(result).toContain('.shipit-ai/repos/');
       expect(result).toContain('/wt/');
       // Slashes in branch should be replaced with hyphens
       expect(result).toContain('feat-my-feature');

@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.Enums.AgentRunStatus
+ * @module ShipitAI.Agents.Enums.AgentRunStatus
  *
  * Execution state of an agent run. Tracks the lifecycle from
  * creation through completion, failure, or interruption.

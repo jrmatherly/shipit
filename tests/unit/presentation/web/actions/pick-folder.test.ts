@@ -1,15 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 const mockPickFolder = vi.fn<() => string | null>();
-vi.mock('@shepai/core/infrastructure/services/folder-dialog.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/folder-dialog.service', () => ({
   FolderDialogService: class {
     pickFolder = mockPickFolder;
   },
 }));
 
-const { pickFolder } = await import(
-  '../../../../../src/presentation/web/app/actions/pick-folder.js'
-);
+const { pickFolder } =
+  await import('../../../../../src/presentation/web/app/actions/pick-folder.js');
 
 describe('pickFolder server action', () => {
   beforeEach(() => {

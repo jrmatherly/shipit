@@ -120,7 +120,7 @@ export class FeatureAgentProcessService implements IFeatureAgentProcessService {
       args.push('--resume-reason', options.resumeReason);
     }
     // Create log file for worker output (for debugging)
-    const logsDir = join(homedir(), '.shep', 'logs');
+    const logsDir = join(homedir(), '.shipit-ai', 'logs');
     mkdirSync(logsDir, { recursive: true });
     const logPath = join(logsDir, `worker-${runId}.log`);
     const logFd = openSync(logPath, 'a');
@@ -152,7 +152,7 @@ export class FeatureAgentProcessService implements IFeatureAgentProcessService {
 
   async checkAndMarkCrashed(runId: string): Promise<void> {
     const run = await this.runRepository.findById(runId);
-    if (!run || !run.pid || TERMINAL_STATUSES.has(run.status)) {
+    if (!run?.pid || TERMINAL_STATUSES.has(run.status)) {
       return;
     }
 

@@ -1,7 +1,7 @@
 /**
  * _serve Command Unit Tests
  *
- * Tests for the hidden `shep _serve` daemon entry point command.
+ * Tests for the hidden `shipit-ai _serve` daemon entry point command.
  *
  * TDD Phase: RED
  */
@@ -22,7 +22,7 @@ vi.mock('@/infrastructure/di/container.js', () => ({
         return {
           getVersion: vi.fn().mockReturnValue({
             version: '1.0.0',
-            name: '@shepai/cli',
+            name: '@shipit-ai/cli',
             description: 'Test description',
           }),
         };

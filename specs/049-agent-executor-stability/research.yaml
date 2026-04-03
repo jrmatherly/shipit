@@ -21,7 +21,7 @@ technologies:
   - Vitest (unit testing)
 
 relatedLinks:
-  - https://github.com/shep-ai/shep/issues/211
+  - https://github.com/jrmatherly/shipit/issues/211
 
 # Structured technology decisions
 decisions:
@@ -29,7 +29,7 @@ decisions:
     chosen: 'CLI argument --agent-type <value>'
     rejected:
       - >
-        Environment variable (SHEP_AGENT_TYPE): Adds implicit coupling through the
+        Environment variable (SHIPIT_AI_AGENT_TYPE): Adds implicit coupling through the
         process environment, harder to trace in code review, pollutes the env namespace,
         and is inconsistent with every other worker option (feature-id, run-id, repo,
         spec-dir, thread-id, resume-payload, etc.) which are all CLI args.
@@ -154,7 +154,7 @@ content: |
   **Chosen:** `--agent-type <value>` CLI argument appended in `FeatureAgentProcessService.spawn()`
 
   **Rejected:**
-  - Environment variable (`SHEP_AGENT_TYPE`) — inconsistent with all existing worker options,
+  - Environment variable (`SHIPIT_AI_AGENT_TYPE`) — inconsistent with all existing worker options,
     implicit env coupling, harder to trace in code review
 
   **Rationale:** Every existing worker option (feature-id, run-id, repo, spec-dir, thread-id,

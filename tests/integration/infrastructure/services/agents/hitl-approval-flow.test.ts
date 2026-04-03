@@ -90,7 +90,7 @@ describe('HITL Approval Flow (Graph-level)', () => {
       } as Settings);
     }
 
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-hitl-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-hitl-test-'));
     specDir = join(tempDir, 'specs', '001-test');
     mkdirSync(specDir, { recursive: true });
 

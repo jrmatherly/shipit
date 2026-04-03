@@ -19,7 +19,7 @@ import {
 import { Language } from '@/domain/generated/output.js';
 import { messages } from '../../ui/index.js';
 import { getCliI18n } from '../../i18n.js';
-import { shepTheme } from '../../../tui/themes/shep.theme.js';
+import { shipitAiTheme } from '../../../tui/themes/shipit-ai.theme.js';
 
 /**
  * Language options with native display names.
@@ -63,7 +63,7 @@ Examples:
             value: opt.value,
           })),
           default: currentLanguage,
-          theme: shepTheme,
+          theme: shipitAiTheme,
         });
 
         // Persist via UpdateSettingsUseCase

@@ -1,8 +1,8 @@
 /**
- * @module Shep.Domain.Entities.Plan
+ * @module ShipitAI.Domain.Entities.Plan
  *
  * Defines the Plan entity that represents an implementation plan for a feature
- * in the Shep AI platform. Plans contain the structured breakdown of work
+ * in the Shipit AI platform. Plans contain the structured breakdown of work
  * including requirements, tasks, artifacts, and scheduling information.
  *
  * ## Plan Lifecycle

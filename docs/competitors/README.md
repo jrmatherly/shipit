@@ -1,6 +1,6 @@
 # Competitive Landscape
 
-> How Shep AI fits into the AI-powered development tool ecosystem.
+> How Shipit AI fits into the AI-powered development tool ecosystem.
 
 The AI coding landscape is evolving fast. This directory profiles the tools we respect and learn from — organized by how they approach the problem.
 

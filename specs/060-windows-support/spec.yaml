@@ -2,12 +2,12 @@ name: windows-support
 number: 60
 branch: feat/060-windows-support
 oneLiner: >-
-  Add Windows (win32) runtime support so `npm i -g @shepai/cli` works
+  Add Windows (win32) runtime support so `npm i -g @shipit-ai/cli` works
   natively on Windows
 userQuery: |
   Currently the project support linux and osx, add support to windows
 summary: >
-  The @shepai/cli platform currently runs on Linux and macOS. While some
+  The @shipit-ai/cli platform currently runs on Linux and macOS. While some
   runtime services already include win32 platform branches (browser opener,
   file/folder dialogs, CLI symbol detection), many critical runtime subsystems
   use Unix-only APIs: shell command execution uses `sh -c`, binary detection
@@ -16,7 +16,7 @@ summary: >
   open-shell/open-folder actions have no win32 entry, tool JSON files lack
   win32 install commands, and path validation assumes Unix `/` prefix. This
   feature adds win32 runtime support so that Windows users who install the
-  package via `npm i -g @shepai/cli` can run all CLI commands and Web UI
+  package via `npm i -g @shipit-ai/cli` can run all CLI commands and Web UI
   features natively without WSL or compatibility layers. This is NOT about
   local development on Windows — build scripts, CI runners, and test fixtures
   remain Unix-only.
@@ -213,7 +213,7 @@ openQuestions:
         selected: false
     selectionRationale: >
       Runtime-only is the correct scope per user feedback. The goal is that
-      `npm i -g @shepai/cli` works on Windows — not that developers build the
+      `npm i -g @shipit-ai/cli` works on Windows — not that developers build the
       project on Windows. Build scripts already work on Linux/macOS where
       development happens. Adding Windows CI and build portability would
       increase scope significantly with little user-facing benefit. The npm
@@ -223,9 +223,9 @@ openQuestions:
 content: |
   ## Problem Statement
 
-  The @shepai/cli platform currently supports Linux and macOS but lacks Windows
+  The @shipit-ai/cli platform currently supports Linux and macOS but lacks Windows
   runtime compatibility. When a Windows user installs the package via
-  `npm i -g @shepai/cli`, many CLI commands and Web UI features fail because
+  `npm i -g @shipit-ai/cli`, many CLI commands and Web UI features fail because
   the runtime code uses Unix-only APIs.
 
   While some runtime services already include win32 platform branches (browser
@@ -246,7 +246,7 @@ content: |
 
   ## Success Criteria
 
-  - [ ] `npm i -g @shepai/cli` installs successfully on Windows
+  - [ ] `npm i -g @shipit-ai/cli` installs successfully on Windows
   - [ ] `shep init` works on Windows (project initialization)
   - [ ] `shep start` works on Windows (daemon starts, Web UI launches)
   - [ ] `shep stop` works on Windows (daemon terminates cleanly)
@@ -383,7 +383,7 @@ content: |
   | `packages/core/src/infrastructure/services/file-dialog.service.ts` | OK | Already has win32 PowerShell command |
   | `packages/core/src/infrastructure/services/folder-dialog.service.ts` | OK | Already has win32 PowerShell command |
   | `packages/core/src/infrastructure/services/notifications/desktop-notifier.ts` | OK | node-notifier supports Windows toast |
-  | `packages/core/src/infrastructure/services/filesystem/shep-directory.service.ts` | OK | `mode: 0o700` in mkdir is ignored on Windows but harmless |
+  | `packages/core/src/infrastructure/services/filesystem/shipit-ai-directory.service.ts` | OK | `mode: 0o700` in mkdir is ignored on Windows but harmless |
 
   ### Out of Scope — Build/Dev Only (not shipped in npm package)
 
@@ -431,6 +431,6 @@ rejectionFeedback:
     message: >-
       We dont want local development on windows, we just need to be able to
       "run" on windows, meaning if someone instal the package with npm i -g
-      @shepai/cli everything will work
+      @shipit-ai/cli everything will work
     phase: requirements
     timestamp: '2026-03-11T10:25:45.226Z'

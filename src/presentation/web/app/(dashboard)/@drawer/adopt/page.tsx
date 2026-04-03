@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 import { resolve } from '@/lib/server-container';
-import type { ListRepositoriesUseCase } from '@shepai/core/application/use-cases/repositories/list-repositories.use-case';
+import type { ListRepositoriesUseCase } from '@shipit-ai/core/application/use-cases/repositories/list-repositories.use-case';
 import { AdoptDrawerClient } from '@/components/common/control-center-drawer/adopt-drawer-client';
 import { getFeatureFlags } from '@/lib/feature-flags';
 

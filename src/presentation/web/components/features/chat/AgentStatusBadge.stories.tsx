@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { InteractiveSessionStatus } from '@shepai/core/domain/generated/output';
+import { InteractiveSessionStatus } from '@shipit-ai/core/domain/generated/output';
 import { AgentStatusBadge } from './AgentStatusBadge';
 
 const meta: Meta<typeof AgentStatusBadge> = {

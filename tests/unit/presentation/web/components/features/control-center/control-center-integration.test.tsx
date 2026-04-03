@@ -226,12 +226,12 @@ describe('ControlCenterInner URL-based navigation', () => {
   });
 
   describe('feature-created event with fast-mode features', () => {
-    it('adds optimistic node when shep:feature-created is dispatched', () => {
+    it('adds optimistic node when shipit-ai:feature-created is dispatched', () => {
       renderControlCenter();
 
       act(() => {
         window.dispatchEvent(
-          new CustomEvent('shep:feature-created', {
+          new CustomEvent('shipit-ai:feature-created', {
             detail: {
               featureId: 'fast-feature-1',
               name: 'Fast Feature',
@@ -256,7 +256,7 @@ describe('ControlCenterInner URL-based navigation', () => {
       // Add a feature node with creating state
       act(() => {
         window.dispatchEvent(
-          new CustomEvent('shep:feature-created', {
+          new CustomEvent('shipit-ai:feature-created', {
             detail: {
               featureId: 'fast-feat-2',
               name: 'Fast Feature 2',
@@ -314,7 +314,7 @@ describe('ControlCenterInner URL-based navigation', () => {
       // Dispatch the add-repository event
       await act(async () => {
         window.dispatchEvent(
-          new CustomEvent('shep:add-repository', {
+          new CustomEvent('shipit-ai:add-repository', {
             detail: { path: '/home/user/first-repo' },
           })
         );
@@ -337,7 +337,7 @@ describe('ControlCenterInner URL-based navigation', () => {
 
       await act(async () => {
         window.dispatchEvent(
-          new CustomEvent('shep:add-repository', {
+          new CustomEvent('shipit-ai:add-repository', {
             detail: { path: '/home/user/another-repo' },
           })
         );
@@ -355,7 +355,7 @@ describe('ControlCenterInner URL-based navigation', () => {
 
       await act(async () => {
         window.dispatchEvent(
-          new CustomEvent('shep:add-repository', {
+          new CustomEvent('shipit-ai:add-repository', {
             detail: { path: '/home/user/first-repo' },
           })
         );
@@ -384,7 +384,7 @@ describe('ControlCenterInner URL-based navigation', () => {
 
       await act(async () => {
         window.dispatchEvent(
-          new CustomEvent('shep:add-repository', {
+          new CustomEvent('shipit-ai:add-repository', {
             detail: { path: '/home/user/another-repo' },
           })
         );

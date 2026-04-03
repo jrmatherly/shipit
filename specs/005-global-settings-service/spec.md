@@ -14,7 +14,7 @@
 
 The Shep CLI currently lacks foundational application and domain layers following Clean Architecture principles. No persistent global settings exist for the platform:
 
-- **No initialization system** - `~/.shep/` directory and database don't exist on first run
+- **No initialization system** - `~/.shipit-ai/` directory and database don't exist on first run
 - **No configuration persistence** - Settings like AI model preferences, user profile, and system parameters aren't stored
 - **No Clean Architecture foundation** - Only presentation layers (CLI/Web) exist; domain, application, and infrastructure layers are missing
 - **No repository pattern implementation** - No data access abstraction or SQLite integration
@@ -25,7 +25,7 @@ This feature establishes the first complete vertical slice of Clean Architecture
 - **Domain entity** (Settings) defined in TypeSpec and generated to TypeScript
 - **Application use cases** (InitializeSettings, LoadSettings, UpdateSettings)
 - **Repository pattern** with SQLite implementation
-- **Infrastructure** for `~/.shep/` directory management and database migrations
+- **Infrastructure** for `~/.shipit-ai/` directory management and database migrations
 - **TypeSpec code generation** pipeline for domain models
 
 ## Success Criteria
@@ -64,10 +64,10 @@ This feature establishes the first complete vertical slice of Clean Architecture
 **Infrastructure Layer:**
 
 - [x] SQLite `SettingsRepository` implementation
-- [x] Database initialization (`~/.shep/data` SQLite file creation)
+- [x] Database initialization (`~/.shipit-ai/data` SQLite file creation)
 - [x] Migration framework setup (user_version pragma with better-sqlite3-migrations)
 - [x] Initial migration: settings table with singleton constraint
-- [x] Directory bootstrapping service (`~/.shep/` structure creation with 0700 permissions)
+- [x] Directory bootstrapping service (`~/.shipit-ai/` structure creation with 0700 permissions)
 
 **Integration:**
 
@@ -163,7 +163,7 @@ model SystemConfig {
 | `src/application/use-cases/settings/`        | High   | First use cases (Initialize, Load, Update)                       |
 | `src/application/ports/output/`              | High   | First repository interface (ISettingsRepository)                 |
 | `src/infrastructure/repositories/`           | High   | First repository implementation (SQLiteSettingsRepository)       |
-| `src/infrastructure/persistence/`            | High   | Database connection, migrations, ~/.shep/ bootstrap              |
+| `src/infrastructure/persistence/`            | High   | Database connection, migrations, ~/.shipit-ai/ bootstrap              |
 | `src/infrastructure/persistence/migrations/` | High   | Migration files (001_create_settings_table.sql)                  |
 | `src/presentation/cli/index.ts`              | Medium | Add settings initialization check on startup                     |
 | `tests/unit/domain/`                         | High   | First domain tests (using generated types)                       |
@@ -195,7 +195,7 @@ None identified. This is foundational infrastructure that all future features wi
 - **Multiple layers** - Domain, application, infrastructure layers (all net-new)
 - **TypeSpec model definition** - First domain entity in TypeSpec with nested models
 - **Repository pattern** - Interface + SQLite implementation
-- **Database setup** - SQLite connection, migration framework, ~/.shep/ bootstrapping
+- **Database setup** - SQLite connection, migration framework, ~/.shipit-ai/ bootstrapping
 - **Comprehensive testing** - Unit tests (domain + application), integration tests (infrastructure), E2E tests
 - **20-25 new files** across 8+ directories
 - **New dependency on TypeSpec TS emitter** and migration tooling

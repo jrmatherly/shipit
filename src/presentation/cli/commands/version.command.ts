@@ -1,14 +1,14 @@
 /**
  * Version Command
  *
- * Displays detailed version information for Shep AI CLI.
+ * Displays detailed version information for Shipit AI CLI.
  * Provides more context than the --version flag.
  *
  * Usage: shep version
  *
  * @example
- * $ shep version
- * @shepai/cli v0.1.0
+ * $ shipit-ai version
+ * @shipit-ai/cli v0.1.0
  * Autonomous AI Native SDLC Platform
  *
  * Node:     v20.10.0

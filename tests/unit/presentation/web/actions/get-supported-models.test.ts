@@ -6,7 +6,7 @@ const mockGetSettings = vi.fn();
 const mockResolve = vi.fn();
 const mockGetSupportedModels = vi.fn();
 
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   getSettings: mockGetSettings,
 }));
 
@@ -14,9 +14,8 @@ vi.mock('@/lib/server-container', () => ({
   resolve: mockResolve,
 }));
 
-const { getSupportedModels } = await import(
-  '../../../../../src/presentation/web/app/actions/get-supported-models.js'
-);
+const { getSupportedModels } =
+  await import('../../../../../src/presentation/web/app/actions/get-supported-models.js');
 
 describe('getSupportedModels server action', () => {
   beforeEach(() => {

@@ -1,7 +1,7 @@
 /**
  * Settings Agent Command E2E Tests
  *
- * Tests for the `shep settings agent` command using non-interactive flags.
+ * Tests for the `shipit-ai settings agent` command using non-interactive flags.
  * Interactive wizard mode cannot be tested in E2E (requires stdin).
  *
  * Note: Configuration tests require the `claude` binary to be installed,
@@ -40,7 +40,7 @@ describe('CLI: settings agent', () => {
     isolated.cleanup();
   });
 
-  describe('shep settings agent --help', () => {
+  describe('shipit-ai settings agent --help', () => {
     it('should display help for agent command', () => {
       const result = isolated.runner.run('settings agent --help');
 
@@ -53,7 +53,7 @@ describe('CLI: settings agent', () => {
   });
 
   describe.skipIf(!claudeAvailable)(
-    'shep settings agent --agent claude-code --auth session',
+    'shipit-ai settings agent --agent claude-code --auth session',
     () => {
       it('should configure agent non-interactively', () => {
         const result = isolated.runner.run('settings agent --agent claude-code --auth session');
@@ -84,7 +84,7 @@ describe('CLI: settings agent', () => {
   );
 
   describe.skipIf(!claudeAvailable)(
-    'shep settings agent --agent claude-code --auth token --token sk-test',
+    'shipit-ai settings agent --agent claude-code --auth token --token sk-test',
     () => {
       it('should configure token-based auth', () => {
         const result = isolated.runner.run(

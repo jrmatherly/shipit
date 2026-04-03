@@ -46,7 +46,7 @@ openQuestions:
         description: >
           Create a brand-new DevAgentExecutorService in a separate file alongside the existing
           mock. The existing MockAgentExecutorService remains unchanged for test use via
-          SHEP_MOCK_EXECUTOR. This isolates concerns: test mock stays minimal/fast, dev mock
+          SHIPIT_AI_MOCK_EXECUTOR. This isolates concerns: test mock stays minimal/fast, dev mock
           grows as rich fixture data is added. No risk of breaking existing unit/integration tests.
         selected: true
       - option: 'Evolve existing MockAgentExecutorService'
@@ -115,31 +115,31 @@ openQuestions:
       representative data. The extra authoring cost is a one-time investment.
     answer: 'Realistic fictional feature fixtures'
 
-  - question: 'How should the SHEP_MOCK_EXECUTOR environment variable be handled after this change?'
+  - question: 'How should the SHIPIT_AI_MOCK_EXECUTOR environment variable be handled after this change?'
     resolved: true
     options:
       - option: 'Preserve existing behavior unchanged'
         description: >
-          Keep the SHEP_MOCK_EXECUTOR=1 branch in container.ts pointing to the existing
+          Keep the SHIPIT_AI_MOCK_EXECUTOR=1 branch in container.ts pointing to the existing
           MockAgentExecutorFactory/MockAgentExecutorService. Existing test infrastructure
           continues to work with zero changes. The new Dev executor is a separate code path
           selected only via settings (AgentType.Dev).
         selected: true
       - option: 'Repurpose env-var to activate Dev agent type'
         description: >
-          Change SHEP_MOCK_EXECUTOR=1 to set AgentType to "dev" in settings at runtime,
+          Change SHIPIT_AI_MOCK_EXECUTOR=1 to set AgentType to "dev" in settings at runtime,
           routing through the real factory. Cleaner long-term but silently breaks any CI
           or test pipeline that relies on the current mock behavior.
         selected: false
       - option: 'Remove the env-var branch entirely'
         description: >
-          Delete the SHEP_MOCK_EXECUTOR branch; existing tests that depend on it must be
+          Delete the SHIPIT_AI_MOCK_EXECUTOR branch; existing tests that depend on it must be
           migrated to use settings-based mock selection. Higher migration cost; risks
           breaking CI until all callers are updated.
         selected: false
     selectionRationale: >
       Preserving the env-var behavior eliminates breakage risk to existing CI/test pipelines.
-      The SHEP_MOCK_EXECUTOR path is a narrow test-infrastructure concern separate from the
+      The SHIPIT_AI_MOCK_EXECUTOR path is a narrow test-infrastructure concern separate from the
       user-facing Dev agent type. Keeping both paths clean and independent follows the
       project's principle of not introducing backwards-compatibility hacks.
     answer: 'Preserve existing behavior unchanged'
@@ -196,7 +196,7 @@ content: |
   ## Problem Statement
 
   The existing `MockAgentExecutorService` is a test-only internal that is activated
-  exclusively via the `SHEP_MOCK_EXECUTOR=1` environment variable. It handles only a
+  exclusively via the `SHIPIT_AI_MOCK_EXECUTOR=1` environment variable. It handles only a
   single prompt pattern (metadata generation: slug/name/description) and cannot simulate
   the full feature agent flow (analyze → requirements → research → plan → implement →
   merge). Consequently:
@@ -239,7 +239,7 @@ content: |
   - [ ] Unit tests cover `DevAgentExecutorService` for every SDLC phase prompt pattern,
         asserting correct YAML file output and schema validity.
   - [ ] Unit tests cover `AgentValidatorService` asserting dev type always returns available.
-  - [ ] Existing `MockAgentExecutorService` tests remain green; `SHEP_MOCK_EXECUTOR=1`
+  - [ ] Existing `MockAgentExecutorService` tests remain green; `SHIPIT_AI_MOCK_EXECUTOR=1`
         behavior is unchanged.
   - [ ] `pnpm validate` (lint + format + typecheck + tsp) passes with no new errors.
 
@@ -291,7 +291,7 @@ content: |
     with a suitable icon (e.g., Beaker or Code2 from lucide-react) and a corresponding
     Storybook story update or creation.
 
-  - **FR-13**: The `SHEP_MOCK_EXECUTOR=1` environment variable branch in `container.ts`
+  - **FR-13**: The `SHIPIT_AI_MOCK_EXECUTOR=1` environment variable branch in `container.ts`
     MUST remain functionally unchanged — it continues to activate `MockAgentExecutorFactory`
     with the existing `MockAgentExecutorService` for test infrastructure compatibility.
 
@@ -327,7 +327,7 @@ content: |
     artifacts on disk) within 30 seconds from feature name input to completion.
 
   - **NFR-7 (Backward Compatibility)**: All existing unit and integration tests must pass
-    without modification after this change. The `SHEP_MOCK_EXECUTOR=1` path must behave
+    without modification after this change. The `SHIPIT_AI_MOCK_EXECUTOR=1` path must behave
     identically to its pre-change behavior.
 
   - **NFR-8 (Architecture Compliance)**: `DevAgentExecutorService` must reside in
@@ -347,7 +347,7 @@ content: |
   | 1 | New class vs. evolve existing mock? | New `DevAgentExecutorService` | Keeps test mock stable; isolates dev fixture growth |
   | 2 | Phase detection strategy? | Keyword/regex on prompt text | Zero interface changes; prompts have distinctive content |
   | 3 | Fixture realism level? | Realistic fictional feature data | Demo-ready UI requires production-looking data |
-  | 4 | SHEP_MOCK_EXECUTOR env-var? | Preserve existing behavior | Avoids breaking CI/test pipelines |
+  | 4 | SHIPIT_AI_MOCK_EXECUTOR env-var? | Preserve existing behavior | Avoids breaking CI/test pipelines |
   | 5 | Artificial execution delays? | Configurable delay (default 2s) | Required to observe loading/streaming UI states |
   | 6 | Web settings page scope? | Icon addition only | Ships core value faster; page is a separate work item |
 
@@ -405,7 +405,7 @@ content: |
   - **TypeSpec-first**: `AgentType` enum lives in `tsp/common/enums/agent-config.tsp`.
     Adding a new enum value requires `pnpm tsp:compile` to regenerate
     `packages/core/src/domain/generated/output.ts`.
-  - **DI container**: `container.ts` has a branch on `SHEP_MOCK_EXECUTOR=1` that swaps in
+  - **DI container**: `container.ts` has a branch on `SHIPIT_AI_MOCK_EXECUTOR=1` that swaps in
     `MockAgentExecutorFactory` wholesale. The new "Dev" executor must instead be a proper
     agent type flowing through the real factory, so it is persistable in settings and
     selectable at runtime—not hardwired by env var.
@@ -458,7 +458,7 @@ content: |
   - **`IAgentExecutorFactory` interface**: Adding support for `AgentType.Dev` must not
     break the factory's `getSupportedAgents()` list or existing executor caching.
   - **`DEV_EXECUTOR_DELAY_MS` env var**: New env var consumed only by `DevAgentExecutorService`;
-    defaults to 2000ms; must be documented alongside `SHEP_MOCK_EXECUTOR`.
+    defaults to 2000ms; must be documented alongside `SHIPIT_AI_MOCK_EXECUTOR`.
 
   ## Size Estimate
 

@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.ValueObjects.FeatureStatusMetadata
+ * @module ShipitAI.Domain.ValueObjects.FeatureStatusMetadata
  *
  * Defines value objects for the feature.yaml status tracking artifact.
  * These models represent the nested sections of feature.yaml which tracks

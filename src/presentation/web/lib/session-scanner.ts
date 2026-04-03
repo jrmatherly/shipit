@@ -175,13 +175,13 @@ export async function scanClaudeSessions(
 
       const normalizedRepoPath = repositoryPath.replace(/\\/g, '/');
       const repoHash = createHash('sha256').update(normalizedRepoPath).digest('hex').slice(0, 16);
-      const shepHome = join(homedir(), '.shep').replace(/\\/g, '/');
-      const shepWorktreePrefix = claudeEncodePath(join(shepHome, 'repos', repoHash));
-      const shepMatches = allDirs.filter(
-        (d) => d.startsWith(shepWorktreePrefix) && !prefixMatches.includes(d) && d !== dirName
+      const shipitAiHome = join(homedir(), '.shipit-ai').replace(/\\/g, '/');
+      const shipitAiWorktreePrefix = claudeEncodePath(join(shipitAiHome, 'repos', repoHash));
+      const shipitAiMatches = allDirs.filter(
+        (d) => d.startsWith(shipitAiWorktreePrefix) && !prefixMatches.includes(d) && d !== dirName
       );
 
-      const worktreeDirs = [...prefixMatches, ...shepMatches];
+      const worktreeDirs = [...prefixMatches, ...shipitAiMatches];
       const worktreeResults = await Promise.all(
         worktreeDirs.map((d) => collectJsonlFiles(join(projectsRoot, d)))
       );

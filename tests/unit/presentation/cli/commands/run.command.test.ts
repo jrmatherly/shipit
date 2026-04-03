@@ -1,7 +1,7 @@
 /**
  * Run Command Unit Tests
  *
- * Tests for the `shep run` command structure.
+ * Tests for the `shipit-ai run` command structure.
  *
  * TDD Phase: GREEN
  */

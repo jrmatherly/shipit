@@ -6,18 +6,18 @@
 
 <div align="center">
 
-# Shep AI (Design Concept)
+# Shipit AI (Design Concept)
 
 ### Multi-Session SDLC Control Center for AI Coding Agents
 
 _Manage Claude Code, Cursor CLI, or any coding agent across the full development lifecycle — from requirements to deploy — with parallel sessions, instant context switching, and human-in-the-loop control_
 
-[![CI](https://github.com/shep-ai/shep/actions/workflows/ci.yml/badge.svg)](https://github.com/shep-ai/shep/actions/workflows/ci.yml)
-[![npm version](https://img.shields.io/npm/v/@shepai/cli.svg?color=cb3837&logo=npm)](https://www.npmjs.com/package/@shepai/cli)
+[![CI](https://github.com/jrmatherly/shipit/actions/workflows/ci.yml/badge.svg)](https://github.com/jrmatherly/shipit/actions/workflows/ci.yml)
+[![npm version](https://img.shields.io/npm/v/@shipit-ai/cli.svg?color=cb3837&logo=npm)](https://www.npmjs.com/package/@shipit-ai/cli)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.3+-3178c6.svg?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-≥18-339933.svg?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/shep-ai/shep/pulls)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](https://github.com/jrmatherly/shipit/pulls)
 [![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-fe5196.svg?logo=conventionalcommits&logoColor=white)](https://conventionalcommits.org)
 
 <br />
@@ -26,7 +26,7 @@ _Manage Claude Code, Cursor CLI, or any coding agent across the full development
 
 <br />
 
-<img src="imgs/00-control-center-hero.png" alt="Shep AI Control Center — manage all features across repos from a single canvas" width="100%" />
+<img src="imgs/00-control-center-hero.png" alt="Shipit AI Control Center — manage all features across repos from a single canvas" width="100%" />
 
 <br />
 
@@ -37,7 +37,7 @@ _Manage Claude Code, Cursor CLI, or any coding agent across the full development
 Running AI agents is easy. **Managing many of them through a full SDLC is the hard part.** Shep gives you a control center that handles the entire lifecycle — requirements gathering, planning, implementation, QA, and deployment — across multiple agent sessions running in parallel. See what each agent is doing, jump into any session's web preview, code editor, or terminal, approve plans when agents need your input, and let them keep working while you move on. Plug in Claude Code, Cursor CLI, Gemini CLI, or any coding agent. Each feature gets its own isolated worktree and dev environment. You manage the lifecycle, agents do the work.
 
 ```bash
-npm i -g @shepai/cli
+npm i -g @shipit-ai/cli
 cd your-repo/
 shep feat new "Implement SSO with SAML 2.0"
 # Agent starts working in a dedicated worktree.
@@ -255,7 +255,7 @@ When you run `shep` on a repository for the first time, it performs deep multi-p
 - Dependency graph with version analysis
 - Testing patterns and coverage assessment
 
-Analysis is cached in `~/.shep/repos/` — instant on subsequent runs.
+Analysis is cached in `~/.shipit-ai/repos/` — instant on subsequent runs.
 
 ### Memory System
 
@@ -279,7 +279,7 @@ shep mem add "Include rollback plan in every deploy" --deploy
 
 ```bash
 # Install
-npm i -g @shepai/cli
+npm i -g @shipit-ai/cli
 
 # Start the background service
 shep start
@@ -370,7 +370,7 @@ Repository ──┬── Feature ──┬── Plan ──┬── Task ─
              └── Analysis docs (cached)
 ```
 
-All data lives locally in `~/.shep/`. Per-repo SQLite databases. No cloud dependency.
+All data lives locally in `~/.shipit-ai/`. Per-repo SQLite databases. No cloud dependency.
 
 ## Documentation
 

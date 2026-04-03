@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { EnvironmentSettingsSection } from '@/components/features/settings/environment-settings-section';
-import { EditorType, TerminalType } from '@shepai/core/domain/generated/output';
+import { EditorType, TerminalType } from '@shipit-ai/core/domain/generated/output';
 
 const mockUpdateSettingsAction = vi.fn();
 

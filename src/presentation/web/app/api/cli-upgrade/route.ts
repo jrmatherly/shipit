@@ -1,5 +1,5 @@
 import { resolve } from '@/lib/server-container';
-import type { UpgradeCliUseCase } from '@shepai/core/application/use-cases/upgrade/upgrade-cli.use-case';
+import type { UpgradeCliUseCase } from '@shipit-ai/core/application/use-cases/upgrade/upgrade-cli.use-case';
 
 // Force dynamic — SSE streams must never be statically optimized or cached
 export const dynamic = 'force-dynamic';

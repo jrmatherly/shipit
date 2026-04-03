@@ -1,8 +1,8 @@
 import { describe, it, expect, vi, beforeEach, beforeAll, afterAll } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { NotificationEventType, PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
-import type { NotificationEvent } from '@shepai/core/domain/generated/output';
+import { NotificationEventType, PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
+import type { NotificationEvent } from '@shipit-ai/core/domain/generated/output';
 import { FeatureDrawerTabs } from '@/components/common/feature-drawer-tabs/feature-drawer-tabs';
 import type { FeatureNodeData } from '@/components/common/feature-node';
 import type { FeatureDrawerTabsProps } from '@/components/common/feature-drawer-tabs/feature-drawer-tabs';

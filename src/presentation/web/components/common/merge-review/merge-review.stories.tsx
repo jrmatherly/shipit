@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { fn } from '@storybook/test';
-import { PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { MergeReview } from './merge-review';
 import type { MergeReviewData, MergeReviewFileDiff } from './merge-review-config';
 
 const fullPr = {
-  url: 'https://github.com/shep-ai/shep/pull/42',
+  url: 'https://github.com/jrmatherly/shipit/pull/42',
   number: 42,
   status: PrStatus.Open,
   commitHash: 'a1b2c3d4e5f6789',

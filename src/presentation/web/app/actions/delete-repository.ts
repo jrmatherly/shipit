@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { DeleteRepositoryUseCase } from '@shepai/core/application/use-cases/repositories/delete-repository.use-case';
+import type { DeleteRepositoryUseCase } from '@shipit-ai/core/application/use-cases/repositories/delete-repository.use-case';
 
 export async function deleteRepository(
   repositoryId: string

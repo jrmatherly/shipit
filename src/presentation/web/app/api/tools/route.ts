@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
-import type { ListToolsUseCase } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ListToolsUseCase } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 export async function GET(): Promise<NextResponse> {
   try {

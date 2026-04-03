@@ -1,8 +1,8 @@
 import { resolve } from '@/lib/server-container';
-import type { IFeatureRepository } from '@shepai/core/application/ports/output/repositories/feature-repository.interface';
-import type { IAgentRunRepository } from '@shepai/core/application/ports/output/agents/agent-run-repository.interface';
+import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
+import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/output/agents/agent-run-repository.interface';
 import { buildFeatureNodeData } from '@/app/build-feature-node-data';
-import { getSettings } from '@shepai/core/infrastructure/services/settings.service';
+import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 import { computeDrawerView } from '@/components/common/control-center-drawer/drawer-view';
 import { FeatureDrawerClient } from '@/components/common/control-center-drawer/feature-drawer-client';
 

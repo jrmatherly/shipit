@@ -45,7 +45,7 @@ Task understanding → Planning → Implementation → Testing → Debugging →
 | **Requirements**  | Implicit (from task description) | Explicit PRD with review gate       |
 | **Planning**      | Internal (opaque)                | Visible, reviewable plan artifacts  |
 | **Parallel work** | Single agent per task            | Multiple features via worktrees     |
-| **Data location** | Cloud (Cognition servers)        | 100% local (`~/.shep/`)             |
+| **Data location** | Cloud (Cognition servers)        | 100% local (`~/.shipit-ai/`)             |
 | **Agent choice**  | Proprietary model                | Claude Code, Cursor CLI, Gemini CLI |
 | **Open source**   | No                               | Yes (MIT)                           |
 | **Pricing**       | ~$500/mo                         | Free                                |

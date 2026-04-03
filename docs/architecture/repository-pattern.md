@@ -89,8 +89,8 @@ Defined in `packages/core/src/application/ports/output/agents/`:
 
 ### Database Locations
 
-- **Global settings**: `~/.shep/data` (settings table)
-- **Per-repo data**: `~/.shep/repos/<base64-encoded-repo-path>/data` (features, agent_runs, etc.)
+- **Global settings**: `~/.shipit-ai/data` (settings table)
+- **Per-repo data**: `~/.shipit-ai/repos/<base64-encoded-repo-path>/data` (features, agent_runs, etc.)
 
 The repo path is base64-encoded to create valid directory names while preserving uniqueness.
 

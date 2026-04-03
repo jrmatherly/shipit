@@ -12,13 +12,13 @@ describe('App Layout Integration', () => {
 
   it('renders DashboardLayout with sidebar nav items', () => {
     render(
-      <DashboardLayout sidebarItems={navItems} pathname="/" title="Shep AI">
+      <DashboardLayout sidebarItems={navItems} pathname="/" title="Shipit AI">
         <div>Page content</div>
       </DashboardLayout>
     );
     expect(screen.getByText('Home')).toBeInTheDocument();
     expect(screen.getByText('Version')).toBeInTheDocument();
-    expect(screen.getByText('Shep AI')).toBeInTheDocument();
+    expect(screen.getByText('Shipit AI')).toBeInTheDocument();
     expect(screen.getByText('Page content')).toBeInTheDocument();
   });
 
@@ -27,7 +27,7 @@ describe('App Layout Integration', () => {
       <DashboardLayout
         sidebarItems={navItems}
         pathname="/"
-        title="Shep AI"
+        title="Shipit AI"
         actions={<ThemeToggle />}
       >
         <div>Page content</div>
@@ -38,7 +38,7 @@ describe('App Layout Integration', () => {
 
   it('marks Home as active when pathname is /', () => {
     render(
-      <DashboardLayout sidebarItems={navItems} pathname="/" title="Shep AI">
+      <DashboardLayout sidebarItems={navItems} pathname="/" title="Shipit AI">
         <div>Content</div>
       </DashboardLayout>
     );
@@ -48,7 +48,7 @@ describe('App Layout Integration', () => {
 
   it('marks Version as active when pathname is /version', () => {
     render(
-      <DashboardLayout sidebarItems={navItems} pathname="/version" title="Shep AI">
+      <DashboardLayout sidebarItems={navItems} pathname="/version" title="Shipit AI">
         <div>Content</div>
       </DashboardLayout>
     );

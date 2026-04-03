@@ -8,7 +8,7 @@ const mockInitializeSettings = vi.fn();
 const mockResolve = vi.fn();
 const mockExecute = vi.fn();
 
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   getSettings: mockGetSettings,
   resetSettings: mockResetSettings,
   initializeSettings: mockInitializeSettings,
@@ -18,9 +18,8 @@ vi.mock('@/lib/server-container', () => ({
   resolve: mockResolve,
 }));
 
-const { updateModel } = await import(
-  '../../../../../src/presentation/web/app/actions/update-model.js'
-);
+const { updateModel } =
+  await import('../../../../../src/presentation/web/app/actions/update-model.js');
 
 const baseSettings = {
   id: 'settings-1',

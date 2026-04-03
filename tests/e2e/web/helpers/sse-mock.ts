@@ -9,7 +9,7 @@
 
 import type { Page } from '@playwright/test';
 
-// ── Types (mirrors @shepai/core/domain/generated/output) ────────────────
+// ── Types (mirrors @shipit-ai/core/domain/generated/output) ─────────────
 
 export interface NotificationEvent {
   eventType: string;

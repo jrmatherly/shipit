@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { RebaseFeatureOnMainUseCase } from '@shepai/core/application/use-cases/features/rebase-feature-on-main.use-case';
+import type { RebaseFeatureOnMainUseCase } from '@shipit-ai/core/application/use-cases/features/rebase-feature-on-main.use-case';
 
 export async function rebaseFeature(
   featureId: string

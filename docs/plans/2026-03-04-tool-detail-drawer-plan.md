@@ -83,7 +83,7 @@ Expected: FAIL — module not found
 ```typescript
 // src/presentation/web/app/api/tools/[id]/install/stream/route.ts
 import { resolve } from '@/lib/server-container';
-import type { InstallToolUseCase } from '@shepai/core/application/use-cases/tools/install-tool.use-case';
+import type { InstallToolUseCase } from '@shipit-ai/core/application/use-cases/tools/install-tool.use-case';
 
 export async function GET(
   _request: Request,
@@ -281,7 +281,7 @@ Expected: FAIL — module not found
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import type { ToolInstallationStatus } from '@shepai/core/domain/generated/output';
+import type { ToolInstallationStatus } from '@shipit-ai/core/domain/generated/output';
 
 export type InstallStreamStatus = 'idle' | 'streaming' | 'done' | 'error';
 
@@ -366,7 +366,7 @@ feat(web): add use-tool-install-stream hook for sse install logs
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { ToolDetailDrawer } from '../../../../../../src/presentation/web/components/features/tools/tool-detail-drawer';
-import type { ToolItem } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 // Mock hooks
 vi.mock('../../../../../../src/presentation/web/hooks/use-tool-install-stream', () => ({

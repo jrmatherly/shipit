@@ -21,7 +21,7 @@ describe('WorktreeService.ensureGitRepository (integration)', () => {
   let service: WorktreeService;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-git-init-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-git-init-test-'));
     service = new WorktreeService(
       (file, args, options) =>
         execFile(file, args, options ?? {}) as Promise<{ stdout: string; stderr: string }>

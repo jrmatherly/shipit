@@ -75,7 +75,7 @@ export function AdoptDrawerClient({ repositoryPath, repositories }: AdoptDrawerC
             return;
           }
           window.dispatchEvent(
-            new CustomEvent('shep:feature-created', {
+            new CustomEvent('shipit-ai:feature-created', {
               detail: {
                 featureId: result.feature!.id,
                 name: result.feature!.name,

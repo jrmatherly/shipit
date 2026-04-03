@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { MergeReview } from '@/components/common/merge-review/merge-review';
 import type { MergeReviewProps } from '@/components/common/merge-review/merge-review-config';
 
@@ -451,7 +451,7 @@ describe('MergeReview', () => {
               type: 'Screenshot',
               capturedAt: '2026-03-09T12:00:00Z',
               description: 'Homepage screenshot',
-              relativePath: '.shep/evidence/homepage.png',
+              relativePath: '.shipit-ai/evidence/homepage.png',
             },
           ],
         },

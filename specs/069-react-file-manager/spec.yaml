@@ -262,7 +262,7 @@ content: >
   ### Project Structure
 
 
-  This is a monorepo (`@shepai/cli`) using pnpm workspaces with strict Clean
+  This is a monorepo (`@shipit-ai/cli`) using pnpm workspaces with strict Clean
   Architecture:
 
 

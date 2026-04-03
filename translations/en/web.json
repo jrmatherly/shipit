@@ -157,7 +157,7 @@
       "channels": "Channels",
       "inApp": "In-App",
       "inAppLabel": "In-app",
-      "inAppDescription": "Notifications inside the Shep UI",
+      "inAppDescription": "Notifications inside the Shipit AI UI",
       "subsections": {
         "agentEvents": "Agent Events",
         "pullRequestEvents": "Pull Request Events"
@@ -227,7 +227,7 @@
       "location": "Location",
       "locationDescription": "Path to the local SQLite database",
       "size": "Size",
-      "hint": "All settings are stored in a local SQLite database at ~/.shep/data. The database uses a singleton record pattern with automatic migrations on startup.",
+      "hint": "All settings are stored in a local SQLite database at ~/.shipit-ai/data. The database uses a singleton record pattern with automatic migrations on startup.",
       "links": {
         "settingsService": "Settings service",
         "settingsSpec": "Settings spec"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "Add a project",
     "addProjectDescription": "Add your project folder to unlock feature creation.",
-    "addProjectDescriptionLine2": "Describe what you need \u2014 Shep handles the rest.",
+    "addProjectDescriptionLine2": "Describe what you need \u2014 Shipit AI handles the rest.",
     "checkingSetup": "Checking setup\u2026",
     "ready": "{{label}} ready",
     "notInstalled": "{{label}} not installed",
@@ -303,7 +303,7 @@
     "loadingAgents": "Loading agents\u2026",
     "chooseAgent": "Choose your agent",
     "pickModel": "Pick a model",
-    "selectAgentSubtitle": "Select the AI coding agent you want Shep to use.",
+    "selectAgentSubtitle": "Select the AI coding agent you want Shipit AI to use.",
     "chooseModelSubtitle": "Choose which {{label}} model to run.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> is required for full CI/CD self-healing capabilities. <1>Install it here</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "From GitHub"
   },
   "chat": {
-    "shepChat": "Shep Chat",
+    "shipitAiChat": "Shipit AI Chat",
     "writeMessage": "Write a message...",
     "attachFiles": "Attach files",
     "forceStopAgent": "Force stop agent process",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "Import from GitHub",
-    "description": "Clone a GitHub repository and add it to Shep.",
+    "description": "Clone a GitHub repository and add it to Shipit AI.",
     "githubUrl": "GitHub URL",
     "urlPlaceholder": "owner/repo or https://github.com/owner/repo",
     "searchRepositories": "Search repositories..."

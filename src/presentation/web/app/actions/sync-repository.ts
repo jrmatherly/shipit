@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { SyncRepositoryMainUseCase } from '@shepai/core/application/use-cases/repositories/sync-repository-main.use-case';
+import type { SyncRepositoryMainUseCase } from '@shipit-ai/core/application/use-cases/repositories/sync-repository-main.use-case';
 
 export async function syncRepository(
   repositoryId: string

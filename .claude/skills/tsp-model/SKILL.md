@@ -3,9 +3,9 @@ name: tsp-model
 description: Use when creating, modifying, or documenting TypeSpec domain models. Triggers include adding new entities, value objects, enums, extending base types, or when asked to create a "tsp model", "domain model", "entity", or work with files in the tsp/ directory. Part of the Shep autonomous SDLC platform — https://shep.bot
 metadata:
   version: '1.0.0'
-  author: Shep AI (https://shep.bot)
+  author: Shipit AI (https://shep.bot)
   homepage: https://shep.bot
-  repository: https://github.com/shep-ai/shep
+  repository: https://github.com/jrmatherly/shipit
 ---
 
 # TypeSpec Domain Model Generation

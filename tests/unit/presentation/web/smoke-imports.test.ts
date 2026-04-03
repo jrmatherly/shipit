@@ -1,7 +1,7 @@
 /**
  * Smoke Tests — Web Package Import Resolution
  *
- * Verifies that all @shepai/core imports used by the web package resolve correctly.
+ * Verifies that all @shipit-ai/core imports used by the web package resolve correctly.
  * These tests catch misconfigurations in package.json exports, tsconfig paths,
  * and Vite/Turbopack alias mappings before they break the dev server.
  */
@@ -24,15 +24,15 @@ function collectTsFiles(dir: string): string[] {
   return results;
 }
 
-describe('smoke: @shepai/core import resolution', () => {
-  it('resolves @shepai/core/domain/generated types', async () => {
-    const mod = await import('@shepai/core/domain/generated');
+describe('smoke: @shipit-ai/core import resolution', () => {
+  it('resolves @shipit-ai/core/domain/generated types', async () => {
+    const mod = await import('@shipit-ai/core/domain/generated');
     expect(mod.SdlcLifecycle).toBeDefined();
     expect(mod.TaskState).toBeDefined();
   });
 
-  it('resolves @shepai/core/domain barrel export', async () => {
-    const mod = await import('@shepai/core/domain');
+  it('resolves @shipit-ai/core/domain barrel export', async () => {
+    const mod = await import('@shipit-ai/core/domain');
     expect(mod.SdlcLifecycle).toBeDefined();
     expect(mod.TaskState).toBeDefined();
     expect(mod.createDefaultSettings).toBeDefined();
@@ -52,9 +52,9 @@ describe('smoke: web component imports', () => {
   });
 });
 
-describe('smoke: no .js imports in @shepai/core domain source', () => {
+describe('smoke: no .js imports in @shipit-ai/core domain source', () => {
   /**
-   * Turbopack consumes @shepai/core as raw TypeScript source (not compiled).
+   * Turbopack consumes @shipit-ai/core as raw TypeScript source (not compiled).
    * Relative imports with .js extensions (e.g. './output.js') fail because
    * Turbopack doesn't perform .js → .ts extension mapping.
    *

@@ -2,7 +2,7 @@
  * Mock Agent Executor Factory
  *
  * Returns MockAgentExecutorService for deterministic E2E test behavior.
- * Activated via SHEP_MOCK_EXECUTOR=1 environment variable.
+ * Activated via SHIPIT_AI_MOCK_EXECUTOR=1 environment variable.
  */
 
 import type { AgentType, AgentConfig } from '../../../../../domain/generated/output.js';

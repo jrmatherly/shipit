@@ -2,7 +2,7 @@
  * Next.js Instrumentation — intentionally empty.
  *
  * The DI container is initialized BEFORE Next.js starts:
- * - Production: CLI bootstrap (src/presentation/cli/index.ts) → `shep ui`
+ * - Production: CLI bootstrap (src/presentation/cli/index.ts) → `shipit-ai ui`
  * - Dev mode: dev-server.ts → `pnpm dev:web`
  * - E2E tests: Playwright webServer command uses dev-server.ts
  *
@@ -10,5 +10,5 @@
  * so container initialization must happen outside the Next.js bundle.
  */
 export function register() {
-  // no-op: container already on globalThis.__shepContainer
+  // no-op: container already on globalThis.__shipitAiContainer
 }

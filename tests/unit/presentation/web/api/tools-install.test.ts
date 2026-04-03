@@ -8,7 +8,7 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { ToolInstallationStatus } from '@shepai/core/domain/generated/output';
+import type { ToolInstallationStatus } from '@shipit-ai/core/domain/generated/output';
 
 // --- Mock DI container ---
 
@@ -51,9 +51,8 @@ describe('POST /api/tools/[id]/install', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    routeModule = await import(
-      '../../../../../src/presentation/web/app/api/tools/[id]/install/route.js'
-    );
+    routeModule =
+      await import('../../../../../src/presentation/web/app/api/tools/[id]/install/route.js');
   });
 
   it('returns 200 with installation status for a valid tool', async () => {

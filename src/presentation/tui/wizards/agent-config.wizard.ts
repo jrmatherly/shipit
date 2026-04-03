@@ -11,7 +11,7 @@ import { AgentAuthMethod, type AgentType } from '@/domain/generated/output.js';
 import { createAgentSelectConfig } from '../prompts/agent-select.prompt.js';
 import { createAuthMethodConfig } from '../prompts/auth-method.prompt.js';
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 /**
  * Result returned by the agent configuration wizard.
@@ -46,7 +46,7 @@ export async function agentConfigWizard(): Promise<AgentConfigResult> {
     const token = await password({
       message: getTuiI18n().t('tui:wizards.agentConfig.enterApiKey'),
       mask: '*',
-      theme: shepTheme,
+      theme: shipitAiTheme,
     });
     result.token = token;
   }

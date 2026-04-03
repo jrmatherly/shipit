@@ -1,7 +1,7 @@
 {
   "commands": {
     "settings": {
-      "description": "Управление глобальными настройками Shep",
+      "description": "Управление глобальными настройками Shipit AI",
       "wizardFailed": "Мастер настройки завершился с ошибкой",
       "show": {
         "description": "Показать текущие настройки",
@@ -11,7 +11,7 @@
       "init": {
         "description": "Сбросить настройки до значений по умолчанию",
         "forceOption": "Пропустить запрос подтверждения",
-        "resetWarning": "Это сбросит все настройки до значений по умолчанию. Рекомендуется сначала сделать резервную копию ~/.shep/data.",
+        "resetWarning": "Это сбросит все настройки до значений по умолчанию. Рекомендуется сначала сделать резервную копию ~/.shipit-ai/data.",
         "confirmPrompt": "Вы уверены? (y/N): ",
         "cancelled": "Операция отменена.",
         "success": "Настройки сброшены до значений по умолчанию.",
@@ -39,7 +39,7 @@
       "model": {
         "description": "Настроить модель LLM по умолчанию для запусков агента",
         "selectPrompt": "Выберите модель LLM по умолчанию",
-        "noModels": "Нет доступных моделей для агента \"{{agentType}}\". Настройте другого агента с помощью: shep settings agent",
+        "noModels": "Нет доступных моделей для агента \"{{agentType}}\". Настройте другого агента с помощью: shipit-ai settings agent",
         "success": "Модель настроена: {{model}}",
         "cancelled": "Настройка отменена.",
         "failed": "Не удалось настроить модель"
@@ -78,31 +78,31 @@
       "platformLabel": "Платформа:"
     },
     "start": {
-      "description": "Запустить веб-интерфейс Shep как фоновый демон",
+      "description": "Запустить веб-интерфейс Shipit AI как фоновый демон",
       "portOption": "Номер порта (1024-65535)",
       "portValidation": "Порт должен быть целым числом от 1024 до 65535"
     },
     "stop": {
-      "description": "Остановить работающий демон веб-интерфейса Shep",
-      "noDaemonRunning": "Демон Shep не запущен."
+      "description": "Остановить работающий демон веб-интерфейса Shipit AI",
+      "noDaemonRunning": "Демон Shipit AI не запущен."
     },
     "restart": {
-      "description": "Плавно перезапустить демон веб-интерфейса Shep (запускает, если не работает)",
+      "description": "Плавно перезапустить демон веб-интерфейса Shipit AI (запускает, если не работает)",
       "portOption": "Номер порта (1024-65535)",
       "portValidation": "Порт должен быть целым числом от 1024 до 65535",
       "daemonNotRunning": "Демон не был запущен — запускаем..."
     },
     "status": {
-      "description": "Показать статус демона веб-интерфейса Shep",
+      "description": "Показать статус демона веб-интерфейса Shipit AI",
       "logsOption": "Показать последние N строк журнала демона (по умолчанию 50)",
       "followOption": "Следить за выводом журнала демона в реальном времени",
       "noLogFile": "Файл журнала демона не найден.",
       "expectedAt": "Ожидаемое расположение: {{path}}",
       "logEmpty": "Файл журнала пуст.",
       "followHint": "--- отслеживание daemon.log (Ctrl+C для остановки) ---",
-      "notRunning": "Демон Shep не запущен.",
-      "startHint": "Выполните `shep start` для запуска.",
-      "title": "Статус демона Shep",
+      "notRunning": "Демон Shipit AI не запущен.",
+      "startHint": "Выполните `shipit-ai start` для запуска.",
+      "title": "Статус демона Shipit AI",
       "pidLabel": "PID",
       "portLabel": "Порт",
       "urlLabel": "URL",
@@ -111,7 +111,7 @@
       "cpuLabel": "CPU %",
       "memoryLabel": "Память (RSS)",
       "envTitle": "Окружение",
-      "shepHomeLabel": "Домашний каталог Shep",
+      "shipitAiHomeLabel": "Домашний каталог Shipit AI",
       "cliVersionLabel": "Версия CLI",
       "nodeVersionLabel": "Версия Node",
       "dbPathLabel": "Путь к БД",
@@ -119,11 +119,11 @@
       "daemonConfigLabel": "Конфигурация демона"
     },
     "ui": {
-      "description": "Запустить веб-интерфейс Shep",
+      "description": "Запустить веб-интерфейс Shipit AI",
       "portOption": "Номер порта (1024-65535)",
       "noOpenOption": "Не открывать браузер автоматически",
       "portValidation": "Порт должен быть целым числом от 1024 до 65535",
-      "heading": "Веб-интерфейс Shep",
+      "heading": "Веб-интерфейс Shipit AI",
       "startingDev": "Запуск веб-сервера (режим разработки)...",
       "starting": "Запуск веб-сервера...",
       "serverReady": "Сервер готов по адресу {{url}}",
@@ -559,7 +559,7 @@
       }
     },
     "upgrade": {
-      "description": "Обновить Shep CLI до последней версии",
+      "description": "Обновить Shipit AI CLI до последней версии",
       "versionCheckTimeout": "Не удалось проверить версию (превышено время ожидания)",
       "versionCheckFailed": "Не удалось проверить версию",
       "alreadyUpToDate": "Уже актуальная версия (v{{version}})",
@@ -568,7 +568,7 @@
       "stoppingDaemon": "Остановка демона перед обновлением...",
       "restartingDaemon": "Перезапуск демона...",
       "daemonRestarted": "Демон успешно перезапущен.",
-      "upgradeSuccess": "Shep CLI успешно обновлён",
+      "upgradeSuccess": "Shipit AI CLI успешно обновлён",
       "upgradeFailed": "Ошибка обновления",
       "upgradeFailedDaemonRestored": "Ошибка обновления — демон восстановлен на предыдущей версии."
     },
@@ -588,17 +588,17 @@
       "installingHeading": "Установка {{tool}}"
     },
     "daemon": {
-      "alreadyRunning": "Shep уже запущен по адресу {{url}}",
-      "heading": "Веб-интерфейс Shep",
+      "alreadyRunning": "Shipit AI уже запущен по адресу {{url}}",
+      "heading": "Веб-интерфейс Shipit AI",
       "startingServer": "Запуск сервера",
       "daemonSpawned": "Демон запущен по адресу {{url}}",
       "serverReady": "Сервер готов по адресу {{url}}",
       "serverMayBeStarting": "Сервер может ещё запускаться по адресу {{url}}",
       "daemonFailed": "Демон не удалось запустить (код выхода {{code}}).",
       "checkLogs": "Проверьте журналы: {{path}}",
-      "stoppingDaemon": "Остановка демона Shep (PID {{pid}})...",
+      "stoppingDaemon": "Остановка демона Shipit AI (PID {{pid}})...",
       "sigkillFallback": "Демон не остановился корректно, отправка SIGKILL...",
-      "daemonStopped": "Демон Shep остановлен."
+      "daemonStopped": "Демон Shipit AI остановлен."
     },
     "logViewer": {
       "noLogFile": "Файл журнала не найден для {{label}}",

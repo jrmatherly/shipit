@@ -7,9 +7,9 @@ import { join } from 'node:path';
 const TEST_REPO_ID = `e2e-repo-${randomUUID().slice(0, 8)}`;
 
 function getDb(): Database.Database {
-  const dbPath = process.env.SHEP_HOME
-    ? join(process.env.SHEP_HOME, 'data')
-    : join(homedir(), '.shep', 'data');
+  const dbPath = process.env.SHIPIT_AI_HOME
+    ? join(process.env.SHIPIT_AI_HOME, 'data')
+    : join(homedir(), '.shipit-ai', 'data');
   return new Database(dbPath);
 }
 
@@ -68,7 +68,7 @@ test.describe('Feature Create Drawer — native file attachments', () => {
           name: 'requirements.pdf',
           size: 42000,
           mimeType: 'application/pdf',
-          path: '/tmp/.shep/attachments/pending/requirements.pdf',
+          path: '/tmp/.shipit-ai/attachments/pending/requirements.pdf',
           createdAt: new Date().toISOString(),
         }),
       })
@@ -187,7 +187,7 @@ test.describe('Feature Create Drawer — native file attachments', () => {
           name,
           size: sizeMap[name] ?? 1000,
           mimeType: mimeMap[name] ?? 'application/octet-stream',
-          path: `/tmp/.shep/attachments/pending/${name}`,
+          path: `/tmp/.shipit-ai/attachments/pending/${name}`,
           createdAt: new Date().toISOString(),
         }),
       });

@@ -1,8 +1,8 @@
 /**
- * @module Shep.Domain.Entities.TimelineEvent
+ * @module ShipitAI.Domain.Entities.TimelineEvent
  *
  * Defines the TimelineEvent entity that captures significant events in a
- * feature's timeline within the Shep AI platform. Timeline events provide
+ * feature's timeline within the Shipit AI platform. Timeline events provide
  * an audit trail of user interactions and system milestones.
  *
  * ## Timeline Purpose

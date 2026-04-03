@@ -5,7 +5,7 @@
  * swapPosition = false (Create FAB on start side, Chat FAB on end side).
  */
 
-import { hasSettings, getSettings } from '@shepai/core/infrastructure/services/settings.service';
+import { hasSettings, getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 
 export interface FabLayoutState {
   swapPosition: boolean;

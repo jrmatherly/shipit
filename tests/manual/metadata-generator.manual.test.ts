@@ -2,7 +2,7 @@
  * MANUAL TEST: MetadataGenerator with Real Agent Executor
  *
  * This test uses the REAL IAgentExecutor (not mocked) to generate feature metadata
- * using your configured agent from ~/.shep/data (local settings database).
+ * using your configured agent from ~/.shipit-ai/data (local settings database).
  *
  * Run manually only:
  * - In IDE: Click the Run button or use Vitest UI

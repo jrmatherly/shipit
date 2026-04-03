@@ -1,6 +1,6 @@
 # Concepts Documentation
 
-Core domain concepts and business logic for Shep AI CLI.
+Core domain concepts and business logic for Shipit AI CLI.
 
 ## Contents
 

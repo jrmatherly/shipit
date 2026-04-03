@@ -137,7 +137,7 @@ content: >
   ## Problem Statement
 
 
-  Shep AI ships with 18 Claude Code skills in `.claude/skills/` that automate
+  Shipit AI ships with 18 Claude Code skills in `.claude/skills/` that automate
   development workflows
 
   (spec creation, research, planning, implementation, architecture review, UI

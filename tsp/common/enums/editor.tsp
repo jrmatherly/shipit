@@ -1,8 +1,8 @@
 /**
- * @module Shep.Common.Enums.Editor
+ * @module ShipitAI.Common.Enums.Editor
  *
  * Defines the EditorType enum for supported IDE/editor selections.
- * Controls which code editor Shep uses to open worktrees and files.
+ * Controls which code editor Shipit AI uses to open worktrees and files.
  */
 /**
  * Supported IDE/editor types.

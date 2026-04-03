@@ -1,7 +1,7 @@
 /**
  * Workflow Command Integration Tests
  *
- * Validates that `shep settings workflow` (non-interactive mode)
+ * Validates that `shipit-ai settings workflow` (non-interactive mode)
  * correctly updates workflow defaults in the database, and that
  * those updated defaults flow through to the feature command.
  *

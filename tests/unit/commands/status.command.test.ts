@@ -1,7 +1,7 @@
 /**
  * status command unit tests
  *
- * Tests for the `shep status` CLI command.
+ * Tests for the `shipit-ai status` CLI command.
  * Covers: not-running path, running path with metrics parsing, ps timeout fallback,
  * environment section, --logs flag.
  */
@@ -23,8 +23,8 @@ const { mockExecFile, mockDaemonService, mockRenderDetailView, mockVersionServic
     const mockVersionService = {
       getVersion: vi.fn().mockReturnValue({
         version: '1.56.0',
-        name: '@shepai/cli',
-        description: 'Shep AI CLI',
+        name: '@shipit-ai/cli',
+        description: 'Shipit AI CLI',
       }),
     };
     return {
@@ -63,11 +63,11 @@ vi.mock('node:child_process', () => ({
   execFile: mockExecFile,
 }));
 
-vi.mock('@/infrastructure/services/filesystem/shep-directory.service.js', () => ({
-  getShepHomeDir: vi.fn().mockReturnValue('/home/test/.shep'),
-  getShepDbPath: vi.fn().mockReturnValue('/home/test/.shep/data'),
-  getDaemonStatePath: vi.fn().mockReturnValue('/home/test/.shep/daemon.json'),
-  getDaemonLogPath: vi.fn().mockReturnValue('/home/test/.shep/daemon.log'),
+vi.mock('@/infrastructure/services/filesystem/shipit-ai-directory.service.js', () => ({
+  getShipitAiHomeDir: vi.fn().mockReturnValue('/home/test/.shipit-ai'),
+  getShipitAiDbPath: vi.fn().mockReturnValue('/home/test/.shipit-ai/data'),
+  getDaemonStatePath: vi.fn().mockReturnValue('/home/test/.shipit-ai/daemon.json'),
+  getDaemonLogPath: vi.fn().mockReturnValue('/home/test/.shipit-ai/daemon.log'),
 }));
 
 vi.mock('node:fs', async (importOriginal) => {
@@ -249,7 +249,7 @@ describe('status command', () => {
       mockDaemonService.isAlive.mockReturnValue(true);
     });
 
-    it('includes environment fields: shep home, cli version, node version, paths', async () => {
+    it('includes environment fields: shipit-ai home, cli version, node version, paths', async () => {
       const cmd = createStatusCommand();
       const parsePromise = cmd.parseAsync([], { from: 'user' });
       await vi.runAllTimersAsync();
@@ -261,7 +261,7 @@ describe('status command', () => {
       );
       const labels = fields.map((f) => f.label.toLowerCase());
 
-      expect(labels.some((l) => l.includes('shep home'))).toBe(true);
+      expect(labels.some((l) => l.includes('shipit ai home'))).toBe(true);
       expect(labels.some((l) => l.includes('cli version'))).toBe(true);
       expect(labels.some((l) => l.includes('node version'))).toBe(true);
       expect(labels.some((l) => l.includes('log file'))).toBe(true);

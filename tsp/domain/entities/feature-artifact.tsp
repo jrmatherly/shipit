@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.FeatureArtifact
+ * @module ShipitAI.Domain.Entities.FeatureArtifact
  *
  * Defines the FeatureArtifact entity representing a feature specification artifact (PRD).
  * This maps to the `spec.yaml` file in the YAML-first spec system.

@@ -149,7 +149,7 @@ tasks:
       - use-cases-bridge.ts deleted
       - populate-use-cases-bridge.ts deleted
       - No populateUseCasesBridge imports or calls remain in codebase
-      - No references to SHEP_USE_CASES_KEY remain
+      - No references to SHIPIT_AI_USE_CASES_KEY remain
       - pnpm typecheck passes
     tdd:
       red:
@@ -174,7 +174,7 @@ tasks:
       - pnpm validate passes (lint, format, typecheck, tsp)
       - pnpm test passes (all unit + integration tests)
       - pnpm build:web succeeds
-      - No grep hits for use-cases-bridge, populateUseCasesBridge, or SHEP_USE_CASES_KEY
+      - No grep hits for use-cases-bridge, populateUseCasesBridge, or SHIPIT_AI_USE_CASES_KEY
     tdd: null
     estimatedEffort: XS
 

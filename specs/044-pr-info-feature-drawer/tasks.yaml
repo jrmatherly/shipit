@@ -115,7 +115,7 @@ tasks:
       - task-3
     acceptanceCriteria:
       - 'FeatureNodeData has an optional pr field with the correct 5-field type'
-      - 'PrStatus and CiStatus are imported from @shepai/core/domain/generated/output'
+      - 'PrStatus and CiStatus are imported from @shipit-ai/core/domain/generated/output'
       - 'TypeScript compilation passes'
       - 'All existing feature-drawer tests still pass (pr is optional, no existing data affected)'
     tdd:

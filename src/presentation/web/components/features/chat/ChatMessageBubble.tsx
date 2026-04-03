@@ -4,7 +4,7 @@ import type { Components } from 'react-markdown';
 import Markdown from 'react-markdown';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
-import { InteractiveMessageRole } from '@shepai/core/domain/generated/output';
+import { InteractiveMessageRole } from '@shipit-ai/core/domain/generated/output';
 
 const markdownComponents: Components = {
   p: ({ children }) => <p className="mb-2 leading-relaxed last:mb-0">{children}</p>,

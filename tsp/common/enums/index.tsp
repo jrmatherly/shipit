@@ -1,7 +1,7 @@
 /**
- * @module Shep.Common.Enums
+ * @module ShipitAI.Common.Enums
  *
- * Re-exports all enum definitions for the Shep AI platform.
+ * Re-exports all enum definitions for the Shipit AI platform.
  * Import this file to access all enums from a single location.
  */
 import "./lifecycle.tsp";

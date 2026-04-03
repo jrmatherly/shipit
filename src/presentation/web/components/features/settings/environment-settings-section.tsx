@@ -13,8 +13,8 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { updateSettingsAction } from '@/app/actions/update-settings';
-import { EditorType, TerminalType } from '@shepai/core/domain/generated/output';
-import type { EnvironmentConfig } from '@shepai/core/domain/generated/output';
+import { EditorType, TerminalType } from '@shipit-ai/core/domain/generated/output';
+import type { EnvironmentConfig } from '@shipit-ai/core/domain/generated/output';
 import type { AvailableTerminal } from '@/app/actions/get-available-terminals';
 
 const EDITOR_OPTIONS = [

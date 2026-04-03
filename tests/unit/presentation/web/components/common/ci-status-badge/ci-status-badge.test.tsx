@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { CiStatus } from '@shepai/core/domain/generated/output';
+import { CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { CiStatusBadge } from '@/components/common/ci-status-badge';
 
 describe('CiStatusBadge', () => {

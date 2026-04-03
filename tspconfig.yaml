@@ -2,7 +2,7 @@
 # https://typespec.io/docs/handbook/configuration/configuration/
 #
 # Multi-emitter configuration for generating various API artifacts
-# from Shep AI domain models.
+# from Shipit AI domain models.
 #
 # Output Structure:
 #   apis/
@@ -25,13 +25,13 @@ output-dir: '{project-root}/apis'
 options:
   '@typespec/openapi3':
     emitter-output-dir: '{output-dir}/openapi'
-    # output-file: "shep-ai.yaml"  # Custom filename (optional)
+    # output-file: "shipit-ai.yaml"  # Custom filename (optional)
 
   '@typespec/json-schema':
     emitter-output-dir: '{output-dir}/json-schema'
     emitAllModels: true
     emitAllRefs: true
-    # bundleId: "shep-ai-models"  # Bundle all schemas (optional)
+    # bundleId: "shipit-ai-models"  # Bundle all schemas (optional)
 
   '@typespec-tools/emitter-typescript':
     emitter-output-dir: '{project-root}/packages/core/src/domain/generated'

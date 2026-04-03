@@ -1,4 +1,4 @@
-# Shep AI — Features Guide
+# Shipit AI — Features Guide
 
 > **Autonomous AI-Native SDLC Platform** — From idea to deployed code, fully automated.
 
@@ -29,7 +29,7 @@ Shep is the first truly autonomous software development lifecycle platform. Desc
 
 ```bash
 # Install globally
-npm install -g @shepai/cli
+npm install -g @shipit-ai/cli
 
 # Start the platform — opens the web dashboard automatically
 shep
@@ -360,7 +360,7 @@ Toggle experimental features:
 
 View local SQLite database info:
 
-- **Location** — Path to `~/.shep/` data directory
+- **Location** — Path to `~/.shipit-ai/` data directory
 - **Size** — Current database file size
 
 ---
@@ -547,7 +547,7 @@ Domain (Core business logic, no external deps)
 - **SSE multiplexing** — Single connection shared across all browser tabs via Service Worker
 - **Agent-agnostic** — No component hardcodes an agent type; all resolution flows through `IAgentExecutorProvider`
 - **TypeSpec-first** — Domain models defined in TypeSpec, compiled to TypeScript (never edit generated files)
-- **Fully local** — SQLite database at `~/.shep/`, no cloud dependency
+- **Fully local** — SQLite database at `~/.shipit-ai/`, no cloud dependency
 
 ---
 

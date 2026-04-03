@@ -67,7 +67,7 @@ describe('FeatureAgentAnnotation', () => {
       type: EvidenceType.Screenshot,
       capturedAt: `2026-01-0${index}T00:00:00Z`,
       description: `evidence ${index}`,
-      relativePath: `.shep/evidence/screenshot-${index}.png`,
+      relativePath: `.shipit-ai/evidence/screenshot-${index}.png`,
       taskRef: `task-${index}`,
     });
 

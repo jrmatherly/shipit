@@ -1,5 +1,5 @@
 import { resolve } from '@/lib/server-container';
-import type { ListToolsUseCase } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ListToolsUseCase } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 import { ToolsPageClient } from '@/components/features/tools/tools-page-client';
 
 /** Skip static pre-rendering since we need runtime DI container and server context. */

@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
-import type { ListRepositoriesUseCase } from '@shepai/core/application/use-cases/repositories/list-repositories.use-case';
-import type { ListFeaturesUseCase } from '@shepai/core/application/use-cases/features/list-features.use-case';
+import type { ListRepositoriesUseCase } from '@shipit-ai/core/application/use-cases/repositories/list-repositories.use-case';
+import type { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 import { scanSessionsForPath, type SessionResult } from '@/lib/session-scanner';
 
 export const dynamic = 'force-dynamic';

@@ -1,6 +1,6 @@
 # Clean Architecture
 
-Shep AI CLI implements Clean Architecture to ensure testability, maintainability, and independence from external concerns.
+Shipit AI CLI implements Clean Architecture to ensure testability, maintainability, and independence from external concerns.
 
 ## Layer Overview
 
@@ -108,7 +108,7 @@ packages/core/src/infrastructure/
 |   +-- container.ts               # tsyringe DI container setup
 +-- persistence/
 |   +-- sqlite/
-|       +-- connection.ts          # Database connection (~/.shep/data)
+|       +-- connection.ts          # Database connection (~/.shipit-ai/data)
 |       +-- migrations.ts          # Schema migrations (user_version pragma)
 |       +-- mappers/               # Domain <-> Persistence mapping
 +-- repositories/

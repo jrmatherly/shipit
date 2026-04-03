@@ -63,15 +63,15 @@ openQuestions:
     answer: Skip debug flag entirely
   - question: >
       Should the database location setting be read-only (display only) or allow
-      users to change the SHEP_HOME path from the web UI?
+      users to change the SHIPIT_AI_HOME path from the web UI?
     resolved: true
     options:
       - option: Read-only display
         description: >
-          Show the current SHEP_HOME path and database file size as read-only
+          Show the current SHIPIT_AI_HOME path and database file size as read-only
           information. Safe, simple, and avoids the complexity of runtime path
           changes which would require process restart, data migration, and
-          error-prone path validation. Users who need to change SHEP_HOME can do
+          error-prone path validation. Users who need to change SHIPIT_AI_HOME can do
           so via environment variable before starting the process.
         selected: true
       - option: Editable with restart warning
@@ -85,7 +85,7 @@ openQuestions:
       Read-only display is the safe choice. Changing the database location at
       runtime requires restarting the process and migrating data — both risky
       operations that can lead to data loss. This is a rare configuration change
-      best handled via the SHEP_HOME environment variable before process start.
+      best handled via the SHIPIT_AI_HOME environment variable before process start.
       The web UI should display the current path for informational purposes
       only.
     answer: Read-only display
@@ -273,7 +273,7 @@ content: >
 
   - [ ] Agent token input is masked by default with a show/hide toggle
 
-  - [ ] Database location section displays SHEP_HOME path and database file size
+  - [ ] Database location section displays SHIPIT_AI_HOME path and database file size
   as read-only
 
   - [ ] Every new UI component has a colocated .stories.tsx file with relevant
@@ -439,13 +439,13 @@ content: >
   ### Database Location Section
 
 
-  - **FR-23**: The Database Location section SHALL display the current SHEP_HOME
+  - **FR-23**: The Database Location section SHALL display the current SHIPIT_AI_HOME
   directory path as read-only text. It SHALL also display the SQLite database
   file size in a human-readable format (e.g., "2.4 MB"). This section SHALL NOT
   have a Save button.
 
 
-  - **FR-24**: The SHEP_HOME path and database file size SHALL be fetched
+  - **FR-24**: The SHIPIT_AI_HOME path and database file size SHALL be fetched
   server-side (in the page Server Component or via a server action) using the
   ShepDirectoryService and filesystem APIs.
 
@@ -561,7 +561,7 @@ content: >
 
   | 2 | Should database location be editable or read-only? | Read-only display |
   Changing DB location at runtime is risky (restart + migration required). Rare
-  operation best handled via SHEP_HOME env var before process start. |
+  operation best handled via SHIPIT_AI_HOME env var before process start. |
 
   | 3 | Should env var overrides still work after feature flags move to DB? | DB
   primary with env var fallback | Safest migration path — existing deployments

@@ -9,7 +9,7 @@ export async function GET(): Promise<NextResponse> {
     return NextResponse.json({ latest: cachedVersion.latest });
   }
 
-  const packageName = '@shepai/cli';
+  const packageName = '@shipit-ai/cli';
   try {
     const res = await fetch(`https://registry.npmjs.org/${packageName}/latest`, {
       next: { revalidate: 300 },

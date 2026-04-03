@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { AgentSettingsSection } from './agent-settings-section';
-import { AgentType, AgentAuthMethod } from '@shepai/core/domain/generated/output';
+import { AgentType, AgentAuthMethod } from '@shipit-ai/core/domain/generated/output';
 
 const meta = {
   title: 'Features/Settings/AgentSettingsSection',

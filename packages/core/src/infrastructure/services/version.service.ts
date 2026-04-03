@@ -115,9 +115,9 @@ export class VersionService {
  * so the values are available to the web UI.
  */
 export function setVersionEnvVars(info: VersionInfo): void {
-  process.env.NEXT_PUBLIC_SHEP_VERSION = info.version;
-  process.env.NEXT_PUBLIC_SHEP_PACKAGE_NAME = info.name;
-  process.env.NEXT_PUBLIC_SHEP_DESCRIPTION = info.description;
-  process.env.NEXT_PUBLIC_SHEP_INSTANCE_PATH = process.cwd();
+  process.env.NEXT_PUBLIC_SHIPIT_AI_VERSION = info.version;
+  process.env.NEXT_PUBLIC_SHIPIT_AI_PACKAGE_NAME = info.name;
+  process.env.NEXT_PUBLIC_SHIPIT_AI_DESCRIPTION = info.description;
+  process.env.NEXT_PUBLIC_SHIPIT_AI_INSTANCE_PATH = process.cwd();
   // Branch is intentionally not set in production mode — only dev mode shows it
 }

@@ -18,8 +18,8 @@
     "emitDecoratorMetadata": true,
     "baseUrl": ".",
     "paths": {
-      "@shepai/core": ["../../../packages/core/src/index.ts"],
-      "@shepai/core/*": ["../../../packages/core/src/*"],
+      "@shipit-ai/core": ["../../../packages/core/src/index.ts"],
+      "@shipit-ai/core/*": ["../../../packages/core/src/*"],
       "@/*": ["./*", "../../../packages/core/src/*"],
       "@cli/*": ["../../*"]
     },

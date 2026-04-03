@@ -405,13 +405,13 @@ describe('DeploymentService', () => {
     let originalSkipRecovery: string | undefined;
 
     beforeEach(() => {
-      originalSkipRecovery = process.env.SHEP_SKIP_RECOVERY;
-      delete process.env.SHEP_SKIP_RECOVERY;
+      originalSkipRecovery = process.env.SHIPIT_AI_SKIP_RECOVERY;
+      delete process.env.SHIPIT_AI_SKIP_RECOVERY;
     });
 
     afterEach(() => {
       if (originalSkipRecovery !== undefined) {
-        process.env.SHEP_SKIP_RECOVERY = originalSkipRecovery;
+        process.env.SHIPIT_AI_SKIP_RECOVERY = originalSkipRecovery;
       }
     });
 
@@ -461,7 +461,7 @@ describe('DeploymentService', () => {
 
       service.recoverAll();
 
-      // Should NOT have killed the orphan (it may belong to another shep instance)
+      // Should NOT have killed the orphan (it may belong to another shipit-ai instance)
       expect(deps.kill).not.toHaveBeenCalled();
       // Should NOT have re-spawned
       expect(deps.spawn).not.toHaveBeenCalled();

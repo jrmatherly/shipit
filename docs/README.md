@@ -1,6 +1,6 @@
 # Documentation
 
-Central navigation for all Shep AI CLI documentation.
+Central navigation for all Shipit AI CLI documentation.
 
 ## Sections
 

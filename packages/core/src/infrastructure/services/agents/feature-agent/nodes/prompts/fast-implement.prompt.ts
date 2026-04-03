@@ -40,7 +40,7 @@ function buildDirectoryListing(worktreePath: string): string {
     'coverage',
     '.turbo',
     '.cache',
-    '.shep',
+    '.shipit-ai',
   ]);
 
   const lines: string[] = [];

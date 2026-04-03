@@ -33,7 +33,7 @@ export function createLogsCommand(): Command {
           return;
         }
 
-        const logPath = join(homedir(), '.shep', 'logs', `worker-${resolved.run.id}.log`);
+        const logPath = join(homedir(), '.shipit-ai', 'logs', `worker-${resolved.run.id}.log`);
         const ok = await viewLog({
           logPath,
           follow: opts.follow,

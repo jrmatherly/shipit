@@ -18,7 +18,7 @@ import { colors, messages } from '../../ui/index.js';
 import { fmt } from '../../ui/formatters.js';
 import type { AgentSession, AgentSessionMessage } from '@/domain/generated/output.js';
 import { AgentType } from '@/domain/generated/output.js';
-import type { SessionMetadata } from '@shepai/core/infrastructure/services/agents/sessions/claude-code-session.repository.js';
+import type { SessionMetadata } from '@shipit-ai/core/infrastructure/services/agents/sessions/claude-code-session.repository.js';
 import { formatRelativeTime } from './ls.command.js';
 import { getCliI18n } from '../../i18n.js';
 

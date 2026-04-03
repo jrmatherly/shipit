@@ -1,8 +1,8 @@
 /**
- * @module Shep.Common.Enums.Lifecycle
+ * @module ShipitAI.Common.Enums.Lifecycle
  *
  * Defines the Software Development Lifecycle (SDLC) stages that features
- * progress through in the Shep AI platform.
+ * progress through in the Shipit AI platform.
  *
  * State Transition Flow:
  * ```
@@ -107,7 +107,7 @@ enum SdlcLifecycle {
 
   /**
    * Upstream PR submitted state. The feature's code has been pushed to a fork
-   * and a PR has been created to the upstream repo. Shep polls the upstream PR
+   * and a PR has been created to the upstream repo. Shipit AI polls the upstream PR
    * status and auto-transitions to Maintain when merged.
    * Only reachable when forkAndPr=true.
    */

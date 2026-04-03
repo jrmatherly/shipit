@@ -7,7 +7,7 @@
 
 import { checkbox } from '@inquirer/prompts';
 import { getTuiI18n } from '../../../i18n.js';
-import { shepTheme } from '../../../themes/shep.theme.js';
+import { shipitAiTheme } from '../../../themes/shipit-ai.theme.js';
 import type { WorkflowDefaultsResult } from '../types.js';
 
 /** Keys used as checkbox values. */
@@ -27,7 +27,7 @@ export function buildWorkflowDefaultsConfig(initial?: Partial<WorkflowDefaultsRe
   return {
     message: t('tui:wizards.workflowDefaults.message'),
     instructions: t('tui:wizards.workflowDefaults.instructions'),
-    theme: shepTheme,
+    theme: shipitAiTheme,
     choices: [
       {
         name: t('tui:wizards.workflowDefaults.allowPrd'),

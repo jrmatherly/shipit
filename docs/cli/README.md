@@ -1,6 +1,6 @@
 # CLI Documentation
 
-Reference documentation for the Shep AI CLI presentation layer.
+Reference documentation for the Shipit AI CLI presentation layer.
 
 ## Overview
 

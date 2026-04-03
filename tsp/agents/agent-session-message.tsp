@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.AgentSessionMessage
+ * @module ShipitAI.Agents.AgentSessionMessage
  *
  * A single message within an agent provider CLI session.
  * Content is normalized to a plain string in the infrastructure layer

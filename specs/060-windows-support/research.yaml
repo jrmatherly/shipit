@@ -3,7 +3,7 @@
 
 name: windows-support
 summary: >
-  Technical research for adding Windows (win32) runtime support to @shepai/cli.
+  Technical research for adding Windows (win32) runtime support to @shipit-ai/cli.
   The codebase already uses Record<string, ...> platform lookup patterns and has
   win32 branches in browser-opener, file-dialog, and folder-dialog services.
   Key decisions: use npm `which` package for cross-platform binary detection,
@@ -541,7 +541,7 @@ content: |
   - file-dialog.service.ts — already has win32 PowerShell command
   - folder-dialog.service.ts — already has win32 PowerShell command
   - symbols.ts — already has Windows terminal detection
-  - shep-directory.service.ts — uses path.join() and homedir(), cross-platform
+  - shipit-ai-directory.service.ts — uses path.join() and homedir(), cross-platform
   - desktop-notifier.ts — node-notifier supports Windows toast
 
   ### Winget Package IDs for Tool JSON Files

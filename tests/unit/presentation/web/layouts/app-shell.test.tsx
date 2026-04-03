@@ -82,7 +82,7 @@ describe('AppShell', () => {
   it('sidebar is collapsed by default (logo text hidden)', () => {
     renderShell(<div>Content</div>);
     // When collapsed, the Shep text label is not rendered
-    expect(screen.queryByText('Shep')).not.toBeInTheDocument();
+    expect(screen.queryByText('Shipit AI')).not.toBeInTheDocument();
   });
 
   it('renders Settings link in sidebar footer', () => {
@@ -131,8 +131,8 @@ describe('AppShell', () => {
   describe('global chat popup', () => {
     it('renders the chat toggle button', () => {
       renderShell(<div>Content</div>);
-      // GlobalChatPopup renders a "Shep Chat" tooltip label
-      expect(screen.getByText('Shep Chat')).toBeInTheDocument();
+      // GlobalChatPopup renders a "Shipit AI Chat" tooltip label
+      expect(screen.getByText('Shipit AI Chat')).toBeInTheDocument();
     });
   });
 });

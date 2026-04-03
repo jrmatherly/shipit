@@ -149,7 +149,7 @@ content: >
   ## Problem Statement
 
 
-  The Shep AI platform currently supports IDE tools (VS Code, Cursor, Zed) and
+  The Shipit AI platform currently supports IDE tools (VS Code, Cursor, Zed) and
   CLI agents
 
   (Claude Code, Gemini CLI), but lacks support for terminal emulators. Users

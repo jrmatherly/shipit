@@ -16,7 +16,7 @@ describe('useVersion', () => {
   it('fetches version data from /api/version', async () => {
     const mockData = {
       version: '1.101.0',
-      packageName: '@shepai/cli',
+      packageName: '@shipit-ai/cli',
       description: 'Test',
       branch: 'main',
       commitHash: 'abc1234',
@@ -46,7 +46,7 @@ describe('useVersion', () => {
     const { result } = renderHook(() => useVersion());
 
     expect(result.current.version).toBe('unknown');
-    expect(result.current.packageName).toBe('@shepai/cli');
+    expect(result.current.packageName).toBe('@shipit-ai/cli');
     expect(result.current.isDev).toBe(false);
   });
 

@@ -236,7 +236,7 @@ content: >
   ### Project Structure
 
 
-  This is a Clean Architecture monorepo (`@shepai/cli`) with:
+  This is a Clean Architecture monorepo (`@shipit-ai/cli`) with:
 
 
   - `packages/core/src/domain/` — Domain layer (TypeSpec-generated models, no

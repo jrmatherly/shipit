@@ -64,7 +64,7 @@
 
 **Decision:** Display the following metadata:
 
-- **Database path** - Full path to `~/.shep/data`
+- **Database path** - Full path to `~/.shipit-ai/data`
 - **File size** - Human-readable size (e.g., "32 KB")
 - **Schema version** - From `user_version` pragma (tracks migrations)
 - **Last modified** - Timestamp from file stats
@@ -117,9 +117,9 @@ const lastModified = stats.mtime;
 **Rationale:**
 
 - `init` command already prompts for confirmation (unless `--force`)
-- Settings are stored in `~/.shep/data` which users can manually backup
+- Settings are stored in `~/.shipit-ai/data` which users can manually backup
 - Automatic backups add complexity:
-  - Where to store backups? (`~/.shep/backups/`?)
+  - Where to store backups? (`~/.shipit-ai/backups/`?)
   - Retention policy? (keep N backups?)
   - Naming convention? (timestamp-based?)
 - Risk is low - settings can be re-initialized with sensible defaults
@@ -128,7 +128,7 @@ const lastModified = stats.mtime;
 **Enhancement for confirmation prompt:** Mention backup in the warning message:
 
 ```
-⚠ This will reset all settings to defaults. Consider backing up ~/.shep/data first.
+⚠ This will reset all settings to defaults. Consider backing up ~/.shipit-ai/data first.
 ```
 
 ### 6. Interactive Mode
@@ -208,7 +208,7 @@ Examples:
 - **File system access** - Database path validation to prevent path traversal (already handled by `getShepDbPath()` service)
 - **Output sanitization** - Settings may contain sensitive data (email, GitHub username). Consider adding `--redact` flag in future
 - **Command injection** - No user input is executed as shell commands, safe
-- **Database permissions** - `~/.shep/` directory created with 0700 permissions (user-only access)
+- **Database permissions** - `~/.shipit-ai/` directory created with 0700 permissions (user-only access)
 
 ## Performance Implications
 

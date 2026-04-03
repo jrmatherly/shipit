@@ -63,7 +63,7 @@ describe('AdoptBranchUseCase', () => {
       exists: vi.fn().mockResolvedValue(false),
       branchExists: vi.fn().mockResolvedValue(true),
       remoteBranchExists: vi.fn().mockResolvedValue(false),
-      getWorktreePath: vi.fn().mockReturnValue('/home/user/.shep/repos/hash/wt/fix-login-bug'),
+      getWorktreePath: vi.fn().mockReturnValue('/home/user/.shipit-ai/repos/hash/wt/fix-login-bug'),
       prune: vi.fn().mockResolvedValue(undefined),
       ensureGitRepository: vi.fn().mockResolvedValue(undefined),
       listBranches: vi.fn().mockResolvedValue([]),
@@ -154,7 +154,7 @@ describe('AdoptBranchUseCase', () => {
       expect(mockWorktreeService.addExisting).toHaveBeenCalledWith(
         repoPath,
         'fix/login-bug',
-        '/home/user/.shep/repos/hash/wt/fix-login-bug'
+        '/home/user/.shipit-ai/repos/hash/wt/fix-login-bug'
       );
     });
 
@@ -295,7 +295,7 @@ describe('AdoptBranchUseCase', () => {
       });
 
       expect(mockWorktreeService.addExisting).not.toHaveBeenCalled();
-      expect(result.feature.worktreePath).toBe('/home/user/.shep/repos/hash/wt/fix-login-bug');
+      expect(result.feature.worktreePath).toBe('/home/user/.shipit-ai/repos/hash/wt/fix-login-bug');
       expect(mockFeatureRepo.create).toHaveBeenCalled();
     });
   });

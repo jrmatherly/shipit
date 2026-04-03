@@ -276,7 +276,7 @@ export async function runWorker(args: WorkerArgs): Promise<void> {
   // Use threadId for checkpoint path so resume runs share the same checkpoint DB.
   // Falls back to runId for backwards compatibility with existing runs.
   const checkpointId = args.threadId ?? args.runId;
-  const checkpointPath = join(homedir(), '.shep', 'checkpoints', `${checkpointId}.db`);
+  const checkpointPath = join(homedir(), '.shipit-ai', 'checkpoints', `${checkpointId}.db`);
   log(`Creating checkpointer at ${checkpointPath} (thread: ${checkpointId})`);
   const checkpointer = createCheckpointer(checkpointPath);
   // Both graph factories return compiled graphs with identical FeatureAgentAnnotation

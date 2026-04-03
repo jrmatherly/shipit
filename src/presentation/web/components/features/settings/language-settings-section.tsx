@@ -14,7 +14,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { updateSettingsAction } from '@/app/actions/update-settings';
-import { Language } from '@shepai/core/domain/generated/output';
+import { Language } from '@shipit-ai/core/domain/generated/output';
 
 const LANGUAGE_OPTIONS = [
   { value: Language.English, label: 'English', nativeName: 'English' },

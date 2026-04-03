@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { AddRepositoryUseCase } from '@shepai/core/application/use-cases/repositories/add-repository.use-case';
-import type { Repository } from '@shepai/core/domain/generated/output';
+import type { AddRepositoryUseCase } from '@shipit-ai/core/application/use-cases/repositories/add-repository.use-case';
+import type { Repository } from '@shipit-ai/core/domain/generated/output';
 
 interface AddRepositoryInput {
   path: string;

@@ -165,7 +165,7 @@ content: |
 
   - **NFR-7: Environment Isolation** — Strip potentially conflicting environment variables (e.g., `CLAUDECODE`) from the spawned process environment, matching the pattern in existing executors.
 
-  - **NFR-8: Backwards Compatibility** — All existing tests must continue to pass. No changes to the behavior of Claude Code or Cursor executors. The mock executor gate (`SHEP_MOCK_EXECUTOR=1`) remains unaffected.
+  - **NFR-8: Backwards Compatibility** — All existing tests must continue to pass. No changes to the behavior of Claude Code or Cursor executors. The mock executor gate (`SHIPIT_AI_MOCK_EXECUTOR=1`) remains unaffected.
 
   ## Product Questions & AI Recommendations
 

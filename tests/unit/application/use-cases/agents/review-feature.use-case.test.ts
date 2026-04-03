@@ -109,7 +109,7 @@ describe('ReviewFeatureUseCase', () => {
       branch: 'feat/test-feature',
       agentRunId: 'run-001',
       repositoryPath: '/test/repo',
-      specPath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     mockRunRepo.findById.mockResolvedValue(createWaitingRun());
     mockReadFileSync.mockReturnValue('yaml-content');
@@ -148,7 +148,7 @@ describe('ReviewFeatureUseCase', () => {
       branch: 'feat/test-feature',
       agentRunId: 'run-001',
       repositoryPath: '/test/repo',
-      specPath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     mockRunRepo.findById.mockResolvedValue(createWaitingRun());
     mockReadFileSync.mockReturnValue('yaml-content');
@@ -184,7 +184,7 @@ describe('ReviewFeatureUseCase', () => {
       branch: 'feat/test-feature',
       agentRunId: 'run-001',
       repositoryPath: '/test/repo',
-      specPath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     mockRunRepo.findById.mockResolvedValue(createWaitingRun({ status: AgentRunStatus.running }));
 
@@ -203,7 +203,7 @@ describe('ReviewFeatureUseCase', () => {
       branch: 'feat/test-feature',
       agentRunId: 'run-001',
       repositoryPath: '/test/repo',
-      specPath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     mockRunRepo.findById.mockResolvedValue(createWaitingRun());
     mockReadFileSync.mockImplementation(() => {
@@ -225,7 +225,7 @@ describe('ReviewFeatureUseCase', () => {
       branch: 'feat/test-feature',
       agentRunId: 'run-001',
       repositoryPath: '/test/repo',
-      specPath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     mockRunRepo.findById.mockResolvedValue(createWaitingRun());
     mockReadFileSync.mockReturnValue('yaml-content');
@@ -246,7 +246,7 @@ describe('ReviewFeatureUseCase', () => {
       branch: 'feat/test-feature',
       agentRunId: 'run-001',
       repositoryPath: '/test/repo',
-      specPath: '/test/repo/.shep/wt/feat-branch/specs/my-feature',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch/specs/my-feature',
     });
     mockRunRepo.findById.mockResolvedValue(createWaitingRun());
     mockReadFileSync.mockReturnValue('yaml-content');
@@ -255,7 +255,7 @@ describe('ReviewFeatureUseCase', () => {
     await useCase.execute('feat-001', '/test/repo');
 
     expect(mockReadFileSync).toHaveBeenCalledWith(
-      join('/test/repo/.shep/wt/feat-branch/specs/my-feature', 'spec.yaml'),
+      join('/test/repo/.shipit-ai/wt/feat-branch/specs/my-feature', 'spec.yaml'),
       'utf-8'
     );
   });

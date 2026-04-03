@@ -1,6 +1,6 @@
 # Shep-Kit: Spec-Driven Development Toolkit
 
-> Complete reference for the `/shep-kit:*` skill pipeline that powers autonomous feature development in Shep AI CLI.
+> Complete reference for the `/shep-kit:*` skill pipeline that powers autonomous feature development in Shipit AI CLI.
 
 ---
 

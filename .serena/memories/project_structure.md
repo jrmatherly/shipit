@@ -17,7 +17,7 @@ shipit/
 ├── Dockerfile             # Container build
 │
 ├── packages/
-│   └── core/              # @shepai/core — business logic
+│   └── core/              # @shipit-ai/core — business logic
 │       └── src/
 │           ├── domain/        # Layer 1: entities, value objects, generated models
 │           ├── application/   # Layer 2: use cases, ports, services
@@ -27,7 +27,7 @@ shipit/
 │   └── presentation/      # Layer 4: UI/UX
 │       ├── cli/           # CLI commands
 │       ├── tui/           # Terminal UI
-│       └── web/           # Next.js web app (@shepai/web)
+│       └── web/           # Next.js web app (@shipit-ai/web)
 │
 ├── tsp/                   # TypeSpec definitions → generates domain models
 │   ├── main.tsp

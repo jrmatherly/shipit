@@ -2,8 +2,8 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { GitHubRepoBrowser } from '@/components/common/github-import-dialog/github-repo-browser';
-import type { GitHubRepo } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
-import type { GitHubOrganization } from '@shepai/core/application/ports/output/services/github-repository-service.interface';
+import type { GitHubRepo } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
+import type { GitHubOrganization } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
 
 const mockRepos: GitHubRepo[] = [
   {

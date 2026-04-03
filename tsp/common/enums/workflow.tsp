@@ -1,5 +1,5 @@
 /**
- * @module Shep.Common.Enums.Workflow
+ * @module ShipitAI.Common.Enums.Workflow
  *
  * Defines enums for the post-implementation workflow:
  * PR status tracking and CI status tracking.

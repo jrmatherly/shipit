@@ -5,7 +5,7 @@
  * from the PRD spec.yaml. Users select from the available options.
  */
 
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 import type { QuestionOption } from '@/domain/generated/output.js';
 
 /**
@@ -33,6 +33,6 @@ export function createQuestionSelectConfig(
     message: `${prefix}${question}`,
     choices,
     default: currentAnswer,
-    theme: shepTheme,
+    theme: shipitAiTheme,
   };
 }

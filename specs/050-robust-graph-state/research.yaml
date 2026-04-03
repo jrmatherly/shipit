@@ -144,7 +144,7 @@ content: |
   No new libraries. Uses existing:
   - `@xyflow/react` ^12.10.0 — React Flow (unchanged)
   - `dagre` — layout engine (unchanged, via `layoutWithDagre`)
-  - `@shepai/core/domain/generated/output` — generated domain models (used directly)
+  - `@shipit-ai/core/domain/generated/output` — generated domain models (used directly)
 
   ## Security Considerations
 

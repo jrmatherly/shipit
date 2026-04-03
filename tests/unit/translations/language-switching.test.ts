@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { Language } from '@shepai/core/domain/generated/output.js';
+import { Language } from '@shipit-ai/core/domain/generated/output.js';
 import { initI18n as initCliI18n } from '../../../src/presentation/cli/i18n.js';
 import { initI18n as initTuiI18n } from '../../../src/presentation/tui/i18n.js';
 

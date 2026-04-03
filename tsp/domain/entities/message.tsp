@@ -1,7 +1,7 @@
 /**
- * @module Shep.Domain.Entities.Message
+ * @module ShipitAI.Domain.Entities.Message
  *
- * Defines the Message entity for conversational interactions in the Shep AI platform.
+ * Defines the Message entity for conversational interactions in the Shipit AI platform.
  * Messages track the dialogue between users and the AI assistant, including
  * question-answer flows, option selections, and clarification requests.
  *

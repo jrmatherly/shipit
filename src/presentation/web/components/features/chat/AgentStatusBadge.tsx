@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { InteractiveSessionStatus } from '@shepai/core/domain/generated/output';
+import { InteractiveSessionStatus } from '@shipit-ai/core/domain/generated/output';
 import { Loader2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 
 /** Named boot stages shown during the agent startup sequence. */

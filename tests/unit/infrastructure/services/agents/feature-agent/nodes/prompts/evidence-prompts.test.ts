@@ -28,8 +28,8 @@ function baseState(overrides: Partial<FeatureAgentState> = {}): FeatureAgentStat
   return {
     featureId: 'feat-001',
     repositoryPath: '/tmp/repo',
-    worktreePath: '/home/user/.shep/repos/abc123/wt/feat-test',
-    specDir: '/home/user/.shep/repos/abc123/wt/feat-test/specs/057-test-feature',
+    worktreePath: '/home/user/.shipit-ai/repos/abc123/wt/feat-test',
+    specDir: '/home/user/.shipit-ai/repos/abc123/wt/feat-test/specs/057-test-feature',
     currentNode: 'evidence',
     error: null,
     messages: [],
@@ -74,19 +74,19 @@ describe('buildEvidencePrompt', () => {
 
   it('should include worktree path', () => {
     const prompt = buildEvidencePrompt(
-      baseState({ worktreePath: '/home/user/.shep/repos/abc123/wt/my-feature' })
+      baseState({ worktreePath: '/home/user/.shipit-ai/repos/abc123/wt/my-feature' })
     );
-    expect(prompt).toContain('/home/user/.shep/repos/abc123/wt/my-feature');
+    expect(prompt).toContain('/home/user/.shipit-ai/repos/abc123/wt/my-feature');
   });
 
   it('should fall back to repositoryPath when worktreePath is absent', () => {
     const prompt = buildEvidencePrompt(
       baseState({
         worktreePath: '',
-        repositoryPath: '/home/user/.shep/repos/abc123/wt/fallback',
+        repositoryPath: '/home/user/.shipit-ai/repos/abc123/wt/fallback',
       })
     );
-    expect(prompt).toContain('/home/user/.shep/repos/abc123/wt/fallback');
+    expect(prompt).toContain('/home/user/.shipit-ai/repos/abc123/wt/fallback');
   });
 
   it('should include JSON output format instructions', () => {
@@ -158,11 +158,11 @@ describe('buildEvidencePrompt', () => {
   });
 
   describe('commitEvidence=false (default)', () => {
-    it('should store evidence in shep home folder by default', () => {
+    it('should store evidence in shipit-ai home folder by default', () => {
       const prompt = buildEvidencePrompt(baseState());
-      // Should reference the shep home evidence directory (derived from worktree path)
+      // Should reference the shipit-ai home evidence directory (derived from worktree path)
       expect(prompt).toContain('evidence');
-      expect(prompt).toContain('shep home');
+      expect(prompt).toContain('shipit-ai home');
     });
 
     it('should NOT include commit/push block', () => {
@@ -245,7 +245,7 @@ describe('buildEvidencePrompt', () => {
 
     it('should save to BOTH locations', () => {
       const prompt = buildEvidencePrompt(baseState(), { commitEvidence: true });
-      expect(prompt).toContain('Shep home folder');
+      expect(prompt).toContain('Shipit AI home folder');
       expect(prompt).toContain('Spec folder');
     });
   });

@@ -1,7 +1,7 @@
 /**
  * Init Command Unit Tests
  *
- * Tests for the `shep settings init` command.
+ * Tests for the `shipit-ai settings init` command.
  *
  * TDD Phase: GREEN
  * - Tests updated to match actual implementation (settings service, not use case)

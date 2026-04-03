@@ -28,7 +28,7 @@ interface Size {
   h: number;
 }
 
-const STORAGE_KEY = 'shep-global-chat';
+const STORAGE_KEY = 'shipit-ai-global-chat';
 
 function loadPersistedState(): { pos: Position | null; size: Size | null } {
   try {
@@ -437,7 +437,7 @@ export function GlobalChatPopup() {
         <div className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 translate-y-1 opacity-0 transition-all duration-200 group-hover/fab:translate-y-0 group-hover/fab:opacity-100">
           <div className="bg-foreground rounded-lg px-3 py-1.5 text-center shadow-lg">
             <p className="text-background text-xs font-medium whitespace-nowrap">
-              {t('chat.shepChat')}
+              {t('chat.shipitAiChat')}
             </p>
             <p className="text-background/50 mt-0.5 flex items-center justify-center gap-1 text-[10px]">
               <kbd className="bg-background/15 rounded px-1 py-px font-mono">⌘</kbd>

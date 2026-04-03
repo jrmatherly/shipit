@@ -4,9 +4,9 @@ import { resolve } from '@/lib/server-container';
 import {
   resetSettings,
   initializeSettings,
-} from '@shepai/core/infrastructure/services/settings.service';
-import type { CompleteWebOnboardingUseCase } from '@shepai/core/application/use-cases/settings/complete-web-onboarding.use-case';
-import type { AgentType } from '@shepai/core/domain/generated/output';
+} from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { CompleteWebOnboardingUseCase } from '@shipit-ai/core/application/use-cases/settings/complete-web-onboarding.use-case';
+import type { AgentType } from '@shipit-ai/core/domain/generated/output';
 
 export async function updateAgentAndModel(
   agentType: string,

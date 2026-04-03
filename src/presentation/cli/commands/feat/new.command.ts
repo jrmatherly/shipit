@@ -21,7 +21,7 @@ import { SdlcLifecycle } from '@/domain/generated/output.js';
 import type { IFeatureRepository } from '@/application/ports/output/repositories/feature-repository.interface.js';
 import { colors, messages, spinner } from '../../ui/index.js';
 import { getCliI18n } from '../../i18n.js';
-import { getShepHomeDir } from '@/infrastructure/services/filesystem/shep-directory.service.js';
+import { getShipitAiHomeDir } from '@/infrastructure/services/filesystem/shipit-ai-directory.service.js';
 import { getSettings, hasSettings } from '@/infrastructure/services/settings.service.js';
 import { CheckOnboardingStatusUseCase } from '@/application/use-cases/settings/check-onboarding-status.use-case.js';
 import { onboardingWizard } from '../../../tui/wizards/onboarding/onboarding.wizard.js';
@@ -181,7 +181,7 @@ export function createNewCommand(): Command {
         const { feature, warning } = result;
         const repoHash = createHash('sha256').update(repoPath).digest('hex').slice(0, 16);
         const wtSlug = feature.branch.replace(/\//g, '-');
-        const worktreePath = join(getShepHomeDir(), 'repos', repoHash, 'wt', wtSlug);
+        const worktreePath = join(getShipitAiHomeDir(), 'repos', repoHash, 'wt', wtSlug);
 
         messages.newline();
         if (warning) {

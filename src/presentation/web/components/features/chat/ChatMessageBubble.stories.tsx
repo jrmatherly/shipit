@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { InteractiveMessageRole } from '@shepai/core/domain/generated/output';
+import { InteractiveMessageRole } from '@shipit-ai/core/domain/generated/output';
 import { ChatMessageBubble } from './ChatMessageBubble';
 
 const meta: Meta<typeof ChatMessageBubble> = {

@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { CreateFeatureUseCase } from '@shepai/core/application/use-cases/features/create/create-feature.use-case';
-import type { Feature } from '@shepai/core/domain/generated/output';
+import type { CreateFeatureUseCase } from '@shipit-ai/core/application/use-cases/features/create/create-feature.use-case';
+import type { Feature } from '@shipit-ai/core/domain/generated/output';
 import { composeUserInput } from './compose-user-input';
 
 interface Attachment {

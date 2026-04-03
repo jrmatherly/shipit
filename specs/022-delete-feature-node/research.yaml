@@ -177,8 +177,8 @@ openQuestions:
   - question: 'What is the correct import path for the bridge function in API routes?'
     resolved: true
     answer: >
-      API routes import bridge functions from the @shepai/core package path:
-      import { deleteFeature } from "@shepai/core/infrastructure/di/use-cases-bridge".
+      API routes import bridge functions from the @shipit-ai/core package path:
+      import { deleteFeature } from "@shipit-ai/core/infrastructure/di/use-cases-bridge".
       This matches the existing create route pattern (route.test.ts line 5). The bridge
       module is specifically designed to be importable in the web layer (Turbopack-safe)
       because it only reads from globalThis without any Node.js-only imports.

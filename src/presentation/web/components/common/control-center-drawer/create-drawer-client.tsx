@@ -76,7 +76,7 @@ export function CreateDrawerClient({
           }
           // Dispatch event with real feature ID so control center adds it to featureMap
           window.dispatchEvent(
-            new CustomEvent('shep:feature-created', {
+            new CustomEvent('shipit-ai:feature-created', {
               detail: {
                 featureId: result.feature!.id,
                 name: result.feature!.name,

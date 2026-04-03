@@ -95,7 +95,7 @@ tasks:
       - 'approveFeature signature is approveFeature(featureId: string, payload?: PrdApprovalPayload)'
       - 'Payload is forwarded to approveUseCase.execute(feature.agentRunId, payload)'
       - 'Calling approveFeature(featureId) without payload still works (backward compatible)'
-      - 'PrdApprovalPayload type is imported from @shepai/core/domain/generated/output'
+      - 'PrdApprovalPayload type is imported from @shipit-ai/core/domain/generated/output'
     tdd:
       red:
         - 'Write a test that calls approveFeature with a payload object and verifies the use case receives it'
@@ -103,7 +103,7 @@ tasks:
       green:
         - 'Add optional payload parameter to approveFeature and forward to execute()'
       refactor:
-        - 'Verify the import path for PrdApprovalPayload uses the correct @shepai/core alias'
+        - 'Verify the import path for PrdApprovalPayload uses the correct @shipit-ai/core alias'
     estimatedEffort: '20min'
 
   # ── Phase 2: Shared RejectFeedbackDialog Component ──
@@ -355,7 +355,7 @@ tasks:
       - 'Each QuestionSelectionChange has questionId (question text) and selectedOption (option label)'
       - 'PrdApprovalPayload { approved: true, changedSelections } is passed to approveFeature'
       - 'If questionnaireData is null, approves without payload (graceful fallback)'
-      - 'QuestionSelectionChange and PrdApprovalPayload types imported from @shepai/core'
+      - 'QuestionSelectionChange and PrdApprovalPayload types imported from @shipit-ai/core'
     tdd:
       red:
         - 'Write a test that mocks approveFeature and verifies it receives the correct PrdApprovalPayload with changedSelections containing question text and option label lookups'

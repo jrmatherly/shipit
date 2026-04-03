@@ -5,7 +5,7 @@ import type { Viewport } from '@xyflow/react';
 
 export type { Viewport } from '@xyflow/react';
 
-export const STORAGE_KEY = 'shep-canvas-viewport';
+export const STORAGE_KEY = 'shipit-ai-canvas-viewport';
 export const DEBOUNCE_MS = 500;
 
 export const DEFAULT_VIEWPORT: Viewport = { x: 30, y: 30, zoom: 0.85 };

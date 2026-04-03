@@ -15,20 +15,20 @@
  */
 
 import { resolve } from '@/lib/server-container';
-import type { IAgentRunRepository } from '@shepai/core/application/ports/output/agents/agent-run-repository.interface';
-import type { IPhaseTimingRepository } from '@shepai/core/application/ports/output/agents/phase-timing-repository.interface';
-import type { IInteractiveSessionRepository } from '@shepai/core/application/ports/output/repositories/interactive-session-repository.interface';
-import type { Feature, AgentRun } from '@shepai/core/domain/generated/output';
+import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/output/agents/agent-run-repository.interface';
+import type { IPhaseTimingRepository } from '@shipit-ai/core/application/ports/output/agents/phase-timing-repository.interface';
+import type { IInteractiveSessionRepository } from '@shipit-ai/core/application/ports/output/repositories/interactive-session-repository.interface';
+import type { Feature, AgentRun } from '@shipit-ai/core/domain/generated/output';
 import {
   AgentRunStatus,
   InteractiveSessionStatus,
   SdlcLifecycle,
   NotificationEventType,
   NotificationSeverity,
-} from '@shepai/core/domain/generated/output';
-import { isProcessAlive } from '@shepai/core/infrastructure/services/process/is-process-alive';
-import type { NotificationEvent } from '@shepai/core/domain/generated/output';
-import type { ListFeaturesUseCase } from '@shepai/core/application/use-cases/features/list-features.use-case';
+} from '@shipit-ai/core/domain/generated/output';
+import { isProcessAlive } from '@shipit-ai/core/infrastructure/services/process/is-process-alive';
+import type { NotificationEvent } from '@shipit-ai/core/domain/generated/output';
+import type { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 
 // Force dynamic — SSE streams must never be statically optimized or cached
 export const dynamic = 'force-dynamic';

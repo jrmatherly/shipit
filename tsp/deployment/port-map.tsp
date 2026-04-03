@@ -1,5 +1,5 @@
 /**
- * @module Shep.Deployment.PortMap
+ * @module ShipitAI.Deployment.PortMap
  *
  * Defines the PortMap value object for mapping service names to network ports.
  *

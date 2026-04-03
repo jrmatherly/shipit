@@ -3,7 +3,7 @@
 /**
  * Install Command Unit Tests
  *
- * Tests for the `shep install <tool>` command.
+ * Tests for the `shipit-ai install <tool>` command.
  *
  * TDD Phase: RED → GREEN → REFACTOR
  */
@@ -314,7 +314,7 @@ describe('Install Command', () => {
       await cmd.parseAsync(['node', 'test']);
 
       const allLogs = consoleSpy.mock.calls.flat().join('\n');
-      expect(allLogs).toContain('shep install <tool>');
+      expect(allLogs).toContain('shipit-ai install <tool>');
 
       consoleSpy.mockRestore();
     });

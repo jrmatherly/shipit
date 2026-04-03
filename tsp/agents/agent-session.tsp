@@ -1,9 +1,9 @@
 /**
- * @module Shep.Agents.AgentSession
+ * @module ShipitAI.Agents.AgentSession
  *
  * An agent provider CLI session (e.g. a Claude Code conversation).
  * Sessions are read from the provider's local storage — they are not
- * stored in the Shep database. The session ID is the provider-native
+ * stored in the Shipit AI database. The session ID is the provider-native
  * file identifier (UUID filename without extension), keeping the
  * implementation stateless with no write-on-read index.
  */

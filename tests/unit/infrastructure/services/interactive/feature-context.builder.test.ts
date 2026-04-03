@@ -6,14 +6,14 @@
 
 import { describe, it, expect, vi } from 'vitest';
 
-// Mock execFileSync to avoid slow shep CLI calls that cause timeouts in full suite.
-// The builder calls shep --version and shep --help which are slow in CI.
+// Mock execFileSync to avoid slow shipit-ai CLI calls that cause timeouts in full suite.
+// The builder calls shipit-ai --version and shipit-ai --help which are slow in CI.
 vi.mock('node:child_process', () => ({
   execFileSync: vi.fn((cmd: string, args: string[]) => {
-    if (cmd === 'shep' && args[0] === '--version') return '0.0.0-test';
-    if (cmd === 'shep' && args[0] === '--help')
-      return 'Usage: shep [command]\n  feat  Manage features\n  ui    Launch UI';
-    if (cmd === 'shep' && args[1] === '--help') return `shep ${args[0]} help text`;
+    if (cmd === 'shipit-ai' && args[0] === '--version') return '0.0.0-test';
+    if (cmd === 'shipit-ai' && args[0] === '--help')
+      return 'Usage: shipit-ai [command]\n  feat  Manage features\n  ui    Launch UI';
+    if (cmd === 'shipit-ai' && args[1] === '--help') return `shipit-ai ${args[0]} help text`;
     return '';
   }),
 }));

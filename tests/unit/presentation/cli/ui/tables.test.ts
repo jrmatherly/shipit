@@ -50,11 +50,11 @@ describe('TableFormatter', () => {
     });
 
     it('should include database metadata when provided', () => {
-      const dbMeta = { path: '/home/test/.shep/data', size: '152.0 KB' };
+      const dbMeta = { path: '/home/test/.shipit-ai/data', size: '152.0 KB' };
       const result = TableFormatter.createSettingsTable(sampleSettings, dbMeta);
 
       expect(result).toContain('Database');
-      expect(result).toContain('/home/test/.shep/data');
+      expect(result).toContain('/home/test/.shipit-ai/data');
       expect(result).toContain('152.0 KB');
     });
 

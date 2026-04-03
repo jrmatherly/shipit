@@ -1,8 +1,8 @@
 /**
- * @module Shep.Common.Enums.Language
+ * @module ShipitAI.Common.Enums.Language
  *
  * Defines the Language enum for supported UI languages.
- * Controls which language Shep uses for all user-facing strings
+ * Controls which language Shipit AI uses for all user-facing strings
  * across CLI, TUI, and Web UI presentation layers.
  */
 /**

@@ -137,7 +137,7 @@
     - [ ] Implement `analyzeNode` function that calls `executor.execute()` with analysis prompt
     - [ ] Create StateGraph, add analyzeNode, add edge to END
     - [ ] Export `analyzeRepositoryGraph` factory function
-  - [ ] Create `infrastructure/services/agents/langgraph/checkpointer.ts` wrapping SqliteSaver (per-repo file: `~/.shep/repos/<encoded-path>/checkpoints.db`, registered in DI as `'Checkpointer'` token)
+  - [ ] Create `infrastructure/services/agents/langgraph/checkpointer.ts` wrapping SqliteSaver (per-repo file: `~/.shipit-ai/repos/<encoded-path>/checkpoints.db`, registered in DI as `'Checkpointer'` token)
   - [ ] Make tests pass
 - [ ] **REFACTOR**: Extract prompt templates, add conditional edges for errors, add retry logic with exponential backoff
 

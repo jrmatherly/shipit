@@ -1,6 +1,6 @@
 # TUI Design System
 
-Styling and UX patterns for Shep AI terminal prompts.
+Styling and UX patterns for Shipit AI terminal prompts.
 
 ## Theme Integration
 

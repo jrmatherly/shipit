@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import type { LogEntry } from '@shepai/core/application/ports/output/services/deployment-service.interface';
+import type { LogEntry } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 import { getDeploymentLogs } from '@/app/actions/get-deployment-logs';
 
 export interface UseDeploymentLogsResult {

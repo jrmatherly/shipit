@@ -2,7 +2,7 @@
  * Feature Context Builder
  *
  * Builds the system prompt context for the interactive agent session.
- * Includes Shep identity, CLI reference, feature context, and behavioral guidelines.
+ * Includes Shipit AI identity, CLI reference, feature context, and behavioral guidelines.
  * The output string is suitable for use as systemPrompt content in SDK sessions.
  */
 
@@ -25,7 +25,7 @@ function getCliHelpText(): string {
   if (cachedCliHelp) return cachedCliHelp;
 
   try {
-    const mainHelp = execFileSync('shep', ['--help'], {
+    const mainHelp = execFileSync('shipit-ai', ['--help'], {
       timeout: 5000,
       encoding: 'utf8',
       stdio: ['pipe', 'pipe', 'pipe'],
@@ -41,13 +41,13 @@ function getCliHelpText(): string {
 
     for (const cmd of subCommands) {
       try {
-        const subHelp = execFileSync('shep', [cmd, '--help'], {
+        const subHelp = execFileSync('shipit-ai', [cmd, '--help'], {
           timeout: 3000,
           encoding: 'utf8',
           stdio: ['pipe', 'pipe', 'pipe'],
         }).trim();
         if (subHelp) {
-          parts.push(`\n--- shep ${cmd} ---\n${subHelp}`);
+          parts.push(`\n--- shipit-ai ${cmd} ---\n${subHelp}`);
         }
       } catch {
         // Some commands may not have --help or may fail
@@ -56,7 +56,7 @@ function getCliHelpText(): string {
 
     cachedCliHelp = parts.join('\n');
   } catch {
-    cachedCliHelp = '(CLI help unavailable — shep binary not found in PATH)';
+    cachedCliHelp = '(CLI help unavailable — shipit-ai binary not found in PATH)';
   }
 
   return cachedCliHelp;
@@ -76,10 +76,10 @@ export class FeatureContextBuilder {
    * @returns A formatted context string suitable for systemPrompt or boot prompt injection
    */
   buildContext(feature: Feature, worktreePath: string, openPRs: string[]): string {
-    const shepHome = process.env.SHEP_HOME ?? join(homedir(), '.shep');
+    const shipitAiHome = process.env.SHIPIT_AI_HOME ?? join(homedir(), '.shipit-ai');
     let version = 'unknown';
     try {
-      version = execFileSync('shep', ['--version'], {
+      version = execFileSync('shipit-ai', ['--version'], {
         timeout: 3000,
         encoding: 'utf8',
         stdio: ['pipe', 'pipe', 'pipe'],
@@ -91,13 +91,13 @@ export class FeatureContextBuilder {
     const sections: string[] = [];
 
     // ── Identity ──────────────────────────────────────────────────────────
-    sections.push(`# Shep Interactive Agent
-You are **Shep** — the interactive AI assistant for the Shep SDLC platform.
-Shep is an Autonomous AI Native SDLC Platform that automates the development
+    sections.push(`# Shipit AI Interactive Agent
+You are **Shipit AI** — the interactive AI assistant for the Shipit AI SDLC platform.
+Shipit AI is an Autonomous AI Native SDLC Platform that automates the development
 cycle from idea to deploy.
 
 Version: ${version}
-SHEP_HOME: ${shepHome}
+SHIPIT_AI_HOME: ${shipitAiHome}
 Platform: ${process.platform} (${process.arch})`);
 
     // ── Behavioral guidelines ─────────────────────────────────────────────
@@ -110,12 +110,12 @@ Platform: ${process.platform} (${process.arch})`);
 - When you DO act, be thorough and explain what you did.
 - You have full access to the worktree via your tools (git, gh, filesystem,
   bash, read, write, edit, grep, glob). Use them proactively.
-- You know the Shep CLI inside out. Help users with any shep command.
+- You know the Shipit AI CLI inside out. Help users with any shipit-ai command.
 - When working on this feature, stay focused on the feature context below.
-- If the user asks about Shep itself, answer from your knowledge of the CLI.`);
+- If the user asks about Shipit AI itself, answer from your knowledge of the CLI.`);
 
     // ── CLI Reference ─────────────────────────────────────────────────────
-    sections.push(`## Shep CLI Reference
+    sections.push(`## Shipit AI CLI Reference
 \`\`\`
 ${getCliHelpText()}
 \`\`\``);

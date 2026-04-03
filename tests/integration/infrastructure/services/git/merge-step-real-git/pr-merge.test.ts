@@ -60,7 +60,7 @@ describe('Merge Step — PR Merge (Known Bug)', () => {
       const harness = await createGitHarness();
       harnessToCleanup.push(harness.bareDir, harness.cloneDir);
 
-      const tempDir = mkdtempSync(join(tmpdir(), 'shep-test-spec-'));
+      const tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-test-spec-'));
       harnessToCleanup.push(tempDir);
 
       // Pre-populate completedPhases: ["merge"] to simulate post-Phase-1 state.

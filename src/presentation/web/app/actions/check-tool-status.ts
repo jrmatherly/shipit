@@ -1,9 +1,9 @@
 'use server';
 
 import { execFile } from 'node:child_process';
-import { IS_WINDOWS } from '@shepai/core/infrastructure/platform';
+import { IS_WINDOWS } from '@shipit-ai/core/infrastructure/platform';
 import { resolve } from '@/lib/server-container';
-import type { ListToolsUseCase } from '@shepai/core/application/use-cases/tools/list-tools.use-case';
+import type { ListToolsUseCase } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 
 export interface ToolStatusEntry {
   installed: boolean;

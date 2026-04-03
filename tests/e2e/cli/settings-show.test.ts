@@ -1,7 +1,7 @@
 /**
  * Settings Show Command E2E Tests
  *
- * Tests for the `shep settings show` command with different output formats.
+ * Tests for the `shipit-ai settings show` command with different output formats.
  */
 
 import { describe, it, expect } from 'vitest';

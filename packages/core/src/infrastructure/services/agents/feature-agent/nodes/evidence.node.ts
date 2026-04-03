@@ -3,7 +3,7 @@
  *
  * Captures visual and textual evidence (screenshots, test outputs,
  * terminal recordings) proving that implemented tasks work as expected.
- * Evidence files are committed to .shep/evidence/ on the feature branch
+ * Evidence files are committed to .shipit-ai/evidence/ on the feature branch
  * and evidence records flow through graph state to the merge node for
  * inclusion in the PR body.
  *

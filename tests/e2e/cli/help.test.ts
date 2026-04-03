@@ -1,11 +1,11 @@
 /**
  * CLI Help Command E2E Tests
  *
- * Tests for the `shep --help`, `shep -h`, and related flags.
+ * Tests for the `shipit-ai --help`, `shipit-ai -h`, and related flags.
  *
- * NOTE: `shep` (no args) no longer prints help — it starts the web UI daemon
+ * NOTE: `shipit-ai` (no args) no longer prints help — it starts the web UI daemon
  * (or runs onboarding on first run). The default help output is now only
- * accessible via `shep --help` or `shep -h`.
+ * accessible via `shipit-ai --help` or `shipit-ai -h`.
  */
 
 import { describe, it, expect, afterAll } from 'vitest';
@@ -23,25 +23,25 @@ describe('CLI: help', () => {
     expect(result.success).toBe(true);
     expect(result.exitCode).toBe(0);
     expect(result.stdout).toContain('Usage:');
-    expect(result.stdout).toContain('shep');
+    expect(result.stdout).toContain('shipit-ai');
     expect(result.stdout).toContain('version');
     expect(result.stdout).toContain('Display version information');
     expect(result.stdout).toContain('-v, --version');
     expect(result.stdout).toContain('-h, --help');
   });
 
-  describe('shep (no args) starts the daemon instead of printing help', () => {
+  describe('shipit-ai (no args) starts the daemon instead of printing help', () => {
     // The default action is now startDaemon(), not outputHelp().
     // In a non-TTY test environment, onboarding is skipped and the daemon spawns.
     // Skip readiness check since the daemon child can't start a real server in E2E.
-    const { runner, shepHome, cleanup } = createIsolatedCliRunner({
-      env: { SHEP_SKIP_READINESS_CHECK: '1' },
+    const { runner, shipitAiHome, cleanup } = createIsolatedCliRunner({
+      env: { SHIPIT_AI_SKIP_READINESS_CHECK: '1' },
     });
 
     afterAll(() => {
       // Kill the spawned daemon if it is still alive
       try {
-        const daemonPath = join(shepHome, 'daemon.json');
+        const daemonPath = join(shipitAiHome, 'daemon.json');
         const state = JSON.parse(readFileSync(daemonPath, 'utf-8'));
         if (isWindows) {
           try {

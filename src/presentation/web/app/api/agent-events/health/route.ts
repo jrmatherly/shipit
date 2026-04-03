@@ -10,8 +10,8 @@
  */
 
 import { resolve } from '@/lib/server-container';
-import type { IAgentRunRepository } from '@shepai/core/application/ports/output/agents/agent-run-repository.interface';
-import type { ListFeaturesUseCase } from '@shepai/core/application/use-cases/features/list-features.use-case';
+import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/output/agents/agent-run-repository.interface';
+import type { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 
 export const dynamic = 'force-dynamic';
 

@@ -9,7 +9,7 @@ vi.mock('@/lib/server-container', () => ({
 }));
 
 const mockComputeWorktreePath = vi.fn();
-vi.mock('@shepai/core/infrastructure/services/ide-launchers/compute-worktree-path', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path', () => ({
   computeWorktreePath: (...args: unknown[]) => mockComputeWorktreePath(...args),
 }));
 
@@ -18,9 +18,8 @@ vi.mock('node:fs', () => ({
   existsSync: (path: string) => mockExistsSync(path),
 }));
 
-const { deployFeature } = await import(
-  '../../../../../src/presentation/web/app/actions/deploy-feature.js'
-);
+const { deployFeature } =
+  await import('../../../../../src/presentation/web/app/actions/deploy-feature.js');
 
 const MOCK_FEATURE = {
   id: 'feat-123',
@@ -28,7 +27,7 @@ const MOCK_FEATURE = {
   branch: 'feat/my-feature',
 };
 
-const MOCK_WORKTREE_PATH = '/mock/.shep/repos/abc123/wt/feat-my-feature';
+const MOCK_WORKTREE_PATH = '/mock/.shipit-ai/repos/abc123/wt/feat-my-feature';
 
 describe('deployFeature server action', () => {
   beforeEach(() => {

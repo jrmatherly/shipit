@@ -21,7 +21,7 @@ type Story = StoryObj<typeof SkillDetailDrawer>;
  * ------------------------------------------------------------------------- */
 
 const skillWithResources: SkillData = {
-  name: 'shep:ui-component',
+  name: 'shipit-ai:ui-component',
   displayName: 'ui-component',
   description:
     'Use when creating, modifying, or reviewing web UI components. Triggers include "new component", "add component", "create UI", "build a widget".',
@@ -29,7 +29,7 @@ const skillWithResources: SkillData = {
   allowedTools: 'Read, Write, Bash, Edit, Glob, Grep',
   category: 'Code Generation',
   source: 'project',
-  body: '## Overview\n\nScaffolds UI components following the four-tier hierarchy.\n\n## Usage\n\nRun /shep:ui-component when you need to create or modify components.',
+  body: '## Overview\n\nScaffolds UI components following the four-tier hierarchy.\n\n## Usage\n\nRun /shipit-ai:ui-component when you need to create or modify components.',
   resources: [
     { name: 'references', fileCount: 7 },
     { name: 'templates', fileCount: 3 },

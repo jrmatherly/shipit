@@ -6,7 +6,7 @@
  */
 
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 export type ReviewAction = 'approve' | 'reject';
 
@@ -32,6 +32,6 @@ export function createReviewActionConfig(changeCount: number) {
         description: t('tui:prompts.prdReview.rejectDescription'),
       },
     ],
-    theme: shepTheme,
+    theme: shipitAiTheme,
   };
 }

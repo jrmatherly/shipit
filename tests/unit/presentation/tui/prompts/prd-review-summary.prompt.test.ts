@@ -6,7 +6,7 @@
 
 import { describe, it, expect } from 'vitest';
 import { createReviewActionConfig } from '../../../../../src/presentation/tui/prompts/prd-review-summary.prompt.js';
-import { shepTheme } from '../../../../../src/presentation/tui/themes/shep.theme.js';
+import { shipitAiTheme } from '../../../../../src/presentation/tui/themes/shipit-ai.theme.js';
 
 describe('createReviewActionConfig', () => {
   it('should show change count in message when changes exist', () => {
@@ -32,8 +32,8 @@ describe('createReviewActionConfig', () => {
     expect(values).toContain('reject');
   });
 
-  it('should use shepTheme', () => {
+  it('should use shipitAiTheme', () => {
     const config = createReviewActionConfig(0);
-    expect(config.theme).toBe(shepTheme);
+    expect(config.theme).toBe(shipitAiTheme);
   });
 });

@@ -124,7 +124,7 @@ openQuestions: []
 content: |
   ## Architecture Overview
 
-  The @shepai/cli codebase follows Clean Architecture with four layers:
+  The @shipit-ai/cli codebase follows Clean Architecture with four layers:
   domain, application, infrastructure, and presentation. Windows support is
   exclusively an infrastructure and presentation concern — no domain or
   application layer changes are needed.

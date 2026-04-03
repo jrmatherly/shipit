@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.AgentDefinition
+ * @module ShipitAI.Agents.AgentDefinition
  *
  * Registry metadata for a LangGraph agent workflow.
  * Not persisted to database — used for in-memory registration only.

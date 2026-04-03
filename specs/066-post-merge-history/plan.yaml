@@ -71,7 +71,7 @@ content: |
 
   The existing data infrastructure already supports post-merge viewing:
   - PR metadata (`feature.pr`) persists in SQLite after merge
-  - Evidence manifest persists at `~/.shep/repos/<hash>/evidence/<featureId>/manifest.json`
+  - Evidence manifest persists at `~/.shipit-ai/repos/<hash>/evidence/<featureId>/manifest.json`
   - `getMergeReviewData()` server action already handles missing worktrees gracefully
   - `useTabDataFetch` hook provides lazy loading and caching for tab data
 

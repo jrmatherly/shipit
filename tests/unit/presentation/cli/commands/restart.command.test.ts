@@ -3,7 +3,7 @@
 /**
  * Restart Command Unit Tests
  *
- * Tests for the `shep restart` command.
+ * Tests for the `shipit-ai restart` command.
  *
  * TDD Phase: RED → GREEN → REFACTOR
  */

@@ -4,13 +4,13 @@
 name: control-center
 number: 016
 branch: feat/016-control-center
-oneLiner: Control center orchestrator + extract @shepai/core workspace package for clean web-to-CLI data access
+oneLiner: Control center orchestrator + extract @shipit-ai/core workspace package for clean web-to-CLI data access
 summary: >
   Two-part feature: (1) Build a Control Center Tier 3 component wrapping FeaturesCanvas
   with interactive capabilities — node selection, contextual add-feature actions via (+)
   buttons, centralized state management via custom hook. (2) Extract domain/, application/,
-  and infrastructure/ into a @shepai/core workspace package. Both @shepai/cli and @shepai/web
-  depend on @shepai/core directly, eliminating the Turbopack-incompatible @cli/* path alias
+  and infrastructure/ into a @shipit-ai/core workspace package. Both @shipit-ai/cli and @shipit-ai/web
+  depend on @shipit-ai/core directly, eliminating the Turbopack-incompatible @cli/* path alias
   hack and enabling clean type imports. The globalThis bridge remains for runtime use case
   access only (DI container initialized by CLI/dev-server, not Next.js). FeatureNodeData
   extends the generated Feature type — state/progress derived from Feature.plan.tasks.
@@ -32,7 +32,7 @@ technologies:
   - shadcn/ui
   - Storybook 8
   - Lucide React
-  - pnpm workspaces (@shepai/core)
+  - pnpm workspaces (@shipit-ai/core)
   - TypeScript (pre-compiled package with tsc)
 
 relatedLinks:
@@ -177,9 +177,9 @@ content: |
   - [x] `pnpm build:storybook` passes
   - [x] `pnpm build:web` passes
   - [x] Components follow tier import rules (013-ui-arch)
-  - [ ] @shepai/core workspace package created in packages/core/ with pre-compiled JS output
+  - [ ] @shipit-ai/core workspace package created in packages/core/ with pre-compiled JS output
   - [ ] domain/, application/, infrastructure/ moved to packages/core/src/
-  - [ ] @shepai/cli and @shepai/web both depend on @shepai/core via workspace:*
+  - [ ] @shipit-ai/cli and @shipit-ai/web both depend on @shipit-ai/core via workspace:*
   - [ ] TypeSpec output dir updated to packages/core/src/domain/generated/
   - [ ] Build pipeline: TypeSpec → core build → CLI build → web build
   - [ ] Data loaded via existing ListFeaturesUseCase through global DI bridge (no direct SQL, no new use cases)
@@ -193,27 +193,27 @@ content: |
   - [ ] Badge shows agent type icon (SVG) for each AgentType enum value (claude-code, cursor, gemini-cli, aider, continue)
   - [ ] Badge shows lifecycle-derived verb for running state (Analyzing, Researching, Implementing, Reviewing, Deploying)
   - [ ] AgentTypeValue union type mirrors TypeSpec AgentType enum
-  - [ ] Web imports use @shepai/core/* instead of @cli/* path aliases
+  - [ ] Web imports use @shipit-ai/core/* instead of @cli/* path aliases
   - [ ] All @/ alias imports within core converted to relative paths
-  - [ ] pnpm install links @shepai/core workspace, all builds pass
+  - [ ] pnpm install links @shipit-ai/core workspace, all builds pass
 
   ## Affected Areas
 
   | Area                                            | Impact | Reasoning                                  |
   | ----------------------------------------------- | ------ | ------------------------------------------ |
-  | `packages/core/`                                | High   | New @shepai/core workspace package (domain + app + infra) |
+  | `packages/core/`                                | High   | New @shipit-ai/core workspace package (domain + app + infra) |
   | `src/domain/`, `src/application/`, `src/infrastructure/` | High | Moved to packages/core/src/ |
   | `pnpm-workspace.yaml`                           | High   | Add packages/core entry |
   | `tspconfig.yaml`                                | Medium | TypeSpec output dir → packages/core/src/domain/generated |
-  | `package.json` (root)                           | Medium | Add @shepai/core dep, remove moved deps |
+  | `package.json` (root)                           | Medium | Add @shipit-ai/core dep, remove moved deps |
   | `tsconfig.json`, `tsconfig.build.json` (root)   | Medium | Update paths and includes |
-  | `vitest.config.ts`                              | Medium | Add @shepai/core alias |
-  | `src/presentation/web/package.json`             | Medium | Add @shepai/core dependency |
-  | `src/presentation/web/tsconfig.json`            | Medium | Replace @cli/* with @shepai/core paths |
+  | `vitest.config.ts`                              | Medium | Add @shipit-ai/core alias |
+  | `src/presentation/web/package.json`             | Medium | Add @shipit-ai/core dependency |
+  | `src/presentation/web/tsconfig.json`            | Medium | Replace @cli/* with @shipit-ai/core paths |
   | `src/presentation/web/components/features/`     | High   | New control-center component directory |
   | `src/presentation/web/components/common/feature-node/` | Low | Add selected visual state |
   | `src/presentation/web/app/page.tsx`             | Medium | Control Center homepage, Feature data flow |
-  | `~20 CLI command files`                         | Medium | Relative imports → @shepai/core/* |
+  | `~20 CLI command files`                         | Medium | Relative imports → @shipit-ai/core/* |
   | `~30 infrastructure files`                      | Medium | @/ aliases → relative paths within core |
 
   ## Dependencies
@@ -225,7 +225,7 @@ content: |
   ## Scope Boundaries
 
   **In scope:**
-  - Extract @shepai/core workspace package (domain, application, infrastructure layers)
+  - Extract @shipit-ai/core workspace package (domain, application, infrastructure layers)
   - Pre-compiled package with tsc build step → packages/core/dist/
   - ControlCenter orchestrator wrapping FeaturesCanvas
   - State management hook (useControlCenterState)
@@ -241,7 +241,7 @@ content: |
   - Uses existing ListFeaturesUseCase returning Feature[] (no new use cases, no new repo methods)
   - FeatureNodeData extends generated Feature type — component derives state/progress from domain data
   - Control center page consumes data via existing use cases through DI bridge (no direct SQL)
-  - Web imports from @shepai/core (not @cli/* path aliases)
+  - Web imports from @shipit-ai/core (not @cli/* path aliases)
   - No modifications to src/presentation/cli/ folder
   - Update build pipeline: TypeSpec → core → CLI → web
 

@@ -17,7 +17,7 @@ describe('SpecInitializerService', () => {
 
   beforeEach(() => {
     service = new SpecInitializerService();
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-spec-init-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-spec-init-test-'));
   });
 
   afterEach(() => {

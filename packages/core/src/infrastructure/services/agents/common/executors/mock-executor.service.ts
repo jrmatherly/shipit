@@ -4,7 +4,7 @@
  * Deterministic executor for E2E tests. Returns predictable responses
  * so tests can assert on exact slugs, names, and descriptions.
  *
- * Activated via SHEP_MOCK_EXECUTOR=1 environment variable.
+ * Activated via SHIPIT_AI_MOCK_EXECUTOR=1 environment variable.
  */
 
 import type { AgentType, AgentFeature } from '../../../../../domain/generated/output.js';

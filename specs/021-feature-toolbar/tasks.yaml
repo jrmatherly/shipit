@@ -35,25 +35,25 @@ tasks:
       with the pure computeWorktreePath function. Replace the 3 duplicated copies in
       ide-open.command.ts, feat/show.command.ts, and agent/show.command.ts with imports
       from the shared module. The function takes (repoPath, branch) and returns the
-      worktree path under ~/.shep/repos/<hash>/wt/<slug>.
+      worktree path under ~/.shipit-ai/repos/<hash>/wt/<slug>.
     state: Todo
     dependencies: []
     acceptanceCriteria:
       - 'compute-worktree-path.ts exports computeWorktreePath(repoPath: string, branch: string): string'
-      - 'Function uses SHEP_HOME_DIR from shep-directory.service and createHash from node:crypto'
-      - 'ide-open.command.ts imports computeWorktreePath from @shepai/core and removes local copy'
-      - 'feat/show.command.ts imports computeWorktreePath from @shepai/core and removes local copy'
-      - 'agent/show.command.ts imports computeWorktreePath from @shepai/core and removes local copy'
+      - 'Function uses SHIPIT_AI_HOME_DIR from shipit-ai-directory.service and createHash from node:crypto'
+      - 'ide-open.command.ts imports computeWorktreePath from @shipit-ai/core and removes local copy'
+      - 'feat/show.command.ts imports computeWorktreePath from @shipit-ai/core and removes local copy'
+      - 'agent/show.command.ts imports computeWorktreePath from @shipit-ai/core and removes local copy'
       - 'All existing CLI tests pass without modification'
       - 'pnpm typecheck passes'
     tdd:
       red:
-        - 'Write unit test for computeWorktreePath: given repoPath "/home/user/project" and branch "feat/my-feature", assert it returns join(SHEP_HOME_DIR, "repos", sha256("/home/user/project").slice(0,16), "wt", "feat-my-feature")'
+        - 'Write unit test for computeWorktreePath: given repoPath "/home/user/project" and branch "feat/my-feature", assert it returns join(SHIPIT_AI_HOME_DIR, "repos", sha256("/home/user/project").slice(0,16), "wt", "feat-my-feature")'
         - 'Test that branch slashes are replaced with hyphens'
         - 'Test with edge cases: branch with multiple slashes, single-segment branch'
       green:
         - 'Create compute-worktree-path.ts with the function (copy from existing, make it the export)'
-        - 'Import SHEP_HOME_DIR and node:crypto dependencies'
+        - 'Import SHIPIT_AI_HOME_DIR and node:crypto dependencies'
       refactor:
         - 'Replace 3 CLI command copies with imports from the new shared module'
         - 'Remove unused node:crypto and node:path imports from the 3 CLI files'
@@ -126,7 +126,7 @@ tasks:
         - 'Test returns 500 when launcher.launch() throws'
       green:
         - 'Create src/presentation/web/app/api/ide/open/route.ts'
-        - 'Import getSettings, createLauncherRegistry from @shepai/core, computeWorktreePath from shared module'
+        - 'Import getSettings, createLauncherRegistry from @shipit-ai/core, computeWorktreePath from shared module'
         - 'Implement POST handler: parse body → validate → getSettings → computeWorktreePath → resolve launcher → checkAvailable → launch → respond'
       refactor:
         - 'Ensure error messages include editor name and path for debugging'

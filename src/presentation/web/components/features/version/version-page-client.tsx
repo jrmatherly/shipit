@@ -68,7 +68,7 @@ export default function VersionPageClient({ versionInfo, systemInfo }: VersionPa
                   badgeVariant="default"
                 />
                 <InfoRow label="License" value="MIT" badge badgeVariant="outline" />
-                <InfoRow label="Author" value="Shep AI" />
+                <InfoRow label="Author" value="Shipit AI" />
               </CardContent>
             </Card>
           </TabsContent>
@@ -126,7 +126,11 @@ export default function VersionPageClient({ versionInfo, systemInfo }: VersionPa
             <Link href="/">Back to Home</Link>
           </Button>
           <Button asChild>
-            <a href="https://github.com/shep-ai/shep" target="_blank" rel="noopener noreferrer">
+            <a
+              href="https://github.com/jrmatherly/shipit"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               View on GitHub
             </a>
           </Button>

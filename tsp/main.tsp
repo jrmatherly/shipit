@@ -1,8 +1,8 @@
 /**
- * Shep AI Domain Model Specification
+ * Shipit AI Domain Model Specification
  *
  * Main entry point for the TypeSpec domain model definitions
- * for the Shep AI CLI - an Autonomous AI Native SDLC Platform.
+ * for the Shipit AI CLI - an Autonomous AI Native SDLC Platform.
  *
  * Model Hierarchy:
  * +-- common/          Base types, scalars, enums
@@ -22,6 +22,6 @@ import "./deployment/index.tsp";
 import "./ui/index.tsp";
 
 @service({
-  title: "Shep AI Domain Models",
+  title: "Shipit AI Domain Models",
 })
-namespace ShepAI.Domain;
+namespace ShipitAI.Domain;

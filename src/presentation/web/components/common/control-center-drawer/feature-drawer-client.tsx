@@ -9,7 +9,7 @@ import { Loader2, Trash2, Play, Square, Copy, Check, Archive, ArchiveRestore } f
 import type {
   PrdApprovalPayload,
   QuestionSelectionChange,
-} from '@shepai/core/domain/generated/output';
+} from '@shipit-ai/core/domain/generated/output';
 import { approveFeature } from '@/app/actions/approve-feature';
 import { resumeFeature } from '@/app/actions/resume-feature';
 import { startFeature } from '@/app/actions/start-feature';
@@ -344,7 +344,7 @@ export function FeatureDrawerClient({
         }
         // Optimistically update canvas node before SSE arrives (~500ms delay)
         window.dispatchEvent(
-          new CustomEvent('shep:feature-approved', {
+          new CustomEvent('shipit-ai:feature-approved', {
             detail: { featureId: featureNode.featureId },
           })
         );
@@ -386,7 +386,7 @@ export function FeatureDrawerClient({
       toast.success(`${label} approved — agent resuming`);
       // Optimistically update canvas node before SSE arrives (~500ms delay)
       window.dispatchEvent(
-        new CustomEvent('shep:feature-approved', {
+        new CustomEvent('shipit-ai:feature-approved', {
           detail: { featureId: featureNode.featureId },
         })
       );
@@ -419,7 +419,7 @@ export function FeatureDrawerClient({
       toast.success('Requirements approved — agent resuming');
       // Optimistically update canvas node before SSE arrives (~500ms delay)
       window.dispatchEvent(
-        new CustomEvent('shep:feature-approved', {
+        new CustomEvent('shipit-ai:feature-approved', {
           detail: { featureId: featureNode.featureId },
         })
       );
@@ -441,7 +441,7 @@ export function FeatureDrawerClient({
       // mutation guard, node removal) in parallel.
       setDeleteDialogOpen(false);
       window.dispatchEvent(
-        new CustomEvent('shep:feature-delete-requested', {
+        new CustomEvent('shipit-ai:feature-delete-requested', {
           detail: { featureId, cleanup, cascadeDelete, closePr },
         })
       );
@@ -454,7 +454,7 @@ export function FeatureDrawerClient({
     (featureId: string) => {
       setIsArchiving(true);
       window.dispatchEvent(
-        new CustomEvent('shep:feature-archive-requested', {
+        new CustomEvent('shipit-ai:feature-archive-requested', {
           detail: { featureId },
         })
       );
@@ -467,7 +467,7 @@ export function FeatureDrawerClient({
     (featureId: string) => {
       setIsArchiving(true);
       window.dispatchEvent(
-        new CustomEvent('shep:feature-unarchive-requested', {
+        new CustomEvent('shipit-ai:feature-unarchive-requested', {
           detail: { featureId },
         })
       );
@@ -484,7 +484,7 @@ export function FeatureDrawerClient({
     }
     toast.success('Feature resumed — agent restarting');
     window.dispatchEvent(
-      new CustomEvent('shep:feature-approved', {
+      new CustomEvent('shipit-ai:feature-approved', {
         detail: { featureId },
       })
     );

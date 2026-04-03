@@ -343,7 +343,7 @@ content: |
 
   1. **Input Validation**: The API route validates name (non-empty string) and repositoryPath (non-empty string) before passing to the use case. The use case itself handles filesystem operations safely.
 
-  2. **Path Traversal**: repositoryPath comes from the repo node ID, which is originally set by page.tsx from feature.repositoryPath (a database-stored value). The use case validates the path and creates worktrees in controlled locations (~/.shep/repos/). No user-supplied paths are passed directly to shell commands.
+  2. **Path Traversal**: repositoryPath comes from the repo node ID, which is originally set by page.tsx from feature.repositoryPath (a database-stored value). The use case validates the path and creates worktrees in controlled locations (~/.shipit-ai/repos/). No user-supplied paths are passed directly to shell commands.
 
   3. **No Authentication Required**: The web UI runs locally (localhost), served by the CLI process. There's no multi-user authentication concern. The API routes are only accessible from the local machine.
 

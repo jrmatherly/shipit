@@ -1,6 +1,6 @@
 # Component Catalog
 
-Reference for all available UI components in the Shep AI web interface.
+Reference for all available UI components in the Shipit AI web interface.
 
 ## Tier 0: UI Primitives (`components/ui/`)
 

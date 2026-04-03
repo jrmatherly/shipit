@@ -11,8 +11,8 @@ import { mkdirSync, realpathSync } from 'node:fs';
 import path from 'node:path';
 import { injectable, inject } from 'tsyringe';
 
-const GIT_AUTO_INIT_USER = 'shep-ai[bot]';
-const GIT_AUTO_INIT_EMAIL = 'bot@shep.bot';
+const GIT_AUTO_INIT_USER = 'shipit-ai[bot]';
+const GIT_AUTO_INIT_EMAIL = 'bot@shipit-ai.bot';
 import type {
   IWorktreeService,
   WorktreeInfo,
@@ -21,7 +21,7 @@ import {
   WorktreeError,
   WorktreeErrorCode,
 } from '../../../application/ports/output/services/worktree-service.interface.js';
-import { getShepHomeDir } from '../filesystem/shep-directory.service.js';
+import { getShipitAiHomeDir } from '../filesystem/shipit-ai-directory.service.js';
 import { IS_WINDOWS } from '../../platform.js';
 
 /**
@@ -207,7 +207,7 @@ export class WorktreeService implements IWorktreeService {
     const normalizedRepoPath = repoPath.replace(/\\/g, '/');
     const repoHash = createHash('sha256').update(normalizedRepoPath).digest('hex').slice(0, 16);
     const slug = branch.replace(/\//g, '-');
-    return path.join(getShepHomeDir(), 'repos', repoHash, 'wt', slug).replace(/\\/g, '/');
+    return path.join(getShipitAiHomeDir(), 'repos', repoHash, 'wt', slug).replace(/\\/g, '/');
   }
 
   private parseWorktreeOutput(output: string): WorktreeInfo[] {

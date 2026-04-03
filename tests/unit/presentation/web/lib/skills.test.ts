@@ -19,9 +19,9 @@ describe('deriveCategory', () => {
     expect(deriveCategory(name)).toBe('Workflow');
   });
 
-  // Code Generation: shep:* prefix
-  it('returns Code Generation for shep:ui-component', () => {
-    expect(deriveCategory('shep:ui-component')).toBe('Code Generation');
+  // Code Generation: shipit-ai:* prefix
+  it('returns Code Generation for shipit-ai:ui-component', () => {
+    expect(deriveCategory('shipit-ai:ui-component')).toBe('Code Generation');
   });
 
   // Analysis: contains review, validate, cross-validate
@@ -51,8 +51,8 @@ describe('deriveCategory', () => {
     expect(deriveCategory('shep-kit:')).toBe('Workflow');
   });
 
-  it('returns Code Generation for shep: with no suffix', () => {
-    expect(deriveCategory('shep:')).toBe('Code Generation');
+  it('returns Code Generation for shipit-ai: with no suffix', () => {
+    expect(deriveCategory('shipit-ai:')).toBe('Code Generation');
   });
 
   it('returns Analysis for a name containing validate', () => {
@@ -69,8 +69,8 @@ describe('getDisplayName', () => {
     expect(getDisplayName('shep-kit:implement')).toBe('implement');
   });
 
-  it('strips shep: prefix', () => {
-    expect(getDisplayName('shep:ui-component')).toBe('ui-component');
+  it('strips shipit-ai: prefix', () => {
+    expect(getDisplayName('shipit-ai:ui-component')).toBe('ui-component');
   });
 
   it('returns original name when no known prefix', () => {

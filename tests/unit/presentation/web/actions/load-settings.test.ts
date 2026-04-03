@@ -1,7 +1,7 @@
 // @vitest-environment node
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createDefaultSettings } from '@shepai/core/domain/factories/settings-defaults.factory';
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
 
 const mockExecute = vi.fn();
 const mockResolve = vi.fn();
@@ -10,17 +10,17 @@ vi.mock('@/lib/server-container', () => ({
   resolve: (...args: unknown[]) => mockResolve(...args),
 }));
 
-vi.mock('@shepai/core/application/use-cases/settings/load-settings.use-case', () => ({
+vi.mock('@shipit-ai/core/application/use-cases/settings/load-settings.use-case', () => ({
   LoadSettingsUseCase: class LoadSettingsUseCase {},
 }));
 
-vi.mock('@shepai/core/infrastructure/services/filesystem/shep-directory.service', () => ({
-  getShepHomeDir: () => '/home/user/.shep',
+vi.mock('@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service', () => ({
+  getShipitAiHomeDir: () => '/home/user/.shipit-ai',
 }));
 
 vi.mock('node:fs', async () => {
   const { join } = await import('node:path');
-  const expectedPath = join('/home/user/.shep', 'data');
+  const expectedPath = join('/home/user/.shipit-ai', 'data');
   return {
     statSync: (path: string) => {
       if (path === expectedPath) {
@@ -31,9 +31,8 @@ vi.mock('node:fs', async () => {
   };
 });
 
-const { loadSettings } = await import(
-  '../../../../../src/presentation/web/app/actions/load-settings.js'
-);
+const { loadSettings } =
+  await import('../../../../../src/presentation/web/app/actions/load-settings.js');
 
 describe('loadSettings server action', () => {
   beforeEach(() => {
@@ -41,14 +40,14 @@ describe('loadSettings server action', () => {
     mockResolve.mockReturnValue({ execute: mockExecute });
   });
 
-  it('returns settings with shepHome and dbFileSize', async () => {
+  it('returns settings with shipitAiHome and dbFileSize', async () => {
     const settings = createDefaultSettings();
     mockExecute.mockResolvedValue(settings);
 
     const result = await loadSettings();
 
     expect(result.settings).toEqual(settings);
-    expect(result.shepHome).toBe('/home/user/.shep');
+    expect(result.shipitAiHome).toBe('/home/user/.shipit-ai');
     expect(result.dbFileSize).toBe('2.4 MB');
     expect(result.error).toBeUndefined();
   });

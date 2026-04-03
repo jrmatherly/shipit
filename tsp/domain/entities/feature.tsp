@@ -1,7 +1,7 @@
 /**
- * @module Shep.Domain.Entities.Feature
+ * @module ShipitAI.Domain.Entities.Feature
  *
- * Defines the Feature entity - the AGGREGATE ROOT of the Shep AI domain model.
+ * Defines the Feature entity - the AGGREGATE ROOT of the Shipit AI domain model.
  * A Feature represents a complete unit of work that progresses through the
  * Software Development Lifecycle (SDLC) from requirements to deployment.
  *
@@ -272,7 +272,7 @@ model Feature extends SoftDeletableEntity {
    *
    * Used to:
    * - Locate the codebase for analysis
-   * - Determine the Shep data storage location
+   * - Determine the Shipit AI data storage location
    * - Execute git operations for the feature
    *
    * @example "/home/user/my-project"
@@ -337,7 +337,7 @@ model Feature extends SoftDeletableEntity {
    *
    * Includes PRDs, API specifications, design documents, and other
    * deliverables produced by the AI system. Artifacts are stored in
-   * the repository's Shep data directory and linked to the feature.
+   * the repository's Shipit AI data directory and linked to the feature.
    */
   @doc("Generated documents and artifacts attached to this feature")
   relatedArtifacts: Artifact[];

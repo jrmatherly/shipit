@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useRef, useCallback, useEffect } from 'react';
-import type { ToolInstallationStatus } from '@shepai/core/domain/generated/output';
+import type { ToolInstallationStatus } from '@shipit-ai/core/domain/generated/output';
 
 export type InstallStreamStatus = 'idle' | 'streaming' | 'done' | 'error';
 

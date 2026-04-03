@@ -1,5 +1,5 @@
 /**
- * @shepai/core Domain Layer
+ * @shipit-ai/core Domain Layer
  *
  * Exports all domain types, factories, and value objects.
  */

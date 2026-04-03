@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { Language } from '@shepai/core/domain/generated/output.js';
+import { Language } from '@shipit-ai/core/domain/generated/output.js';
 
 const TRANSLATIONS_DIR = resolve(import.meta.dirname, '../../../translations');
 const NAMESPACES = ['common', 'cli', 'tui', 'web'] as const;

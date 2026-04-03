@@ -30,7 +30,7 @@ describe('WorktreeService.addExisting', () => {
   });
 
   it('should call execFile with correct git args (no -b flag)', async () => {
-    const wtPath = '/home/user/.shep/repos/abc/wt/my-branch';
+    const wtPath = '/home/user/.shipit-ai/repos/abc/wt/my-branch';
 
     mockExecFile
       // git worktree add
@@ -61,7 +61,7 @@ describe('WorktreeService.addExisting', () => {
   });
 
   it('should return WorktreeInfo with expected fields', async () => {
-    const wtPath = '/home/user/.shep/repos/abc/wt/feat-login';
+    const wtPath = '/home/user/.shipit-ai/repos/abc/wt/feat-login';
 
     mockExecFile.mockResolvedValueOnce({ stdout: '', stderr: '' }).mockResolvedValueOnce({
       stdout: [
@@ -141,7 +141,7 @@ describe('WorktreeService.addExisting', () => {
   });
 
   it('should work with remote tracking refs (origin/<branch>)', async () => {
-    const wtPath = '/home/user/.shep/repos/abc/wt/feat-remote';
+    const wtPath = '/home/user/.shipit-ai/repos/abc/wt/feat-remote';
 
     mockExecFile.mockResolvedValueOnce({ stdout: '', stderr: '' }).mockResolvedValueOnce({
       stdout: [
@@ -169,7 +169,7 @@ describe('WorktreeService.addExisting', () => {
   });
 
   it('should match worktree by path when branch name differs from arg', async () => {
-    const wtPath = '/home/user/.shep/repos/abc/wt/some-branch';
+    const wtPath = '/home/user/.shipit-ai/repos/abc/wt/some-branch';
 
     mockExecFile.mockResolvedValueOnce({ stdout: '', stderr: '' }).mockResolvedValueOnce({
       stdout: [

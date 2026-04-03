@@ -5,8 +5,8 @@ import {
   getSettings,
   resetSettings,
   initializeSettings,
-} from '@shepai/core/infrastructure/services/settings.service';
-import type { UpdateSettingsUseCase } from '@shepai/core/application/use-cases/settings/update-settings.use-case';
+} from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { UpdateSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/update-settings.use-case';
 
 /**
  * Server action that updates the default LLM model in settings.

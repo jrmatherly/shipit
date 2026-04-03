@@ -1,6 +1,6 @@
 # Design System
 
-Design tokens, theming, and visual guidelines for the Shep AI web interface.
+Design tokens, theming, and visual guidelines for the Shipit AI web interface.
 
 ## Overview
 

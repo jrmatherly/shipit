@@ -175,7 +175,7 @@ openQuestions:
       - option: 'Add --skip-onboarding global flag'
         description: 'Allows CI scripts to bypass the wizard. Requires adding a global Commander option before parsing, which complicates the bootstrap flow since the onboarding check runs before Commander setup.'
         selected: false
-      - option: 'Use SHEP_SKIP_ONBOARDING environment variable'
+      - option: 'Use SHIPIT_AI_SKIP_ONBOARDING environment variable'
         description: "CI-friendly approach that doesn't require CLI changes. But adds a non-obvious escape hatch that could lead to misconfigured environments."
         selected: false
     selectionRationale: >
@@ -296,7 +296,7 @@ content: |
 
   - **No new security concerns.** The onboarding wizard collects the same data as existing `shep settings agent` and `shep settings ide` commands. Agent tokens are already stored in the SQLite database with the same security model.
   - **Token handling:** Step 1 reuses `agentConfigWizard()` which uses `password()` prompt with masking for API tokens. No changes to token storage or handling.
-  - **Settings file permissions:** The `~/.shep/` directory is created with 0700 permissions (existing behavior). No change needed.
+  - **Settings file permissions:** The `~/.shipit-ai/` directory is created with 0700 permissions (existing behavior). No change needed.
   - **Migration safety:** The migration adds columns with DEFAULT values and runs in a transaction. Failure rolls back cleanly. No data loss risk.
 
   ## Performance Implications

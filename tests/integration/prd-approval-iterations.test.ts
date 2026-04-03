@@ -113,7 +113,7 @@ describe('PRD Approval Iterations (Integration)', () => {
   let specDir: string;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-prd-iter-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-prd-iter-'));
     specDir = join(tempDir, 'specs', 'test-feature');
     mkdirSync(specDir, { recursive: true });
     FEATURE = {

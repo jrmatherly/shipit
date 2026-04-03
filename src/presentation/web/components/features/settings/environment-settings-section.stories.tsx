@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/react';
 import { EnvironmentSettingsSection } from './environment-settings-section';
-import { EditorType, TerminalType } from '@shepai/core/domain/generated/output';
+import { EditorType, TerminalType } from '@shipit-ai/core/domain/generated/output';
 
 const meta = {
   title: 'Features/Settings/EnvironmentSettingsSection',

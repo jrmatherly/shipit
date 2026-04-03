@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.AgentRunEvent
+ * @module ShipitAI.Agents.AgentRunEvent
  *
  * Streaming event emitted during agent execution.
  * Used for progress tracking and real-time output.

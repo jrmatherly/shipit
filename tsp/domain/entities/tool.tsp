@@ -1,9 +1,9 @@
 /**
- * @module Shep.Domain.Entities.Tool
+ * @module ShipitAI.Domain.Entities.Tool
  *
- * Defines the Tool entity for IDE and CLI tool management in the Shep AI platform.
+ * Defines the Tool entity for IDE and CLI tool management in the Shipit AI platform.
  * A Tool represents a code editor, IDE, or CLI agent that can be installed and
- * managed by Shep for development workflows.
+ * managed by Shipit AI for development workflows.
  *
  * ## Entity Relationships
  *
@@ -38,7 +38,7 @@ import "../../common/enums/tool.tsp";
  * Tool entity for IDE and CLI agent management.
  *
  * The Tool entity represents a code editor, IDE, or CLI agent that can be
- * installed and managed by Shep. Each tool is identified by type (ToolType enum),
+ * installed and managed by Shipit AI. Each tool is identified by type (ToolType enum),
  * tracks installation state, version information, and timestamp metadata.
  *
  * ## Properties

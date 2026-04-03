@@ -73,7 +73,7 @@ The AI agent examines the repository across multiple dimensions:
 Analysis output is persisted for instant access:
 
 ```
-~/.shep/repos/<base64-encoded-repo-path>/
+~/.shipit-ai/repos/<base64-encoded-repo-path>/
 +-- data                    # SQLite database
 +-- docs/                   # Analysis documents
     +-- architecture.md

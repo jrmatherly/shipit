@@ -1,6 +1,6 @@
 # Architecture Documentation
 
-This directory contains documentation about Shep AI CLI's system architecture and design patterns.
+This directory contains documentation about Shipit AI CLI's system architecture and design patterns.
 
 ## Contents
 

@@ -1,7 +1,7 @@
 /**
- * @module Shep.Agents.DeployTarget
+ * @module ShipitAI.Agents.DeployTarget
  *
- * Deployment target discriminated union definitions for the Shep AI CLI.
+ * Deployment target discriminated union definitions for the Shipit AI CLI.
  *
  * This module defines the DeployTarget union type which specifies what can
  * be deployed by the LocalDeployAgent. Targets can be a single ActionItem,

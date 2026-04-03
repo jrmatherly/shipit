@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { GitHubUrlInput } from './github-url-input';
 import { GitHubRepoBrowser } from './github-repo-browser';
 import { importGitHubRepository } from '@/app/actions/import-github-repository';
-import type { Repository } from '@shepai/core/domain/generated/output';
+import type { Repository } from '@shipit-ai/core/domain/generated/output';
 
 export interface GitHubImportDialogProps {
   open: boolean;

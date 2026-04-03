@@ -9,7 +9,7 @@
  *   - Exit 0 = pass, 1 = fail, 2 = skip
  *
  * Run all: pnpm test:e2e:cli
- * Run single script manually: bash tests/scripts/cli/test-shep-ui.sh
+ * Run single script manually: bash tests/scripts/cli/test-shipit-ai-ui.sh
  */
 
 import { describe, it, expect } from 'vitest';

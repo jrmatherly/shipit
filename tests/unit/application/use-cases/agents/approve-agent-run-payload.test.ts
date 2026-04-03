@@ -118,7 +118,7 @@ describe('ApproveAgentRunUseCase with PrdApprovalPayload', () => {
       slug: 'test-feature',
       branch: 'feat/test-feature',
       repositoryPath: '/test/repo',
-      specPath: '/test/repo/.shep/wt/feat-branch',
+      specPath: '/test/repo/.shipit-ai/wt/feat-branch',
     });
     useCase = new ApproveAgentRunUseCase(
       mockRunRepo as any,
@@ -138,7 +138,7 @@ describe('ApproveAgentRunUseCase with PrdApprovalPayload', () => {
       'feat-001',
       'run-001',
       '/test/repo',
-      '/test/repo/.shep/wt/feat-branch',
+      '/test/repo/.shipit-ai/wt/feat-branch',
       '/computed/worktree/path',
       expect.not.objectContaining({ resumePayload: expect.any(String) })
     );
@@ -155,7 +155,7 @@ describe('ApproveAgentRunUseCase with PrdApprovalPayload', () => {
       'feat-001',
       'run-001',
       '/test/repo',
-      '/test/repo/.shep/wt/feat-branch',
+      '/test/repo/.shipit-ai/wt/feat-branch',
       '/computed/worktree/path',
       expect.objectContaining({
         resumePayload: JSON.stringify(payload),

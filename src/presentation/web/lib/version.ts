@@ -13,7 +13,7 @@
 import { arch, platform } from 'node:os';
 
 import { resolve } from '@/lib/server-container';
-import type { IVersionService } from '@shepai/core/application/ports/output/services/version-service.interface';
+import type { IVersionService } from '@shipit-ai/core/application/ports/output/services/version-service.interface';
 
 /** Version information for the package (mirrors domain VersionInfo) */
 export interface VersionInfo {
@@ -43,16 +43,17 @@ export function getVersionInfo(): VersionInfo {
       version,
       name,
       description,
-      branch: process.env.NEXT_PUBLIC_SHEP_BRANCH ?? '',
-      commitHash: process.env.NEXT_PUBLIC_SHEP_COMMIT ?? '',
+      branch: process.env.NEXT_PUBLIC_SHIPIT_AI_BRANCH ?? '',
+      commitHash: process.env.NEXT_PUBLIC_SHIPIT_AI_COMMIT ?? '',
     };
   } catch {
     return {
-      version: process.env.NEXT_PUBLIC_SHEP_VERSION ?? 'unknown',
-      name: process.env.NEXT_PUBLIC_SHEP_PACKAGE_NAME ?? '@shepai/cli',
-      description: process.env.NEXT_PUBLIC_SHEP_DESCRIPTION ?? 'Autonomous AI Native SDLC Platform',
-      branch: process.env.NEXT_PUBLIC_SHEP_BRANCH ?? '',
-      commitHash: process.env.NEXT_PUBLIC_SHEP_COMMIT ?? '',
+      version: process.env.NEXT_PUBLIC_SHIPIT_AI_VERSION ?? 'unknown',
+      name: process.env.NEXT_PUBLIC_SHIPIT_AI_PACKAGE_NAME ?? '@shipit-ai/cli',
+      description:
+        process.env.NEXT_PUBLIC_SHIPIT_AI_DESCRIPTION ?? 'Autonomous AI Native SDLC Platform',
+      branch: process.env.NEXT_PUBLIC_SHIPIT_AI_BRANCH ?? '',
+      commitHash: process.env.NEXT_PUBLIC_SHIPIT_AI_COMMIT ?? '',
     };
   }
 }

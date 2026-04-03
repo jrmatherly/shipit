@@ -1,7 +1,7 @@
 /**
  * IDE Command Unit Tests
  *
- * Tests for the `shep settings ide` command.
+ * Tests for the `shipit-ai settings ide` command.
  */
 
 import 'reflect-metadata';

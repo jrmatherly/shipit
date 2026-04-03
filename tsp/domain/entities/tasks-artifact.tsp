@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.TasksArtifact
+ * @module ShipitAI.Domain.Entities.TasksArtifact
  *
  * Defines the TasksArtifact entity representing a task breakdown artifact.
  * This maps to the `tasks.yaml` file in the YAML-first spec system.

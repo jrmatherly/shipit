@@ -1,5 +1,5 @@
 /**
- * @module Shep.Agents.PrdApproval
+ * @module ShipitAI.Agents.PrdApproval
  *
  * DTOs for PRD approval/rejection workflow.
  * Used for human-in-the-loop review of requirements phase output.

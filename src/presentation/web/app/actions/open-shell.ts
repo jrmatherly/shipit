@@ -4,10 +4,10 @@ import { existsSync } from 'node:fs';
 import { platform } from 'node:os';
 import { isAbsolute } from 'node:path';
 import { spawn } from 'node:child_process';
-import { getSettings } from '@shepai/core/infrastructure/services/settings.service';
-import { computeWorktreePath } from '@shepai/core/infrastructure/services/ide-launchers/compute-worktree-path';
+import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { computeWorktreePath } from '@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-path';
 import { resolve } from '@/lib/server-container';
-import type { IToolInstallerService } from '@shepai/core/application/ports/output/services/tool-installer.service';
+import type { IToolInstallerService } from '@shipit-ai/core/application/ports/output/services/tool-installer.service';
 
 // Fallback commands for the "system" terminal when no tool metadata entry exists.
 // Uses a record lookup instead of if/else to prevent the bundler from

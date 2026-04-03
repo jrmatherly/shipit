@@ -1,7 +1,7 @@
 /**
  * startDaemon() — Shared daemon-spawn helper
  *
- * Contains the parent-side logic for starting the Shep web UI as a
+ * Contains the parent-side logic for starting the Shipit AI web UI as a
  * detached background daemon. Used by both:
  *   - The default `shep` action (index.ts)
  *   - The `shep start` command (start.command.ts)
@@ -23,7 +23,7 @@ import http from 'node:http';
 import { container } from '@/infrastructure/di/container.js';
 import { findAvailablePort, DEFAULT_PORT } from '@/infrastructure/services/port.service.js';
 import { BrowserOpenerService } from '@/infrastructure/services/browser-opener.service.js';
-import { getDaemonLogPath } from '@/infrastructure/services/filesystem/shep-directory.service.js';
+import { getDaemonLogPath } from '@/infrastructure/services/filesystem/shipit-ai-directory.service.js';
 import { fmt, messages, spinner } from '../../ui/index.js';
 import type { IDaemonService } from '@/application/ports/output/services/daemon-service.interface.js';
 import { getCliI18n } from '../../i18n.js';
@@ -41,7 +41,7 @@ export interface StartDaemonOptions {
 }
 
 /**
- * Start the Shep web UI as a detached background daemon.
+ * Start the Shipit AI web UI as a detached background daemon.
  * Idempotent: if a daemon is already running, prints the existing URL and returns.
  */
 export async function startDaemon(opts: StartDaemonOptions = {}): Promise<void> {
@@ -126,7 +126,7 @@ export async function startDaemon(opts: StartDaemonOptions = {}): Promise<void> 
   // Poll until the server responds, with a spinner on stderr.
   // Skip readiness check in E2E / CI environments where the daemon child
   // cannot actually start a Next.js server within the test's time window.
-  if (process.env.SHEP_SKIP_READINESS_CHECK) {
+  if (process.env.SHIPIT_AI_SKIP_READINESS_CHECK) {
     messages.success(t('cli:ui.daemon.daemonSpawned', { url: fmt.code(url) }));
   } else {
     const ready = await spinner(t('cli:ui.daemon.startingServer'), () =>

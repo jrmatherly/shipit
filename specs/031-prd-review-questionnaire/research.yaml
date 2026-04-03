@@ -113,7 +113,7 @@ decisions:
       - 'Duplicate types without generated imports — rejected because it violates TypeSpec-first principle.'
     rationale: >
       `prd-questionnaire-config.ts` re-exports generated types (`PrdOption`, `PrdQuestion`, `PrdFinalAction`,
-      `PrdQuestionnaireData`) from `@shepai/core/domain/generated/output` and defines `PrdQuestionnaireProps`
+      `PrdQuestionnaireData`) from `@shipit-ai/core/domain/generated/output` and defines `PrdQuestionnaireProps`
       (adding `onSelect`, `onRefine`, `onApprove`, `isProcessing`, `showHeader`) and `PrdQuestionnaireDrawerProps`
       (extending with drawer-specific props: `open`, `onClose`, `featureName`, `featureId`, `repositoryPath`,
       `branch`, `specPath`, `onDelete`, `isDeleting`).

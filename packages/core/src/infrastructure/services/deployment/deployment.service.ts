@@ -140,8 +140,8 @@ export class DeploymentService implements IDeploymentService {
 
     // Child dev servers spawned by DeploymentService share the same global DB.
     // Skip recovery to avoid killing processes owned by the parent instance.
-    if (process.env.SHEP_SKIP_RECOVERY) {
-      log.info('SHEP_SKIP_RECOVERY set — skipping dev server recovery');
+    if (process.env.SHIPIT_AI_SKIP_RECOVERY) {
+      log.info('SHIPIT_AI_SKIP_RECOVERY set — skipping dev server recovery');
       return;
     }
 
@@ -278,9 +278,9 @@ export class DeploymentService implements IDeploymentService {
       // stdout/stderr — we don't need it because taskkill /F /T handles tree kill.
       ...(IS_WINDOWS ? { windowsHide: true } : { detached: true }),
       stdio: ['ignore', 'pipe', 'pipe'] as const,
-      // Prevent child shep instances (e.g. worktree dev servers) from running
-      // recoverAll() on the shared ~/.shep/data DB and killing our processes.
-      env: { ...process.env, SHEP_SKIP_RECOVERY: '1' },
+      // Prevent child shipit-ai instances (e.g. worktree dev servers) from running
+      // recoverAll() on the shared ~/.shipit-ai/data DB and killing our processes.
+      env: { ...process.env, SHIPIT_AI_SKIP_RECOVERY: '1' },
     });
 
     if (!child.pid) {
@@ -305,7 +305,7 @@ export class DeploymentService implements IDeploymentService {
 
     this.deployments.set(targetId, entry);
     // NOTE: Do NOT write to DB during Booting. The spawned process may be
-    // another shep instance sharing ~/.shep/data — its recoverAll() would
+    // another shipit-ai instance sharing ~/.shipit-ai/data — its recoverAll() would
     // find this Booting entry, see its own PID as alive, and SIGKILL itself.
     // We persist to DB only when the state transitions to Ready (URL detected).
 

@@ -60,7 +60,7 @@ function AppShellInner({ children, sidebarOpen }: AppShellProps) {
     try {
       const path = await pickFolder();
       if (path) {
-        window.dispatchEvent(new CustomEvent('shep:add-repository', { detail: { path } }));
+        window.dispatchEvent(new CustomEvent('shipit-ai:add-repository', { detail: { path } }));
       }
     } catch {
       // Native picker failed — fall back to React file manager
@@ -75,20 +75,20 @@ function AppShellInner({ children, sidebarOpen }: AppShellProps) {
     const handler = () => {
       void handleAddRepository();
     };
-    window.addEventListener('shep:pick-folder', handler);
-    return () => window.removeEventListener('shep:pick-folder', handler);
+    window.addEventListener('shipit-ai:pick-folder', handler);
+    return () => window.removeEventListener('shipit-ai:pick-folder', handler);
   }, [handleAddRepository]);
 
   // Listen for GitHub import event from (+) FAB
   useEffect(() => {
     const handler = () => setGithubDialogOpen(true);
-    window.addEventListener('shep:open-github-import', handler);
-    return () => window.removeEventListener('shep:open-github-import', handler);
+    window.addEventListener('shipit-ai:open-github-import', handler);
+    return () => window.removeEventListener('shipit-ai:open-github-import', handler);
   }, []);
 
   const handleReactPickerSelect = useCallback((path: string | null) => {
     if (path) {
-      window.dispatchEvent(new CustomEvent('shep:add-repository', { detail: { path } }));
+      window.dispatchEvent(new CustomEvent('shipit-ai:add-repository', { detail: { path } }));
     }
     setShowReactPicker(false);
   }, []);
@@ -96,7 +96,7 @@ function AppShellInner({ children, sidebarOpen }: AppShellProps) {
   const handleGitHubImportComplete = useCallback((repository: { path?: string }) => {
     if (repository.path) {
       window.dispatchEvent(
-        new CustomEvent('shep:add-repository', { detail: { path: repository.path } })
+        new CustomEvent('shipit-ai:add-repository', { detail: { path: repository.path } })
       );
     }
   }, []);

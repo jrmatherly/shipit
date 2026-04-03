@@ -13,10 +13,10 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
-import type { SendInteractiveMessageUseCase } from '@shepai/core/application/use-cases/interactive/send-interactive-message.use-case';
-import type { GetInteractiveChatStateUseCase } from '@shepai/core/application/use-cases/interactive/get-interactive-chat-state.use-case';
-import type { IInteractiveSessionService } from '@shepai/core/application/ports/output/services/interactive-session-service.interface';
-import { getShepHomeDir } from '@shepai/core/infrastructure/services/filesystem/shep-directory.service';
+import type { SendInteractiveMessageUseCase } from '@shipit-ai/core/application/use-cases/interactive/send-interactive-message.use-case';
+import type { GetInteractiveChatStateUseCase } from '@shipit-ai/core/application/use-cases/interactive/get-interactive-chat-state.use-case';
+import type { IInteractiveSessionService } from '@shipit-ai/core/application/ports/output/services/interactive-session-service.interface';
+import { getShipitAiHomeDir } from '@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.service';
 
 export const dynamic = 'force-dynamic';
 
@@ -45,10 +45,10 @@ export async function POST(request: NextRequest, { params }: RouteParams): Promi
       return NextResponse.json({ error: 'content exceeds maximum size of 32 KB' }, { status: 400 });
     }
 
-    // worktreePath is optional — defaults to SHEP_HOME for global/repo sessions
+    // worktreePath is optional — defaults to SHIPIT_AI_HOME for global/repo sessions
     let resolvedWorktreePath = worktreePath;
     if (!resolvedWorktreePath || typeof resolvedWorktreePath !== 'string') {
-      resolvedWorktreePath = getShepHomeDir();
+      resolvedWorktreePath = getShipitAiHomeDir();
     }
 
     const useCase = resolve<SendInteractiveMessageUseCase>('SendInteractiveMessageUseCase');

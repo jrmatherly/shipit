@@ -38,7 +38,7 @@ import { useFeatureFlags } from '@/hooks/feature-flags-context';
 import { addRepository } from '@/app/actions/add-repository';
 import { pickFiles } from './pick-files';
 
-export type { FileAttachment } from '@shepai/core/infrastructure/services/file-dialog.service';
+export type { FileAttachment } from '@shipit-ai/core/infrastructure/services/file-dialog.service';
 
 /** Attachment record for the create form — supports both picker and upload sources. */
 export interface FormAttachment {

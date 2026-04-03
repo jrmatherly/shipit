@@ -64,7 +64,7 @@ The Settings Service provides global application configuration accessible throug
 │  └──────────────────────────────────────────────────────────┘  │
 │                              ↓                                   │
 │  ┌──────────────────────────────────────────────────────────┐  │
-│  │ SQLite Database (~/.shep/data)                            │  │
+│  │ SQLite Database (~/.shipit-ai/data)                            │  │
 │  │   Table: settings (singleton constraint on 'id')          │  │
 │  │   Columns: snake_case (model_default, sys_log_level, ...)  │  │
 │  └──────────────────────────────────────────────────────────┘  │
@@ -423,7 +423,7 @@ bootstrap();
    ↓
 2. bootstrap() → initializeContainer()
    ↓
-3. getSQLiteConnection() → ~/.shep/data
+3. getSQLiteConnection() → ~/.shipit-ai/data
    ↓
 4. runSQLiteMigrations() → CREATE TABLE settings
    ↓
@@ -448,7 +448,7 @@ bootstrap();
    ↓
 2. bootstrap() → initializeContainer()
    ↓
-3. getSQLiteConnection() → ~/.shep/data (already exists)
+3. getSQLiteConnection() → ~/.shipit-ai/data (already exists)
    ↓
 4. runSQLiteMigrations() → Check user_version (no changes)
    ↓
@@ -530,7 +530,7 @@ packages/core/src/
     │   └── container.ts           # tsyringe DI container setup
     ├── persistence/
     │   └── sqlite/
-    │       ├── connection.ts      # Database connection (~/.shep/data)
+    │       ├── connection.ts      # Database connection (~/.shipit-ai/data)
     │       ├── migrations.ts      # Schema migrations (user_version)
     │       └── mappers/
     │           └── settings.mapper.ts  # TS ↔ SQL conversion
@@ -609,7 +609,7 @@ describe('CLI: settings initialization', () => {
     tempDir = mkdtempSync(join(tmpdir(), 'shep-cli-test-'));
   });
 
-  it('should create ~/.shep/ directory on first run', () => {
+  it('should create ~/.shipit-ai/ directory on first run', () => {
     const runner = createCliRunner({ env: { HOME: tempDir } });
     const result = runner.run('version');
     expect(result.success).toBe(true);
@@ -622,7 +622,7 @@ describe('CLI: settings initialization', () => {
 
 ### Database Location
 
-- **Location:** `~/.shep/data` (user home directory)
+- **Location:** `~/.shipit-ai/data` (user home directory)
 - **Connection:** Opened once at bootstrap, reused for all operations
 - **Size:** Minimal (~16KB for empty database, ~20KB with settings)
 
@@ -646,7 +646,7 @@ describe('CLI: settings initialization', () => {
 
 ### File Permissions
 
-- **Directory:** `~/.shep/` created with `0700` (owner-only access)
+- **Directory:** `~/.shipit-ai/` created with `0700` (owner-only access)
 - **Database:** Inherits directory permissions (not world-readable)
 
 ### Sensitive Data

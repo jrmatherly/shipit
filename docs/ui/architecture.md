@@ -1,6 +1,6 @@
 # UI Architecture
 
-Component architecture patterns and conventions for the Shep AI web interface.
+Component architecture patterns and conventions for the Shipit AI web interface.
 
 ## Four-Tier Component Hierarchy
 
@@ -554,7 +554,7 @@ For data fetching, use Next.js Server Components with the DI `resolve()` helper 
 ```typescript
 // app/features/page.tsx (Server Component)
 import { resolve } from '@/lib/server-container';
-import { ListFeaturesUseCase } from '@shepai/core/application/use-cases/features/list-features.use-case';
+import { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 
 export const dynamic = 'force-dynamic';
 
@@ -595,7 +595,7 @@ When resolving a concrete class (typical for use cases), pass the class directly
 
 ```typescript
 import { resolve } from '@/lib/server-container';
-import { ListFeaturesUseCase } from '@shepai/core/application/use-cases/features/list-features.use-case';
+import { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
 
 // In a server component or API route handler:
 const features = await resolve(ListFeaturesUseCase).execute();
@@ -607,7 +607,7 @@ When resolving an interface-based dependency registered with a string token:
 
 ```typescript
 import { resolve } from '@/lib/server-container';
-import type { IAgentRunRepository } from '@shepai/core/application/ports/output/agents/agent-run-repository.interface';
+import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/output/agents/agent-run-repository.interface';
 
 const repo = resolve<IAgentRunRepository>('IAgentRunRepository');
 const run = await repo.findById(runId);
@@ -618,12 +618,12 @@ const run = await repo.findById(runId);
 The following packages are excluded from Turbopack bundling via `serverExternalPackages`:
 
 ```typescript
-serverExternalPackages: ['@shepai/core', 'tsyringe', 'reflect-metadata', 'better-sqlite3'];
+serverExternalPackages: ['@shipit-ai/core', 'tsyringe', 'reflect-metadata', 'better-sqlite3'];
 ```
 
 This is required because:
 
-- **`@shepai/core`** -- Turbopack does not perform `.js` to `.ts` extension mapping the way Node.js/tsx does, so `@shepai/core` imports would fail if bundled. Marking it external lets Node.js resolve it at runtime.
+- **`@shipit-ai/core`** -- Turbopack does not perform `.js` to `.ts` extension mapping the way Node.js/tsx does, so `@shipit-ai/core` imports would fail if bundled. Marking it external lets Node.js resolve it at runtime.
 - **`tsyringe` / `reflect-metadata`** -- DI metadata relies on runtime reflection that Turbopack cannot bundle correctly.
 - **`better-sqlite3`** -- Native Node.js addon (C++ binding) that cannot be bundled.
 
@@ -670,7 +670,7 @@ CLI bootstrap / dev-server
 1. **Never import tsyringe directly** in web layer code -- always use `resolve()` from `@/lib/server-container`.
 2. **Never resolve dependencies in client components** -- `resolve()` only works server-side. Pass data down as props from server components.
 3. **Always add `export const dynamic = 'force-dynamic'`** to server component pages that call `resolve()`.
-4. **Keep `serverExternalPackages` up to date** -- if a new `@shepai/core` dependency with native bindings is added, include it in the list.
+4. **Keep `serverExternalPackages` up to date** -- if a new `@shipit-ai/core` dependency with native bindings is added, include it in the list.
 
 ## File Naming Conventions
 

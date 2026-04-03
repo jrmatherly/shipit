@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { AdoptBranchUseCase } from '@shepai/core/application/use-cases/features/adopt-branch.use-case';
-import type { Feature } from '@shepai/core/domain/generated/output';
+import type { AdoptBranchUseCase } from '@shipit-ai/core/application/use-cases/features/adopt-branch.use-case';
+import type { Feature } from '@shipit-ai/core/domain/generated/output';
 
 interface AdoptBranchInput {
   branchName: string;

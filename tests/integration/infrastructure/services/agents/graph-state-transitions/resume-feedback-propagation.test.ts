@@ -190,7 +190,7 @@ describe('Graph State Transitions › Resume Feedback Propagation', () => {
       };
     })();
 
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-resume-feedback-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-resume-feedback-'));
     specDir = join(tempDir, 'specs', '001-test');
     mkdirSync(specDir, { recursive: true });
   });

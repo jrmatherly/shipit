@@ -1,7 +1,7 @@
 /**
  * status Command
  *
- * Displays live status and metrics for the running Shep web UI daemon.
+ * Displays live status and metrics for the running Shipit AI web UI daemon.
  *
  * Metrics collected:
  *   - PID, port, URL (from daemon.json)
@@ -29,11 +29,11 @@ import { container } from '@/infrastructure/di/container.js';
 import type { IDaemonService } from '@/application/ports/output/services/daemon-service.interface.js';
 import type { IVersionService } from '@/application/ports/output/services/version-service.interface.js';
 import {
-  getShepHomeDir,
-  getShepDbPath,
+  getShipitAiHomeDir,
+  getShipitAiDbPath,
   getDaemonStatePath,
   getDaemonLogPath,
-} from '@/infrastructure/services/filesystem/shep-directory.service.js';
+} from '@/infrastructure/services/filesystem/shipit-ai-directory.service.js';
 import { renderDetailView, messages, colors } from '../ui/index.js';
 import { getCliI18n } from '../i18n.js';
 
@@ -282,10 +282,10 @@ export function createStatusCommand(): Command {
           {
             title: t('cli:commands.status.envTitle'),
             fields: [
-              { label: t('cli:commands.status.shepHomeLabel'), value: getShepHomeDir() },
+              { label: t('cli:commands.status.shipitAiHomeLabel'), value: getShipitAiHomeDir() },
               { label: t('cli:commands.status.cliVersionLabel'), value: cliVersion },
               { label: t('cli:commands.status.nodeVersionLabel'), value: process.version },
-              { label: t('cli:commands.status.dbPathLabel'), value: getShepDbPath() },
+              { label: t('cli:commands.status.dbPathLabel'), value: getShipitAiDbPath() },
               { label: t('cli:commands.status.logFileLabel'), value: logPath },
               { label: t('cli:commands.status.daemonConfigLabel'), value: getDaemonStatePath() },
             ],

@@ -28,7 +28,7 @@ technologies:
   - BrowserOpenerService (existing)
   - WebServerService (existing)
   - findAvailablePort / DEFAULT_PORT (existing port.service)
-  - getShepHomeDir / ensureShepDirectory (existing shep-directory.service)
+  - getShipitAiHomeDir / ensureShepDirectory (existing shipit-ai-directory.service)
   - onboardingWizard / CheckOnboardingStatusUseCase (existing)
   - Vitest (unit tests — existing)
   - Playwright (E2E tests — existing)
@@ -40,8 +40,8 @@ phases:
     name: 'Foundation — Directory Helper, IDaemonService Port & DaemonPidService'
     description: >
       Establish the infrastructure base that all four new CLI commands will depend on.
-      Add getDaemonStatePath() to the existing shep-directory.service so daemon tests
-      can use SHEP_HOME isolation. Define the IDaemonService output port interface with
+      Add getDaemonStatePath() to the existing shipit-ai-directory.service so daemon tests
+      can use SHIPIT_AI_HOME isolation. Define the IDaemonService output port interface with
       the DaemonState shape. Implement DaemonPidService with atomic JSON write, read,
       delete, and PID liveness check. Register the service as a singleton in container.ts.
       This phase produces fully-tested, isolated infrastructure with no CLI changes.
@@ -89,10 +89,10 @@ phases:
     description: >
       Rewrite the README Quick Start section to the 3-step install to shep to done flow
       and update the CLI reference table to include start/stop/status. Write the Playwright
-      E2E test that exercises the full lifecycle: shep start (with SHEP_HOME isolation) to
+      E2E test that exercises the full lifecycle: shep start (with SHIPIT_AI_HOME isolation) to
       poll until shep status reports running to shep stop to verify daemon.json is deleted.
-      The E2E test uses process.env.SHEP_HOME pointing to a temp directory to prevent
-      writing to the real ~/.shep/ and uses the compiled CLI binary (pnpm build first).
+      The E2E test uses process.env.SHIPIT_AI_HOME pointing to a temp directory to prevent
+      writing to the real ~/.shipit-ai/ and uses the compiled CLI binary (pnpm build first).
     parallel: false
 
 filesToCreate:
@@ -110,7 +110,7 @@ filesToCreate:
   - tests/e2e/cli/daemon-lifecycle.spec.ts
 
 filesToModify:
-  - packages/core/src/infrastructure/services/filesystem/shep-directory.service.ts
+  - packages/core/src/infrastructure/services/filesystem/shipit-ai-directory.service.ts
   - packages/core/src/infrastructure/di/container.ts
   - src/presentation/cli/index.ts
   - README.md
@@ -125,7 +125,7 @@ content: |
 
   ```
   CLI Commands (start / stop / status / _serve)
-    |-- IDaemonService (new) -> DaemonPidService -> ~/.shep/daemon.json
+    |-- IDaemonService (new) -> DaemonPidService -> ~/.shipit-ai/daemon.json
     |-- IWebServerService (existing) -> WebServerService  [_serve child only]
     |-- BrowserOpenerService (existing, direct)          [start parent only]
     |-- findAvailablePort / DEFAULT_PORT (existing)      [start parent only]
@@ -175,10 +175,10 @@ content: |
   After 5s, SIGKILL prevents zombie processes. daemon.json is always deleted regardless of
   how termination occurred.
 
-  ### 7. getDaemonStatePath() in shep-directory.service
+  ### 7. getDaemonStatePath() in shipit-ai-directory.service
   Follows the existing getShepDbPath() pattern: a simple one-liner that respects the
-  SHEP_HOME environment variable. This is critical for test isolation — daemon integration
-  and E2E tests set SHEP_HOME to a temp directory to avoid writing to the real ~/.shep/.
+  SHIPIT_AI_HOME environment variable. This is critical for test isolation — daemon integration
+  and E2E tests set SHIPIT_AI_HOME to a temp directory to avoid writing to the real ~/.shipit-ai/.
 
   ### 8. Full Container Bootstrap in _serve Child
   The _serve command calls the same bootstrap sequence as index.ts. Skipping migrations
@@ -204,7 +204,7 @@ content: |
   | Stale daemon.json after unclean exit | shep start checks PID liveness (process.kill with signal 0) and treats ESRCH as no daemon |
   | Partial daemon.json write on crash | Atomic write-temp + rename prevents partial files |
   | _serve child keeps parent alive | {stdio: 'ignore'} + child.unref() — verified by the NFR-1 parent-exits-within-2s E2E assertion |
-  | SHEP_HOME env var missing in tests | getDaemonStatePath() uses resolveShepHomeDir() which already handles SHEP_HOME — covered in existing pattern |
+  | SHIPIT_AI_HOME env var missing in tests | getDaemonStatePath() uses resolveShepHomeDir() which already handles SHIPIT_AI_HOME — covered in existing pattern |
   | ps not available on test host | execFile has 2s timeout; status command wraps ps call in try/catch, shows metrics unavailable on failure |
   | onboarding gate change breaks CI | TTY check (process.stdin.isTTY) prevents the onboarding/daemon path from running in CI non-TTY environments |
   | Commander default action conflicts with subcommands | Commander only fires root action when zero subcommands match — existing behavior is preserved for shep start, shep stop etc. |

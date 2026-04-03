@@ -11,13 +11,12 @@ vi.mock('../../../../../../src/presentation/web/lib/server-container.js', () => 
   }),
 }));
 
-vi.mock('@shepai/core/application/use-cases/features/create/create-feature.use-case', () => ({
+vi.mock('@shipit-ai/core/application/use-cases/features/create/create-feature.use-case', () => ({
   CreateFeatureUseCase: class CreateFeatureUseCase {},
 }));
 
-const { createFeature } = await import(
-  '../../../../../../src/presentation/web/app/actions/create-feature.js'
-);
+const { createFeature } =
+  await import('../../../../../../src/presentation/web/app/actions/create-feature.js');
 
 describe('createFeature server action', () => {
   beforeEach(() => {

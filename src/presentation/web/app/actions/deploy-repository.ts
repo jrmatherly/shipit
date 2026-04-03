@@ -3,10 +3,10 @@
 import { existsSync } from 'node:fs';
 import { isAbsolute } from 'node:path';
 import { resolve } from '@/lib/server-container';
-import { createDeploymentLogger } from '@shepai/core/infrastructure/services/deployment/deployment-logger';
-import type { IDeploymentService } from '@shepai/core/application/ports/output/services/deployment-service.interface';
-import { DeploymentState } from '@shepai/core/domain/generated/output';
-import { isSameShepInstance } from '@/lib/is-same-shep-instance';
+import { createDeploymentLogger } from '@shipit-ai/core/infrastructure/services/deployment/deployment-logger';
+import type { IDeploymentService } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
+import { DeploymentState } from '@shipit-ai/core/domain/generated/output';
+import { isSameShipitAiInstance } from '@/lib/is-same-shipit-ai-instance';
 
 const log = createDeploymentLogger('[deployRepository]');
 
@@ -26,7 +26,7 @@ export async function deployRepository(
       return { success: false, error: `Directory does not exist: ${repositoryPath}` };
     }
 
-    if (isSameShepInstance(repositoryPath)) {
+    if (isSameShipitAiInstance(repositoryPath)) {
       log.warn('rejected — target is the running shep instance');
       return {
         success: false,

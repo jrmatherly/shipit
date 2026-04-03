@@ -9,7 +9,7 @@
 
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
-import type { IInteractiveSessionService } from '@shepai/core/application/ports/output/services/interactive-session-service.interface';
+import type { IInteractiveSessionService } from '@shipit-ai/core/application/ports/output/services/interactive-session-service.interface';
 
 export const dynamic = 'force-dynamic';
 

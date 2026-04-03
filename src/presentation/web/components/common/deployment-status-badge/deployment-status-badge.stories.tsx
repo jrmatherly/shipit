@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { DeploymentState } from '@shepai/core/domain/generated/output';
+import { DeploymentState } from '@shipit-ai/core/domain/generated/output';
 import { DeploymentStatusBadge } from './deployment-status-badge';
 
 const meta: Meta<typeof DeploymentStatusBadge> = {

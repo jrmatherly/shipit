@@ -17,9 +17,9 @@ const TEST_FEATURE_ID = `e2e-chat-${randomUUID().slice(0, 8)}`;
 const TEST_SESSION_ID = `sess-${randomUUID().slice(0, 8)}`;
 
 function getDb(): Database.Database {
-  const dbPath = process.env.SHEP_HOME
-    ? join(process.env.SHEP_HOME, 'data')
-    : join(homedir(), '.shep', 'data');
+  const dbPath = process.env.SHIPIT_AI_HOME
+    ? join(process.env.SHIPIT_AI_HOME, 'data')
+    : join(homedir(), '.shipit-ai', 'data');
   return new Database(dbPath);
 }
 

@@ -14,7 +14,7 @@ export interface VersionData {
 
 const DEFAULT_VERSION_DATA: VersionData = {
   version: 'unknown',
-  packageName: '@shepai/cli',
+  packageName: '@shipit-ai/cli',
   description: 'Autonomous AI Native SDLC Platform',
   branch: '',
   commitHash: '',

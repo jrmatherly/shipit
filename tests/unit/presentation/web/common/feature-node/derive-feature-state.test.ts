@@ -5,8 +5,8 @@ import {
   AgentRunStatus,
   AgentType,
   NotificationEventType,
-} from '@shepai/core/domain/generated';
-import type { Feature, AgentRun } from '@shepai/core/domain/generated';
+} from '@shipit-ai/core/domain/generated';
+import type { Feature, AgentRun } from '@shipit-ai/core/domain/generated';
 import {
   deriveNodeState,
   deriveProgress,

@@ -1,5 +1,5 @@
 /**
- * @module Shep.Common.Enums.Notification
+ * @module ShipitAI.Common.Enums.Notification
  *
  * Defines enums for the agent notification subsystem. These enums classify
  * the types of agent lifecycle events that trigger notifications and the

@@ -129,7 +129,7 @@ Steps:
 Process new external feedback and triage into action items.
 
 ```
-User: /readme:feedback Hey, I tried Shep and the README doesn't mention that...
+User: /readme:feedback Hey, I tried Shipit and the README doesn't mention that...
 ```
 
 Steps:

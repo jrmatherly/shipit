@@ -4,7 +4,7 @@
 name: cli-upgrade-command
 summary: >
   Technical research for the `shep upgrade` command. The feature is a purely presentation-layer
-  addition that spawns `npm i -g @shepai/cli@latest` with streaming output. Key decisions:
+  addition that spawns `npm i -g @shipit-ai/cli@latest` with streaming output. Key decisions:
   keep all logic in the command file (no new use case or port needed), inject spawn for
   testability, use stdio 'inherit' for direct output streaming, and add a 10-second timeout
   on the version check. Follows all existing CLI command patterns.
@@ -65,7 +65,7 @@ decisions:
     chosen: 'spawn npm view with pipe stdio and 10-second timeout, fail-open on error'
     rejected:
       - >
-        HTTP request to npm registry API (https://registry.npmjs.org/@shepai/cli/latest) —
+        HTTP request to npm registry API (https://registry.npmjs.org/@shipit-ai/cli/latest) —
         Rejected because it would require an HTTP client dependency (node-fetch or undici).
         The codebase doesn't currently use direct HTTP calls for npm operations. Using
         `npm view` is simpler and handles registry authentication/proxy configuration that
@@ -75,7 +75,7 @@ decisions:
         poor UX. Running `npm i -g` when already on latest wastes time and network bandwidth.
         The version check is cheap (single npm view) and provides valuable user feedback.
     rationale: >
-      Spawning `npm view @shepai/cli version` is the simplest way to get the latest published
+      Spawning `npm view @shipit-ai/cli version` is the simplest way to get the latest published
       version. It respects the user's npm configuration (registry, proxy, auth). The 10-second
       timeout (FR-8, NFR-6) ensures the command doesn't hang on network issues. Fail-open
       behavior means if the version check fails, we proceed with the upgrade anyway — the
@@ -179,7 +179,7 @@ content: |
 
   ### 2. Spawn Configuration for npm install
 
-  **Chosen:** `spawn('npm', ['i', '-g', '@shepai/cli@latest'], { stdio: 'inherit' })`
+  **Chosen:** `spawn('npm', ['i', '-g', '@shipit-ai/cli@latest'], { stdio: 'inherit' })`
 
   **Rejected:**
   - `stdio: 'pipe'` with manual forwarding — Added complexity, loses TTY features (progress bars, colors)
@@ -189,7 +189,7 @@ content: |
 
   ### 3. Version Check Implementation
 
-  **Chosen:** Spawn `npm view @shepai/cli version` with piped stdio and 10-second timeout
+  **Chosen:** Spawn `npm view @shipit-ai/cli version` with piped stdio and 10-second timeout
 
   **Rejected:**
   - Direct HTTP to npm registry — Requires HTTP client, ignores user's npm config (proxy, auth, custom registry)
@@ -240,7 +240,7 @@ content: |
   ## Security Considerations
 
   - **Command injection**: No user input is interpolated into the spawn arguments. The command
-    and arguments are hardcoded strings (`'npm'`, `['i', '-g', '@shepai/cli@latest']`).
+    and arguments are hardcoded strings (`'npm'`, `['i', '-g', '@shipit-ai/cli@latest']`).
     Using spawn with an args array (not shell mode) is inherently safe against injection.
   - **Privilege escalation**: `npm i -g` may require elevated permissions on some systems.
     This is npm's standard behavior — the command doesn't use sudo or modify permissions.
@@ -305,7 +305,7 @@ content: |
             messages.info(`Upgrading from v${currentVersion} to latest`);
           }
 
-          // 4. Run npm i -g @shepai/cli@latest with inherited stdio
+          // 4. Run npm i -g @shipit-ai/cli@latest with inherited stdio
           const exitCode = await runNpmInstall(spawnFn);
 
           if (exitCode === 0) {

@@ -1,6 +1,6 @@
 # TUI Documentation
 
-Reference documentation for the Shep AI TUI (Terminal UI) presentation layer.
+Reference documentation for the Shipit AI TUI (Terminal UI) presentation layer.
 
 ## Overview
 
@@ -41,7 +41,7 @@ src/presentation/tui/
     prd-review-question.prompt.ts   # PRD review question prompt
     prd-review-summary.prompt.ts    # PRD review summary prompt
   themes/
-    shep.theme.ts                   # Custom Inquirer theme (colors, symbols)
+    shipit-ai.theme.ts                   # Custom Inquirer theme (colors, symbols)
 ```
 
 ### Available Wizards

@@ -7,7 +7,7 @@
 
 import { AgentType } from '@/domain/generated/output.js';
 import { getTuiI18n } from '../i18n.js';
-import { shepTheme } from '../themes/shep.theme.js';
+import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 
 /**
  * Creates the @inquirer/select configuration for selecting an AI coding agent.
@@ -56,6 +56,6 @@ export function createAgentSelectConfig() {
         disabled: t('tui:prompts.selectAgent.choices.continue.disabled'),
       },
     ],
-    theme: shepTheme,
+    theme: shipitAiTheme,
   };
 }

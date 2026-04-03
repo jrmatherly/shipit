@@ -6,7 +6,7 @@
  * The debug flag is DB-only (no env var fallback).
  */
 
-import { hasSettings, getSettings } from '@shepai/core/infrastructure/services/settings.service';
+import { hasSettings, getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 
 function isEnabled(envVar: string | undefined): boolean {
   return envVar === 'true' || envVar === '1';

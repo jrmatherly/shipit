@@ -16,7 +16,7 @@ The project uses conventional commits (enforced by commitlint) but has no automa
 - Version bumps require manual `package.json` edits
 - No automated publishing to any registry
 - Release notes must be written manually
-- Contributors can't easily install `@shepai/cli` from a registry
+- Contributors can't easily install `@shipit-ai/cli` from a registry
 
 ## Success Criteria
 

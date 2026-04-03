@@ -1,8 +1,8 @@
 import { describe, it, expect } from 'vitest';
 import { buildGraphNodes } from '@/app/build-graph-nodes';
 import { layoutWithDagre, CANVAS_LAYOUT_DEFAULTS } from '@/lib/layout-with-dagre';
-import { SdlcLifecycle } from '@shepai/core/domain/generated/output';
-import type { Feature, Repository } from '@shepai/core/domain/generated/output';
+import { SdlcLifecycle } from '@shipit-ai/core/domain/generated/output';
+import type { Feature, Repository } from '@shipit-ai/core/domain/generated/output';
 
 const makeFeature = (overrides: Partial<Feature> = {}): Feature =>
   ({

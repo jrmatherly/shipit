@@ -7,7 +7,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
-import type { StopInteractiveSessionUseCase } from '@shepai/core/application/use-cases/interactive/stop-interactive-session.use-case';
+import type { StopInteractiveSessionUseCase } from '@shipit-ai/core/application/use-cases/interactive/stop-interactive-session.use-case';
 
 export const dynamic = 'force-dynamic';
 

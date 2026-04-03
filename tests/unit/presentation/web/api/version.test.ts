@@ -18,12 +18,12 @@ describe('GET /api/version', () => {
   const originalEnv = { ...process.env };
 
   beforeEach(() => {
-    process.env.NEXT_PUBLIC_SHEP_VERSION = '1.101.0';
-    process.env.NEXT_PUBLIC_SHEP_PACKAGE_NAME = '@shepai/cli';
-    process.env.NEXT_PUBLIC_SHEP_DESCRIPTION = 'Test description';
-    process.env.NEXT_PUBLIC_SHEP_BRANCH = 'main';
-    process.env.NEXT_PUBLIC_SHEP_COMMIT = 'abc1234';
-    process.env.NEXT_PUBLIC_SHEP_INSTANCE_PATH = '/test/path';
+    process.env.NEXT_PUBLIC_SHIPIT_AI_VERSION = '1.101.0';
+    process.env.NEXT_PUBLIC_SHIPIT_AI_PACKAGE_NAME = '@shipit-ai/cli';
+    process.env.NEXT_PUBLIC_SHIPIT_AI_DESCRIPTION = 'Test description';
+    process.env.NEXT_PUBLIC_SHIPIT_AI_BRANCH = 'main';
+    process.env.NEXT_PUBLIC_SHIPIT_AI_COMMIT = 'abc1234';
+    process.env.NEXT_PUBLIC_SHIPIT_AI_INSTANCE_PATH = '/test/path';
   });
 
   afterEach(() => {
@@ -43,7 +43,7 @@ describe('GET /api/version', () => {
 
     expect(data).toEqual({
       version: '1.101.0',
-      packageName: '@shepai/cli',
+      packageName: '@shipit-ai/cli',
       description: 'Test description',
       branch: 'main',
       commitHash: 'abc1234',
@@ -53,18 +53,18 @@ describe('GET /api/version', () => {
   });
 
   it('returns defaults when env vars are not set', async () => {
-    delete process.env.NEXT_PUBLIC_SHEP_VERSION;
-    delete process.env.NEXT_PUBLIC_SHEP_PACKAGE_NAME;
-    delete process.env.NEXT_PUBLIC_SHEP_DESCRIPTION;
-    delete process.env.NEXT_PUBLIC_SHEP_BRANCH;
-    delete process.env.NEXT_PUBLIC_SHEP_COMMIT;
-    delete process.env.NEXT_PUBLIC_SHEP_INSTANCE_PATH;
+    delete process.env.NEXT_PUBLIC_SHIPIT_AI_VERSION;
+    delete process.env.NEXT_PUBLIC_SHIPIT_AI_PACKAGE_NAME;
+    delete process.env.NEXT_PUBLIC_SHIPIT_AI_DESCRIPTION;
+    delete process.env.NEXT_PUBLIC_SHIPIT_AI_BRANCH;
+    delete process.env.NEXT_PUBLIC_SHIPIT_AI_COMMIT;
+    delete process.env.NEXT_PUBLIC_SHIPIT_AI_INSTANCE_PATH;
 
     const response = GET();
     const data = await response.json();
 
     expect(data.version).toBe('unknown');
-    expect(data.packageName).toBe('@shepai/cli');
+    expect(data.packageName).toBe('@shipit-ai/cli');
     expect(data.description).toBe('Autonomous AI Native SDLC Platform');
     expect(data.branch).toBe('');
     expect(data.commitHash).toBe('');

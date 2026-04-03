@@ -1,7 +1,7 @@
 import { resolve } from '@/lib/server-container';
-import type { ListFeaturesUseCase } from '@shepai/core/application/use-cases/features/list-features.use-case';
-import type { ListRepositoriesUseCase } from '@shepai/core/application/use-cases/repositories/list-repositories.use-case';
-import { getSettings } from '@shepai/core/infrastructure/services/settings.service';
+import type { ListFeaturesUseCase } from '@shipit-ai/core/application/use-cases/features/list-features.use-case';
+import type { ListRepositoriesUseCase } from '@shipit-ai/core/application/use-cases/repositories/list-repositories.use-case';
+import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 import { getWorkflowDefaults } from '@/app/actions/get-workflow-defaults';
 import { getViewerPermission } from '@/app/actions/get-viewer-permission';
 import { CreateDrawerClient } from '@/components/common/control-center-drawer/create-drawer-client';

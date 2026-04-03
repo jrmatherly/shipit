@@ -1,7 +1,7 @@
 /**
  * start command unit tests
  *
- * Tests for the `shep start` CLI command.
+ * Tests for the `shipit-ai start` CLI command.
  * The command is intentionally thin — all logic lives in startDaemon().
  */
 

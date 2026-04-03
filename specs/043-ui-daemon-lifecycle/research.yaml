@@ -4,7 +4,7 @@
 name: ui-daemon-lifecycle
 summary: >
   The daemon lifecycle feature is a thin orchestration layer over existing services
-  (WebServerService, BrowserOpenerService, port.service, shep-directory.service). The key
+  (WebServerService, BrowserOpenerService, port.service, shipit-ai-directory.service). The key
   implementation challenge is the detached-child spawn pattern and atomic daemon.json I/O.
   All technical decisions are resolved: no new runtime npm dependencies, ps shell-out
   (via execFile for safety) for metrics, structured daemon.json state file, and the default
@@ -26,7 +26,7 @@ technologies:
   - BrowserOpenerService (existing cross-platform browser open)
   - WebServerService (existing Next.js programmatic server)
   - findAvailablePort / DEFAULT_PORT (existing port.service)
-  - getShepHomeDir / ensureShepDirectory (existing shep-directory.service)
+  - getShipitAiHomeDir / ensureShepDirectory (existing shipit-ai-directory.service)
   - onboardingWizard / CheckOnboardingStatusUseCase (existing onboarding)
   - Vitest (unit + integration tests — existing)
   - Playwright (E2E tests — existing)
@@ -82,8 +82,8 @@ decisions:
 
   - title: 'Atomic daemon.json Write Strategy'
     chosen: >
-      Write JSON to a temp file (~/.shep/daemon.json.tmp) using fs.writeFile, then
-      atomically rename to ~/.shep/daemon.json using fs.rename. Read via
+      Write JSON to a temp file (~/.shipit-ai/daemon.json.tmp) using fs.writeFile, then
+      atomically rename to ~/.shipit-ai/daemon.json using fs.rename. Read via
       JSON.parse(await fs.readFile(...)). Delete via fs.unlink with error swallowing
       (ENOENT is not an error in stop/cleanup paths).
     rejected:
@@ -100,7 +100,7 @@ decisions:
         and would survive database resets incorrectly.
     rationale: >
       The spec FR-3/NFR-3 explicitly requires atomic writes. The write-to-temp plus rename
-      pattern is O(1), POSIX-atomic on same filesystem (which ~/.shep/ always satisfies),
+      pattern is O(1), POSIX-atomic on same filesystem (which ~/.shipit-ai/ always satisfies),
       and is already the conceptual pattern used by ensureShepDirectory. No library
       is needed — fs.writeFile plus fs.rename is two lines.
 
@@ -198,28 +198,28 @@ decisions:
       The hidden _serve command follows the Commander convention for internal utility
       subcommands and is consistent with how the spec describes it (hidden from --help).
 
-  - title: 'getDaemonStatePath Addition to shep-directory.service'
+  - title: 'getDaemonStatePath Addition to shipit-ai-directory.service'
     chosen: >
       Add a single exported function getDaemonStatePath(): string to
-      packages/core/src/infrastructure/services/filesystem/shep-directory.service.ts
+      packages/core/src/infrastructure/services/filesystem/shipit-ai-directory.service.ts
       that returns path.join(resolveShepHomeDir(), 'daemon.json'). This function is used
       exclusively by DaemonPidService.
     rejected:
       - >
         Hardcode path.join(os.homedir(), '.shep', 'daemon.json') in DaemonPidService —
-        rejected because the existing codebase uses SHEP_HOME env var for test isolation
-        (already in shep-directory.service). Hardcoding bypasses this and would break
+        rejected because the existing codebase uses SHIPIT_AI_HOME env var for test isolation
+        (already in shipit-ai-directory.service). Hardcoding bypasses this and would break
         test isolation for daemon tests.
       - >
         Add a new DaemonDirectoryService class — rejected as over-engineering. A single
         helper function in the existing service is sufficient and follows the existing
-        pattern (getShepDbPath() is also just a one-liner in shep-directory.service.ts).
+        pattern (getShepDbPath() is also just a one-liner in shipit-ai-directory.service.ts).
     rationale: >
-      The existing shep-directory.service.ts already has getShepHomeDir() and getShepDbPath()
+      The existing shipit-ai-directory.service.ts already has getShipitAiHomeDir() and getShepDbPath()
       as simple exported functions. Adding getDaemonStatePath() follows this exact pattern.
-      Critically, it respects SHEP_HOME env var which is the mechanism tests use to point at
+      Critically, it respects SHIPIT_AI_HOME env var which is the mechanism tests use to point at
       a temp directory — without this, daemon integration tests would write to the real
-      ~/.shep/ directory.
+      ~/.shipit-ai/ directory.
 
   - title: 'README Quick Start Rewrite Scope'
     chosen: >
@@ -309,7 +309,7 @@ openQuestions:
 
   - question: >
       Should the daemon stdout/stderr be discarded silently or redirected to a log file
-      in ~/.shep/ for debugging purposes?
+      in ~/.shipit-ai/ for debugging purposes?
     resolved: true
     options:
       - option: 'Discard silently (stdio: ignore)'
@@ -318,9 +318,9 @@ openQuestions:
           file. Simpler implementation, no disk space concerns. Users can run shep ui
           instead for interactive debugging.
         selected: true
-      - option: Redirect to ~/.shep/daemon.log
+      - option: Redirect to ~/.shipit-ai/daemon.log
         description: >
-          Open a writable stream to ~/.shep/daemon.log and pass [stdin_ignore, log_fd,
+          Open a writable stream to ~/.shipit-ai/daemon.log and pass [stdin_ignore, log_fd,
           log_fd] as stdio to spawn. Enables shep status to optionally show last N log
           lines. Adds complexity: log rotation needed, file handle management in spawn,
           and daemon.json needs to store log path.
@@ -434,18 +434,18 @@ content: |
   **Rationale:** Every existing top-level command (install, upgrade, version, run, ui) has
   its own file. Following this pattern minimizes cognitive overhead for contributors.
 
-  ### 8. getDaemonStatePath in shep-directory.service
+  ### 8. getDaemonStatePath in shipit-ai-directory.service
 
   **Chosen:** Add `getDaemonStatePath(): string` returning `join(resolveShepHomeDir(), 'daemon.json')`
-  to existing shep-directory.service.ts.
+  to existing shipit-ai-directory.service.ts.
 
   **Rejected:**
   - Hardcode `path.join(os.homedir(), '.shep', 'daemon.json')` in DaemonPidService — bypasses
-    SHEP_HOME test isolation env var
+    SHIPIT_AI_HOME test isolation env var
   - New DaemonDirectoryService class — over-engineering; a one-line function is sufficient
 
-  **Rationale:** `getShepDbPath()` already follows this exact pattern. SHEP_HOME support is
-  critical for daemon integration tests that must not write to the real `~/.shep/`.
+  **Rationale:** `getShepDbPath()` already follows this exact pattern. SHIPIT_AI_HOME support is
+  critical for daemon integration tests that must not write to the real `~/.shipit-ai/`.
 
   ## Library Analysis
 
@@ -465,7 +465,7 @@ content: |
 
   ## Security Considerations
 
-  1. **PID file scope**: daemon.json is written to `~/.shep/` which is created with `mode: 0o700`
+  1. **PID file scope**: daemon.json is written to `~/.shipit-ai/` which is created with `mode: 0o700`
      (user-only read/write/execute). No world-readable PID exposure.
 
   2. **Shell injection prevention**: The `ps` shell-out uses `execFile` (not `exec`), passing
@@ -477,7 +477,7 @@ content: |
      the web server only binds to `localhost` (127.0.0.1) per the existing WebServerService.
 
   4. **PID spoofing**: A malicious process could write a fake daemon.json pointing to a PID it
-     controls. However, since daemon.json is in `~/.shep/` (user-owned, 0700), only the user
+     controls. However, since daemon.json is in `~/.shipit-ai/` (user-owned, 0700), only the user
      themselves can do this — equivalent to the user having shell access.
 
   5. **SIGKILL target validation**: `shep stop` should validate the PID is a positive integer
@@ -496,7 +496,7 @@ content: |
      10-50ms on macOS/Linux. The 500ms budget has ~450ms of headroom. The 2s timeout is a
      safety guard, not an expected codepath.
 
-  3. **daemon.json read latency**: JSON file read from `~/.shep/` is a local filesystem read
+  3. **daemon.json read latency**: JSON file read from `~/.shipit-ai/` is a local filesystem read
      (~1ms). No caching needed — the file is tiny and reads are infrequent (user-triggered).
 
   4. **Daemon startup time**: WebServerService.start() with Next.js typically takes 2-8s in
@@ -516,11 +516,11 @@ content: |
 
   ```
   CLI Commands (start/stop/status/_serve)
-    ├── IDaemonService (new) → DaemonPidService → ~/.shep/daemon.json
+    ├── IDaemonService (new) → DaemonPidService → ~/.shipit-ai/daemon.json
     ├── IWebServerService (existing) → WebServerService (in _serve child only)
     ├── BrowserOpenerService (existing, direct instantiation — same as ui.command.ts)
     ├── findAvailablePort / DEFAULT_PORT (existing port.service functions)
-    └── getDaemonStatePath (new helper in existing shep-directory.service)
+    └── getDaemonStatePath (new helper in existing shipit-ai-directory.service)
   ```
 
   ### Default Action Flow in index.ts
@@ -557,10 +557,10 @@ content: |
 
   ### Test Strategy
 
-  - **Unit tests** for DaemonPidService: mock `fs/promises`, `process.kill`, use SHEP_HOME
+  - **Unit tests** for DaemonPidService: mock `fs/promises`, `process.kill`, use SHIPIT_AI_HOME
     env var to isolate file writes
   - **Unit tests** for start/stop/status command handlers: mock `IDaemonService`,
     `child_process.spawn`, `BrowserOpenerService`, `findAvailablePort`
   - **E2E test** (daemon-lifecycle.spec.ts): actually spawn `shep start`, poll until
-    `shep status` shows running, then `shep stop`. Use SHEP_HOME env var pointing to a
+    `shep status` shows running, then `shep stop`. Use SHIPIT_AI_HOME env var pointing to a
     temp directory. Assert exit codes and stdout patterns.

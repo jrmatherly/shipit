@@ -6,7 +6,7 @@ import VersionPageClient from '@/components/features/version/version-page-client
 describe('VersionPageClient (features/version)', () => {
   const defaultProps = {
     versionInfo: {
-      name: '@shepai/cli',
+      name: '@shipit-ai/cli',
       version: '1.0.0',
       description: 'Test description',
       branch: '',
@@ -21,7 +21,7 @@ describe('VersionPageClient (features/version)', () => {
 
   it('renders version info', () => {
     render(<VersionPageClient {...defaultProps} />);
-    expect(screen.getByRole('heading', { name: '@shepai/cli' })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: '@shipit-ai/cli' })).toBeInTheDocument();
     expect(screen.getByTestId('version-badge')).toHaveTextContent('v1.0.0');
   });
 

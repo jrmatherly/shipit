@@ -13,14 +13,14 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 
-// Mock execFileSync to avoid slow shep CLI calls from FeatureContextBuilder that
+// Mock execFileSync to avoid slow shipit-ai CLI calls from FeatureContextBuilder that
 // cause timeouts when running in the full test suite with constrained workers.
 vi.mock('node:child_process', () => ({
   execFileSync: vi.fn((cmd: string, args: string[]) => {
-    if (cmd === 'shep' && args[0] === '--version') return '0.0.0-test';
-    if (cmd === 'shep' && args[0] === '--help')
-      return 'Usage: shep [command]\n  feat  Manage features\n  ui    Launch UI';
-    if (cmd === 'shep' && args[1] === '--help') return `shep ${args[0]} help text`;
+    if (cmd === 'shipit-ai' && args[0] === '--version') return '0.0.0-test';
+    if (cmd === 'shipit-ai' && args[0] === '--help')
+      return 'Usage: shipit-ai [command]\n  feat  Manage features\n  ui    Launch UI';
+    if (cmd === 'shipit-ai' && args[1] === '--help') return `shipit-ai ${args[0]} help text`;
     return '';
   }),
 }));

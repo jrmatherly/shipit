@@ -1,21 +1,21 @@
 /**
  * Daemon Lifecycle E2E Tests
  *
- * Tests for the `shep start`, `shep stop`, and `shep status` commands.
+ * Tests for the `shipit-ai start`, `shipit-ai stop`, and `shipit-ai status` commands.
  *
  * Test strategy:
- *  - "No daemon" tests: clean SHEP_HOME, verify not-running messages
- *  - "shep start" tests: verify exit code, stdout URL, daemon.json shape, parent exit time
+ *  - "No daemon" tests: clean SHIPIT_AI_HOME, verify not-running messages
+ *  - "shipit-ai start" tests: verify exit code, stdout URL, daemon.json shape, parent exit time
  *  - "Alive daemon" tests: use a long-running `sleep` process to simulate an alive daemon
  *    without requiring the Next.js web server to be built; verifies status display,
  *    idempotent start, stop lifecycle, and post-stop not-running state
  *
- * Each test group gets its own isolated SHEP_HOME temp directory.
+ * Each test group gets its own isolated SHIPIT_AI_HOME temp directory.
  *
- * Note: Run via `pnpm test:e2e:cli` which sets SHEP_E2E_USE_DIST=1 and builds the CLI.
+ * Note: Run via `pnpm test:e2e:cli` which sets SHIPIT_AI_E2E_USE_DIST=1 and builds the CLI.
  * The tests work in both tsx and dist modes because:
  *  - The "alive daemon" tests write daemon.json manually (no real spawn dependency)
- *  - The "shep start" tests verify parent behavior (exit code, output, daemon.json)
+ *  - The "shipit-ai start" tests verify parent behavior (exit code, output, daemon.json)
  *    which works regardless of whether the spawned daemon stays alive
  */
 
@@ -64,16 +64,16 @@ function createFakeNpmBin(dir: string, viewVersion: string, installExitCode: num
 }
 
 /**
- * Create an isolated temp SHEP_HOME directory.
+ * Create an isolated temp SHIPIT_AI_HOME directory.
  * Returns the path and a cleanup function.
  */
-function makeTempShepHome(): { shepHome: string; cleanup: () => void } {
-  const shepHome = mkdtempSync(join(tmpdir(), 'shep-e2e-daemon-'));
+function makeTempShipitAiHome(): { shipitAiHome: string; cleanup: () => void } {
+  const shipitAiHome = mkdtempSync(join(tmpdir(), 'shipit-ai-e2e-daemon-'));
   return {
-    shepHome,
+    shipitAiHome,
     cleanup: () => {
       try {
-        rmSync(shepHome, { recursive: true, force: true });
+        rmSync(shipitAiHome, { recursive: true, force: true });
       } catch {
         // best-effort cleanup
       }
@@ -81,9 +81,9 @@ function makeTempShepHome(): { shepHome: string; cleanup: () => void } {
   };
 }
 
-/** Returns true if daemon.json exists in the given SHEP_HOME. */
-async function daemonJsonExists(shepHome: string): Promise<boolean> {
-  const daemonPath = join(shepHome, 'daemon.json');
+/** Returns true if daemon.json exists in the given SHIPIT_AI_HOME. */
+async function daemonJsonExists(shipitAiHome: string): Promise<boolean> {
+  const daemonPath = join(shipitAiHome, 'daemon.json');
   try {
     await access(daemonPath, constants.F_OK);
     return true;
@@ -92,18 +92,18 @@ async function daemonJsonExists(shepHome: string): Promise<boolean> {
   }
 }
 
-/** Read and parse daemon.json from the given SHEP_HOME. */
+/** Read and parse daemon.json from the given SHIPIT_AI_HOME. */
 async function readDaemonJson(
-  shepHome: string
+  shipitAiHome: string
 ): Promise<{ pid: number; port: number; startedAt: string }> {
-  const daemonPath = join(shepHome, 'daemon.json');
+  const daemonPath = join(shipitAiHome, 'daemon.json');
   const content = await readFile(daemonPath, 'utf-8');
   return JSON.parse(content) as { pid: number; port: number; startedAt: string };
 }
 
-/** Write a daemon.json directly to SHEP_HOME (simulates a running daemon). */
-function writeDaemonJson(shepHome: string, pid: number, port: number): void {
-  const daemonPath = join(shepHome, 'daemon.json');
+/** Write a daemon.json directly to SHIPIT_AI_HOME (simulates a running daemon). */
+function writeDaemonJson(shipitAiHome: string, pid: number, port: number): void {
+  const daemonPath = join(shipitAiHome, 'daemon.json');
   writeFileSync(
     daemonPath,
     JSON.stringify({ pid, port, startedAt: new Date().toISOString() }),
@@ -154,10 +154,10 @@ function killPid(pid: number): void {
 /**
  * Kill any daemon recorded in daemon.json (best-effort, process-group kill).
  */
-async function killDaemonFromJson(shepHome: string): Promise<void> {
-  if (await daemonJsonExists(shepHome)) {
+async function killDaemonFromJson(shipitAiHome: string): Promise<void> {
+  if (await daemonJsonExists(shipitAiHome)) {
     try {
-      const state = await readDaemonJson(shepHome);
+      const state = await readDaemonJson(shipitAiHome);
       killPid(state.pid);
     } catch {
       // Already dead — OK
@@ -170,56 +170,56 @@ async function killDaemonFromJson(shepHome: string): Promise<void> {
 describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
   // ── 1. No daemon running ─────────────────────────────────────────────────
   describe('no daemon running', () => {
-    let shepHome: string;
+    let shipitAiHome: string;
     let cleanup: () => void;
     let runCli: ReturnType<typeof createCliRunner>['run'];
 
     beforeAll(() => {
-      const temp = makeTempShepHome();
-      shepHome = temp.shepHome;
+      const temp = makeTempShipitAiHome();
+      shipitAiHome = temp.shipitAiHome;
       cleanup = temp.cleanup;
-      runCli = createCliRunner({ env: { SHEP_HOME: shepHome } }).run;
+      runCli = createCliRunner({ env: { SHIPIT_AI_HOME: shipitAiHome } }).run;
     });
 
     afterAll(() => cleanup());
 
-    it('shep stop exits 0 and prints a "no daemon" message', () => {
+    it('shipit-ai stop exits 0 and prints a "no daemon" message', () => {
       const result = runCli('stop');
       expect(result.exitCode).toBe(0);
       expect(result.success).toBe(true);
       const output = `${result.stdout} ${result.stderr}`.toLowerCase();
-      expect(output).toMatch(/no shep daemon/);
+      expect(output).toMatch(/no shipit-ai daemon/);
     });
 
-    it('shep status exits 0 and prints a "not running" message with a shep-start hint', () => {
+    it('shipit-ai status exits 0 and prints a "not running" message with a shipit-ai-start hint', () => {
       const result = runCli('status');
       expect(result.exitCode).toBe(0);
       expect(result.success).toBe(true);
       const output = `${result.stdout} ${result.stderr}`;
       expect(output).toMatch(/not running/i);
-      expect(output).toMatch(/shep start/i);
+      expect(output).toMatch(/shipit-ai start/i);
     });
   });
 
-  // ── 2. shep start behavior ───────────────────────────────────────────────
-  describe('shep start', () => {
-    let shepHome: string;
+  // ── 2. shipit-ai start behavior ──────────────────────────────────────────
+  describe('shipit-ai start', () => {
+    let shipitAiHome: string;
     let cleanup: () => void;
     let runCli: ReturnType<typeof createCliRunner>['run'];
     let testPort: number;
 
     beforeAll(async () => {
       testPort = await findFreePort();
-      const temp = makeTempShepHome();
-      shepHome = temp.shepHome;
+      const temp = makeTempShipitAiHome();
+      shipitAiHome = temp.shipitAiHome;
       cleanup = temp.cleanup;
       runCli = createCliRunner({
-        env: { SHEP_HOME: shepHome, SHEP_SKIP_READINESS_CHECK: '1' },
+        env: { SHIPIT_AI_HOME: shipitAiHome, SHIPIT_AI_SKIP_READINESS_CHECK: '1' },
       }).run;
     });
 
     afterAll(async () => {
-      await killDaemonFromJson(shepHome);
+      await killDaemonFromJson(shipitAiHome);
       cleanup();
     });
 
@@ -238,10 +238,10 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
     });
 
     it('writes daemon.json with the correct shape', async () => {
-      const exists = await daemonJsonExists(shepHome);
+      const exists = await daemonJsonExists(shipitAiHome);
       expect(exists).toBe(true);
 
-      const state = await readDaemonJson(shepHome);
+      const state = await readDaemonJson(shipitAiHome);
       // Shape: { pid: number, port: number, startedAt: ISO 8601 string }
       expect(typeof state.pid).toBe('number');
       expect(typeof state.port).toBe('number');
@@ -261,7 +261,7 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
   // daemon.json, and then exercise the CLI commands against it.
   // This validates all command behaviors without a web-server dependency.
   describe('alive daemon simulation', () => {
-    let shepHome: string;
+    let shipitAiHome: string;
     let cleanup: () => void;
     let runCli: ReturnType<typeof createCliRunner>['run'];
     let fakeProcess: ReturnType<typeof spawn>;
@@ -269,11 +269,11 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
 
     beforeAll(async () => {
       fakePort = await findFreePort();
-      const temp = makeTempShepHome();
-      shepHome = temp.shepHome;
+      const temp = makeTempShipitAiHome();
+      shipitAiHome = temp.shipitAiHome;
       cleanup = temp.cleanup;
       runCli = createCliRunner({
-        env: { SHEP_HOME: shepHome, SHEP_SKIP_READINESS_CHECK: '1' },
+        env: { SHIPIT_AI_HOME: shipitAiHome, SHIPIT_AI_SKIP_READINESS_CHECK: '1' },
       }).run;
 
       // Spawn a harmless long-running process to act as our fake daemon
@@ -282,8 +282,8 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
         : spawn('sleep', ['60'], { detached: true, stdio: 'ignore' });
       fakeProcess.unref();
 
-      // Populate daemon.json as if `shep start` had run
-      writeDaemonJson(shepHome, fakeProcess.pid!, fakePort);
+      // Populate daemon.json as if `shipit-ai start` had run
+      writeDaemonJson(shipitAiHome, fakeProcess.pid!, fakePort);
     });
 
     afterAll(() => {
@@ -291,7 +291,7 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
       cleanup();
     });
 
-    it('shep status exits 0 and displays PID and port', () => {
+    it('shipit-ai status exits 0 and displays PID and port', () => {
       const result = runCli('status');
       expect(result.exitCode).toBe(0);
       expect(result.success).toBe(true);
@@ -300,7 +300,7 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
       expect(output).toContain(String(fakePort));
     });
 
-    it('shep start is idempotent — exits 0 and prints "already running"', () => {
+    it('shipit-ai start is idempotent — exits 0 and prints "already running"', () => {
       const result = runCli('start');
       expect(result.exitCode).toBe(0);
       expect(result.success).toBe(true);
@@ -308,17 +308,17 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
       expect(output).toMatch(/already running/);
     });
 
-    it('shep stop exits 0 and deletes daemon.json', async () => {
+    it('shipit-ai stop exits 0 and deletes daemon.json', async () => {
       const result = runCli('stop');
       expect(result.exitCode).toBe(0);
       expect(result.success).toBe(true);
 
       // daemon.json must be removed after a successful stop
-      const exists = await daemonJsonExists(shepHome);
+      const exists = await daemonJsonExists(shipitAiHome);
       expect(exists).toBe(false);
     });
 
-    it('shep status shows "not running" after stop', () => {
+    it('shipit-ai status shows "not running" after stop', () => {
       // daemon.json was deleted by the previous test — status should now reflect that
       const result = runCli('status');
       expect(result.exitCode).toBe(0);
@@ -327,10 +327,10 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
     });
   });
 
-  // ── 4. shep restart ─────────────────────────────────────────────────────
-  describe('shep restart', () => {
+  // ── 4. shipit-ai restart ────────────────────────────────────────────────
+  describe('shipit-ai restart', () => {
     describe('daemon is running', () => {
-      let shepHome: string;
+      let shipitAiHome: string;
       let cleanup: () => void;
       let runCli: ReturnType<typeof createCliRunner>['run'];
       let fakeProcess: ReturnType<typeof spawn>;
@@ -340,12 +340,12 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
       beforeAll(async () => {
         fakePort = await findFreePort();
         restartPort = await findFreePort();
-        const temp = makeTempShepHome();
-        shepHome = temp.shepHome;
+        const temp = makeTempShipitAiHome();
+        shipitAiHome = temp.shipitAiHome;
         cleanup = temp.cleanup;
         // restart = stop (up to 5s poll) + start (0.5s settle) — needs longer timeout on Windows
         runCli = createCliRunner({
-          env: { SHEP_HOME: shepHome, SHEP_SKIP_READINESS_CHECK: '1' },
+          env: { SHIPIT_AI_HOME: shipitAiHome, SHIPIT_AI_SKIP_READINESS_CHECK: '1' },
           timeout: 20_000,
         }).run;
 
@@ -353,12 +353,12 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
           ? spawn('node', ['-e', 'setTimeout(()=>{},60000)'], { stdio: 'ignore' })
           : spawn('sleep', ['60'], { detached: true, stdio: 'ignore' });
         fakeProcess.unref();
-        writeDaemonJson(shepHome, fakeProcess.pid!, fakePort);
+        writeDaemonJson(shipitAiHome, fakeProcess.pid!, fakePort);
       });
 
       afterAll(async () => {
         if (fakeProcess?.pid) killPid(fakeProcess.pid);
-        await killDaemonFromJson(shepHome);
+        await killDaemonFromJson(shipitAiHome);
         cleanup();
       });
 
@@ -369,15 +369,15 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
 
         const output = result.stdout + result.stderr;
         // stopDaemon was called and completed — prints this success message
-        expect(output).toMatch(/shep daemon stopped/i);
+        expect(output).toMatch(/shipit-ai daemon stopped/i);
         // startDaemon was invoked — output contains a localhost URL
         expect(output).toMatch(/localhost:\d+/);
       });
 
       it('daemon.json no longer belongs to the old process after restart', async () => {
-        const exists = await daemonJsonExists(shepHome);
+        const exists = await daemonJsonExists(shipitAiHome);
         if (exists) {
-          const state = await readDaemonJson(shepHome);
+          const state = await readDaemonJson(shipitAiHome);
           // New daemon.json must have a different PID than the old sleep process
           expect(state.pid).not.toBe(fakeProcess.pid);
         }
@@ -386,25 +386,25 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
     });
 
     describe('daemon is not running', () => {
-      let shepHome: string;
+      let shipitAiHome: string;
       let cleanup: () => void;
       let runCli: ReturnType<typeof createCliRunner>['run'];
       let restartPort: number;
 
       beforeAll(async () => {
         restartPort = await findFreePort();
-        const temp = makeTempShepHome();
-        shepHome = temp.shepHome;
+        const temp = makeTempShipitAiHome();
+        shipitAiHome = temp.shipitAiHome;
         cleanup = temp.cleanup;
         // restart involves startDaemon which may take longer on Windows
         runCli = createCliRunner({
-          env: { SHEP_HOME: shepHome, SHEP_SKIP_READINESS_CHECK: '1' },
+          env: { SHIPIT_AI_HOME: shipitAiHome, SHIPIT_AI_SKIP_READINESS_CHECK: '1' },
           timeout: 20_000,
         }).run;
       });
 
       afterAll(async () => {
-        await killDaemonFromJson(shepHome);
+        await killDaemonFromJson(shipitAiHome);
         cleanup();
       });
 
@@ -426,10 +426,10 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
     });
   });
 
-  // ── 5. shep upgrade with daemon ─────────────────────────────────────────
-  describe('shep upgrade with daemon', () => {
+  // ── 5. shipit-ai upgrade with daemon ────────────────────────────────────
+  describe('shipit-ai upgrade with daemon', () => {
     describe('daemon was running — npm install succeeds', () => {
-      let shepHome: string;
+      let shipitAiHome: string;
       let binDir: string;
       let cleanup: () => void;
       let runCli: ReturnType<typeof createCliRunner>['run'];
@@ -438,14 +438,14 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
 
       beforeAll(async () => {
         fakePort = await findFreePort();
-        const temp = makeTempShepHome();
-        shepHome = temp.shepHome;
-        binDir = mkdtempSync(join(tmpdir(), 'shep-e2e-bin-'));
+        const temp = makeTempShipitAiHome();
+        shipitAiHome = temp.shipitAiHome;
+        binDir = mkdtempSync(join(tmpdir(), 'shipit-ai-e2e-bin-'));
         createFakeNpmBin(binDir, '99.99.99', 0);
 
         cleanup = () => {
           try {
-            rmSync(shepHome, { recursive: true, force: true });
+            rmSync(shipitAiHome, { recursive: true, force: true });
           } catch {
             // best-effort
           }
@@ -459,8 +459,8 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
         // upgrade = version check + stop (up to 5s poll) + install + start — needs longer timeout
         runCli = createCliRunner({
           env: {
-            SHEP_HOME: shepHome,
-            SHEP_SKIP_READINESS_CHECK: '1',
+            SHIPIT_AI_HOME: shipitAiHome,
+            SHIPIT_AI_SKIP_READINESS_CHECK: '1',
             PATH: `${binDir}${isWindows ? ';' : ':'}${process.env.PATH ?? '/usr/local/bin:/usr/bin:/bin'}`,
           },
           timeout: 20_000,
@@ -470,12 +470,12 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
           ? spawn('node', ['-e', 'setTimeout(()=>{},60000)'], { stdio: 'ignore' })
           : spawn('sleep', ['60'], { detached: true, stdio: 'ignore' });
         fakeProcess.unref();
-        writeDaemonJson(shepHome, fakeProcess.pid!, fakePort);
+        writeDaemonJson(shipitAiHome, fakeProcess.pid!, fakePort);
       });
 
       afterAll(async () => {
         if (fakeProcess?.pid) killPid(fakeProcess.pid);
-        await killDaemonFromJson(shepHome);
+        await killDaemonFromJson(shipitAiHome);
         cleanup();
       });
 
@@ -493,7 +493,7 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
     });
 
     describe('daemon was running — npm install fails', () => {
-      let shepHome: string;
+      let shipitAiHome: string;
       let binDir: string;
       let cleanup: () => void;
       let runCli: ReturnType<typeof createCliRunner>['run'];
@@ -502,14 +502,14 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
 
       beforeAll(async () => {
         fakePort = await findFreePort();
-        const temp = makeTempShepHome();
-        shepHome = temp.shepHome;
-        binDir = mkdtempSync(join(tmpdir(), 'shep-e2e-bin-'));
+        const temp = makeTempShipitAiHome();
+        shipitAiHome = temp.shipitAiHome;
+        binDir = mkdtempSync(join(tmpdir(), 'shipit-ai-e2e-bin-'));
         createFakeNpmBin(binDir, '99.99.99', 1); // exits 1 — install failure
 
         cleanup = () => {
           try {
-            rmSync(shepHome, { recursive: true, force: true });
+            rmSync(shipitAiHome, { recursive: true, force: true });
           } catch {
             // best-effort
           }
@@ -523,8 +523,8 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
         // upgrade = version check + stop (up to 5s poll) + install + start — needs longer timeout
         runCli = createCliRunner({
           env: {
-            SHEP_HOME: shepHome,
-            SHEP_SKIP_READINESS_CHECK: '1',
+            SHIPIT_AI_HOME: shipitAiHome,
+            SHIPIT_AI_SKIP_READINESS_CHECK: '1',
             PATH: `${binDir}${isWindows ? ';' : ':'}${process.env.PATH ?? '/usr/local/bin:/usr/bin:/bin'}`,
           },
           timeout: 20_000,
@@ -534,12 +534,12 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
           ? spawn('node', ['-e', 'setTimeout(()=>{},60000)'], { stdio: 'ignore' })
           : spawn('sleep', ['60'], { detached: true, stdio: 'ignore' });
         fakeProcess.unref();
-        writeDaemonJson(shepHome, fakeProcess.pid!, fakePort);
+        writeDaemonJson(shipitAiHome, fakeProcess.pid!, fakePort);
       });
 
       afterAll(async () => {
         if (fakeProcess?.pid) killPid(fakeProcess.pid);
-        await killDaemonFromJson(shepHome);
+        await killDaemonFromJson(shipitAiHome);
         cleanup();
       });
 
@@ -558,20 +558,20 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
     });
 
     describe('daemon was NOT running', () => {
-      let shepHome: string;
+      let shipitAiHome: string;
       let binDir: string;
       let cleanup: () => void;
       let runCli: ReturnType<typeof createCliRunner>['run'];
 
       beforeAll(() => {
-        const temp = makeTempShepHome();
-        shepHome = temp.shepHome;
-        binDir = mkdtempSync(join(tmpdir(), 'shep-e2e-bin-'));
+        const temp = makeTempShipitAiHome();
+        shipitAiHome = temp.shipitAiHome;
+        binDir = mkdtempSync(join(tmpdir(), 'shipit-ai-e2e-bin-'));
         createFakeNpmBin(binDir, '99.99.99', 0);
 
         cleanup = () => {
           try {
-            rmSync(shepHome, { recursive: true, force: true });
+            rmSync(shipitAiHome, { recursive: true, force: true });
           } catch {
             // best-effort
           }
@@ -585,8 +585,8 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
         // upgrade = version check + install — needs longer timeout on Windows
         runCli = createCliRunner({
           env: {
-            SHEP_HOME: shepHome,
-            SHEP_SKIP_READINESS_CHECK: '1',
+            SHIPIT_AI_HOME: shipitAiHome,
+            SHIPIT_AI_SKIP_READINESS_CHECK: '1',
             PATH: `${binDir}${isWindows ? ';' : ':'}${process.env.PATH ?? '/usr/local/bin:/usr/bin:/bin'}`,
           },
           timeout: 20_000,
@@ -609,7 +609,7 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
 
       it('does not create daemon.json when none existed before upgrade', async () => {
         // No daemon was running, so no daemon should have been started
-        const exists = await daemonJsonExists(shepHome);
+        const exists = await daemonJsonExists(shipitAiHome);
         expect(exists).toBe(false);
       });
     });

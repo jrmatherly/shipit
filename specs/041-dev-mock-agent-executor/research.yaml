@@ -225,11 +225,11 @@ decisions:
     chosen: >
       Add `case 'dev':` to AgentExecutorFactory.createExecutor() switch statement and
       add 'dev' to getSupportedAgents() return array. No changes to container.ts.
-      The SHEP_MOCK_EXECUTOR=1 branch remains completely untouched.
+      The SHIPIT_AI_MOCK_EXECUTOR=1 branch remains completely untouched.
     rejected:
       - >
         Add DevAgentExecutorService to MockAgentExecutorFactory: the dev executor would
-        only be reachable when SHEP_MOCK_EXECUTOR=1, defeating its purpose as a
+        only be reachable when SHIPIT_AI_MOCK_EXECUTOR=1, defeating its purpose as a
         settings-selectable persistent type.
       - >
         Register DevAgentExecutorService directly in container.ts outside the factory
@@ -284,7 +284,7 @@ openQuestions:
         description: >
           The dev executor returns a realistic-looking string for implement
           ("Implementation complete. All tests pass.") and merge phases ("Committed as
-          feat(ui): add dark-mode-toggle\nhttps://github.com/shep-ai/shep/commit/abc123").
+          feat(ui): add dark-mode-toggle\nhttps://github.com/jrmatherly/shipit/commit/abc123").
           No actual file operations or git commands. The node log records "Complete (N chars)"
           without error. The merge output parser's regex matches the mock commit/PR URL strings.
         selected: true
@@ -498,6 +498,6 @@ content: |
      "dev" in SQLite settings. No migration needed; the existing settings schema handles
      free-form agent type strings.
 
-  7. **SHEP_MOCK_EXECUTOR=1 branch**: Unchanged. When set, container.ts registers
+  7. **SHIPIT_AI_MOCK_EXECUTOR=1 branch**: Unchanged. When set, container.ts registers
      `MockAgentExecutorFactory` which ignores agent type entirely. The dev executor is
      invisible in this test-infrastructure path, preserving all existing test behavior.

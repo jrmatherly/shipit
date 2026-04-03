@@ -1,6 +1,6 @@
 # CLI Commands Reference
 
-Quick reference for all Shep AI CLI commands. For detailed documentation, see [docs/cli/commands.md](../cli/commands.md).
+Quick reference for all Shipit AI CLI commands. For detailed documentation, see [docs/cli/commands.md](../cli/commands.md).
 
 ## Daemon Commands
 

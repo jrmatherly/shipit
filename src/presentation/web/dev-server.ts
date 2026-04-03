@@ -77,13 +77,13 @@ async function main() {
   try {
     await initializeContainer();
     // Expose the DI container on globalThis for the web UI's server-side code
-    (globalThis as Record<string, unknown>).__shepContainer = container;
+    (globalThis as Record<string, unknown>).__shipitAiContainer = container;
 
     const initSettingsUseCase = container.resolve(InitializeSettingsUseCase);
     const settings = await initSettingsUseCase.execute();
     initializeSettings(settings);
 
-    // Start notification watcher for real-time SSE events (same as shep ui)
+    // Start notification watcher for real-time SSE events (same as shipit-ai ui)
     const runRepo = container.resolve<IAgentRunRepository>('IAgentRunRepository');
     const phaseTimingRepo = container.resolve<IPhaseTimingRepository>('IPhaseTimingRepository');
     const featureRepo = container.resolve<IFeatureRepository>('IFeatureRepository');

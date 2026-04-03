@@ -261,7 +261,7 @@
 }
 
 /* ─── @cubone/react-file-manager — shadcn theme integration ─────────────── */
-.shep-file-manager {
+.shipit-ai-file-manager {
   /* Hide the left navigation pane — navigation is handled via onFileOpen */
   & .navigation-pane,
   & .sidebar-resize {

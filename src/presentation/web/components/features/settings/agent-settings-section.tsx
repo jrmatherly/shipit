@@ -15,9 +15,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { updateSettingsAction } from '@/app/actions/update-settings';
-import { AgentType, AgentAuthMethod } from '@shepai/core/domain/generated/output';
+import { AgentType, AgentAuthMethod } from '@shipit-ai/core/domain/generated/output';
 import { getAgentTypeIcon } from '@/components/common/feature-node/agent-type-icons';
-import type { AgentConfig } from '@shepai/core/domain/generated/output';
+import type { AgentConfig } from '@shipit-ai/core/domain/generated/output';
 
 const AGENT_TYPE_OPTIONS = [
   { value: AgentType.ClaudeCode, label: 'Claude Code' },

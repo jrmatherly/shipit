@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { DeploymentState } from '@shepai/core/domain/generated/output';
+import { DeploymentState } from '@shipit-ai/core/domain/generated/output';
 import { useDeployAction } from '@/hooks/use-deploy-action';
 
 // --- Server action mocks ---

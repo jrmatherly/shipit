@@ -8,7 +8,7 @@ import { layoutWithDagre } from '@/lib/layout-with-dagre';
 import { AgentEventsProvider } from '@/hooks/agent-events-provider';
 import { DrawerCloseGuardProvider } from '@/hooks/drawer-close-guard';
 import { SidebarFeaturesProvider } from '@/hooks/sidebar-features-context';
-import { DeploymentState, PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import { DeploymentState, PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 
 // eslint-disable-next-line @typescript-eslint/no-empty-function -- storybook noop callbacks
 const noop = () => {};
@@ -403,7 +403,7 @@ const archiveRepoNode: RepositoryNodeType = {
   id: 'repo-archive',
   type: 'repositoryNode',
   position: { x: 50, y: 115 },
-  data: { name: 'shep-ai/shep' },
+  data: { name: 'jrmatherly/shipit' },
 };
 
 const archivedFeatureNodes: FeatureNodeType[] = [

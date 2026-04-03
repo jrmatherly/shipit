@@ -9,7 +9,7 @@ userQuery: >
   Upgrade should to upgrade in the backend like the CLI is doing, not be a link
 summary: >
   Replace the npm link in the version badge with an in-app upgrade button
-  that executes npm i -g @shepai/cli@latest on the server via SSE streaming
+  that executes npm i -g @shipit-ai/cli@latest on the server via SSE streaming
 phase: Complete
 sizeEstimate: M
 
@@ -28,7 +28,7 @@ content: |
   ## Problem Statement
 
   Replace the npm link in the version badge with an in-app upgrade button
-  that executes npm i -g @shepai/cli@latest on the server via SSE streaming.
+  that executes npm i -g @shipit-ai/cli@latest on the server via SSE streaming.
 
   ## Success Criteria
 

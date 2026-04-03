@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.ValueObjects
+ * @module ShipitAI.Domain.ValueObjects
  *
  * Index module that re-exports all value objects from the domain layer.
  *

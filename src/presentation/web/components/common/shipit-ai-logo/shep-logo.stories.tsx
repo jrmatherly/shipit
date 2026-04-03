@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ShepLogo } from './shep-logo';
+import { ShipitAiLogo } from './shep-logo';
 
-const meta: Meta<typeof ShepLogo> = {
-  title: 'Composed/ShepLogo',
-  component: ShepLogo,
+const meta: Meta<typeof ShipitAiLogo> = {
+  title: 'Composed/ShipitAiLogo',
+  component: ShipitAiLogo,
   parameters: {
     layout: 'centered',
   },

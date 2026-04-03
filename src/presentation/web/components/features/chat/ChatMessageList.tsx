@@ -2,8 +2,8 @@
 
 import { useRef, useEffect, useState } from 'react';
 import { MessageSquare, ChevronDown, ChevronRight, Activity } from 'lucide-react';
-import type { InteractiveMessage } from '@shepai/core/domain/generated/output';
-import { InteractiveMessageRole } from '@shepai/core/domain/generated/output';
+import type { InteractiveMessage } from '@shipit-ai/core/domain/generated/output';
+import { InteractiveMessageRole } from '@shipit-ai/core/domain/generated/output';
 import { ChatMessageBubble } from './ChatMessageBubble';
 
 export interface ChatMessageListProps {

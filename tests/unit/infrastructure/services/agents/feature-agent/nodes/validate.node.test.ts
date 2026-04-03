@@ -29,7 +29,7 @@ describe('createValidateNode', () => {
   let specDir: string;
 
   beforeEach(() => {
-    tempDir = mkdtempSync(join(tmpdir(), 'shep-validate-test-'));
+    tempDir = mkdtempSync(join(tmpdir(), 'shipit-ai-validate-test-'));
     specDir = join(tempDir, 'specs', 'test');
     mkdirSync(specDir, { recursive: true });
   });

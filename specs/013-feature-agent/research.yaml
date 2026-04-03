@@ -49,7 +49,7 @@ decisions:
       Settings used ISO strings in migration v1 but AgentRun switched to INTEGER.
 
   - title: Feature Repository Pattern
-    chosen: Singleton IFeatureRepository in global DB (~/.shep/data) with repositoryPath column
+    chosen: Singleton IFeatureRepository in global DB (~/.shipit-ai/data) with repositoryPath column
     rejected:
       - Per-repo databases with IFeatureRepositoryFactory (unnecessary complexity)
       - Separate feature.db file (fragments data, complicates queries)
@@ -73,7 +73,7 @@ decisions:
   - title: Worktree Location
     chosen: .worktrees/<slug>/ in repo root
     rejected:
-      - ~/.shep/repos/<hash>/worktrees/<slug>/ (centralized)
+      - ~/.shipit-ai/repos/<hash>/worktrees/<slug>/ (centralized)
     rationale: >
       Already in production use (this project uses .worktrees/). Already in .gitignore (line 87).
       Discoverable via 'ls .worktrees/', simple path derivation, keeps worktrees close to repo.
@@ -106,7 +106,7 @@ decisions:
       - In-memory (no persistence)
     rationale: >
       Clean isolation - each feature has its own checkpoint DB at
-      ~/.shep/repos/<hash>/checkpoints/<feature-id>.db. Easy cleanup when feature deleted.
+      ~/.shipit-ai/repos/<hash>/checkpoints/<feature-id>.db. Easy cleanup when feature deleted.
       Uses featureId as LangGraph thread_id for natural 1:1 mapping.
 
   - title: Human-in-the-Loop Pattern
@@ -142,7 +142,7 @@ decisions:
       worker, receives "started" via IPC, prints success, unrefs, exits. Agent continues.
 
   - title: Feature-AgentRun Database Colocation
-    chosen: Both Feature and AgentRun in global DB (~/.shep/data)
+    chosen: Both Feature and AgentRun in global DB (~/.shipit-ai/data)
     rejected:
       - Per-repo DB for Feature (unnecessary complexity, fragments data)
     rationale: >
@@ -222,7 +222,7 @@ decisions:
 openQuestions:
   - question: 'Where to store Feature records?'
     resolved: true
-    answer: 'Global SQLite database (~/.shep/data) alongside Settings and AgentRun. repositoryPath column for per-repo filtering.'
+    answer: 'Global SQLite database (~/.shipit-ai/data) alongside Settings and AgentRun. repositoryPath column for per-repo filtering.'
   - question: 'Which library for git worktree operations?'
     resolved: true
     answer: 'Native execFile via existing injectable ExecFunction. simple-git has no worktree API, isomorphic-git has no worktree support.'
@@ -292,7 +292,7 @@ content: |
 
   ### 2. Feature Repository Pattern
 
-  **Chosen:** Singleton `IFeatureRepository` in global DB (`~/.shep/data`)
+  **Chosen:** Singleton `IFeatureRepository` in global DB (`~/.shipit-ai/data`)
 
   Features are stored in the same global SQLite database as Settings and AgentRun.
   The `repositoryPath` column enables per-repo filtering. Simple singleton registered in DI,
@@ -354,7 +354,7 @@ content: |
   - `--allow-plan`: auto-accept requirements + research + plan, interrupt implement
   - `--allow-all`: fully autonomous, no interrupts
 
-  **Checkpointing:** SQLite per-feature at `~/.shep/repos/<hash>/checkpoints/<feature-id>.db`.
+  **Checkpointing:** SQLite per-feature at `~/.shipit-ai/repos/<hash>/checkpoints/<feature-id>.db`.
   Thread ID = featureId (UUID). Enables resume from last completed node.
 
   **Error handling:** Conditional edges with retry counter (max 3). Each node checks completion
@@ -409,7 +409,7 @@ content: |
   - Graceful stop: SIGTERM -> wait 5s -> SIGKILL
   - Crash detection: PID dead + status="running" -> mark "interrupted"
 
-  **Logging:** File-based at `~/.shep/logs/<feature-slug>/agent.log`
+  **Logging:** File-based at `~/.shipit-ai/logs/<feature-slug>/agent.log`
 
   **Feature <-> AgentRun link:** Same global DB. featureId on AgentRun, agentRunId on Feature.
 
@@ -428,7 +428,7 @@ content: |
 
   ## Security Considerations
 
-  - **Database permissions**: Global database directory (~/.shep/) created with 0700 (owner-only), matching existing pattern
+  - **Database permissions**: Global database directory (~/.shipit-ai/) created with 0700 (owner-only), matching existing pattern
   - **Background process**: Fork inherits parent environment. Sensitive env vars (API tokens) are needed by the agent
   - **PID tracking**: Only process owner can send signals (no privilege escalation risk)
   - **SQLite WAL mode**: Safe for concurrent reader (CLI) + writer (agent) pattern

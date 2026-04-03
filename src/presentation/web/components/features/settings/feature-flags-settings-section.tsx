@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { updateSettingsAction } from '@/app/actions/update-settings';
-import type { FeatureFlags } from '@shepai/core/domain/generated/output';
+import type { FeatureFlags } from '@shipit-ai/core/domain/generated/output';
 
 const FLAG_DESCRIPTIONS: Record<keyof FeatureFlags, string> = {
   skills: 'Enable Skills navigation and functionality in the web UI',

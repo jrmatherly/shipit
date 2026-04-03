@@ -1,6 +1,6 @@
 # Web UI Documentation
 
-Documentation for the Shep AI web interface built with Next.js 16, React 19, and Tailwind CSS v4.
+Documentation for the Shipit AI web interface built with Next.js 16, React 19, and Tailwind CSS v4.
 
 ## Quick Links
 
@@ -26,7 +26,7 @@ Documentation for the Shep AI web interface built with Next.js 16, React 19, and
 
 The web UI is a separate pnpm workspace package:
 
-- **Package**: `@shepai/web`
+- **Package**: `@shipit-ai/web`
 - **Location**: `src/presentation/web/`
 - **Commands**:
   ```bash

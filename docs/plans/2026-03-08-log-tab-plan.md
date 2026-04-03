@@ -23,7 +23,7 @@
  * SSE API Route: GET /api/feature-logs
  *
  * Streams agent execution log file to the client via Server-Sent Events.
- * Reads the log file from ~/.shep/logs/worker-{agentRunId}.log,
+ * Reads the log file from ~/.shipit-ai/logs/worker-{agentRunId}.log,
  * sends existing content, then watches for new lines via fs.watch().
  *
  * - Accepts ?featureId query parameter (required)
@@ -33,7 +33,7 @@
  */
 
 import { resolve } from '@/lib/server-container';
-import type { IFeatureRepository } from '@shepai/core/application/ports/output/repositories/feature-repository.interface';
+import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
 import { existsSync, statSync, readFileSync, watch, openSync, readSync, closeSync } from 'node:fs';
 import { join } from 'node:path';
 import { homedir } from 'node:os';

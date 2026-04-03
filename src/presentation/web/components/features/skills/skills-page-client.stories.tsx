@@ -48,7 +48,7 @@ const sampleSkills: SkillData[] = [
     resources: [],
   },
   {
-    name: 'shep:ui-component',
+    name: 'shipit-ai:ui-component',
     displayName: 'ui-component',
     description: 'Use when creating, modifying, or reviewing web UI components.',
     context: 'fork',

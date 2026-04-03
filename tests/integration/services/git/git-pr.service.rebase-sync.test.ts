@@ -39,8 +39,8 @@ function git(cwd: string, args: string[]): Promise<{ stdout: string; stderr: str
 
 /** Configure git user in a repo (required for commits) */
 async function configureGitUser(cwd: string): Promise<void> {
-  await git(cwd, ['config', 'user.email', 'test@shep.test']);
-  await git(cwd, ['config', 'user.name', 'Shep Test']);
+  await git(cwd, ['config', 'user.email', 'test@shipit-ai.test']);
+  await git(cwd, ['config', 'user.name', 'Shipit AI Test']);
 }
 
 /**
@@ -57,10 +57,10 @@ async function createHarness(): Promise<{
   cloneDir: string;
   featureBranch: string;
 }> {
-  const bareDir = mkdtempSync(join(tmpdir(), 'shep-rebase-bare-'));
+  const bareDir = mkdtempSync(join(tmpdir(), 'shipit-ai-rebase-bare-'));
   await git(bareDir, ['init', '--bare']);
 
-  const cloneDir = mkdtempSync(join(tmpdir(), 'shep-rebase-clone-'));
+  const cloneDir = mkdtempSync(join(tmpdir(), 'shipit-ai-rebase-clone-'));
   await realExec('git', ['clone', bareDir, cloneDir], {});
   await configureGitUser(cloneDir);
 
@@ -92,7 +92,7 @@ async function addUpstreamCommit(
   content: string,
   message: string
 ): Promise<void> {
-  const tmpClone = mkdtempSync(join(tmpdir(), 'shep-rebase-upstream-'));
+  const tmpClone = mkdtempSync(join(tmpdir(), 'shipit-ai-rebase-upstream-'));
   try {
     await realExec('git', ['clone', bareDir, tmpClone], {});
     await configureGitUser(tmpClone);

@@ -119,10 +119,10 @@
 
 **GREEN (Write Minimal Code to Pass Tests):**
 
-- [x] Create src/infrastructure/services/filesystem/shep-directory.service.ts for ~/.shep/ directory initialization
+- [x] Create src/infrastructure/services/filesystem/shep-directory.service.ts for ~/.shipit-ai/ directory initialization
 - [x] Implement shep-directory service: ensureShepDirectory() with 700 permissions, graceful error handling
 - [x] Create src/infrastructure/persistence/sqlite/connection.ts with getSQLiteConnection() singleton
-- [x] Implement SQLite connection: better-sqlite3 to ~/.shep/data with pragmas (WAL, NORMAL, foreign_keys, defensive)
+- [x] Implement SQLite connection: better-sqlite3 to ~/.shipit-ai/data with pragmas (WAL, NORMAL, foreign_keys, defensive)
 - [x] Create src/infrastructure/persistence/sqlite/migrations.ts with runSQLiteMigrations() function
 - [x] Implement manual migration system (replaced @blackglory/better-sqlite3-migrations)
 - [x] Create src/infrastructure/persistence/sqlite/migrations/001_create_settings_table.sql
@@ -173,7 +173,7 @@
 **RED (Write Failing Tests First):** ✅
 
 - [x] Create tests/e2e/cli/settings-initialization.test.ts (use temp directory)
-- [x] Write test: first run creates ~/.shep/ directory
+- [x] Write test: first run creates ~/.shipit-ai/ directory
 - [x] Write test: first run creates database file
 - [x] Write test: first run initializes settings with defaults
 - [x] Write test: second run loads existing settings (doesn't re-initialize)

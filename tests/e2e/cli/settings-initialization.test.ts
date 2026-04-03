@@ -2,7 +2,7 @@
  * CLI Settings Initialization E2E Tests
  *
  * Tests for automatic settings initialization when CLI starts.
- * Uses SHEP_HOME env var to isolate each test from real ~/.shep/ directory.
+ * Uses SHIPIT_AI_HOME env var to isolate each test from real ~/.shipit-ai/ directory.
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
@@ -12,23 +12,23 @@ import { join } from 'node:path';
 import { createCliRunner } from '../../helpers/cli/index.js';
 
 describe('CLI: settings initialization', () => {
-  let shepDir: string;
+  let shipitAiDir: string;
   let dbPath: string;
 
   beforeEach(() => {
-    shepDir = mkdtempSync(join(tmpdir(), 'shep-init-test-'));
-    dbPath = join(shepDir, 'data');
+    shipitAiDir = mkdtempSync(join(tmpdir(), 'shipit-ai-init-test-'));
+    dbPath = join(shipitAiDir, 'data');
   });
 
   afterEach(() => {
-    if (existsSync(shepDir)) {
-      rmSync(shepDir, { recursive: true, force: true });
+    if (existsSync(shipitAiDir)) {
+      rmSync(shipitAiDir, { recursive: true, force: true });
     }
   });
 
   it('should create non-empty database file on first run', () => {
     const runner = createCliRunner({
-      env: { SHEP_HOME: shepDir },
+      env: { SHIPIT_AI_HOME: shipitAiDir },
       timeout: 15000,
     });
 
@@ -42,7 +42,7 @@ describe('CLI: settings initialization', () => {
 
   it('should load existing settings without re-initializing on second run', () => {
     const runner = createCliRunner({
-      env: { SHEP_HOME: shepDir },
+      env: { SHIPIT_AI_HOME: shipitAiDir },
       timeout: 15000,
     });
 
@@ -66,7 +66,7 @@ describe('CLI: settings initialization', () => {
     writeFileSync(dbPath, 'CORRUPTED_DATA_NOT_SQLITE');
 
     const runner = createCliRunner({
-      env: { SHEP_HOME: shepDir },
+      env: { SHIPIT_AI_HOME: shipitAiDir },
       timeout: 15000,
     });
 
@@ -84,11 +84,11 @@ describe('CLI: settings initialization', () => {
   });
 
   it('should handle missing database with existing directory', () => {
-    expect(existsSync(shepDir)).toBe(true);
+    expect(existsSync(shipitAiDir)).toBe(true);
     expect(existsSync(dbPath)).toBe(false);
 
     const runner = createCliRunner({
-      env: { SHEP_HOME: shepDir },
+      env: { SHIPIT_AI_HOME: shipitAiDir },
       timeout: 15000,
     });
 
@@ -100,7 +100,7 @@ describe('CLI: settings initialization', () => {
 
   it('should handle multiple concurrent CLI invocations safely', async () => {
     const runner = createCliRunner({
-      env: { SHEP_HOME: shepDir },
+      env: { SHIPIT_AI_HOME: shipitAiDir },
       timeout: 15000,
     });
 
@@ -119,9 +119,9 @@ describe('CLI: settings initialization', () => {
     expect(existsSync(dbPath)).toBe(true);
   }, 60_000);
 
-  it('should use SHEP_HOME environment variable for settings location', () => {
+  it('should use SHIPIT_AI_HOME environment variable for settings location', () => {
     const runner = createCliRunner({
-      env: { SHEP_HOME: shepDir },
+      env: { SHIPIT_AI_HOME: shipitAiDir },
       timeout: 15000,
     });
 

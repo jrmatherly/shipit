@@ -1,12 +1,12 @@
 import { cn } from '@/lib/utils';
 
-export interface ShepLogoProps {
+export interface ShipitAiLogoProps {
   className?: string;
   size?: number;
   variant?: 'default' | 'dev';
 }
 
-export function ShepLogo({ className, size = 24, variant = 'default' }: ShepLogoProps) {
+export function ShipitAiLogo({ className, size = 24, variant = 'default' }: ShipitAiLogoProps) {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"

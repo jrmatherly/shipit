@@ -1,9 +1,9 @@
 /**
- * @module Shep.Domain.Entities.ActionItem
+ * @module ShipitAI.Domain.Entities.ActionItem
  *
  * Defines the ActionItem entity representing granular, atomic units of work
  * within a Task. Action items are the smallest trackable work units in the
- * Shep AI SDLC platform.
+ * Shipit AI SDLC platform.
  *
  * ## Entity Relationships
  *

@@ -1,7 +1,7 @@
 /**
  * Settings Init Command E2E Tests
  *
- * Tests for the `shep settings init` command with confirmation prompts.
+ * Tests for the `shipit-ai settings init` command with confirmation prompts.
  */
 
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';

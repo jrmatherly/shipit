@@ -264,14 +264,14 @@ tasks:
     acceptanceCriteria:
       - 'load-settings.ts exports loadSettings() with use server directive'
       - 'load-settings.ts uses resolve() to get LoadSettingsUseCase'
-      - 'load-settings.ts returns settings object plus shepHome path and dbFileSize'
+      - 'load-settings.ts returns settings object plus shipitAiHome path and dbFileSize'
       - 'update-settings.ts exports updateSettings() with use server directive'
       - 'update-settings.ts loads current settings, deep-merges partial payload, persists, and updates singleton'
       - 'update-settings.ts returns { success: boolean, error?: string }'
       - 'update-settings.ts calls revalidatePath on /settings after success'
     tdd:
       red:
-        - 'Write unit test: loadSettings() returns settings with shepHome and dbFileSize fields'
+        - 'Write unit test: loadSettings() returns settings with shipitAiHome and dbFileSize fields'
         - 'Write unit test: updateSettings() merges partial payload into current settings'
         - 'Write unit test: updateSettings() returns error on failure'
       green:
@@ -326,7 +326,7 @@ tasks:
     description: >
       Create src/presentation/web/app/settings/page.tsx as a Server Component
       following the tools/page.tsx pattern. It resolves LoadSettingsUseCase,
-      fetches current settings, gets SHEP_HOME path and DB file size, and
+      fetches current settings, gets SHIPIT_AI_HOME path and DB file size, and
       passes all data to SettingsPageClient.
     state: Todo
     dependencies:
@@ -334,8 +334,8 @@ tasks:
     acceptanceCriteria:
       - 'page.tsx is an async Server Component with export const dynamic = force-dynamic'
       - 'Resolves LoadSettingsUseCase via resolve() from server-container'
-      - 'Fetches SHEP_HOME path and database file size server-side'
-      - 'Renders SettingsPageClient with settings, shepHome, and dbFileSize props'
+      - 'Fetches SHIPIT_AI_HOME path and database file size server-side'
+      - 'Renders SettingsPageClient with settings, shipitAiHome, and dbFileSize props'
       - 'Page is accessible at /settings route'
     tdd:
       red:
@@ -547,21 +547,21 @@ tasks:
     title: 'Create DatabaseSettingsSection component with stories and tests'
     description: >
       Build the Database Location section as a read-only Card. Displays the
-      SHEP_HOME directory path and the SQLite database file size in
+      SHIPIT_AI_HOME directory path and the SQLite database file size in
       human-readable format. No Save button (FR-23).
     state: Todo
     dependencies:
       - task-12
     acceptanceCriteria:
       - 'Card with title "Database Location" and descriptive subtitle'
-      - 'Displays SHEP_HOME path as read-only text'
+      - 'Displays SHIPIT_AI_HOME path as read-only text'
       - 'Displays database file size in human-readable format (e.g. 2.4 MB)'
       - 'No Save button on this section'
       - 'Colocated .stories.tsx with Default and LargeDatabase stories'
       - 'Unit tests for rendering path and file size'
     tdd:
       red:
-        - 'Write test: renders SHEP_HOME path text'
+        - 'Write test: renders SHIPIT_AI_HOME path text'
         - 'Write test: renders database file size text'
         - 'Write test: does not render a Save button'
       green:

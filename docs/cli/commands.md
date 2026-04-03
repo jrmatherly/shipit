@@ -372,7 +372,7 @@ Display detailed version information.
 ```
 $ shep version
 
-@shepai/cli v0.1.0
+@shipit-ai/cli v0.1.0
 Autonomous AI Native SDLC Platform
 
 Node:     v20.10.0

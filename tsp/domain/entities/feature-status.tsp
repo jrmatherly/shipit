@@ -1,5 +1,5 @@
 /**
- * @module Shep.Domain.Entities.FeatureStatus
+ * @module ShipitAI.Domain.Entities.FeatureStatus
  *
  * Defines the FeatureStatus entity representing the feature.yaml status artifact.
  * This tracks execution state, validation gates, task progress, and checkpoints

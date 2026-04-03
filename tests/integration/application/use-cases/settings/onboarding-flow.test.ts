@@ -56,7 +56,7 @@ describe('Onboarding flow (integration)', () => {
   });
 
   it('should report onboarding incomplete on a fresh database', async () => {
-    // Initialize settings (simulates first CLI bootstrap on fresh SHEP_HOME)
+    // Initialize settings (simulates first CLI bootstrap on fresh SHIPIT_AI_HOME)
     const initUseCase = new InitializeSettingsUseCase(repository);
     const settings = await initUseCase.execute();
     initializeSettings(settings);

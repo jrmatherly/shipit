@@ -2,7 +2,7 @@
  * startDaemon() Helper Unit Tests
  *
  * Tests for the shared daemon-spawn helper used by both the default
- * `shep` action and `shep start`.
+ * `shipit-ai` action and `shipit-ai start`.
  *
  * TDD Phase: RED
  */
@@ -82,8 +82,8 @@ vi.mock('node:fs', async (importOriginal) => {
   };
 });
 
-vi.mock('@/infrastructure/services/filesystem/shep-directory.service.js', () => ({
-  getDaemonLogPath: vi.fn().mockReturnValue('/tmp/test-shep/daemon.log'),
+vi.mock('@/infrastructure/services/filesystem/shipit-ai-directory.service.js', () => ({
+  getDaemonLogPath: vi.fn().mockReturnValue('/tmp/test-shipit-ai/daemon.log'),
 }));
 
 // Global mock child — reassigned per test in beforeEach
@@ -149,7 +149,7 @@ import { BrowserOpenerService } from '@/infrastructure/services/browser-opener.s
 import { startDaemon } from '../../../../src/presentation/cli/commands/daemon/start-daemon.js';
 
 describe('startDaemon()', () => {
-  const originalEnv = process.env.SHEP_SKIP_READINESS_CHECK;
+  const originalEnv = process.env.SHIPIT_AI_SKIP_READINESS_CHECK;
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -161,14 +161,14 @@ describe('startDaemon()', () => {
     (findAvailablePort as ReturnType<typeof vi.fn>).mockResolvedValue(4050);
 
     // Skip readiness check in unit tests (avoids http.get calls)
-    process.env.SHEP_SKIP_READINESS_CHECK = '1';
+    process.env.SHIPIT_AI_SKIP_READINESS_CHECK = '1';
   });
 
   afterEach(() => {
     if (originalEnv === undefined) {
-      delete process.env.SHEP_SKIP_READINESS_CHECK;
+      delete process.env.SHIPIT_AI_SKIP_READINESS_CHECK;
     } else {
-      process.env.SHEP_SKIP_READINESS_CHECK = originalEnv;
+      process.env.SHIPIT_AI_SKIP_READINESS_CHECK = originalEnv;
     }
   });
 
@@ -251,7 +251,7 @@ describe('startDaemon()', () => {
 
     it('opens the log file for appending', async () => {
       await startDaemon();
-      expect(mockOpenSync).toHaveBeenCalledWith('/tmp/test-shep/daemon.log', 'a', 0o600);
+      expect(mockOpenSync).toHaveBeenCalledWith('/tmp/test-shipit-ai/daemon.log', 'a', 0o600);
     });
 
     it('calls child.unref() after the settle check', async () => {

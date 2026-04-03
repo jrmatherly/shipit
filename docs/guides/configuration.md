@@ -1,12 +1,12 @@
 # Configuration
 
-Comprehensive guide to configuring Shep AI CLI.
+Comprehensive guide to configuring Shipit AI CLI.
 
 ## Configuration Files
 
 ### Global Configuration
 
-Stored in `~/.shep/data` (SQLite database, singleton record). Settings include models, user profile, environment, and system configuration. Access via `getSettings()` singleton service or `shep settings show`.
+Stored in `~/.shipit-ai/data` (SQLite database, singleton record). Settings include models, user profile, environment, and system configuration. Access via `getSettings()` singleton service or `shep settings show`.
 
 Default web UI port is **4050**.
 
@@ -44,7 +44,7 @@ shep settings
 shep settings agent
 ```
 
-The selected agent type and its authentication are persisted in `~/.shep/data` (SQLite).
+The selected agent type and its authentication are persisted in `~/.shipit-ai/data` (SQLite).
 
 #### Session-Based
 
@@ -58,10 +58,10 @@ For providers that require API keys, the settings wizard prompts for the token d
 
 ### Port Configuration
 
-Default port is 4050. The port can be overridden via the `SHEP_PORT` environment variable:
+Default port is 4050. The port can be overridden via the `SHIPIT_AI_PORT` environment variable:
 
 ```bash
-SHEP_PORT=8080 shep
+SHIPIT_AI_PORT=8080 shep
 ```
 
 ## Analysis Settings
@@ -154,7 +154,7 @@ shep settings agent --agent claude-code
 | Aider       | —        | Coming Soon |
 | Continue    | —        | Coming Soon |
 
-The selected agent type is persisted in `~/.shep/data` (SQLite) and used by all subsequent commands. When you run `shep feat new`, the configured agent is resolved via `AgentExecutorFactory` — no command or component guesses or defaults the agent type.
+The selected agent type is persisted in `~/.shipit-ai/data` (SQLite) and used by all subsequent commands. When you run `shep feat new`, the configured agent is resolved via `AgentExecutorFactory` — no command or component guesses or defaults the agent type.
 
 ### Concurrency
 
@@ -259,17 +259,17 @@ Override configuration with environment variables:
 
 | Variable            | Config Path     | Description                                         |
 | ------------------- | --------------- | --------------------------------------------------- |
-| `SHEP_PORT`         | `server.port`   | Server port                                         |
-| `SHEP_HOST`         | `server.host`   | Server host                                         |
-| `SHEP_API_KEY`      | `auth.token`    | Claude API key                                      |
-| `SHEP_LOG_LEVEL`    | `logging.level` | Log verbosity                                       |
+| `SHIPIT_AI_PORT`         | `server.port`   | Server port                                         |
+| `SHIPIT_AI_HOST`         | `server.host`   | Server host                                         |
+| `SHIPIT_AI_API_KEY`      | `auth.token`    | Claude API key                                      |
+| `SHIPIT_AI_LOG_LEVEL`    | `logging.level` | Log verbosity                                       |
 | `DEBUG`             | —               | Enable server-side debug logging (deployment, etc.) |
 | `NEXT_PUBLIC_DEBUG` | —               | Enable web UI client-side debug logging             |
 
 Example:
 
 ```bash
-SHEP_PORT=8080 shep
+SHIPIT_AI_PORT=8080 shep
 ```
 
 Environment variables take precedence over config files.
@@ -281,7 +281,7 @@ Configuration is resolved in this order (highest to lowest):
 1. Command line arguments
 2. Environment variables
 3. Repository `.shep/config.json`
-4. Global `~/.shep/data` (SQLite settings)
+4. Global `~/.shipit-ai/data` (SQLite settings)
 5. Built-in defaults
 
 ## Example Configurations

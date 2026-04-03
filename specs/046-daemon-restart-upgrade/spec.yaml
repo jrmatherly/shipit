@@ -125,7 +125,7 @@ openQuestions:
 content: |
   ## Problem Statement
 
-  The `shep upgrade` command runs `npm install -g @shepai/cli@latest` and exits. If the daemon is running
+  The `shep upgrade` command runs `npm install -g @shipit-ai/cli@latest` and exits. If the daemon is running
   at that point, a stale process continues on the old binary. The new binary only takes effect the next
   time the daemon is manually restarted, which is a footgun for users who expect the fresh version to be
   active immediately after `shep upgrade`.

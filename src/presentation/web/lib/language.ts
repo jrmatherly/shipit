@@ -5,8 +5,8 @@
  * and determines the text direction (LTR/RTL).
  */
 
-import { hasSettings, getSettings } from '@shepai/core/infrastructure/services/settings.service';
-import { Language } from '@shepai/core/domain/generated/output';
+import { hasSettings, getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import { Language } from '@shipit-ai/core/domain/generated/output';
 
 const RTL_LANGUAGES: ReadonlySet<string> = new Set([Language.Arabic, Language.Hebrew]);
 const DEFAULT_LANGUAGE = Language.English;

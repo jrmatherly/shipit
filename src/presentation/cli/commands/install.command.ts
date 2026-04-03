@@ -4,8 +4,8 @@
  * Installs a development tool (IDE or CLI agent) on the system.
  *
  * Usage:
- *   shep install <tool>           Install a tool
- *   shep install <tool> --how     Show installation instructions without executing
+ *   shipit-ai install <tool>           Install a tool
+ *   shipit-ai install <tool> --how     Show installation instructions without executing
  *
  * Available tools are loaded dynamically from JSON files in the tools/ directory.
  */
@@ -51,7 +51,7 @@ export function createInstallCommand(): Command {
         if (!tool) {
           console.log();
           console.log(
-            t('cli:commands.install.runWithTool', { command: fmt.code('shep install <tool>') })
+            t('cli:commands.install.runWithTool', { command: fmt.code('shipit-ai install <tool>') })
           );
           console.log();
           printToolsList();

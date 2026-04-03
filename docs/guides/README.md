@@ -1,6 +1,6 @@
 # User Guides
 
-Guides for using Shep AI CLI effectively.
+Guides for using Shipit AI CLI effectively.
 
 ## Contents
 
@@ -16,7 +16,7 @@ Guides for using Shep AI CLI effectively.
 
 ```bash
 # Install globally
-npm install -g @shepai/cli
+npm install -g @shipit-ai/cli
 
 # Navigate to your project
 cd ~/projects/my-app

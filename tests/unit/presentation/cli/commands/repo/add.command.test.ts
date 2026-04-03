@@ -1,7 +1,7 @@
 /**
  * Repo Add Command Unit Tests
  *
- * Tests for the `shep repo add` CLI command.
+ * Tests for the `shipit-ai repo add` CLI command.
  *
  * TDD Phase: RED -> GREEN
  */

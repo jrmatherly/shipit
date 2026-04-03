@@ -172,7 +172,7 @@
 
 ### 2. File System Security
 
-- **Restrict ~/.shep/ permissions**: Set appropriate file permissions (600 for database file)
+- **Restrict ~/.shipit-ai/ permissions**: Set appropriate file permissions (600 for database file)
 - **User-scoped only**: Database location in user home directory prevents cross-user access
 - **No network exposure**: SQLite is local-only, no network attack surface
 
@@ -204,7 +204,7 @@
 
 ### 1. Startup Performance
 
-- **First run initialization**: Creating ~/.shep/ directory and database takes ~10-50ms
+- **First run initialization**: Creating ~/.shipit-ai/ directory and database takes ~10-50ms
 - **Subsequent loads**: Loading settings from SQLite takes ~1-2ms with prepared statements
 - **Impact**: Negligible - CLI startup already includes Node.js VM init (~100ms+)
 

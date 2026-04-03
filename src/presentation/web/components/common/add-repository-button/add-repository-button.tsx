@@ -10,7 +10,7 @@ import { GitHubImportDialog } from '@/components/common/github-import-dialog';
 import { useFeatureFlags } from '@/hooks/feature-flags-context';
 import { ReactFileManagerDialog } from '@/components/common/react-file-manager-dialog';
 import { pickFolder } from './pick-folder';
-import type { Repository } from '@shepai/core/domain/generated/output';
+import type { Repository } from '@shipit-ai/core/domain/generated/output';
 
 export interface AddRepositoryButtonProps {
   onSelect?: (path: string) => void;

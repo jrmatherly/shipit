@@ -4,7 +4,7 @@ export interface RepositoryNodeData {
   [key: string]: unknown;
   /** Repository domain entity ID (UUID), used for delete operations */
   id?: string;
-  /** Repository name, e.g. "shep-ai/shep" */
+  /** Repository name, e.g. "jrmatherly/shipit" */
   name: string;
   /** Absolute path to the repository root, used for IDE/shell actions */
   repositoryPath?: string;

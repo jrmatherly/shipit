@@ -144,7 +144,7 @@ openQuestions:
         description: >
           Import and resolve RejectAgentRunUseCase class directly. This would
           bypass the string-token pattern but may fail with Turbopack inability to
-          resolve .js to .ts imports in @shepai/core (the reason string tokens exist).
+          resolve .js to .ts imports in @shipit-ai/core (the reason string tokens exist).
         selected: false
       - option: 'Create a unified approval/rejection server action'
         description: >

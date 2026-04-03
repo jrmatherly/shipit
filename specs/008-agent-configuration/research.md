@@ -150,10 +150,10 @@ No additional dependencies beyond `@inquirer/prompts` (which bundles select, con
 
 ## Security Considerations
 
-- **Token storage:** API tokens will be stored as plaintext in SQLite settings DB (`~/.shep/data`). The database file already has 0700 permissions on `~/.shep/` directory. For v1, this matches how other CLI tools store tokens (e.g., npm, gh). Future enhancement: consider OS keychain integration (macOS Keychain, libsecret on Linux) similar to Claude Code's own approach.
+- **Token storage:** API tokens will be stored as plaintext in SQLite settings DB (`~/.shipit-ai/data`). The database file already has 0700 permissions on `~/.shipit-ai/` directory. For v1, this matches how other CLI tools store tokens (e.g., npm, gh). Future enhancement: consider OS keychain integration (macOS Keychain, libsecret on Linux) similar to Claude Code's own approach.
 - **Token in memory:** Token is read into memory via `getSettings()` singleton. Ensure it's not logged or included in error reports.
 - **Token input masking:** Use `@inquirer/password` for token entry in the wizard to prevent shoulder surfing.
-- **No token in git:** Settings DB is in `~/.shep/data` (outside repo), so tokens can never be accidentally committed.
+- **No token in git:** Settings DB is in `~/.shipit-ai/data` (outside repo), so tokens can never be accidentally committed.
 - **Environment variable passthrough:** When invoking Claude Code with token-based auth, set `ANTHROPIC_API_KEY` via process environment (not command-line arg) to avoid token exposure in process listings.
 
 ## Performance Implications

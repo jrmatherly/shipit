@@ -1608,7 +1608,7 @@ class App {
         children: {
           'shep-ai-cli': {
             type: 'repo',
-            fullName: 'shep-ai/shep',
+            fullName: 'jrmatherly/shipit',
             path: '/Users/developer/workspaces/shep-ai-cli',
           },
           'platform-api': {

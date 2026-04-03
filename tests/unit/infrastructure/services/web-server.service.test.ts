@@ -174,7 +174,7 @@ describe('WebServerService', () => {
       process.cwd = vi.fn().mockReturnValue('/Users/dev/project');
       const chdirSpy = vi.spyOn(process, 'chdir').mockImplementation(() => undefined);
 
-      await service.start(4050, '/opt/shep/web');
+      await service.start(4050, '/opt/shipit-ai/web');
 
       expect(chdirSpy).not.toHaveBeenCalled();
       chdirSpy.mockRestore();

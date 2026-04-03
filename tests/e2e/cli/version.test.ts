@@ -1,7 +1,7 @@
 /**
  * CLI Version Command E2E Tests
  *
- * Tests for the `shep version` command and `shep --version` flag.
+ * Tests for the `shipit-ai version` command and `shipit-ai --version` flag.
  * Verifies correct output format and content.
  */
 
@@ -20,7 +20,7 @@ describe('CLI: version', () => {
 
     expect(result.success).toBe(true);
     expect(result.exitCode).toBe(0);
-    expect(result.stdout).toContain('@shepai/cli');
+    expect(result.stdout).toContain('@shipit-ai/cli');
     expect(result.stdout).toMatch(/v\d+\.\d+\.\d+/);
     expect(result.stdout).toContain('Autonomous AI Native SDLC Platform');
     expect(result.stdout).toContain('Node:');

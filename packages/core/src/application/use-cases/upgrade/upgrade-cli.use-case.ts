@@ -1,13 +1,13 @@
 /**
  * UpgradeCliUseCase
  *
- * Executes a self-upgrade of @shepai/cli to the latest published version.
+ * Executes a self-upgrade of @shipit-ai/cli to the latest published version.
  * Mirrors the CLI upgrade command logic but designed for use from the web layer.
  *
  * Flow:
  *   1. Check latest version from npm registry (fail-open)
  *   2. Compare with current version — return early if up to date
- *   3. Run `npm i -g @shepai/cli@latest` with streamed output
+ *   3. Run `npm i -g @shipit-ai/cli@latest` with streamed output
  *   4. Return result with old/new version info
  */
 
@@ -76,7 +76,7 @@ export class UpgradeCliUseCase {
       let output = '';
       let settled = false;
 
-      const child: ChildProcess = spawn('npm', ['view', '@shepai/cli', 'version'], {
+      const child: ChildProcess = spawn('npm', ['view', '@shipit-ai/cli', 'version'], {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 
@@ -129,7 +129,7 @@ export class UpgradeCliUseCase {
     await this.daemonService.delete();
 
     // Spawn new daemon process using the upgraded CLI binary.
-    // Use process.argv[1] which points to the shep CLI entry point —
+    // Use process.argv[1] which points to the shipit-ai CLI entry point —
     // after npm install this resolves to the upgraded version on disk.
     const child = spawn(
       process.execPath,
@@ -150,7 +150,7 @@ export class UpgradeCliUseCase {
 
   private runNpmInstall(onOutput?: (data: string) => void): Promise<number> {
     return new Promise((resolve, reject) => {
-      const child = spawn('npm', ['i', '-g', '@shepai/cli@latest'], {
+      const child = spawn('npm', ['i', '-g', '@shipit-ai/cli@latest'], {
         stdio: ['ignore', 'pipe', 'pipe'],
       });
 

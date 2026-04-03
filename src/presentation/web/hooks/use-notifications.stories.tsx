@@ -5,7 +5,7 @@ import { Toaster } from '@/components/ui/sonner';
 import { Button } from '@/components/ui/button';
 import { useSound } from './use-sound';
 
-/** Mirrors NotificationSeverity enum values (inlined to avoid @shepai/core import in Storybook). */
+/** Mirrors NotificationSeverity enum values (inlined to avoid @shipit-ai/core import in Storybook). */
 type Severity = 'info' | 'warning' | 'success' | 'error';
 
 const SEVERITY_SOUNDS: Record<Severity, string> = {

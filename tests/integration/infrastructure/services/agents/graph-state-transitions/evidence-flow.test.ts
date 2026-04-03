@@ -38,14 +38,14 @@ const CANNED_EVIDENCE_JSON = JSON.stringify([
     type: EvidenceType.Screenshot,
     capturedAt: '2026-03-09T12:00:00Z',
     description: 'Homepage with new feature',
-    relativePath: '.shep/evidence/homepage.png',
+    relativePath: '.shipit-ai/evidence/homepage.png',
     taskRef: 'task-1',
   },
   {
     type: EvidenceType.TestOutput,
     capturedAt: '2026-03-09T12:01:00Z',
     description: 'Unit tests passing',
-    relativePath: '.shep/evidence/test-output.txt',
+    relativePath: '.shipit-ai/evidence/test-output.txt',
   },
 ]);
 
@@ -122,13 +122,13 @@ describe('Graph State Transitions › Evidence Flow (with merge)', () => {
         expect.objectContaining({
           type: EvidenceType.Screenshot,
           description: 'Homepage with new feature',
-          relativePath: '.shep/evidence/homepage.png',
+          relativePath: '.shipit-ai/evidence/homepage.png',
           taskRef: 'task-1',
         }),
         expect.objectContaining({
           type: EvidenceType.TestOutput,
           description: 'Unit tests passing',
-          relativePath: '.shep/evidence/test-output.txt',
+          relativePath: '.shipit-ai/evidence/test-output.txt',
         }),
       ])
     );
@@ -180,7 +180,7 @@ describe('Graph State Transitions › Evidence Flow (with merge)', () => {
     const lastMergePrompt = mergePrompts[mergePrompts.length - 1];
     expect(lastMergePrompt).toContain('Evidence');
     expect(lastMergePrompt).toContain('Homepage with new feature');
-    expect(lastMergePrompt).toContain('.shep/evidence/homepage.png');
+    expect(lastMergePrompt).toContain('.shipit-ai/evidence/homepage.png');
   });
 
   it('should run to completion when all gates enabled (with evidence)', async () => {
@@ -376,7 +376,7 @@ describe('Graph State Transitions › Evidence Validation Retry Loop', () => {
    */
   it('should retry evidence collection when validation fails and succeed on second attempt', async () => {
     // Create a real evidence file in the temp directory for the second attempt
-    const evidenceDir = join(ctx.tempDir, '.shep', 'evidence');
+    const evidenceDir = join(ctx.tempDir, '.shipit-ai', 'evidence');
     mkdirSync(evidenceDir, { recursive: true });
     const realFilePath = join(evidenceDir, 'app-settings-screenshot.png');
     writeFileSync(realFilePath, 'fake-png-data-for-test');
@@ -530,7 +530,7 @@ describe('Graph State Transitions › Evidence Validation Retry Loop', () => {
     // Because allEvidence accumulates across retries, validateFileExistence
     // checks ALL accumulated records. If attempt 1's file doesn't exist,
     // validation will fail even after attempt 2 adds valid files.
-    const evidenceDir = join(ctx.tempDir, '.shep', 'evidence');
+    const evidenceDir = join(ctx.tempDir, '.shipit-ai', 'evidence');
     mkdirSync(evidenceDir, { recursive: true });
     const realFilePath1 = join(evidenceDir, 'test-output.txt');
     writeFileSync(realFilePath1, 'fake-test-output');

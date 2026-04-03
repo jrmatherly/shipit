@@ -17,7 +17,7 @@ pnpm dev:web
 ### 2. Production Mode (how users run it)
 
 ```bash
-shep ui
+shipit-ai ui
 # or
 pnpm dev:cli ui
 ```
@@ -29,11 +29,11 @@ pnpm dev:cli ui
 
 ### Key Differences Between Modes
 
-| Aspect             | Dev Mode (`pnpm dev:web`)                               | Production Mode (`shep ui`)                             |
+| Aspect             | Dev Mode (`pnpm dev:web`)                               | Production Mode (`shipit-ai ui`)                             |
 | ------------------ | ------------------------------------------------------- | ------------------------------------------------------- |
 | Entry point        | `dev-server.ts`                                         | `cli/index.ts` -> `ui.command.ts` -> `WebServerService` |
 | Port               | 3000                                                    | 4050                                                    |
-| DI container       | Set on `globalThis.__shepContainer` in dev-server.ts:73 | Set in cli/index.ts:76                                  |
+| DI container       | Set on `globalThis.__shipitAiContainer` in dev-server.ts:73 | Set in cli/index.ts:76                                  |
 | WebSocket upgrades | Forwarded (HMR works)                                   | NOT forwarded in `WebServerService`                     |
 | Next.js mode       | Always dev                                              | dev when run from source, prod when installed           |
 
@@ -85,7 +85,7 @@ Optimistic UI                         ┌─────────────
 | ----------------- | ------------------------------------------------------------------------------------------------------- |
 | SSE event         | `useAgentEventsContext` → `updateFeature(nodeId, {state, lifecycle})`                                   |
 | Server prop sync  | `useEffect` watches `initialNodeKey` → `reconcile(newNodes, newEdges)`                                  |
-| Optimistic create | `shep:feature-created` event → `createFeatureNode()` → `addPendingFeature()`                            |
+| Optimistic create | `shipit-ai:feature-created` event → `createFeatureNode()` → `addPendingFeature()`                            |
 | Delete feature    | `handleDeleteFeature()` → `removeFeature()` → server action → `restoreFeature()` on error               |
 | Add repository    | `handleAddRepository()` → `addRepository(tempId)` → server action → `replaceRepository(tempId, realId)` |
 
@@ -171,7 +171,7 @@ With the domain-model-driven architecture, the circular update loop is prevented
 
 When a user creates a feature, the UI uses optimistic updates:
 
-1. **Create drawer** dispatches `shep:feature-created` → `createFeatureNode()` → `addPendingFeature()` adds temp node to pendingMap
+1. **Create drawer** dispatches `shipit-ai:feature-created` → `createFeatureNode()` → `addPendingFeature()` adds temp node to pendingMap
 2. Drawer closes immediately via `router.push('/')`
 3. Server action `createFeature` runs in background → agent starts
 4. SSE events arrive with real feature ID (`feat-<uuid>`) — these update featureMap via `updateFeature()`

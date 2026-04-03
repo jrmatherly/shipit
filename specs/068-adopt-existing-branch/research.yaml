@@ -551,7 +551,7 @@ content: |
 
   ### Worktree Impact
   - Adopted features create worktrees in the same location as Shep-created features
-    (~/.shep/repos/<hash>/wt/<slug>)
+    (~/.shipit-ai/repos/<hash>/wt/<slug>)
   - Worktree cleanup via existing delete flow works identically for adopted features
 
   ## Architecture Notes
@@ -585,7 +585,7 @@ content: |
   - **Unit tests (WorktreeService.addExisting):** Mock ExecFunction. Test: correct git args,
     error handling, worktree info return.
   - **Unit tests (name/slug derivation):** Pure function tests with various branch name formats.
-  - **Integration tests (CLI):** Use createCliRunner pattern with isolated SHEP_HOME and
+  - **Integration tests (CLI):** Use createCliRunner pattern with isolated SHIPIT_AI_HOME and
     temp git repository. Test: shep feat adopt <branch>, error cases, output format.
   - **Component tests (Web):** Stories for AdoptBranchDrawer (required by MANDATORY rule).
 

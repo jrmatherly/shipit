@@ -3,8 +3,11 @@
 import { useEffect, useMemo, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { toast } from 'sonner';
-import type { NotificationEvent } from '@shepai/core/domain/generated/output';
-import { NotificationEventType, NotificationSeverity } from '@shepai/core/domain/generated/output';
+import type { NotificationEvent } from '@shipit-ai/core/domain/generated/output';
+import {
+  NotificationEventType,
+  NotificationSeverity,
+} from '@shipit-ai/core/domain/generated/output';
 import { useAgentEventsContext } from './agent-events-provider';
 import { useSoundAction } from './use-sound-action';
 import type { SoundAction } from './use-sound-action';

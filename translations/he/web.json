@@ -157,7 +157,7 @@
       "channels": "ערוצים",
       "inApp": "באפליקציה",
       "inAppLabel": "באפליקציה",
-      "inAppDescription": "התראות בתוך ממשק Shep",
+      "inAppDescription": "התראות בתוך ממשק Shipit AI",
       "subsections": {
         "agentEvents": "אירועי סוכן",
         "pullRequestEvents": "אירועי בקשות משיכה"
@@ -227,7 +227,7 @@
       "location": "מיקום",
       "locationDescription": "נתיב למסד הנתונים המקומי SQLite",
       "size": "גודל",
-      "hint": "כל ההגדרות מאוחסנות במסד נתונים מקומי SQLite ב-~/.shep/data. מסד הנתונים משתמש בדפוס רשומה יחידה עם מיגרציות אוטומטיות בהפעלה.",
+      "hint": "כל ההגדרות מאוחסנות במסד נתונים מקומי SQLite ב-~/.shipit-ai/data. מסד הנתונים משתמש בדפוס רשומה יחידה עם מיגרציות אוטומטיות בהפעלה.",
       "links": {
         "settingsService": "שירות הגדרות",
         "settingsSpec": "מפרט הגדרות"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "הוסף פרויקט",
     "addProjectDescription": "הוסף את תיקיית הפרויקט שלך כדי לאפשר יצירת פיצ'רים.",
-    "addProjectDescriptionLine2": "תאר מה אתה צריך \u2014 Shep מטפל בשאר.",
+    "addProjectDescriptionLine2": "תאר מה אתה צריך \u2014 Shipit AI מטפל בשאר.",
     "checkingSetup": "בודק הגדרה\u2026",
     "ready": "{{label}} מוכן",
     "notInstalled": "{{label}} לא מותקן",
@@ -303,7 +303,7 @@
     "loadingAgents": "טוען סוכנים\u2026",
     "chooseAgent": "בחר את הסוכן שלך",
     "pickModel": "בחר מודל",
-    "selectAgentSubtitle": "בחר את סוכן הקידוד AI שתרצה ש-Shep ישתמש בו.",
+    "selectAgentSubtitle": "בחר את סוכן הקידוד AI שתרצה ש-Shipit AI ישתמש בו.",
     "chooseModelSubtitle": "בחר איזה מודל {{label}} להריץ.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> נדרש ליכולות ריפוי עצמי מלאות של CI/CD. <1>התקן אותו כאן</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "מ-GitHub"
   },
   "chat": {
-    "shepChat": "צ'אט Shep",
+    "shipitAiChat": "צ'אט Shipit AI",
     "writeMessage": "כתוב הודעה...",
     "attachFiles": "צירוף קבצים",
     "forceStopAgent": "עצירת סוכן בכוח",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "ייבוא מ-GitHub",
-    "description": "שכפול מאגר GitHub והוספתו ל-Shep.",
+    "description": "שכפול מאגר GitHub והוספתו ל-Shipit AI.",
     "githubUrl": "כתובת GitHub",
     "urlPlaceholder": "owner/repo או https://github.com/owner/repo",
     "searchRepositories": "חיפוש מאגרים..."

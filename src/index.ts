@@ -1,5 +1,5 @@
 /**
- * @shepai/cli - Autonomous AI Native SDLC Platform
+ * @shipit-ai/cli - Autonomous AI Native SDLC Platform
  *
  * Automate the development cycle from idea to deploy.
  */

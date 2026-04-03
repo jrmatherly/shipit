@@ -10,7 +10,7 @@
  *   4. Observe toast notifications + notification sounds at each step
  *   5. Wait for agent completion with celebration sound
  *
- * Requires: a running dev server (`shep ui` or `pnpm dev:web`) with repos
+ * Requires: a running dev server (`shipit-ai ui` or `pnpm dev:web`) with repos
  * and a mock agent configured. Each step should complete within ~5s.
  *
  * To produce the showcase video:
@@ -119,7 +119,7 @@ test.describe('Showcase: Real Feature Lifecycle with Audio', () => {
     await expect(controlCenter).toBeVisible({ timeout: 15_000 });
 
     // Enable sounds via localStorage
-    await page.evaluate(() => localStorage.setItem('shep-sound-enabled', 'true'));
+    await page.evaluate(() => localStorage.setItem('shipit-ai-sound-enabled', 'true'));
 
     // ── 2. Create a feature via the repo node's "Add feature" button ────
     //    This ensures repositoryPath is set (unlike the sidebar button).

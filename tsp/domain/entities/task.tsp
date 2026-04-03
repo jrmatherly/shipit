@@ -1,8 +1,8 @@
 /**
- * @module Shep.Domain.Entities.Task
+ * @module ShipitAI.Domain.Entities.Task
  *
  * Defines the Task entity that represents a discrete unit of work within
- * an implementation plan in the Shep AI platform. Tasks are the primary
+ * an implementation plan in the Shipit AI platform. Tasks are the primary
  * work items that developers execute during implementation.
  *
  * ## Task Lifecycle

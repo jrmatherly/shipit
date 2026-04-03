@@ -197,7 +197,7 @@ content: |
   - **NFR-6**: All shell commands SHALL use safe escaping/quoting to prevent command injection
   - **NFR-7**: Installation commands SHALL NOT contain hardcoded credentials or tokens
   - **NFR-8**: Installation shall not execute arbitrary scripts; only package manager commands allowed
-  - **NFR-9**: No local file modifications outside ~/.shep/ and standard IDE installation directories permitted
+  - **NFR-9**: No local file modifications outside ~/.shipit-ai/ and standard IDE installation directories permitted
 
   ### Reliability & Error Recovery
 

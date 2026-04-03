@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { StopAgentRunUseCase } from '@shepai/core/application/use-cases/agents/stop-agent-run.use-case';
-import type { IAgentRunRepository } from '@shepai/core/application/ports/output/agents/agent-run-repository.interface';
+import type { StopAgentRunUseCase } from '@shipit-ai/core/application/use-cases/agents/stop-agent-run.use-case';
+import type { IAgentRunRepository } from '@shipit-ai/core/application/ports/output/agents/agent-run-repository.interface';
 
 export async function stopFeature(
   featureId: string

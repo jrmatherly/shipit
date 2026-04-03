@@ -1,7 +1,7 @@
 /**
- * @module Shep.Common.Enums.Tool
+ * @module ShipitAI.Common.Enums.Tool
  *
- * Defines the ToolType enum for supported IDE and CLI tools that Shep can install.
+ * Defines the ToolType enum for supported IDE and CLI tools that Shipit AI can install.
  * Includes both IDEs (VS Code, Cursor, Windsurf, Zed, Antigravity) and CLI agents
  * (Cursor CLI, Claude Code).
  */

@@ -3,7 +3,7 @@ import type {
   PrdQuestion,
   PrdFinalAction,
   PrdQuestionnaireData,
-} from '@shepai/core/domain/generated/output';
+} from '@shipit-ai/core/domain/generated/output';
 import type { RejectAttachment } from '@/components/common/drawer-action-bar';
 
 export type { PrdOption, PrdQuestion, PrdFinalAction, PrdQuestionnaireData };

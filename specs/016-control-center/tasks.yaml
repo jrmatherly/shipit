@@ -213,9 +213,9 @@ tasks:
   - id: task-8
     title: 'Set up DI bridge with existing ListFeaturesUseCase and Feature type props'
     description: >
-      SUPERSEDED by tasks 15-22 (@shepai/core extraction plan). The original approach
+      SUPERSEDED by tasks 15-22 (@shipit-ai/core extraction plan). The original approach
       of patching imports with @cli/* path aliases is replaced by extracting a proper
-      @shepai/core workspace package.
+      @shipit-ai/core workspace package.
     state: Superseded
     dependencies:
       - task-6
@@ -223,7 +223,7 @@ tasks:
       - 'SUPERSEDED — see tasks 15-22'
     tdd: null
     estimatedEffort: L
-    supersededBy: 'tasks 15-22 (@shepai/core extraction)'
+    supersededBy: 'tasks 15-22 (@shipit-ai/core extraction)'
 
   - id: task-9
     title: 'Align FeatureLifecyclePhase with domain SdlcLifecycle'
@@ -259,7 +259,7 @@ tasks:
     title: 'Update stories and tests for Feature type props'
     description: >
       SUPERSEDED by task-20 (control center data layer). Story/test updates
-      are now part of the @shepai/core extraction plan.
+      are now part of the @shipit-ai/core extraction plan.
     state: Superseded
     dependencies:
       - task-8
@@ -393,9 +393,9 @@ tasks:
     estimatedEffort: S
 
   - id: task-15
-    title: 'Scaffold @shepai/core workspace package'
+    title: 'Scaffold @shipit-ai/core workspace package'
     description: >
-      Create packages/core/ with package.json (@shepai/core, private, type: module,
+      Create packages/core/ with package.json (@shipit-ai/core, private, type: module,
       subpath exports for domain/application/infrastructure), tsconfig.json (noEmit),
       tsconfig.build.json (compilation to dist/), and empty src/index.ts. Update
       pnpm-workspace.yaml to add packages/core. Run pnpm install to link workspace.
@@ -414,7 +414,7 @@ tasks:
     estimatedEffort: S
 
   - id: task-16
-    title: 'Move domain layer to @shepai/core'
+    title: 'Move domain layer to @shipit-ai/core'
     description: >
       Move src/domain/ → packages/core/src/domain/. Create barrel export.
       Update tspconfig.yaml emitter output dir to packages/core/src/domain/generated.
@@ -434,7 +434,7 @@ tasks:
     estimatedEffort: M
 
   - id: task-17
-    title: 'Move application layer to @shepai/core'
+    title: 'Move application layer to @shipit-ai/core'
     description: >
       Move src/application/ → packages/core/src/application/. Create barrel export.
       Delete ListDashboardFeaturesUseCase (policy violation). Remove DashboardFeature
@@ -455,13 +455,13 @@ tasks:
     estimatedEffort: M
 
   - id: task-18
-    title: 'Move infrastructure layer to @shepai/core'
+    title: 'Move infrastructure layer to @shipit-ai/core'
     description: >
       Move src/infrastructure/ → packages/core/src/infrastructure/. Create barrel
       export. Convert all @/ alias imports within core to relative paths (~30 files).
       Remove ListDashboardFeaturesUseCase from DI container. Update CLI imports to
-      @shepai/core/infrastructure/di. Update web imports from @cli/* to @shepai/core/*.
-      Add @shepai/core dependency to @shepai/web package.json. Remove @cli/* path
+      @shipit-ai/core/infrastructure/di. Update web imports from @cli/* to @shipit-ai/core/*.
+      Add @shipit-ai/core dependency to @shipit-ai/web package.json. Remove @cli/* path
       from web tsconfig.json.
     state: Done
     dependencies:
@@ -471,9 +471,9 @@ tasks:
       - 'packages/core/src/infrastructure/index.ts barrel export exists'
       - 'All @/ aliases within core converted to relative paths'
       - 'ListDashboardFeaturesUseCase removed from DI container'
-      - 'CLI imports use @shepai/core/*'
-      - 'Web imports use @shepai/core/* instead of @cli/*'
-      - '@shepai/core: workspace:* in web package.json'
+      - 'CLI imports use @shipit-ai/core/*'
+      - 'Web imports use @shipit-ai/core/* instead of @cli/*'
+      - '@shipit-ai/core: workspace:* in web package.json'
       - '@cli/* path removed from web tsconfig.json'
       - 'pnpm typecheck and pnpm typecheck:web pass'
     tdd: null
@@ -484,8 +484,8 @@ tasks:
     description: >
       Remove moved dependencies from root package.json (keep commander, @inquirer/prompts,
       cli-table3, picocolors + all React/UI deps). Update root tsconfig.build.json
-      to include only src/presentation/**/* and src/index.ts. Add @shepai/core path
-      mapping to root tsconfig.json. Add @shepai/core alias to vitest.config.ts.
+      to include only src/presentation/**/* and src/index.ts. Add @shipit-ai/core path
+      mapping to root tsconfig.json. Add @shipit-ai/core alias to vitest.config.ts.
       Remove tsc-alias entries no longer needed.
     state: Done
     dependencies:
@@ -493,8 +493,8 @@ tasks:
     acceptanceCriteria:
       - 'Moved dependencies removed from root package.json'
       - 'Root tsconfig.build.json includes only presentation + index'
-      - '@shepai/core path mapping in root tsconfig.json'
-      - '@shepai/core alias in vitest.config.ts'
+      - '@shipit-ai/core path mapping in root tsconfig.json'
+      - '@shipit-ai/core alias in vitest.config.ts'
       - 'Unused tsc-alias entries removed'
       - 'pnpm install, pnpm typecheck, pnpm build all pass'
     tdd: null
@@ -503,8 +503,8 @@ tasks:
   - id: task-20
     title: 'Control center data layer — FeatureNodeData extends Feature'
     description: >
-      Wire FeatureNodeData to extend the generated Feature type from @shepai/core.
-      Import Feature, SdlcLifecycle, TaskState from @shepai/core/domain/generated.
+      Wire FeatureNodeData to extend the generated Feature type from @shipit-ai/core.
+      Import Feature, SdlcLifecycle, TaskState from @shipit-ai/core/domain/generated.
       Add deriveNodeState() and deriveProgress() utilities. Update page.tsx to
       spread Feature directly into node data. Delete derive-state.ts. Create
       createMockFeature() helper for stories/tests. Update all story data with
@@ -513,7 +513,7 @@ tasks:
     dependencies:
       - task-19
     acceptanceCriteria:
-      - 'FeatureNodeData extends Feature from @shepai/core/domain/generated'
+      - 'FeatureNodeData extends Feature from @shipit-ai/core/domain/generated'
       - 'SdlcLifecycle used directly (no FeatureLifecyclePhase wrapper)'
       - 'deriveNodeState() returns correct state for each lifecycle/task combo'
       - 'deriveProgress() returns correct percentage from plan tasks'
@@ -531,7 +531,7 @@ tasks:
         - 'Write test: deriveNodeState returns action-required for Review tasks'
         - 'Write test: deriveProgress returns correct percentage from plan tasks'
       green:
-        - 'Import Feature type from @shepai/core/domain/generated'
+        - 'Import Feature type from @shipit-ai/core/domain/generated'
         - 'Update FeatureNodeData to extend Feature'
         - 'Add deriveNodeState() and deriveProgress() utilities'
         - 'Simplify page.tsx to spread Feature'
@@ -549,15 +549,15 @@ tasks:
       Update globalThis DI bridge to use ListFeaturesUseCase instead of
       ListDashboardFeaturesUseCase. Update CLI index.ts and dev-server.ts.
       Rewrite web/lib/use-cases.ts to import Feature type from
-      @shepai/core/domain/generated and export getFeatures() returning Feature[].
+      @shipit-ai/core/domain/generated and export getFeatures() returning Feature[].
     state: Done
     dependencies:
       - task-20
     acceptanceCriteria:
       - 'WebServerService.start() resolves ListFeaturesUseCase and sets globalThis.__shepUseCases'
       - 'CLI index.ts has no globalThis bridge setup'
-      - 'Web dev-server.ts imports from @shepai/core'
-      - 'web/lib/use-cases.ts imports Feature from @shepai/core/domain/generated'
+      - 'Web dev-server.ts imports from @shipit-ai/core'
+      - 'web/lib/use-cases.ts imports Feature from @shipit-ai/core/domain/generated'
       - 'getFeatures() returns Feature[] via globalThis bridge'
       - 'No changes to src/presentation/cli/ folder'
       - 'pnpm typecheck and pnpm typecheck:web pass'
@@ -568,14 +568,14 @@ tasks:
     title: 'Final build validation'
     description: >
       Run all build, test, lint, and typecheck commands to verify the entire
-      @shepai/core extraction and control center data layer work end-to-end.
+      @shipit-ai/core extraction and control center data layer work end-to-end.
     state: Done
     dependencies:
       - task-21
     acceptanceCriteria:
       - 'pnpm install succeeds with workspace links'
       - 'pnpm generate compiles TypeSpec to packages/core/'
-      - 'pnpm --filter @shepai/core build compiles to dist/'
+      - 'pnpm --filter @shipit-ai/core build compiles to dist/'
       - 'pnpm typecheck passes'
       - 'pnpm typecheck:web passes'
       - 'pnpm test:unit passes'
@@ -597,7 +597,7 @@ openQuestions: []
 content: |
   ## Status
 
-  - **Phase:** In Progress — @shepai/core extraction (tasks 15-22)
+  - **Phase:** In Progress — @shipit-ai/core extraction (tasks 15-22)
   - **Updated:** 2026-02-16
 
   ## Task List
@@ -706,7 +706,7 @@ content: |
 
   ### Phase 6: DI Bridge + Feature Type Props — SUPERSEDED
 
-  ~~Superseded by tasks 15-22 (@shepai/core extraction plan).
+  ~~Superseded by tasks 15-22 (@shipit-ai/core extraction plan).
   Original task-8 replaced by phases 12-18.~~
 
   ### Phase 7: Build Validation
@@ -754,7 +754,7 @@ content: |
   - [x] featureId hidden, agentName replaced with agentType
   - [x] All tests and stories updated
 
-  ### Phase 12: Scaffold @shepai/core Package (task-15)
+  ### Phase 12: Scaffold @shipit-ai/core Package (task-15)
 
   - [ ] Create `packages/core/package.json` with subpath exports
   - [ ] Create `tsconfig.json` (noEmit) and `tsconfig.build.json` (dist/)
@@ -785,17 +785,17 @@ content: |
   - [ ] Create `packages/core/src/infrastructure/index.ts` barrel
   - [ ] Convert `@/` alias imports within core to relative paths (~30 files)
   - [ ] Remove `ListDashboardFeaturesUseCase` from DI container
-  - [ ] Update CLI imports → `@shepai/core/infrastructure/di`
-  - [ ] Update web imports → `@shepai/core/*`
-  - [ ] Add `@shepai/core: workspace:*` to web `package.json`
+  - [ ] Update CLI imports → `@shipit-ai/core/infrastructure/di`
+  - [ ] Update web imports → `@shipit-ai/core/*`
+  - [ ] Add `@shipit-ai/core: workspace:*` to web `package.json`
   - [ ] Remove `@cli/*` path from web `tsconfig.json`
 
   ### Phase 16: Clean Up Root Package (task-19)
 
   - [ ] Remove moved dependencies from root `package.json`
   - [ ] Update root `tsconfig.build.json`: include only `src/presentation/**/*`
-  - [ ] Add `@shepai/core` path mapping to root `tsconfig.json`
-  - [ ] Add `@shepai/core` alias to `vitest.config.ts`
+  - [ ] Add `@shipit-ai/core` path mapping to root `tsconfig.json`
+  - [ ] Add `@shipit-ai/core` alias to `vitest.config.ts`
   - [ ] Remove unused `tsc-alias` entries
 
   ### Phase 17: Control Center Data Layer (task-20)
@@ -810,7 +810,7 @@ content: |
 
   **GREEN:**
 
-  - [ ] Import Feature from `@shepai/core/domain/generated`
+  - [ ] Import Feature from `@shipit-ai/core/domain/generated`
   - [ ] `FeatureNodeData extends Feature` with UI callbacks
   - [ ] Add `deriveNodeState()` and `deriveProgress()` utilities
   - [ ] Simplify `page.tsx` — spread Feature directly into node data
@@ -826,14 +826,14 @@ content: |
 
   - [ ] `WebServerService.start()` resolves `ListFeaturesUseCase`, sets `globalThis.__shepUseCases`
   - [ ] CLI `index.ts` — remove globalThis bridge setup
-  - [ ] Web `dev-server.ts` — import from `@shepai/core`
-  - [ ] Rewrite `web/lib/use-cases.ts` — import Feature from `@shepai/core/domain/generated`
+  - [ ] Web `dev-server.ts` — import from `@shipit-ai/core`
+  - [ ] Rewrite `web/lib/use-cases.ts` — import Feature from `@shipit-ai/core/domain/generated`
 
   ### Phase 19: Final Build Validation (task-22)
 
   - [ ] `pnpm install` — workspace links
   - [ ] `pnpm generate` — TypeSpec to packages/core/
-  - [ ] `pnpm --filter @shepai/core build` — core compiles
+  - [ ] `pnpm --filter @shipit-ai/core build` — core compiles
   - [ ] `pnpm typecheck` + `pnpm typecheck:web` — all types valid
   - [ ] `pnpm test:unit` — all tests pass
   - [ ] `pnpm lint` + `pnpm lint:web` — clean
@@ -858,9 +858,9 @@ content: |
   Before marking feature complete:
 
   - [ ] All 22 tasks completed (12 done, 2 superseded, 8 new)
-  - [ ] @shepai/core package exists with domain, application, infrastructure layers
+  - [ ] @shipit-ai/core package exists with domain, application, infrastructure layers
   - [ ] No domain/application/infrastructure code remains in root src/
-  - [ ] Web imports use @shepai/core/* (no @cli/* path aliases)
+  - [ ] Web imports use @shipit-ai/core/* (no @cli/* path aliases)
   - [ ] FeatureNodeData extends generated Feature type
   - [ ] globalThis bridge in WebServerService (not CLI)
   - [ ] Tests passing (`pnpm test`)

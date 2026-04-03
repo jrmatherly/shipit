@@ -2,8 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-const STORAGE_KEY = 'shep-animations-enabled';
-const SYNC_EVENT = 'shep:animations-toggle';
+const STORAGE_KEY = 'shipit-ai-animations-enabled';
+const SYNC_EVENT = 'shipit-ai:animations-toggle';
 const BODY_CLASS = 'no-animations';
 
 export interface UseAnimationsEnabledResult {

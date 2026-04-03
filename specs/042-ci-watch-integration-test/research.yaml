@@ -108,9 +108,9 @@ openQuestions:
           Works without alias configuration but produces fragile deep-relative paths and
           diverges from all existing test files in the codebase. More error-prone to maintain.
         selected: false
-      - option: '@shepai/core package import'
+      - option: '@shipit-ai/core package import'
         description: >
-          Valid for the @shepai/web package but not for tests in the root workspace, which
+          Valid for the @shipit-ai/web package but not for tests in the root workspace, which
           already resolve @/ directly to packages/core/src via vitest config.
         selected: false
     selectionRationale: >

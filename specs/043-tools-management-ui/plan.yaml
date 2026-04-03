@@ -178,7 +178,7 @@ content: |
      — string-token alias for Turbopack-safe web route resolution
 
   The container.ts comment explicitly documents: "String-token aliases for web routes
-  (Turbopack can't resolve .js→.ts imports inside @shepai/core, so routes use string tokens)."
+  (Turbopack can't resolve .js→.ts imports inside @shipit-ai/core, so routes use string tokens)."
 
   ### 6. InstallInstructions — shadcn/ui Dialog with Copy-to-Clipboard
 

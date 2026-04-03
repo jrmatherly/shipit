@@ -141,7 +141,7 @@ decisions:
       maintenance mode (last update ~4 years ago), this is acceptable for a mature, stable
       library with a narrow, well-defined scope. Input sanitization will be applied as defense
       in depth (strip shell metacharacters from notification title/body before passing to
-      node-notifier). The library is added as a dependency of the root CLI package (@shepai/cli),
+      node-notifier). The library is added as a dependency of the root CLI package (@shipit-ai/cli),
       not the web package, since desktop notifications are dispatched from the backend
       NotificationService.
 

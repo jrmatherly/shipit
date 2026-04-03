@@ -2,7 +2,7 @@
 
 import { resolve } from '@/lib/server-container';
 import { getModelMeta } from '@/lib/model-metadata';
-import type { IAgentExecutorFactory } from '@shepai/core/application/ports/output/agents/agent-executor-factory.interface';
+import type { IAgentExecutorFactory } from '@shipit-ai/core/application/ports/output/agents/agent-executor-factory.interface';
 
 export interface ModelInfo {
   id: string;

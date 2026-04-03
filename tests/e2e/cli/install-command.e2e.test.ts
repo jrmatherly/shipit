@@ -1,7 +1,7 @@
 /**
  * CLI Install Command E2E Tests
  *
- * Tests for the `shep install` command covering:
+ * Tests for the `shipit-ai install` command covering:
  * - Help text display
  * - Installation instructions (--how flag)
  * - Unknown tool handling
@@ -23,7 +23,7 @@ describe('CLI: install command', () => {
     expect(result.stdout).toContain('--how');
   });
 
-  describe('shep install <tool> --how', () => {
+  describe('shipit-ai install <tool> --how', () => {
     it.concurrent(
       'should print installation instructions for vscode',
       async () => {
@@ -130,7 +130,7 @@ describe('CLI: install command', () => {
   it('should show tool listing when no argument given', () => {
     const result = runCli('install');
     expect(result.success).toBe(true);
-    expect(result.stdout).toContain('shep install <tool>');
+    expect(result.stdout).toContain('shipit-ai install <tool>');
     expect(result.stdout).toContain('vscode');
     expect(result.stdout).toContain('claude-code');
   });
@@ -155,7 +155,7 @@ describe('CLI: install command', () => {
 
     it('should provide helpful output for empty string tool name', () => {
       const result = runCli('install ""');
-      expect(result.stdout).toContain('shep install <tool>');
+      expect(result.stdout).toContain('shipit-ai install <tool>');
     });
   });
 });

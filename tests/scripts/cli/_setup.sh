@@ -33,7 +33,7 @@ create_tarball() {
 
   local version
   version=$(node -p "require('$PROJECT_ROOT/package.json').version")
-  local expected="$TEST_ARTIFACTS_DIR/shepai-cli-${version}.tgz"
+  local expected="$TEST_ARTIFACTS_DIR/shipit-ai-cli-${version}.tgz"
 
   if [ -f "$expected" ]; then
     log_info "Reusing cached tarball: $expected"
@@ -43,11 +43,11 @@ create_tarball() {
 
   log_info "Creating npm pack tarball (v${version})..."
   # Clean old tarballs
-  rm -f "$TEST_ARTIFACTS_DIR"/shepai-cli-*.tgz
+  rm -f "$TEST_ARTIFACTS_DIR"/shipit-ai-cli-*.tgz
 
   # Run npm pack (husky prepare hook requires the destination directory to exist)
   local packed_name
-  packed_name=$(cd "$PROJECT_ROOT" && npm pack --pack-destination "$TEST_ARTIFACTS_DIR" 2>&1 | grep "shepai-cli-" | tail -1)
+  packed_name=$(cd "$PROJECT_ROOT" && npm pack --pack-destination "$TEST_ARTIFACTS_DIR" 2>&1 | grep "shipit-ai-cli-" | tail -1)
   TARBALL_PATH="$TEST_ARTIFACTS_DIR/$packed_name"
 
   if [ ! -f "$TARBALL_PATH" ]; then

@@ -1,9 +1,9 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { ApproveAgentRunUseCase } from '@shepai/core/application/use-cases/agents/approve-agent-run.use-case';
-import type { IFeatureRepository } from '@shepai/core/application/ports/output/repositories/feature-repository.interface';
-import type { PrdApprovalPayload } from '@shepai/core/domain/generated/output';
+import type { ApproveAgentRunUseCase } from '@shipit-ai/core/application/use-cases/agents/approve-agent-run.use-case';
+import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
+import type { PrdApprovalPayload } from '@shipit-ai/core/domain/generated/output';
 
 export async function approveFeature(
   featureId: string,

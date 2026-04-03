@@ -1,4 +1,4 @@
-import type { PrStatus, CiStatus } from '@shepai/core/domain/generated/output';
+import type { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import type { RejectAttachment } from '@/components/common/drawer-action-bar';
 
 /** Diff summary statistics for the PR */

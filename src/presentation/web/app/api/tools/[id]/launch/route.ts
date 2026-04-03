@@ -3,7 +3,7 @@ import { resolve } from '@/lib/server-container';
 import type {
   LaunchToolUseCase,
   LaunchToolResult,
-} from '@shepai/core/application/use-cases/tools/launch-tool.use-case';
+} from '@shipit-ai/core/application/use-cases/tools/launch-tool.use-case';
 
 export async function POST(
   _request: Request,
@@ -15,7 +15,7 @@ export async function POST(
     const useCase = resolve<LaunchToolUseCase>('LaunchToolUseCase');
     const result: LaunchToolResult = await useCase.execute({
       toolId: id,
-      directoryPath: process.env.NEXT_PUBLIC_SHEP_INSTANCE_PATH ?? process.cwd(),
+      directoryPath: process.env.NEXT_PUBLIC_SHIPIT_AI_INSTANCE_PATH ?? process.cwd(),
       headless: true,
     });
 

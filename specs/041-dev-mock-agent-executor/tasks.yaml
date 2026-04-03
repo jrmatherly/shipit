@@ -322,7 +322,7 @@ tasks:
       - 'pnpm test:unit passes — all new and existing unit tests green'
       - 'pnpm test:int passes — all new and existing integration tests green'
       - 'MockAgentExecutorService tests are unchanged and pass (NFR-7 backward compatibility)'
-      - 'SHEP_MOCK_EXECUTOR=1 env-var path behavior is unchanged (container.ts not modified)'
+      - 'SHIPIT_AI_MOCK_EXECUTOR=1 env-var path behavior is unchanged (container.ts not modified)'
     tdd: null
     estimatedEffort: '1h'
 

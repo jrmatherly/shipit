@@ -1,5 +1,5 @@
 /**
- * @module Shep.Common.Enums.EvidenceType
+ * @module ShipitAI.Common.Enums.EvidenceType
  *
  * Defines the type of evidence captured to prove task completion.
  * Used by the evidence node to categorize artifacts collected

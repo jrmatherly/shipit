@@ -119,7 +119,7 @@ decisions:
         need absolute URLs to release assets rather than relative paths, adding
         fragility if the release is deleted.
       - >
-        Local ~/.shep/repos/<hash>/evidence/ — Files stored locally cannot be
+        Local ~/.shipit-ai/repos/<hash>/evidence/ — Files stored locally cannot be
         rendered in PR bodies on GitHub. The entire purpose of this feature is
         to embed evidence in PR bodies for reviewer verification. Local-only
         storage defeats this purpose and would require a separate upload step

@@ -1,8 +1,8 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import { getSettings } from '@shepai/core/infrastructure/services/settings.service';
-import type { IAgentExecutorFactory } from '@shepai/core/application/ports/output/agents/agent-executor-factory.interface';
+import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { IAgentExecutorFactory } from '@shipit-ai/core/application/ports/output/agents/agent-executor-factory.interface';
 
 /**
  * Server action that returns the LLM model identifiers supported by the

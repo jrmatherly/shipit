@@ -1,7 +1,7 @@
 'use server';
 
 import { resolve } from '@/lib/server-container';
-import type { IDeploymentService } from '@shepai/core/application/ports/output/services/deployment-service.interface';
+import type { IDeploymentService } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 
 export async function stopDeployment(
   targetId: string

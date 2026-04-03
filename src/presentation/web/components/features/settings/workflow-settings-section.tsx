@@ -10,7 +10,7 @@ import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
 import { updateSettingsAction } from '@/app/actions/update-settings';
 import { TimeoutSlider } from '@/components/features/settings/timeout-slider';
-import type { WorkflowConfig } from '@shepai/core/domain/generated/output';
+import type { WorkflowConfig } from '@shipit-ai/core/domain/generated/output';
 
 export interface WorkflowSettingsSectionProps {
   workflow: WorkflowConfig;

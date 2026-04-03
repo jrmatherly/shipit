@@ -55,7 +55,7 @@ phases:
       changes: add case "dev" to AgentExecutorFactory.createExecutor(), add an early-return
       guard in AgentValidatorService.isAvailable(), and add a validation-skip guard in
       ConfigureAgentUseCase.execute(). Each change is 2–4 lines and covered by its own
-      RED-GREEN-REFACTOR TDD cycle. The SHEP_MOCK_EXECUTOR env-var branch in container.ts
+      RED-GREEN-REFACTOR TDD cycle. The SHIPIT_AI_MOCK_EXECUTOR env-var branch in container.ts
       remains completely untouched.
     parallel: false
 
@@ -126,7 +126,7 @@ content: |
 
   DevAgentExecutorService lives in `executors/` alongside existing executors and implements
   only `IAgentExecutor` — no imports of node/graph internals, no shared state with
-  MockAgentExecutorService. SHEP_MOCK_EXECUTOR=1 continues to activate MockAgentExecutorFactory
+  MockAgentExecutorService. SHIPIT_AI_MOCK_EXECUTOR=1 continues to activate MockAgentExecutorFactory
   with the existing MockAgentExecutorService, completely unchanged.
 
   ### Phase-to-Prompt Mapping
@@ -208,7 +208,7 @@ content: |
   caller — use case, CLI, future code — gets the correct result. Belt-and-suspenders guard
   in ConfigureAgentUseCase makes the intent explicit at the business-logic layer.
 
-  **6. SHEP_MOCK_EXECUTOR Branch Untouched**
+  **6. SHIPIT_AI_MOCK_EXECUTOR Branch Untouched**
   The env-var branch in container.ts (MockAgentExecutorFactory) remains completely unchanged.
   DevAgentExecutorService is only reachable through deliberate settings selection, not any
   environment variable. Preserves all existing CI/test pipelines.

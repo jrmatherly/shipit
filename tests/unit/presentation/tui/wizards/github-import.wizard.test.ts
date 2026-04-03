@@ -409,7 +409,7 @@ describe('githubImportWizard', () => {
       ]);
     });
 
-    it('should use shepTheme for all prompts', async () => {
+    it('should use shipitAiTheme for all prompts', async () => {
       mockSelect.mockResolvedValueOnce('url');
       mockInput.mockResolvedValueOnce('octocat/my-project').mockResolvedValueOnce('');
 

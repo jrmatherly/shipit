@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { CiStatus } from '@shepai/core/domain/generated/output';
+import { CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { CiStatusBadge } from './ci-status-badge';
 
 const meta: Meta<typeof CiStatusBadge> = {

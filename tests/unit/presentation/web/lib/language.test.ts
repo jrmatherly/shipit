@@ -1,13 +1,13 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 // Mock the settings service before importing the module under test
-vi.mock('@shepai/core/infrastructure/services/settings.service', () => ({
+vi.mock('@shipit-ai/core/infrastructure/services/settings.service', () => ({
   hasSettings: vi.fn(),
   getSettings: vi.fn(),
 }));
 
 import { isRtlLanguage, getLanguagePreference } from '@/lib/language';
-import { hasSettings, getSettings } from '@shepai/core/infrastructure/services/settings.service';
+import { hasSettings, getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
 
 const mockHasSettings = vi.mocked(hasSettings);
 const mockGetSettings = vi.mocked(getSettings);

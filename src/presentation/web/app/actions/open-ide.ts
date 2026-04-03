@@ -1,8 +1,8 @@
 'use server';
 
 import { isAbsolute } from 'node:path';
-import { getSettings } from '@shepai/core/infrastructure/services/settings.service';
-import type { LaunchIdeUseCase } from '@shepai/core/application/use-cases/ide/launch-ide.use-case';
+import { getSettings } from '@shipit-ai/core/infrastructure/services/settings.service';
+import type { LaunchIdeUseCase } from '@shipit-ai/core/application/use-cases/ide/launch-ide.use-case';
 import { resolve } from '@/lib/server-container';
 
 interface OpenIdeInput {

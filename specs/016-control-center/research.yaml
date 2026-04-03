@@ -167,24 +167,24 @@ decisions:
       Displaying it with 'COMPLETED' label and emerald done state gives clear
       visual feedback that no further agent work is needed.
 
-  - title: Extract @shepai/core workspace package
-    chosen: Pre-compiled @shepai/core package exporting domain, application, and infrastructure layers
+  - title: Extract @shipit-ai/core workspace package
+    chosen: Pre-compiled @shipit-ai/core package exporting domain, application, and infrastructure layers
     rejected:
       - Keep layers in root src/ with @cli/* path aliases in web
       - Shared ESM module imports from CLI source (Turbopack incompatible)
-      - Separate packages per layer (@shepai/domain, @shepai/application, @shepai/infrastructure)
+      - Separate packages per layer (@shipit-ai/domain, @shipit-ai/application, @shipit-ai/infrastructure)
     rationale: >
       Turbopack cannot resolve CLI source files that use Node.js ESM .js extension
       imports. The @cli/* path alias is fragile, requires duplicated type definitions
       in the web layer, and couples web to CLI. Extracting domain/, application/, and
-      infrastructure/ into a single @shepai/core workspace package solves this cleanly.
-      Both @shepai/cli and @shepai/web depend on @shepai/core via workspace:*.
+      infrastructure/ into a single @shipit-ai/core workspace package solves this cleanly.
+      Both @shipit-ai/cli and @shipit-ai/web depend on @shipit-ai/core via workspace:*.
       A single package (not three) avoids circular dependency issues between layers
       and simplifies the build pipeline. The package exports compiled JavaScript
       (not TypeScript source) so Turbopack resolves it like any npm package.
       IDE jump-to-definition works via tsconfig.json path mappings to source.
 
-  - title: '@shepai/core compilation strategy'
+  - title: '@shipit-ai/core compilation strategy'
     chosen: Pre-compiled JavaScript via tsc with separate build and typecheck configs
     rejected:
       - TypeScript source with transpilePackages in Next.js
@@ -197,21 +197,21 @@ decisions:
       TypeSpec → core → CLI → web. IDE path mappings point to source for
       jump-to-definition. No transpilePackages needed in Next.js config.
 
-  - title: '@shepai/core package exports structure'
+  - title: '@shipit-ai/core package exports structure'
     chosen: Subpath exports with domain, application, infrastructure entry points
     rejected:
       - Single entry point exporting everything
       - Deep path imports without exports map
     rationale: >
       Subpath exports allow consumers to import from specific layers:
-      @shepai/core/domain, @shepai/core/application, @shepai/core/infrastructure.
+      @shipit-ai/core/domain, @shipit-ai/core/application, @shipit-ai/core/infrastructure.
       This maintains clear dependency boundaries — the web layer should only import
       from domain and application, not infrastructure internals. The exports map
-      also includes @shepai/core/domain/generated for direct TypeSpec type access
-      and @shepai/core/infrastructure/di for container initialization.
+      also includes @shipit-ai/core/domain/generated for direct TypeSpec type access
+      and @shipit-ai/core/infrastructure/di for container initialization.
 
   - title: Web-to-CLI runtime data access bridge pattern
-    chosen: Global DI bridge via globalThis for runtime use case access, types from @shepai/core
+    chosen: Global DI bridge via globalThis for runtime use case access, types from @shipit-ai/core
     rejected:
       - Direct SQL queries in web presentation layer
       - Next.js API routes with manual DB connection
@@ -219,15 +219,15 @@ decisions:
     rationale: >
       The globalThis bridge is still needed for RUNTIME use case access because
       the DI container is initialized by CLI or dev-server, not by Next.js.
-      However, with @shepai/core extracted, the bridge is much simpler:
+      However, with @shipit-ai/core extracted, the bridge is much simpler:
       WebServerService.start() resolves ListFeaturesUseCase from the container
       and sets globalThis.__shepUseCases. The web layer imports the Feature TYPE
-      directly from @shepai/core/domain/generated (no path alias needed).
+      directly from @shipit-ai/core/domain/generated (no path alias needed).
       The bridge module (web/lib/use-cases.ts) only reads the runtime use case
       instance from globalThis. No new use cases, no CLI folder changes.
 
   - title: FeatureNodeData extends generated Feature type
-    chosen: FeatureNodeData extends Feature from @shepai/core/domain/generated with UI callback fields
+    chosen: FeatureNodeData extends Feature from @shipit-ai/core/domain/generated with UI callback fields
     rejected:
       - Hand-crafted FeatureNodeData with duplicated domain fields
       - DashboardFeature DTO with flattened agent_runs data
@@ -237,8 +237,8 @@ decisions:
       fields (onAction, onSettings, showHandles, agentType, errorMessage, blockedBy,
       runtime). The component derives state and progress from Feature.plan.tasks
       internally. This eliminates the need for DashboardFeature, ListDashboardFeaturesUseCase,
-      and IFeatureRepository.listWithAgentRuns(). With @shepai/core extracted, the
-      web package imports Feature type directly from @shepai/core/domain/generated
+      and IFeatureRepository.listWithAgentRuns(). With @shipit-ai/core extracted, the
+      web package imports Feature type directly from @shipit-ai/core/domain/generated
       (no @cli/* path alias needed).
 
 # Open questions (should be resolved by end of research)
@@ -429,20 +429,20 @@ content: |
   derives state and progress from Feature.plan.tasks internally. This eliminates
   DashboardFeature, ListDashboardFeaturesUseCase, and listWithAgentRuns().
 
-  ### 13. Extract @shepai/core Workspace Package
+  ### 13. Extract @shipit-ai/core Workspace Package
 
   **Options considered:**
 
-  1. **Pre-compiled @shepai/core package** — Single workspace package with domain, application, infrastructure
+  1. **Pre-compiled @shipit-ai/core package** — Single workspace package with domain, application, infrastructure
   2. **Keep layers in root src/ with @cli/* path aliases** — Current approach (Turbopack incompatible)
-  3. **Separate packages per layer** — @shepai/domain, @shepai/application, @shepai/infrastructure
+  3. **Separate packages per layer** — @shipit-ai/domain, @shipit-ai/application, @shipit-ai/infrastructure
   4. **Shared ESM module imports** — Direct imports from CLI source
 
-  **Decision:** Pre-compiled @shepai/core package
+  **Decision:** Pre-compiled @shipit-ai/core package
 
-  **Rationale:** Turbopack cannot resolve CLI source files with Node.js ESM `.js` imports. The `@cli/*` path alias is fragile and requires duplicated type definitions. A single `@shepai/core` package avoids circular dependency issues between layers and simplifies the build pipeline. The package exports compiled JavaScript so Turbopack resolves it like any npm package. IDE jump-to-definition works via tsconfig.json path mappings to source.
+  **Rationale:** Turbopack cannot resolve CLI source files with Node.js ESM `.js` imports. The `@cli/*` path alias is fragile and requires duplicated type definitions. A single `@shipit-ai/core` package avoids circular dependency issues between layers and simplifies the build pipeline. The package exports compiled JavaScript so Turbopack resolves it like any npm package. IDE jump-to-definition works via tsconfig.json path mappings to source.
 
-  ### 14. @shepai/core Compilation Strategy
+  ### 14. @shipit-ai/core Compilation Strategy
 
   **Options considered:**
 
@@ -454,17 +454,17 @@ content: |
 
   **Rationale:** A pre-compiled package avoids all Turbopack compatibility issues. `tsconfig.build.json` compiles `src/` to `dist/` with declarations. Build order: TypeSpec → core → CLI → web. No `transpilePackages` needed in Next.js config.
 
-  ### 15. @shepai/core Package Exports Structure
+  ### 15. @shipit-ai/core Package Exports Structure
 
   **Decision:** Subpath exports with domain, application, infrastructure entry points
 
-  **Rationale:** Consumers import from specific layers (`@shepai/core/domain`, `@shepai/core/application`, `@shepai/core/infrastructure`). This maintains clear dependency boundaries. The exports map also includes `@shepai/core/domain/generated` for direct TypeSpec type access and `@shepai/core/infrastructure/di` for container initialization.
+  **Rationale:** Consumers import from specific layers (`@shipit-ai/core/domain`, `@shipit-ai/core/application`, `@shipit-ai/core/infrastructure`). This maintains clear dependency boundaries. The exports map also includes `@shipit-ai/core/domain/generated` for direct TypeSpec type access and `@shipit-ai/core/infrastructure/di` for container initialization.
 
   ### 16. Updated Web-to-CLI Runtime Bridge
 
-  **Decision:** globalThis bridge for runtime only, types from @shepai/core
+  **Decision:** globalThis bridge for runtime only, types from @shipit-ai/core
 
-  **Rationale:** With @shepai/core extracted, the bridge is much simpler. Types are imported directly from `@shepai/core/domain/generated` (no path alias). The globalThis bridge only carries the runtime use case instance. WebServerService.start() resolves ListFeaturesUseCase and sets `globalThis.__shepUseCases`.
+  **Rationale:** With @shipit-ai/core extracted, the bridge is much simpler. Types are imported directly from `@shipit-ai/core/domain/generated` (no path alias). The globalThis bridge only carries the runtime use case instance. WebServerService.start() resolves ListFeaturesUseCase and sets `globalThis.__shepUseCases`.
 
   ## Open Questions
 
