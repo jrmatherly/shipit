@@ -3,6 +3,7 @@ import { mkdirSync, writeFileSync, renameSync, rmSync, existsSync, readdirSync }
 import { join, basename } from 'path';
 import { createHash, randomUUID } from 'crypto';
 import type { Attachment } from '../../domain/generated/output.js';
+import type { IAttachmentStorageService } from '../../application/ports/output/services/attachment-storage-service.interface.js';
 import { getShipitAiHomeDir } from './filesystem/shipit-ai-directory.service.js';
 
 /** Attachment record extended with SHA-256 hash for dedup tracking. */
@@ -11,7 +12,7 @@ export interface StoredAttachment extends Attachment {
 }
 
 @injectable()
-export class AttachmentStorageService {
+export class AttachmentStorageService implements IAttachmentStorageService {
   /** In-memory dedup index: sessionId -> Map<sha256, StoredAttachment> */
   private readonly dedupIndex = new Map<string, Map<string, StoredAttachment>>();
 

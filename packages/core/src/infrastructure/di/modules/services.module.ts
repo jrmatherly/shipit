@@ -23,6 +23,13 @@ import { DaemonPidService } from '../../services/daemon/daemon-pid.service.js';
 import type { IDeploymentService } from '../../../application/ports/output/services/deployment-service.interface.js';
 import { DeploymentService } from '../../services/deployment/deployment.service.js';
 import { AttachmentStorageService } from '../../services/attachment-storage.service.js';
+import type { IProcessMonitor } from '../../../application/ports/output/services/process-monitor.interface.js';
+import { ProcessMonitorService } from '../../services/process/process-monitor.service.js';
+import type { IFileSystemService } from '../../../application/ports/output/services/filesystem-service.interface.js';
+import { FileSystemService } from '../../services/filesystem/filesystem.service.js';
+import type { IToolMetadataService } from '../../../application/ports/output/services/tool-metadata-service.interface.js';
+import { ToolMetadataServiceImpl } from '../../services/tool-installer/tool-metadata.service.js';
+import type { IAttachmentStorageService } from '../../../application/ports/output/services/attachment-storage-service.interface.js';
 
 /**
  * Register business services (singletons and factories).
@@ -76,9 +83,20 @@ export function registerServicesModule(
   container.registerSingleton<IDaemonService>('IDaemonService', DaemonPidService);
   container.registerSingleton(AttachmentStorageService);
   container.register('AttachmentStorageService', { useToken: AttachmentStorageService });
+  container.register<IAttachmentStorageService>('IAttachmentStorageService', {
+    useFactory: (c) => c.resolve(AttachmentStorageService),
+  });
 
   const deploymentService = new DeploymentService();
   deploymentService.setDatabase(db);
   deploymentService.recoverAll();
   container.registerInstance<IDeploymentService>('IDeploymentService', deploymentService);
+
+  // New port interface implementations
+  container.registerSingleton<IProcessMonitor>('IProcessMonitor', ProcessMonitorService);
+  container.registerSingleton<IFileSystemService>('IFileSystemService', FileSystemService);
+  container.registerSingleton<IToolMetadataService>(
+    'IToolMetadataService',
+    ToolMetadataServiceImpl
+  );
 }
