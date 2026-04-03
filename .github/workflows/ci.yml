@@ -198,12 +198,9 @@ jobs:
       - uses: actions/checkout@v6
 
       - name: 🔒 Semgrep SAST scan
-        uses: semgrep/semgrep-action@v1
+        uses: docker://semgrep/semgrep:latest
         with:
-          config: >-
-            p/typescript
-            p/javascript
-            p/security-audit
+          args: semgrep scan --config p/typescript --config p/javascript --config p/security-audit --error
 
   # ===========================================================================
   # Security Summary Comment (PRs only)
@@ -226,7 +223,7 @@ jobs:
 
     steps:
       - name: 🔍 Find existing security comment
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@v4
         id: find-security-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
@@ -356,7 +353,7 @@ jobs:
           npm publish --tag dev --access public
 
       - name: 🔍 Find existing dev release comment
-        uses: peter-evans/find-comment@v3
+        uses: peter-evans/find-comment@v4
         id: find-dev-release-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
