@@ -13,6 +13,11 @@ import { join } from 'node:path';
 import { execFile as execFileCb } from 'node:child_process';
 import { promisify } from 'node:util';
 import { GitPrService } from '../../../../packages/core/src/infrastructure/services/git/git-pr.service.js';
+import { DiffAnalyzerService } from '../../../../packages/core/src/infrastructure/services/git/diff-analyzer.service.js';
+import { BranchDiscoveryService } from '../../../../packages/core/src/infrastructure/services/git/branch-discovery.service.js';
+import { CiStatusService } from '../../../../packages/core/src/infrastructure/services/git/ci-status.service.js';
+import { PrCreationService } from '../../../../packages/core/src/infrastructure/services/git/pr-creation.service.js';
+import { MergeStrategyService } from '../../../../packages/core/src/infrastructure/services/git/merge-strategy.service.js';
 import {
   GitPrError,
   GitPrErrorCode,
@@ -131,7 +136,14 @@ describe('GitPrService — syncMain (integration)', () => {
     cloneDir = harness.cloneDir;
     featureBranch = harness.featureBranch;
     dirs.push(bareDir, cloneDir);
-    service = new GitPrService(makeRealExec());
+    const execFn = makeRealExec();
+    service = new GitPrService(
+      new DiffAnalyzerService(execFn),
+      new BranchDiscoveryService(execFn),
+      new CiStatusService(execFn),
+      new PrCreationService(execFn),
+      new MergeStrategyService(execFn)
+    );
   });
 
   afterEach(() => {
@@ -246,7 +258,14 @@ describe('GitPrService — rebaseOnMain (integration)', () => {
     cloneDir = harness.cloneDir;
     featureBranch = harness.featureBranch;
     dirs.push(bareDir, cloneDir);
-    service = new GitPrService(makeRealExec());
+    const execFn = makeRealExec();
+    service = new GitPrService(
+      new DiffAnalyzerService(execFn),
+      new BranchDiscoveryService(execFn),
+      new CiStatusService(execFn),
+      new PrCreationService(execFn),
+      new MergeStrategyService(execFn)
+    );
   });
 
   afterEach(async () => {
@@ -395,7 +414,14 @@ describe('GitPrService — helper methods (integration)', () => {
     cloneDir = harness.cloneDir;
     featureBranch = harness.featureBranch;
     dirs.push(bareDir, cloneDir);
-    service = new GitPrService(makeRealExec());
+    const execFn = makeRealExec();
+    service = new GitPrService(
+      new DiffAnalyzerService(execFn),
+      new BranchDiscoveryService(execFn),
+      new CiStatusService(execFn),
+      new PrCreationService(execFn),
+      new MergeStrategyService(execFn)
+    );
   });
 
   afterEach(async () => {

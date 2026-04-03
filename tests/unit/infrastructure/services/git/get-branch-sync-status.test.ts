@@ -1,6 +1,11 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GitPrService } from '@/infrastructure/services/git/git-pr.service';
+import { DiffAnalyzerService } from '@/infrastructure/services/git/diff-analyzer.service';
+import { BranchDiscoveryService } from '@/infrastructure/services/git/branch-discovery.service';
+import { CiStatusService } from '@/infrastructure/services/git/ci-status.service';
+import { PrCreationService } from '@/infrastructure/services/git/pr-creation.service';
+import { MergeStrategyService } from '@/infrastructure/services/git/merge-strategy.service';
 import type { ExecFunction } from '@/infrastructure/services/git/worktree.service';
 
 vi.mock('node:fs', async () => {
@@ -14,7 +19,13 @@ describe('GitPrService.getBranchSyncStatus', () => {
 
   beforeEach(() => {
     mockExec = vi.fn();
-    service = new GitPrService(mockExec);
+    service = new GitPrService(
+      new DiffAnalyzerService(mockExec),
+      new BranchDiscoveryService(mockExec),
+      new CiStatusService(mockExec),
+      new PrCreationService(mockExec),
+      new MergeStrategyService(mockExec)
+    );
   });
 
   it('should return ahead and behind counts', async () => {

@@ -13,6 +13,11 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { GitPrService } from '../../../../packages/core/src/infrastructure/services/git/git-pr.service.js';
+import { DiffAnalyzerService } from '../../../../packages/core/src/infrastructure/services/git/diff-analyzer.service.js';
+import { BranchDiscoveryService } from '../../../../packages/core/src/infrastructure/services/git/branch-discovery.service.js';
+import { CiStatusService } from '../../../../packages/core/src/infrastructure/services/git/ci-status.service.js';
+import { PrCreationService } from '../../../../packages/core/src/infrastructure/services/git/pr-creation.service.js';
+import { MergeStrategyService } from '../../../../packages/core/src/infrastructure/services/git/merge-strategy.service.js';
 import {
   GitPrError,
   GitPrErrorCode,
@@ -52,7 +57,13 @@ describe('GitPrService.getFailureLogs (integration)', () => {
 
   beforeEach(() => {
     mockExec = vi.fn();
-    service = new GitPrService(mockExec);
+    service = new GitPrService(
+      new DiffAnalyzerService(mockExec),
+      new BranchDiscoveryService(mockExec),
+      new CiStatusService(mockExec),
+      new PrCreationService(mockExec),
+      new MergeStrategyService(mockExec)
+    );
   });
 
   describe('gh command invocation', () => {

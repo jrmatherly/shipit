@@ -6,6 +6,11 @@ import { execFile as execFileCb } from 'node:child_process';
 import { promisify } from 'node:util';
 
 import { GitPrService } from '@/infrastructure/services/git/git-pr.service.js';
+import { DiffAnalyzerService } from '@/infrastructure/services/git/diff-analyzer.service.js';
+import { BranchDiscoveryService } from '@/infrastructure/services/git/branch-discovery.service.js';
+import { CiStatusService } from '@/infrastructure/services/git/ci-status.service.js';
+import { PrCreationService } from '@/infrastructure/services/git/pr-creation.service.js';
+import { MergeStrategyService } from '@/infrastructure/services/git/merge-strategy.service.js';
 import type { MergeNodeDeps } from '@/infrastructure/services/agents/feature-agent/nodes/merge/merge.node.js';
 import type { IAgentExecutor } from '@/application/ports/output/agents/agent-executor.interface.js';
 import type { ExecFunction } from '@/infrastructure/services/git/worktree.service.js';
@@ -220,7 +225,13 @@ export interface BuiltDeps {
  */
 export function buildDeps(opts: BuildDepsOptions = {}): BuiltDeps {
   const execFn = opts.execFn ?? makeRealExec();
-  const gitPrService = new GitPrService(execFn);
+  const gitPrService = new GitPrService(
+    new DiffAnalyzerService(execFn),
+    new BranchDiscoveryService(execFn),
+    new CiStatusService(execFn),
+    new PrCreationService(execFn),
+    new MergeStrategyService(execFn)
+  );
 
   const featureRepository = {
     findById: vi.fn().mockResolvedValue({

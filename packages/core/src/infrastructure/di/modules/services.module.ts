@@ -10,8 +10,20 @@ import type { IWorktreeService } from '../../../application/ports/output/service
 import { WorktreeService } from '../../services/git/worktree.service.js';
 import type { IToolInstallerService } from '../../../application/ports/output/services/tool-installer.service.js';
 import { ToolInstallerServiceImpl } from '../../services/tool-installer/tool-installer.service.js';
-import type { IGitPrService } from '../../../application/ports/output/services/git-pr-service.interface.js';
+import type {
+  IGitPrService,
+  IDiffAnalyzerService,
+  IBranchDiscoveryService,
+  ICiStatusService,
+  IPrCreationService,
+  IMergeStrategyService,
+} from '../../../application/ports/output/services/git-pr-service.interface.js';
 import { GitPrService } from '../../services/git/git-pr.service.js';
+import { DiffAnalyzerService } from '../../services/git/diff-analyzer.service.js';
+import { BranchDiscoveryService } from '../../services/git/branch-discovery.service.js';
+import { CiStatusService } from '../../services/git/ci-status.service.js';
+import { PrCreationService } from '../../services/git/pr-creation.service.js';
+import { MergeStrategyService } from '../../services/git/merge-strategy.service.js';
 import type { IGitForkService } from '../../../application/ports/output/services/git-fork-service.interface.js';
 import { GitForkService } from '../../services/git/git-fork.service.js';
 import type { IGitHubRepositoryService } from '../../../application/ports/output/services/github-repository-service.interface.js';
@@ -70,6 +82,14 @@ export function registerServicesModule(
     'IToolInstallerService',
     ToolInstallerServiceImpl
   );
+  container.registerSingleton<IDiffAnalyzerService>('IDiffAnalyzerService', DiffAnalyzerService);
+  container.registerSingleton<IBranchDiscoveryService>(
+    'IBranchDiscoveryService',
+    BranchDiscoveryService
+  );
+  container.registerSingleton<ICiStatusService>('ICiStatusService', CiStatusService);
+  container.registerSingleton<IPrCreationService>('IPrCreationService', PrCreationService);
+  container.registerSingleton<IMergeStrategyService>('IMergeStrategyService', MergeStrategyService);
   container.registerSingleton<IGitPrService>('IGitPrService', GitPrService);
   container.registerSingleton<IGitForkService>('IGitForkService', GitForkService);
   container.registerSingleton<IGitHubRepositoryService>(

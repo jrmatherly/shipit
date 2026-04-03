@@ -10,12 +10,23 @@
 import 'reflect-metadata';
 import { describe, it, expect, afterEach } from 'vitest';
 import { GitPrService } from '@/infrastructure/services/git/git-pr.service.js';
+import { DiffAnalyzerService } from '@/infrastructure/services/git/diff-analyzer.service.js';
+import { BranchDiscoveryService } from '@/infrastructure/services/git/branch-discovery.service.js';
+import { CiStatusService } from '@/infrastructure/services/git/ci-status.service.js';
+import { PrCreationService } from '@/infrastructure/services/git/pr-creation.service.js';
+import { MergeStrategyService } from '@/infrastructure/services/git/merge-strategy.service.js';
 import { createGitHarness, createLocalOnlyHarness, destroyHarness, makeRealExec } from './setup.js';
 
 describe('GitPrService.verifyMerge — real git', () => {
   let harnessToCleanup: string[] = [];
   const realExec = makeRealExec();
-  const service = new GitPrService(realExec);
+  const service = new GitPrService(
+    new DiffAnalyzerService(realExec),
+    new BranchDiscoveryService(realExec),
+    new CiStatusService(realExec),
+    new PrCreationService(realExec),
+    new MergeStrategyService(realExec)
+  );
 
   afterEach(() => {
     destroyHarness(harnessToCleanup);
