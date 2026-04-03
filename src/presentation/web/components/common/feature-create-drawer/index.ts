@@ -5,6 +5,7 @@ export {
   type FeatureCreateDrawerProps,
   type FeatureCreatePayload,
   type FileAttachment,
+  type FormAttachment,
   type ParentFeatureOption,
   type RepositoryOption,
 } from './feature-create-drawer';
