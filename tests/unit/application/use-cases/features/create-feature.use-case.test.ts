@@ -194,6 +194,15 @@ describe('CreateFeatureUseCase', () => {
       isAvailable: vi.fn().mockResolvedValue({ available: true, version: '1.0.0' }),
     };
 
+    const mockSettingsRepo = {
+      initialize: vi.fn(),
+      load: vi.fn().mockResolvedValue({
+        agent: { type: 'claude-code' },
+        onboardingComplete: true,
+      }),
+      update: vi.fn(),
+    };
+
     useCase = new CreateFeatureUseCase(
       mockFeatureRepo,
       mockWorktreeService,
@@ -205,7 +214,8 @@ describe('CreateFeatureUseCase', () => {
       mockRepositoryRepo,
       mockGitPrService,
       mockAttachmentStorage as any,
-      mockAgentValidator
+      mockAgentValidator,
+      mockSettingsRepo
     );
   });
 

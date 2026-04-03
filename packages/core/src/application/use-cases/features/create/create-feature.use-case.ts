@@ -32,9 +32,9 @@ import type { ISpecInitializerService } from '../../../ports/output/services/spe
 import type { IRepositoryRepository } from '../../../ports/output/repositories/repository-repository.interface.js';
 import type { IGitPrService } from '../../../ports/output/services/git-pr-service.interface.js';
 import type { IAgentValidator } from '../../../ports/output/agents/agent-validator.interface.js';
-import { getSettings } from '../../../../infrastructure/services/settings.service.js';
+import type { ISettingsRepository } from '../../../ports/output/repositories/settings.repository.interface.js';
+import type { IAttachmentStorageService } from '../../../ports/output/services/attachment-storage-service.interface.js';
 import { POST_IMPLEMENTATION } from '../../../../domain/lifecycle-gates.js';
-import { AttachmentStorageService } from '../../../../infrastructure/services/attachment-storage.service.js';
 import { MetadataGenerator } from './metadata-generator.js';
 import { SlugResolver } from './slug-resolver.js';
 import type { CreateFeatureInput, CreateFeatureResult, CreateRecordResult } from './types.js';
@@ -60,10 +60,12 @@ export class CreateFeatureUseCase {
     private readonly repositoryRepo: IRepositoryRepository,
     @inject('IGitPrService')
     private readonly gitPrService: IGitPrService,
-    @inject(AttachmentStorageService)
-    private readonly attachmentStorage: AttachmentStorageService,
+    @inject('IAttachmentStorageService')
+    private readonly attachmentStorage: IAttachmentStorageService,
     @inject('IAgentValidator')
-    private readonly agentValidator: IAgentValidator
+    private readonly agentValidator: IAgentValidator,
+    @inject('ISettingsRepository')
+    private readonly settingsRepo: ISettingsRepository
   ) {}
 
   /**
@@ -193,7 +195,8 @@ export class CreateFeatureUseCase {
     await this.featureRepo.create(feature);
 
     // Create agent run record (pending state — agent not spawned yet)
-    const settings = getSettings();
+    const settings = await this.settingsRepo.load();
+    if (!settings) throw new Error('Settings not initialized');
     const agentRun = {
       id: runId,
       agentType: (input.agentType as typeof settings.agent.type) ?? settings.agent.type,
@@ -322,8 +325,9 @@ export class CreateFeatureUseCase {
       // a background worker — prevents the feature from getting stuck
       // with a silent failure in the detached worker process.
       // Skip validation when using mock executor (E2E tests, CI without real agents).
-      const settings = getSettings();
-      const effectiveAgentType = (input.agentType as AgentType) ?? settings.agent.type;
+      const currentSettings = await this.settingsRepo.load();
+      if (!currentSettings) throw new Error('Settings not initialized');
+      const effectiveAgentType = (input.agentType as AgentType) ?? currentSettings.agent.type;
       const isMockExecutor = process.env.SHIPIT_AI_MOCK_EXECUTOR === '1';
       const validation = isMockExecutor
         ? { available: true as const }
