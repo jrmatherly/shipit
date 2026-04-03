@@ -283,11 +283,17 @@ jobs:
           token: ${{ secrets.RELEASE_TOKEN }}
 
       - uses: pnpm/action-setup@v5
+      # Do NOT set registry-url here — it creates an .npmrc that conflicts
+      # with semantic-release's OIDC authentication mechanism
       - uses: actions/setup-node@v6
         with:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
-          registry-url: 'https://registry.npmjs.org'
+
+      # OIDC trusted publishing requires npm >= 11.5.1 (Node 22 ships npm 10.x)
+      - name: 📦 Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@latest
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build:release
 
@@ -296,7 +302,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
           SLACK_WEBHOOK: ${{ secrets.SLACK_WEBHOOK }}
-        run: npx semantic-release --provenance
+        run: npx semantic-release
 
   # ===========================================================================
   # Dev Release (PRs only, after ALL jobs pass)
@@ -342,6 +348,11 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: 'pnpm'
           registry-url: 'https://registry.npmjs.org'
+
+      # OIDC trusted publishing requires npm >= 11.5.1 (Node 22 ships npm 10.x)
+      - name: 📦 Upgrade npm for OIDC trusted publishing
+        run: npm install -g npm@latest
+
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build:release
 
@@ -350,7 +361,7 @@ jobs:
           DEV_VERSION: ${{ steps.devver.outputs.version }}
         run: |
           npm version "$DEV_VERSION" --no-git-tag-version
-          npm publish --tag dev --access public --provenance
+          npm publish --tag dev --access public
 
       - name: 🔍 Find existing dev release comment
         uses: peter-evans/find-comment@v4
