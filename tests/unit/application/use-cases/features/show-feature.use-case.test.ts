@@ -12,33 +12,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ShowFeatureUseCase } from '@/application/use-cases/features/show-feature.use-case.js';
 import type { IFeatureRepository } from '@/application/ports/output/repositories/feature-repository.interface.js';
 import { SdlcLifecycle } from '@/domain/generated/output.js';
-import type { Feature } from '@/domain/generated/output.js';
-
-function createMockFeature(id: string): Feature {
-  return {
-    id,
-    name: 'Test',
-    slug: 'test',
-    description: 'Test feature',
-    userQuery: 'test user query',
-    repositoryPath: '/repo',
-    branch: 'feat/test',
-    lifecycle: SdlcLifecycle.Requirements,
-    messages: [],
-    relatedArtifacts: [],
-    fast: false,
-    push: false,
-    openPr: false,
-    forkAndPr: false,
-    commitSpecs: true,
-    ciWatchEnabled: true,
-    enableEvidence: false,
-    commitEvidence: false,
-    approvalGates: { allowPrd: false, allowPlan: false, allowMerge: false },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-  };
-}
+import { createMockFeature } from '@tests/factories/index.js';
 
 describe('ShowFeatureUseCase', () => {
   let useCase: ShowFeatureUseCase;
@@ -47,7 +21,7 @@ describe('ShowFeatureUseCase', () => {
   beforeEach(() => {
     mockRepo = {
       create: vi.fn(),
-      findById: vi.fn().mockResolvedValue(createMockFeature('feat-1')),
+      findById: vi.fn().mockResolvedValue(createMockFeature({ id: 'feat-1' })),
       findByIdPrefix: vi.fn().mockResolvedValue(null),
       findBySlug: vi.fn(),
       findByBranch: vi.fn(),
@@ -68,7 +42,9 @@ describe('ShowFeatureUseCase', () => {
 
   it('should fall back to prefix match when exact match fails', async () => {
     mockRepo.findById = vi.fn().mockResolvedValue(null);
-    mockRepo.findByIdPrefix = vi.fn().mockResolvedValue(createMockFeature('feat-1-full-uuid'));
+    mockRepo.findByIdPrefix = vi
+      .fn()
+      .mockResolvedValue(createMockFeature({ id: 'feat-1-full-uuid' }));
 
     const result = await useCase.execute('feat-1');
     expect(result.id).toBe('feat-1-full-uuid');
@@ -93,9 +69,11 @@ describe('ShowFeatureUseCase', () => {
   });
 
   it('should return the full feature object from repository', async () => {
-    const mockFeature = createMockFeature('feat-2');
-    mockFeature.name = 'My Feature';
-    mockFeature.lifecycle = SdlcLifecycle.Implementation;
+    const mockFeature = createMockFeature({
+      id: 'feat-2',
+      name: 'My Feature',
+      lifecycle: SdlcLifecycle.Implementation,
+    });
     mockRepo.findById = vi.fn().mockResolvedValue(mockFeature);
 
     const result = await useCase.execute('feat-2');

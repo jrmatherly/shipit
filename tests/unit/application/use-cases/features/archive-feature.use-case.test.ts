@@ -12,34 +12,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { ArchiveFeatureUseCase } from '@/application/use-cases/features/archive-feature.use-case.js';
 import type { IFeatureRepository } from '@/application/ports/output/repositories/feature-repository.interface.js';
 import { SdlcLifecycle } from '@/domain/generated/output.js';
-import type { Feature } from '@/domain/generated/output.js';
-
-function createMockFeature(overrides?: Partial<Feature>): Feature {
-  return {
-    id: 'feat-123-full-uuid',
-    name: 'Test Feature',
-    slug: 'test-feature',
-    description: 'A test feature',
-    userQuery: 'test user query',
-    repositoryPath: '/repo',
-    branch: 'feat/test-feature',
-    lifecycle: SdlcLifecycle.Maintain,
-    messages: [],
-    relatedArtifacts: [],
-    fast: false,
-    push: false,
-    openPr: false,
-    forkAndPr: false,
-    commitSpecs: true,
-    ciWatchEnabled: true,
-    enableEvidence: false,
-    commitEvidence: false,
-    approvalGates: { allowPrd: false, allowPlan: false, allowMerge: false },
-    createdAt: new Date(),
-    updatedAt: new Date(),
-    ...overrides,
-  };
-}
+import { createMockFeature } from '@tests/factories/index.js';
 
 describe('ArchiveFeatureUseCase', () => {
   let useCase: ArchiveFeatureUseCase;
@@ -48,7 +21,11 @@ describe('ArchiveFeatureUseCase', () => {
   beforeEach(() => {
     mockFeatureRepo = {
       create: vi.fn(),
-      findById: vi.fn().mockResolvedValue(createMockFeature()),
+      findById: vi
+        .fn()
+        .mockResolvedValue(
+          createMockFeature({ id: 'feat-123-full-uuid', lifecycle: SdlcLifecycle.Maintain })
+        ),
       findByIdPrefix: vi.fn().mockResolvedValue(null),
       findBySlug: vi.fn(),
       findByBranch: vi.fn(),
@@ -244,7 +221,11 @@ describe('ArchiveFeatureUseCase', () => {
   });
 
   it('should return the updated feature', async () => {
-    const feature = createMockFeature({ name: 'My Feature', lifecycle: SdlcLifecycle.Maintain });
+    const feature = createMockFeature({
+      id: 'feat-123-full-uuid',
+      name: 'My Feature',
+      lifecycle: SdlcLifecycle.Maintain,
+    });
     mockFeatureRepo.findById = vi.fn().mockResolvedValue(feature);
 
     const result = await useCase.execute('feat-123-full-uuid');
