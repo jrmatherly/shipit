@@ -23,23 +23,38 @@ Specs live in `specs/NNN-feature-name/`. **Edit YAML only — Markdown is auto-g
 | `pnpm test`          | Run all tests                   |
 | `pnpm test:unit`     | Unit tests only                 |
 | `pnpm test:int`      | Integration tests only          |
-| `pnpm test:e2e`      | Playwright e2e tests            |
+| `pnpm test:e2e`      | CLI + Web e2e (Vitest + Playwright) |
 | `pnpm lint:fix`      | Fix lint issues                 |
-| `pnpm validate`      | Lint + format + typecheck + tsp |
+| `pnpm validate`      | lint:fix + format + typecheck + tsp (modifies files) |
 | `pnpm dev:cli`       | Run CLI locally (ts-node)       |
 | `pnpm dev:web`       | Start Next.js dev server        |
 | `pnpm tsp:codegen`   | Compile TypeSpec + format output |
+| `pnpm dev:storybook` | Start Storybook dev server       |
+| `pnpm build:storybook` | Build Storybook for CI         |
+
+**Pre-commit hooks:** Commits automatically run `pnpm generate` (TypeSpec codegen) and auto-stage generated files before lint-staged. Expect additional staged changes after commit.
+
+**Test frameworks:** Vitest (unit/integration/CLI e2e) + Playwright (web e2e). **Node >= 22** required.
 
 ## Architecture
 
-Clean Architecture — four layers in `packages/core/src/` (dependencies point inward):
+Clean Architecture — three core layers in `packages/core/src/`, plus presentation at repo root (dependencies point inward):
 
-- `domain/` — Core business logic, no external deps
-- `application/` — Use cases, output port interfaces
-- `infrastructure/` — External concerns: DB, agents, services
-- `presentation/` — CLI, TUI, Web UI (`src/presentation/`)
+- `packages/core/src/domain/` — Core business logic, no external deps
+- `packages/core/src/application/` — Use cases, output port interfaces
+- `packages/core/src/infrastructure/` — External concerns: DB, agents, services
+- `src/presentation/` — CLI, TUI, Web UI (separate from core package)
 
-See [clean-architecture](./docs/architecture/clean-architecture.md).
+Repositories expose `findByIds()` and `listActive()` batch methods — prefer these over N+1 query patterns in polling and listing code.
+
+See [clean-architecture](./docs/architecture/clean-architecture.md). Sub-directory CLAUDE.md files: `src/CLAUDE.md` (cross-platform rules), `src/presentation/web/CLAUDE.md` (web dev/prod modes, SSE architecture).
+
+## Security
+
+- All web API routes go through localhost-only middleware (`src/presentation/web/middleware.ts`) — rejects non-localhost requests
+- File-serving routes use `realpath()` before path containment checks to prevent symlink traversal
+- Upload routes block `.env` files and extensionless files
+- 500 errors use `apiError()` from `@/lib/api-helpers` — never expose raw `error.message` to clients
 
 ## Tooling
 
@@ -50,7 +65,7 @@ See [clean-architecture](./docs/architecture/clean-architecture.md).
 ## Mandatory Rules
 
 - **MANDATORY — TDD**: Write failing tests FIRST (RED → GREEN → REFACTOR). Every plan phase must define explicit TDD cycles. See [tdd-guide](./docs/development/tdd-guide.md).
-- **MANDATORY — TypeSpec-first**: Domain models defined in `tsp/`. Run `pnpm tsp:compile` to generate `packages/core/src/domain/generated/output.ts`. Never edit generated files. See [typespec-guide](./docs/development/typespec-guide.md).
+- **MANDATORY — TypeSpec-first**: Domain models defined in `tsp/`. Run `pnpm tsp:codegen` to generate `packages/core/src/domain/generated/output.ts`. Never edit generated files. See [typespec-guide](./docs/development/typespec-guide.md).
 - **MANDATORY — Agent resolution**: No component may hardcode an agent type. All resolution flows through `IAgentExecutorProvider`. See [AGENTS.md](./AGENTS.md).
 - **MANDATORY — Storybook stories**: Every web UI component MUST have a colocated `.stories.tsx` file. Commits without stories will be rejected.
 - **MANDATORY — Spec-driven**: All features start with `/shep-kit:new-feature`. No implementation without a spec.
@@ -81,6 +96,8 @@ See [clean-architecture](./docs/architecture/clean-architecture.md).
 | TUI architecture               | [docs/tui/architecture.md](./docs/tui/architecture.md)                                 |
 | Web UI architecture            | [docs/ui/architecture.md](./docs/ui/architecture.md)                                   |
 | pnpm workspaces + setup        | [docs/development/setup.md](./docs/development/setup.md)                               |
+| Tech debt remediation plan     | [.scratchpad/plans/technical-debt-remediation-plan.md](./.scratchpad/plans/technical-debt-remediation-plan.md) |
+| Security middleware            | [src/presentation/web/middleware.ts](./src/presentation/web/middleware.ts)              |
 
 ## Naming Conventions (Post-Rename)
 
@@ -92,6 +109,10 @@ See [clean-architecture](./docs/architecture/clean-architecture.md).
 - Container registry: `ghcr.io/jrmatherly/shipit`
 - E2E test target repo: `jrmatherly/shipped`
 - `/shep-kit` skill names: **kept as-is** (internal developer workflow, not user-facing)
+
+## Tech Debt
+
+Active remediation plan: [`.scratchpad/plans/technical-debt-remediation-plan.md`](./.scratchpad/plans/technical-debt-remediation-plan.md) (74 findings across 5 dimensions). Phase 0 (Security) and Phase 1 (Quick Wins) are complete. Check the plan before starting new work that touches affected areas.
 
 ## General
 ### 1. Self-Improvement Loop
