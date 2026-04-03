@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Edge, Position } from '@xyflow/react';
+import type { Edge } from '@xyflow/react';
 import type { CanvasNodeType } from '@/components/features/features-canvas';
 import type { FeatureNodeData } from '@/components/common/feature-node';
 import type { RepositoryNodeData } from '@/components/common/repository-node';
@@ -12,7 +12,8 @@ import {
   type RepoEntry,
   type GraphCallbacks,
 } from '@/lib/derive-graph';
-import { layoutWithDagre, getCanvasLayoutDefaults } from '@/lib/layout-with-dagre';
+import { getCanvasLayoutDefaults } from '@/lib/layout-with-dagre';
+import { useGraphDerivation } from './use-graph-derivation';
 
 export type { GraphCallbacks } from '@/lib/derive-graph';
 
@@ -219,78 +220,9 @@ export function useGraphState(
     [visibleFeatureMap, repoMap, pendingMap, stableCallbacks]
   );
 
-  // Cache dagre layout positions — only re-run when node set or edge connections change
-  const layoutCacheRef = useRef<{
-    key: string;
-    positions: Map<
-      string,
-      { position: { x: number; y: number }; targetPosition: Position; sourcePosition: Position }
-    >;
-  }>({ key: '', positions: new Map() });
-
-  const { nodes, edges } = useMemo(() => {
-    const nodeIds = derived.nodes
-      .map((n) => n.id)
-      .sort()
-      .join(',');
-    const edgeKeys = derived.edges
-      .map((e) => `${e.source}-${e.target}`)
-      .sort()
-      .join(',');
-    const topologyKey = `${nodeIds}|${edgeKeys}|${layoutDefaults.direction}`;
-
-    if (topologyKey !== layoutCacheRef.current.key) {
-      // Topology changed — re-run dagre
-      const result = layoutWithDagre(derived.nodes, derived.edges, layoutDefaults);
-      const positions = new Map<
-        string,
-        { position: { x: number; y: number }; targetPosition: Position; sourcePosition: Position }
-      >();
-      for (const node of result.nodes) {
-        positions.set(node.id, {
-          position: node.position,
-          targetPosition: (node as Record<string, unknown>).targetPosition as Position,
-          sourcePosition: (node as Record<string, unknown>).sourcePosition as Position,
-        });
-      }
-
-      // Anchor new layout to previous positions so the graph doesn't drift.
-      // Find the first surviving node (exists in both old and new layouts) and
-      // shift the entire new layout by the delta between its old and new position.
-      const prevPositions = layoutCacheRef.current.positions;
-      if (prevPositions.size > 0) {
-        let dx = 0;
-        let dy = 0;
-        for (const [id, newPos] of positions) {
-          const oldPos = prevPositions.get(id);
-          if (oldPos) {
-            dx = oldPos.position.x - newPos.position.x;
-            dy = oldPos.position.y - newPos.position.y;
-            break;
-          }
-        }
-        if (dx !== 0 || dy !== 0) {
-          for (const pos of positions.values()) {
-            pos.position = { x: pos.position.x + dx, y: pos.position.y + dy };
-          }
-          for (const node of result.nodes) {
-            node.position = { x: node.position.x + dx, y: node.position.y + dy };
-          }
-        }
-      }
-
-      layoutCacheRef.current = { key: topologyKey, positions };
-      return result;
-    }
-
-    // Data-only change — apply cached positions without re-running dagre
-    const { positions } = layoutCacheRef.current;
-    const nodes = derived.nodes.map((node) => {
-      const cached = positions.get(node.id);
-      return cached ? { ...node, ...cached } : node;
-    });
-    return { nodes, edges: derived.edges };
-  }, [derived, layoutDefaults]);
+  // Cache dagre layout positions — only re-run when node set or edge connections change.
+  // Extracted into useGraphDerivation for focus; see hooks/use-graph-derivation.ts.
+  const { nodes, edges } = useGraphDerivation(derived, layoutDefaults);
 
   // --- Mutations ---
 
