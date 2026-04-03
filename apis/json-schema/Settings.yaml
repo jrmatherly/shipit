@@ -47,4 +47,4 @@ required:
   - onboardingComplete
 allOf:
   - $ref: BaseEntity.yaml
-description: Global Shep platform settings (singleton)
+description: Global Shipit AI platform settings (singleton)

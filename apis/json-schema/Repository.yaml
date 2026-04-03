@@ -16,4 +16,4 @@ required:
   - path
 allOf:
   - $ref: SoftDeletableEntity.yaml
-description: A code repository tracked by the Shep platform
+description: A code repository tracked by the Shipit AI platform

@@ -44,6 +44,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       exclude: ['node_modules', 'dist', 'tests', '**/*.d.ts', '**/*.config.*'],
+      thresholds: {
+        lines: 40,
+        functions: 35,
+        branches: 30,
+        statements: 40,
+      },
     },
     // Two projects: web tests get jsdom + setup, everything else runs in fast node env
     projects: [

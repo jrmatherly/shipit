@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
-import { readFile } from 'fs/promises';
-import { extname, basename } from 'path';
-import { resolve as resolvePath } from 'path';
+import { readFile, realpath } from 'fs/promises';
+import { extname, basename, resolve as resolvePath, sep } from 'path';
+import { homedir } from 'node:os';
 import { resolve } from '@/lib/server-container';
-import type { AttachmentStorageService } from '@shepai/core/infrastructure/services/attachment-storage.service';
+import type { AttachmentStorageService } from '@shipit-ai/core/infrastructure/services/attachment-storage.service';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
@@ -58,7 +58,6 @@ const ALLOWED_EXTENSIONS = new Set([
   '.ini',
   '.cfg',
   '.conf',
-  '.env',
   '.zip',
   '.tar',
   '.gz',
@@ -95,8 +94,33 @@ export async function POST(request: Request): Promise<NextResponse> {
     }
 
     const ext = extname(path).toLowerCase();
-    if (ext && !ALLOWED_EXTENSIONS.has(ext)) {
-      return NextResponse.json({ error: `File type "${ext}" is not allowed` }, { status: 400 });
+    if (!ext || !ALLOWED_EXTENSIONS.has(ext)) {
+      return NextResponse.json(
+        {
+          error: ext
+            ? `File type "${ext}" is not allowed`
+            : 'Files without an extension are not allowed',
+        },
+        { status: 400 }
+      );
+    }
+
+    // Path containment: resolve symlinks then verify within allowed roots
+    let physicalPath: string;
+    try {
+      physicalPath = await realpath(resolvePath(path));
+    } catch {
+      return NextResponse.json({ error: 'File not found or unreadable' }, { status: 404 });
+    }
+    const allowedRoots = [
+      await realpath(process.cwd()).catch(() => process.cwd()),
+      await realpath(homedir()).catch(() => homedir()),
+    ];
+    const isAllowed = allowedRoots.some(
+      (root) => physicalPath === root || physicalPath.startsWith(root + sep)
+    );
+    if (!isAllowed) {
+      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
     let buffer: Buffer;

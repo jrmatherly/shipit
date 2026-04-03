@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { resolve } from '@/lib/server-container';
-import type { AttachmentStorageService } from '@shepai/core/infrastructure/services/attachment-storage.service';
+import type { AttachmentStorageService } from '@shipit-ai/core/infrastructure/services/attachment-storage.service';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
 
@@ -55,7 +55,6 @@ const ALLOWED_EXTENSIONS = new Set([
   '.ini',
   '.cfg',
   '.conf',
-  '.env',
   '.zip',
   '.tar',
   '.gz',
@@ -90,10 +89,17 @@ export async function POST(request: Request): Promise<NextResponse> {
       );
     }
 
-    // Validate extension
+    // Validate extension (require a recognized extension)
     const ext = getExtension(file.name);
-    if (ext && !ALLOWED_EXTENSIONS.has(ext)) {
-      return NextResponse.json({ error: `File type "${ext}" is not allowed` }, { status: 400 });
+    if (!ext || !ALLOWED_EXTENSIONS.has(ext)) {
+      return NextResponse.json(
+        {
+          error: ext
+            ? `File type "${ext}" is not allowed`
+            : 'Files without an extension are not allowed',
+        },
+        { status: 400 }
+      );
     }
 
     const buffer = Buffer.from(await file.arrayBuffer());

@@ -20,11 +20,13 @@ const HOME_DIR = path.resolve('/home/testuser');
 const mockReaddir = vi.fn();
 const mockStat = vi.fn();
 const mockAccess = vi.fn();
+const mockRealpath = vi.fn();
 
 vi.mock('node:fs/promises', () => ({
   readdir: (...args: unknown[]) => mockReaddir(...args),
   stat: (...args: unknown[]) => mockStat(...args),
   access: (...args: unknown[]) => mockAccess(...args),
+  realpath: (...args: unknown[]) => mockRealpath(...args),
 }));
 
 vi.mock('node:os', () => ({
@@ -69,9 +71,10 @@ describe('GET /api/directory/list', () => {
 
   beforeEach(async () => {
     vi.clearAllMocks();
-    routeModule = await import(
-      '../../../../../src/presentation/web/app/api/directory/list/route.js'
-    );
+    // realpath returns the path as-is by default (no symlinks in test paths)
+    mockRealpath.mockImplementation(async (p: string) => p);
+    routeModule =
+      await import('../../../../../src/presentation/web/app/api/directory/list/route.js');
   });
 
   describe('successful listing', () => {

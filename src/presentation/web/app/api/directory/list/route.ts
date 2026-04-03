@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { readdir, stat } from 'node:fs/promises';
+import { readdir, realpath, stat } from 'node:fs/promises';
 import { homedir } from 'node:os';
 import path from 'node:path';
 
@@ -20,6 +20,27 @@ export async function GET(request: Request): Promise<NextResponse> {
   }
 
   const resolvedPath = path.resolve(rawPath);
+
+  // Path containment: resolve symlinks then verify within allowed roots
+  let physicalPath: string;
+  try {
+    physicalPath = await realpath(resolvedPath);
+  } catch {
+    return NextResponse.json({ error: 'Directory not found' }, { status: 404 });
+  }
+
+  const allowedRoots = [
+    await realpath(process.cwd()).catch(() => process.cwd()),
+    await realpath(homedir()).catch(() => homedir()),
+  ];
+
+  const isAllowed = allowedRoots.some(
+    (root) => physicalPath === root || physicalPath.startsWith(root + path.sep)
+  );
+
+  if (!isAllowed) {
+    return NextResponse.json({ error: 'Access denied' }, { status: 403 });
+  }
 
   try {
     const dirStat = await stat(resolvedPath);

@@ -636,7 +636,7 @@ export type FabLayoutConfig = {
 };
 
 /**
- * Global Shep platform settings (singleton)
+ * Global Shipit AI platform settings (singleton)
  */
 export type Settings = BaseEntity & {
   /**
@@ -1656,7 +1656,7 @@ export type NotificationEvent = {
 };
 
 /**
- * A code repository tracked by the Shep platform
+ * A code repository tracked by the Shipit AI platform
  */
 export type Repository = SoftDeletableEntity & {
   /**
