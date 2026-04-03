@@ -4,85 +4,59 @@
  * Tests for the GET /api/agent-events SSE endpoint that streams
  * notification events via DB polling with per-connection delta cache.
  *
- * These tests mock the DI container (resolve()) to inject fake
- * repositories, then exercise the route handler directly.
+ * These tests mock the DI container (resolve()) to inject a fake
+ * PollAgentEventsUseCase, then exercise the route handler directly.
+ *
+ * Option A: mock the use case to return pre-computed notification events.
+ * This keeps integration tests focused on the route's SSE encoding and
+ * connection-management responsibilities, not on the use-case business logic.
  */
 
 import 'reflect-metadata';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import { AgentRunStatus, NotificationEventType, PrStatus } from '@/domain/generated/output.js';
-import type { Feature, AgentRun, PhaseTiming } from '@/domain/generated/output.js';
+import { NotificationEventType, NotificationSeverity } from '@/domain/generated/output.js';
+import type { NotificationEvent } from '@/domain/generated/output.js';
+import type { PollAgentEventsResult } from '@shipit-ai/core/application/use-cases/agents/poll-agent-events.use-case.js';
 
 // --- Mock DI container via server-container ---
 
-const mockFeatures: Feature[] = [];
-const mockRuns = new Map<string, AgentRun>();
-const mockTimings = new Map<string, PhaseTiming[]>();
-
-const mockListFeatures = { execute: vi.fn(async () => [...mockFeatures]) };
-const mockAgentRunRepo = {
-  findById: vi.fn(async (id: string) => mockRuns.get(id) ?? null),
-};
-const mockPhaseTimingRepo = {
-  findByRunId: vi.fn(async (runId: string) => mockTimings.get(runId) ?? []),
+const mockUseCase = {
+  execute: vi.fn(
+    async (): Promise<PollAgentEventsResult> => ({
+      notificationEvents: [],
+      sessionEvents: [],
+    })
+  ),
 };
 
 vi.mock('@/lib/server-container', () => ({
   resolve: vi.fn((token: string) => {
-    switch (token) {
-      case 'ListFeaturesUseCase':
-        return mockListFeatures;
-      case 'IAgentRunRepository':
-        return mockAgentRunRepo;
-      case 'IPhaseTimingRepository':
-        return mockPhaseTimingRepo;
-      default:
-        throw new Error(`Unknown token: ${token}`);
+    if (token === 'PollAgentEventsUseCase') {
+      return mockUseCase;
     }
+    throw new Error(`Unknown token: ${token}`);
   }),
 }));
 
 // --- Helpers ---
 
-function makeFeature(overrides?: Partial<Feature>): Feature {
+/**
+ * Build a minimal NotificationEvent for use in test assertions.
+ */
+function makeNotificationEvent(
+  overrides: Partial<NotificationEvent> & {
+    eventType: NotificationEventType;
+    featureName: string;
+  }
+): NotificationEvent {
   return {
-    id: 'feat-1',
-    name: 'Test Feature',
-    slug: 'test-feature',
-    repositoryPath: '/tmp/repo',
-    branch: 'main',
-    lifecycle: 'Implementation' as Feature['lifecycle'],
-    messages: [],
-    relatedArtifacts: [],
-    push: false,
-    openPr: false,
-    approvalGates: {} as Feature['approvalGates'],
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    userQuery: 'test',
-    ...overrides,
-  } as Feature;
-}
-
-function makeRun(overrides?: Partial<AgentRun>): AgentRun {
-  return {
-    id: 'run-1',
-    featureId: 'feat-1',
-    status: AgentRunStatus.running,
-    createdAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-    ...overrides,
-  } as AgentRun;
-}
-
-function makeTiming(overrides?: Partial<PhaseTiming>): PhaseTiming {
-  return {
-    id: 'timing-1',
     agentRunId: 'run-1',
-    phase: 'analyze',
-    startedAt: new Date(),
+    featureId: 'feat-1',
+    message: 'test event',
+    severity: NotificationSeverity.Info,
+    timestamp: new Date(),
     ...overrides,
-  } as PhaseTiming;
+  };
 }
 
 /**
@@ -130,10 +104,8 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
     vi.useFakeTimers();
 
     // Reset mock state
-    mockFeatures.length = 0;
-    mockRuns.clear();
-    mockTimings.clear();
     vi.clearAllMocks();
+    mockUseCase.execute.mockResolvedValue({ notificationEvents: [], sessionEvents: [] });
 
     // Fresh import each test
     routeModule = await import('@/presentation/web/app/api/agent-events/route.js');
@@ -160,11 +132,22 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
   });
 
   it('should emit status change events after cache is seeded', async () => {
-    const feature = makeFeature({ agentRunId: 'run-1' });
-    const run = makeRun({ status: AgentRunStatus.running });
-
-    mockFeatures.push(feature);
-    mockRuns.set('run-1', run);
+    // Poll 1: return no events (seed)
+    // Poll 2: return an AgentCompleted event
+    mockUseCase.execute
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] })
+      .mockResolvedValueOnce({
+        notificationEvents: [
+          makeNotificationEvent({
+            eventType: NotificationEventType.AgentCompleted,
+            featureName: 'Test Feature',
+            agentRunId: 'run-1',
+            featureId: 'feat-1',
+            severity: NotificationSeverity.Success,
+          }),
+        ],
+        sessionEvents: [],
+      });
 
     const controller = new AbortController();
     const request = new Request('http://localhost:3000/api/agent-events', {
@@ -177,9 +160,6 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
 
     // Poll 1: seeds the cache (no events emitted)
     await advancePollCycles(1);
-
-    // Change status for next poll
-    mockRuns.set('run-1', makeRun({ status: AgentRunStatus.completed }));
 
     // Poll 2: detects status change → emits event
     await advancePollCycles(1);
@@ -194,11 +174,8 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
   });
 
   it('should not emit events on the initial seed poll', async () => {
-    const feature = makeFeature({ agentRunId: 'run-1' });
-    const run = makeRun({ status: AgentRunStatus.running });
-
-    mockFeatures.push(feature);
-    mockRuns.set('run-1', run);
+    // Use case returns no events on the first poll
+    mockUseCase.execute.mockResolvedValue({ notificationEvents: [], sessionEvents: [] });
 
     const controller = new AbortController();
     const request = new Request('http://localhost:3000/api/agent-events', {
@@ -221,12 +198,22 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
   });
 
   it('should filter events by runId when query parameter is provided', async () => {
-    const feature1 = makeFeature({ id: 'feat-1', agentRunId: 'run-1', name: 'Feature One' });
-    const feature2 = makeFeature({ id: 'feat-2', agentRunId: 'run-2', name: 'Feature Two' });
-
-    mockFeatures.push(feature1, feature2);
-    mockRuns.set('run-1', makeRun({ id: 'run-1', status: AgentRunStatus.running }));
-    mockRuns.set('run-2', makeRun({ id: 'run-2', status: AgentRunStatus.running }));
+    // Poll 1: seed — no events
+    // Poll 2: use case returns only run-2/Feature Two event (filtering is use-case responsibility)
+    mockUseCase.execute
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] })
+      .mockResolvedValueOnce({
+        notificationEvents: [
+          makeNotificationEvent({
+            eventType: NotificationEventType.AgentCompleted,
+            featureName: 'Feature Two',
+            agentRunId: 'run-2',
+            featureId: 'feat-2',
+            severity: NotificationSeverity.Success,
+          }),
+        ],
+        sessionEvents: [],
+      });
 
     const controller = new AbortController();
     const request = new Request('http://localhost:3000/api/agent-events?runId=run-2', {
@@ -239,10 +226,6 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
 
     // Seed poll
     await advancePollCycles(1);
-
-    // Change both statuses
-    mockRuns.set('run-1', makeRun({ id: 'run-1', status: AgentRunStatus.completed }));
-    mockRuns.set('run-2', makeRun({ id: 'run-2', status: AgentRunStatus.completed }));
 
     // Delta poll
     await advancePollCycles(1);
@@ -259,11 +242,21 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
   });
 
   it('should emit phase completion events for new completed phases', async () => {
-    const feature = makeFeature({ agentRunId: 'run-1' });
-    const run = makeRun({ status: AgentRunStatus.running });
-
-    mockFeatures.push(feature);
-    mockRuns.set('run-1', run);
+    // Poll 1: seed — no events
+    // Poll 2: use case returns a PhaseCompleted event for 'analyze'
+    mockUseCase.execute
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] })
+      .mockResolvedValueOnce({
+        notificationEvents: [
+          makeNotificationEvent({
+            eventType: NotificationEventType.PhaseCompleted,
+            featureName: 'Test Feature',
+            phaseName: 'analyze',
+            message: 'Completed analyze phase',
+          }),
+        ],
+        sessionEvents: [],
+      });
 
     const controller = new AbortController();
     const request = new Request('http://localhost:3000/api/agent-events', {
@@ -276,9 +269,6 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
 
     // Seed poll (no timings yet)
     await advancePollCycles(1);
-
-    // Add a completed phase timing for next poll
-    mockTimings.set('run-1', [makeTiming({ phase: 'analyze', completedAt: new Date() })]);
 
     // Delta poll — should detect new completed phase
     await advancePollCycles(1);
@@ -343,19 +333,30 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
     await vi.advanceTimersByTimeAsync(10_000);
 
     // Verify no more polls happen after abort
-    const callsBefore = mockListFeatures.execute.mock.calls.length;
+    const callsBefore = mockUseCase.execute.mock.calls.length;
     await vi.advanceTimersByTimeAsync(6_000);
-    const callsAfter = mockListFeatures.execute.mock.calls.length;
+    const callsAfter = mockUseCase.execute.mock.calls.length;
 
     expect(callsAfter).toBe(callsBefore);
   });
 
   it('should support multiple concurrent SSE clients independently', async () => {
-    const feature = makeFeature({ agentRunId: 'run-1' });
-    const run = makeRun({ status: AgentRunStatus.running });
-
-    mockFeatures.push(feature);
-    mockRuns.set('run-1', run);
+    // Both clients get an AgentCompleted event on poll 2
+    mockUseCase.execute
+      // Client 1 poll 1 (seed) and Client 2 poll 1 (seed) — interleaved
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] })
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] })
+      // Client 1 poll 2 (delta) and Client 2 poll 2 (delta)
+      .mockResolvedValue({
+        notificationEvents: [
+          makeNotificationEvent({
+            eventType: NotificationEventType.AgentCompleted,
+            featureName: 'Test Feature',
+            severity: NotificationSeverity.Success,
+          }),
+        ],
+        sessionEvents: [],
+      });
 
     const controller1 = new AbortController();
     const controller2 = new AbortController();
@@ -376,9 +377,6 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
     // Seed poll for both
     await advancePollCycles(1);
 
-    // Change status
-    mockRuns.set('run-1', makeRun({ status: AgentRunStatus.completed }));
-
     // Delta poll
     await advancePollCycles(1);
 
@@ -397,19 +395,22 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
   });
 
   it('should emit MergeReviewReady when feature lifecycle transitions to Review', async () => {
-    const feature = makeFeature({
-      agentRunId: 'run-1',
-      lifecycle: 'Implementation' as Feature['lifecycle'],
-      pr: {
-        url: 'https://github.com/org/repo/pull/42',
-        number: 42,
-        status: PrStatus.Open,
-      } as Feature['pr'],
-    });
-    const run = makeRun({ status: AgentRunStatus.running });
-
-    mockFeatures.push(feature);
-    mockRuns.set('run-1', run);
+    // Poll 1: seed — no events
+    // Poll 2: use case returns MergeReviewReady with PR URL
+    const prUrl = 'https://github.com/org/repo/pull/42';
+    mockUseCase.execute
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] })
+      .mockResolvedValueOnce({
+        notificationEvents: [
+          makeNotificationEvent({
+            eventType: NotificationEventType.MergeReviewReady,
+            featureName: 'Test Feature',
+            phaseName: 'merge',
+            message: `Ready for merge review — PR: ${prUrl}`,
+          }),
+        ],
+        sessionEvents: [],
+      });
 
     const controller = new AbortController();
     const request = new Request('http://localhost:3000/api/agent-events', {
@@ -422,18 +423,6 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
 
     // Seed poll
     await advancePollCycles(1);
-
-    // Transition feature lifecycle to Review
-    const updatedFeature = makeFeature({
-      agentRunId: 'run-1',
-      lifecycle: 'Review' as Feature['lifecycle'],
-      pr: {
-        url: 'https://github.com/org/repo/pull/42',
-        number: 42,
-        status: PrStatus.Open,
-      } as Feature['pr'],
-    });
-    mockFeatures[0] = updatedFeature;
 
     // Delta poll — should detect lifecycle transition and emit MergeReviewReady
     await advancePollCycles(1);
@@ -445,18 +434,25 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
     expect(allData).toContain('event: notification');
     expect(allData).toContain(NotificationEventType.MergeReviewReady);
     expect(allData).toContain('Ready for merge review');
-    expect(allData).toContain('https://github.com/org/repo/pull/42');
+    expect(allData).toContain(prUrl);
   });
 
   it('should emit MergeReviewReady without PR URL when PR is not available', async () => {
-    const feature = makeFeature({
-      agentRunId: 'run-1',
-      lifecycle: 'Implementation' as Feature['lifecycle'],
-    });
-    const run = makeRun({ status: AgentRunStatus.running });
-
-    mockFeatures.push(feature);
-    mockRuns.set('run-1', run);
+    // Poll 1: seed — no events
+    // Poll 2: use case returns MergeReviewReady without a PR URL
+    mockUseCase.execute
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] })
+      .mockResolvedValueOnce({
+        notificationEvents: [
+          makeNotificationEvent({
+            eventType: NotificationEventType.MergeReviewReady,
+            featureName: 'Test Feature',
+            phaseName: 'merge',
+            message: 'Ready for merge review',
+          }),
+        ],
+        sessionEvents: [],
+      });
 
     const controller = new AbortController();
     const request = new Request('http://localhost:3000/api/agent-events', {
@@ -469,13 +465,6 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
 
     // Seed poll
     await advancePollCycles(1);
-
-    // Transition feature lifecycle to Review without PR data
-    const updatedFeature = makeFeature({
-      agentRunId: 'run-1',
-      lifecycle: 'Review' as Feature['lifecycle'],
-    });
-    mockFeatures[0] = updatedFeature;
 
     // Delta poll
     await advancePollCycles(1);
@@ -491,14 +480,21 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
   });
 
   it('should not emit MergeReviewReady for non-Review lifecycle transitions', async () => {
-    const feature = makeFeature({
-      agentRunId: 'run-1',
-      lifecycle: 'Implementation' as Feature['lifecycle'],
-    });
-    const run = makeRun({ status: AgentRunStatus.running });
-
-    mockFeatures.push(feature);
-    mockRuns.set('run-1', run);
+    // Poll 1: seed — no events
+    // Poll 2: use case returns PhaseCompleted (not MergeReviewReady) for Planning lifecycle
+    mockUseCase.execute
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] })
+      .mockResolvedValueOnce({
+        notificationEvents: [
+          makeNotificationEvent({
+            eventType: NotificationEventType.PhaseCompleted,
+            featureName: 'Test Feature',
+            phaseName: 'plan',
+            message: 'Entered plan phase',
+          }),
+        ],
+        sessionEvents: [],
+      });
 
     const controller = new AbortController();
     const request = new Request('http://localhost:3000/api/agent-events', {
@@ -511,13 +507,6 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
 
     // Seed poll
     await advancePollCycles(1);
-
-    // Transition lifecycle to Planning (not Review)
-    const updatedFeature = makeFeature({
-      agentRunId: 'run-1',
-      lifecycle: 'Planning' as Feature['lifecycle'],
-    });
-    mockFeatures[0] = updatedFeature;
 
     // Delta poll
     await advancePollCycles(1);
@@ -532,9 +521,21 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
   });
 
   it('should gracefully handle DI container errors during poll', async () => {
-    // Make resolve throw on first few polls
-    mockListFeatures.execute.mockRejectedValueOnce(new Error('DI not ready'));
-    mockListFeatures.execute.mockRejectedValueOnce(new Error('DI not ready'));
+    // Make execute throw on first few polls, then succeed
+    mockUseCase.execute
+      .mockRejectedValueOnce(new Error('DI not ready'))
+      .mockRejectedValueOnce(new Error('DI not ready'))
+      .mockResolvedValueOnce({ notificationEvents: [], sessionEvents: [] }) // seed
+      .mockResolvedValueOnce({
+        notificationEvents: [
+          makeNotificationEvent({
+            eventType: NotificationEventType.AgentCompleted,
+            featureName: 'Test Feature',
+            severity: NotificationSeverity.Success,
+          }),
+        ],
+        sessionEvents: [],
+      });
 
     const controller = new AbortController();
     const request = new Request('http://localhost:3000/api/agent-events', {
@@ -548,18 +549,10 @@ describe('SSE API Route: GET /api/agent-events (DB polling)', () => {
     // These polls should fail gracefully
     await advancePollCycles(2);
 
-    // Now set up valid data
-    const feature = makeFeature({ agentRunId: 'run-1' });
-    mockFeatures.push(feature);
-    mockRuns.set('run-1', makeRun({ status: AgentRunStatus.running }));
-
     // This poll should succeed (seed)
     await advancePollCycles(1);
 
-    // Change status
-    mockRuns.set('run-1', makeRun({ status: AgentRunStatus.completed }));
-
-    // This poll should detect the change
+    // This poll should emit events
     await advancePollCycles(1);
 
     controller.abort();

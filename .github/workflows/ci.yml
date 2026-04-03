@@ -225,12 +225,21 @@ jobs:
       pull-requests: write
 
     steps:
+      - name: 🔍 Find existing security comment
+        uses: peter-evans/find-comment@v3
+        id: find-security-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: <!-- shipit-security-summary -->
+
       - name: 📤 Post security summary comment
         uses: peter-evans/create-or-update-comment@v5
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          comment-tag: security-summary
+          comment-id: ${{ steps.find-security-comment.outputs.comment-id }}
+          edit-mode: replace
           body: |
+            <!-- shipit-security-summary -->
             ## 🔒 Security Issues Detected
 
             | Scanner | Status | Details |
@@ -346,14 +355,21 @@ jobs:
           npm version "$DEV_VERSION" --no-git-tag-version
           npm publish --tag dev --access public
 
-      - name: 📤 Post PR comment with dev versions
-        uses: peter-evans/create-or-update-comment@v5
-        env:
-          DEV_VERSION: ${{ steps.devver.outputs.version }}
+      - name: 🔍 Find existing dev release comment
+        uses: peter-evans/find-comment@v3
+        id: find-dev-release-comment
         with:
           issue-number: ${{ github.event.pull_request.number }}
-          comment-tag: dev-release
+          body-includes: <!-- shipit-dev-release -->
+
+      - name: 📤 Post PR comment with dev versions
+        uses: peter-evans/create-or-update-comment@v5
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-id: ${{ steps.find-dev-release-comment.outputs.comment-id }}
+          edit-mode: replace
           body: |
+            <!-- shipit-dev-release -->
             ## Dev Release Published
 
             | Artifact | Version | Install |

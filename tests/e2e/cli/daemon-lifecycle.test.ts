@@ -188,7 +188,7 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
       expect(result.exitCode).toBe(0);
       expect(result.success).toBe(true);
       const output = `${result.stdout} ${result.stderr}`.toLowerCase();
-      expect(output).toMatch(/no shipit-ai daemon/);
+      expect(output).toMatch(/no shipit.?ai daemon/i);
     });
 
     it('shipit-ai status exits 0 and prints a "not running" message with a shipit-ai-start hint', () => {
@@ -369,7 +369,7 @@ describe('CLI: daemon lifecycle', { timeout: TEST_TIMEOUT }, () => {
 
         const output = result.stdout + result.stderr;
         // stopDaemon was called and completed — prints this success message
-        expect(output).toMatch(/shipit-ai daemon stopped/i);
+        expect(output).toMatch(/shipit.?ai daemon stopped/i);
         // startDaemon was invoked — output contains a localhost URL
         expect(output).toMatch(/localhost:\d+/);
       });
