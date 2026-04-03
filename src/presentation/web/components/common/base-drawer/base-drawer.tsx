@@ -1,8 +1,9 @@
 'use client';
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback } from 'react';
 import { XIcon, Play, Square } from 'lucide-react';
 import { cva, type VariantProps } from 'class-variance-authority';
+import { FocusScope } from 'radix-ui/internal';
 import { cn } from '@/lib/utils';
 import { ActionButton } from '@/components/common/action-button';
 import { DeploymentStatusBadge } from '@/components/common/deployment-status-badge';
@@ -66,7 +67,40 @@ export function BaseDrawer({
   const { i18n } = useTranslation();
   const featureFlags = useFeatureFlags();
   const contentRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLElement | null>(null);
   const drawerDirection = i18n.dir() === 'rtl' ? 'left' : 'right';
+
+  // Capture the element that had focus right before FocusScope steals it.
+  // onMountAutoFocus fires synchronously before the first focusable child receives focus,
+  // so document.activeElement still points at the trigger element at this point.
+  const handleMountAutoFocus = useCallback(() => {
+    triggerRef.current = document.activeElement as HTMLElement | null;
+  }, []);
+
+  // Restore focus to the trigger element when the FocusScope unmounts (drawer closes).
+  const handleUnmountAutoFocus = useCallback((event: Event) => {
+    if (triggerRef.current && typeof triggerRef.current.focus === 'function') {
+      event.preventDefault();
+      triggerRef.current.focus();
+      triggerRef.current = null;
+    }
+  }, []);
+
+  // Dismiss non-modal drawer on Escape key.
+  // Modal drawers already get Escape handling from Radix Dialog.
+  useEffect(() => {
+    if (!open || modal) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        e.stopPropagation();
+        onClose();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, modal, onClose]);
 
   // Close when clicking outside the drawer panel (no overlay needed — canvas stays draggable).
   // Uses `click` (not `pointerdown`) so canvas drags don't trigger this.
@@ -115,6 +149,7 @@ export function BaseDrawer({
         )}
         data-testid={testId}
         onInteractOutside={modal ? undefined : (e) => e.preventDefault()}
+        {...(!modal ? { 'aria-modal': true } : {})}
       >
         {/* Visually hidden title & description required by Radix Dialog for accessibility */}
         <DrawerTitle asChild>
@@ -124,33 +159,51 @@ export function BaseDrawer({
           <span className="sr-only">{title}</span>
         </DrawerDescription>
 
-        {/* Close button */}
-        <button
-          type="button"
-          aria-label="Close"
-          onClick={onClose}
-          className="ring-offset-background focus:ring-ring absolute end-3 top-2 z-50 rounded-sm p-1 opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
-          data-testid={testId ? `${testId}-close-button` : undefined}
+        {/*
+         * Focus management for non-modal drawers (WCAG 2.4.3 Focus Order, 2.1.2 No Keyboard Trap).
+         * Modal drawers get focus trapping from Radix Dialog automatically.
+         * For non-modal drawers, FocusScope traps keyboard focus inside the drawer and
+         * returns focus to the trigger element on close via onUnmountAutoFocus.
+         */}
+        <FocusScope.Root
+          trapped={!modal}
+          loop={!modal}
+          asChild
+          onMountAutoFocus={handleMountAutoFocus}
+          onUnmountAutoFocus={handleUnmountAutoFocus}
         >
-          <XIcon className="size-4" />
-          <span className="sr-only">Close</span>
-        </button>
+          <div className="flex min-h-0 flex-1 flex-col overflow-hidden">
+            {/* Close button */}
+            <button
+              type="button"
+              aria-label="Close"
+              onClick={onClose}
+              className="ring-offset-background focus:ring-ring absolute end-3 top-2 z-50 rounded-sm p-1 opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden"
+              data-testid={testId ? `${testId}-close-button` : undefined}
+            >
+              <XIcon className="size-4" />
+              <span className="sr-only">Close</span>
+            </button>
 
-        {/* Header slot */}
-        {header ? <DrawerHeader className="shrink-0">{header}</DrawerHeader> : null}
+            {/* Header slot */}
+            {header ? <DrawerHeader className="shrink-0">{header}</DrawerHeader> : null}
 
-        {/* Separator between header and content — matches review drawer style */}
-        {header ? <Separator /> : null}
+            {/* Separator between header and content — matches review drawer style */}
+            {header ? <Separator /> : null}
 
-        {/* Dev server bar — rendered when deployTarget is provided and env deploy is enabled */}
-        {featureFlags.envDeploy && deployTarget ? <DeployBar deployTarget={deployTarget} /> : null}
+            {/* Dev server bar — rendered when deployTarget is provided and env deploy is enabled */}
+            {featureFlags.envDeploy && deployTarget ? (
+              <DeployBar deployTarget={deployTarget} />
+            ) : null}
 
-        {/* Scrollable content area. Consumers should add p-4 for consistent spacing. */}
-        {/* Footer components like DrawerActionBar typically include border-t. */}
-        <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
+            {/* Scrollable content area. Consumers should add p-4 for consistent spacing. */}
+            {/* Footer components like DrawerActionBar typically include border-t. */}
+            <div className="flex min-h-0 flex-1 flex-col overflow-hidden">{children}</div>
 
-        {/* Footer slot */}
-        {footer ? <DrawerFooter className="shrink-0">{footer}</DrawerFooter> : null}
+            {/* Footer slot */}
+            {footer ? <DrawerFooter className="shrink-0">{footer}</DrawerFooter> : null}
+          </div>
+        </FocusScope.Root>
       </DrawerContent>
     </Drawer>
   );
