@@ -11,9 +11,6 @@ import {
   Flag,
   Database,
   Globe,
-  Minus,
-  Plus,
-  ExternalLink,
   Settings2,
   Timer,
   MessageSquare,
@@ -22,8 +19,6 @@ import {
 import { toast } from 'sonner';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
   Select,
   SelectContent,
@@ -41,13 +36,22 @@ import {
 import { getEditorTypeIcon } from '@/components/common/editor-type-icons';
 import { AgentModelPicker } from '@/components/features/settings/AgentModelPicker';
 import { LanguageSettingsSection } from '@/components/features/settings/language-settings-section';
-import { TimeoutSlider } from '@/components/features/settings/timeout-slider';
+import { CiSettingsSection } from '@/components/features/settings/ci-settings-section';
+import { StageTimeoutsSettingsSection } from '@/components/features/settings/stage-timeouts-settings-section';
+import { InteractiveAgentSettingsSection } from '@/components/features/settings/interactive-agent-settings-section';
+import { FabLayoutSettingsSection } from '@/components/features/settings/fab-layout-settings-section';
+import {
+  SettingsSection,
+  SettingsRow,
+  SwitchRow,
+  NumberStepper,
+  SubsectionLabel,
+  SectionHint,
+} from '@/components/features/settings/settings-section-utils';
 import type {
   Settings,
   FeatureFlags,
   NotificationPreferences,
-  InteractiveAgentConfig,
-  FabLayoutConfig,
 } from '@shipit-ai/core/domain/generated/output';
 import type { AvailableTerminal } from '@/app/actions/get-available-terminals';
 
@@ -134,225 +138,6 @@ function useSaveIndicator() {
   return { showSaving, showSaved, save };
 }
 
-/* ── Reusable row components ── */
-
-function SettingsRow({
-  label,
-  description,
-  htmlFor,
-  children,
-}: {
-  label: string;
-  description?: string;
-  htmlFor?: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="flex items-center justify-between gap-4 border-b py-2.5 last:border-b-0">
-      <div className="min-w-0">
-        <Label htmlFor={htmlFor} className="cursor-pointer text-sm font-normal whitespace-nowrap">
-          {label}
-        </Label>
-        {description ? (
-          <p className="text-muted-foreground text-[11px] leading-tight">{description}</p>
-        ) : null}
-      </div>
-      <div className="flex shrink-0 items-center gap-2">{children}</div>
-    </div>
-  );
-}
-
-function SwitchRow({
-  label,
-  description,
-  id,
-  testId,
-  checked,
-  onChange,
-  disabled,
-}: {
-  label: string;
-  description?: string;
-  id: string;
-  testId: string;
-  checked: boolean;
-  onChange: (value: boolean) => void;
-  disabled?: boolean;
-}) {
-  return (
-    <SettingsRow label={label} description={description} htmlFor={id}>
-      <Switch
-        id={id}
-        data-testid={testId}
-        checked={checked}
-        onCheckedChange={onChange}
-        disabled={disabled}
-        className={cn('cursor-pointer', disabled && 'cursor-not-allowed opacity-50')}
-      />
-    </SettingsRow>
-  );
-}
-
-/* ── Section card wrapper ── */
-
-function SettingsSection({
-  icon: Icon,
-  title,
-  description,
-  badge,
-  testId,
-  children,
-}: {
-  icon: React.ComponentType<{ className?: string }>;
-  title: string;
-  description: string;
-  badge?: string;
-  testId: string;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="bg-background rounded-lg border" data-testid={testId}>
-      <div className="bg-muted/30 border-b px-4 py-3">
-        <div className="flex items-center gap-2">
-          <Icon className="text-muted-foreground h-3.5 w-3.5" />
-          <h2 className="text-sm font-semibold">{title}</h2>
-          {badge ? (
-            <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-[9px] font-medium tracking-wider uppercase">
-              {badge}
-            </span>
-          ) : null}
-        </div>
-        <p className="text-muted-foreground mt-0.5 text-[11px]">{description}</p>
-      </div>
-      <div className="px-4">{children}</div>
-    </div>
-  );
-}
-
-function NumberStepper({
-  id,
-  testId,
-  value,
-  onChange,
-  onBlur,
-  placeholder,
-  min = 1,
-  max,
-  step = 1,
-  suffix,
-}: {
-  id: string;
-  testId: string;
-  value: string;
-  onChange: (value: string) => void;
-  onBlur: () => void;
-  placeholder: string;
-  min?: number;
-  max?: number;
-  step?: number;
-  suffix?: string;
-}) {
-  const { t } = useTranslation('web');
-  const numValue = value === '' ? undefined : parseInt(value, 10);
-
-  const decrement = () => {
-    const current = numValue ?? parseInt(placeholder, 10);
-    const next = Math.max(min, current - step);
-    onChange(String(next));
-  };
-
-  const increment = () => {
-    const current = numValue ?? parseInt(placeholder, 10);
-    const next = max != null ? Math.min(max, current + step) : current + step;
-    onChange(String(next));
-  };
-
-  return (
-    <div className="flex items-center gap-1.5">
-      <div className="flex items-center overflow-hidden rounded-md border">
-        <button
-          type="button"
-          onClick={() => {
-            decrement();
-          }}
-          onMouseUp={onBlur}
-          className="text-muted-foreground hover:bg-muted hover:text-foreground flex h-8 w-7 cursor-pointer items-center justify-center border-r transition-colors"
-          aria-label={t('common.decrease')}
-        >
-          <Minus className="h-3 w-3" />
-        </button>
-        <input
-          id={id}
-          data-testid={testId}
-          type="text"
-          inputMode="numeric"
-          pattern="[0-9]*"
-          value={value}
-          placeholder={placeholder}
-          onChange={(e) => {
-            const v = e.target.value.replace(/[^0-9]/g, '');
-            onChange(v);
-          }}
-          onBlur={onBlur}
-          className="h-8 w-14 bg-transparent text-center text-xs outline-none"
-        />
-        <button
-          type="button"
-          onClick={() => {
-            increment();
-          }}
-          onMouseUp={onBlur}
-          className="text-muted-foreground hover:bg-muted hover:text-foreground flex h-8 w-7 cursor-pointer items-center justify-center border-l transition-colors"
-          aria-label={t('common.increase')}
-        >
-          <Plus className="h-3 w-3" />
-        </button>
-      </div>
-      {suffix ? <span className="text-muted-foreground text-[11px]">{suffix}</span> : null}
-    </div>
-  );
-}
-
-function SubsectionLabel({ children }: { children: React.ReactNode }) {
-  return (
-    <div className="border-b pt-3 pb-1">
-      <span className="text-muted-foreground text-[10px] font-semibold tracking-wider uppercase">
-        {children}
-      </span>
-    </div>
-  );
-}
-
-function SectionHint({
-  children,
-  links,
-}: {
-  children: React.ReactNode;
-  links?: { label: string; href: string }[];
-}) {
-  return (
-    <div className="hidden pt-2 lg:block">
-      <p className="text-muted-foreground/70 text-[11px] leading-relaxed">{children}</p>
-      {links != null && links.length > 0 ? (
-        <div className="mt-2 flex flex-col gap-1">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-[10px] transition-colors"
-            >
-              <ExternalLink className="h-2.5 w-2.5" />
-              {link.label}
-            </a>
-          ))}
-        </div>
-      ) : null}
-    </div>
-  );
-}
-
 /* ── Main component ── */
 
 export function SettingsPageClient({
@@ -405,7 +190,6 @@ export function SettingsPageClient({
   const [enableEvidence, setEnableEvidence] = useState(settings.workflow.enableEvidence);
   const [commitEvidence, setCommitEvidence] = useState(settings.workflow.commitEvidence);
   const [ciWatchEnabled, setCiWatchEnabled] = useState(settings.workflow.ciWatchEnabled !== false);
-  const [hideCiStatus, setHideCiStatus] = useState(settings.workflow.hideCiStatus !== false);
   const [defaultFastMode, setDefaultFastMode] = useState(
     settings.workflow.defaultFastMode !== false
   );
@@ -416,66 +200,6 @@ export function SettingsPageClient({
   const [autoArchiveDelay, setAutoArchiveDelay] = useState(
     String(settings.workflow.autoArchiveDelayMinutes ?? 10)
   );
-  const [ciMaxFix, setCiMaxFix] = useState(
-    settings.workflow.ciMaxFixAttempts != null ? String(settings.workflow.ciMaxFixAttempts) : ''
-  );
-  const [ciTimeout, setCiTimeout] = useState(
-    settings.workflow.ciWatchTimeoutMs != null
-      ? String(Math.round(settings.workflow.ciWatchTimeoutMs / 1000))
-      : ''
-  );
-  const [ciLogMax, setCiLogMax] = useState(
-    settings.workflow.ciLogMaxChars != null ? String(settings.workflow.ciLogMaxChars) : ''
-  );
-  const [ciPollInterval, setCiPollInterval] = useState(
-    settings.workflow.ciWatchPollIntervalSeconds != null
-      ? String(settings.workflow.ciWatchPollIntervalSeconds)
-      : ''
-  );
-  // Feature agent per-stage timeout states (stored in seconds for display, converted to ms on save)
-  // Defaults: feature agent stages = 1_800_000 ms (1800s), analyze-repo = 600_000 ms (600s)
-  const stageTimeoutsConfig = settings.workflow.stageTimeouts;
-  const [analyzeTimeout, setAnalyzeTimeout] = useState(
-    String(Math.round((stageTimeoutsConfig?.analyzeMs ?? 1_800_000) / 1000))
-  );
-  const [requirementsTimeout, setRequirementsTimeout] = useState(
-    String(Math.round((stageTimeoutsConfig?.requirementsMs ?? 1_800_000) / 1000))
-  );
-  const [researchTimeout, setResearchTimeout] = useState(
-    String(Math.round((stageTimeoutsConfig?.researchMs ?? 1_800_000) / 1000))
-  );
-  const [planTimeout, setPlanTimeout] = useState(
-    String(Math.round((stageTimeoutsConfig?.planMs ?? 1_800_000) / 1000))
-  );
-  const [implementTimeout, setImplementTimeout] = useState(
-    String(Math.round((stageTimeoutsConfig?.implementMs ?? 1_800_000) / 1000))
-  );
-  const [mergeTimeout, setMergeTimeout] = useState(
-    String(Math.round((stageTimeoutsConfig?.mergeMs ?? 1_800_000) / 1000))
-  );
-  // Analyze-repo agent timeout state
-  const analyzeRepoConfig = settings.workflow.analyzeRepoTimeouts;
-  const [analyzeRepoTimeout, setAnalyzeRepoTimeout] = useState(
-    String(Math.round((analyzeRepoConfig?.analyzeMs ?? 600_000) / 1000))
-  );
-
-  // Interactive agent state
-  const interactiveAgentConfig: InteractiveAgentConfig = settings.interactiveAgent ?? {
-    enabled: true,
-    autoTimeoutMinutes: 15,
-    maxConcurrentSessions: 3,
-  };
-  const [interactiveEnabled, setInteractiveEnabled] = useState(interactiveAgentConfig.enabled);
-  const [interactiveTimeout, setInteractiveTimeout] = useState(
-    String(interactiveAgentConfig.autoTimeoutMinutes)
-  );
-  const [interactiveSessions, setInteractiveSessions] = useState(
-    String(interactiveAgentConfig.maxConcurrentSessions)
-  );
-
-  // FAB layout state
-  const fabLayoutConfig: FabLayoutConfig = settings.fabLayout ?? { swapPosition: false };
-  const [fabSwapPosition, setFabSwapPosition] = useState(fabLayoutConfig.swapPosition);
 
   // Notification state
   const [inApp, setInApp] = useState(settings.notifications.inApp.enabled);
@@ -483,60 +207,6 @@ export function SettingsPageClient({
 
   // Feature flags state
   const [flags, setFlags] = useState<FeatureFlags>({ ...featureFlags });
-
-  // Original CI values for blur comparison
-  const originalCiMaxFix =
-    settings.workflow.ciMaxFixAttempts != null ? String(settings.workflow.ciMaxFixAttempts) : '';
-  const originalCiTimeout =
-    settings.workflow.ciWatchTimeoutMs != null
-      ? String(Math.round(settings.workflow.ciWatchTimeoutMs / 1000))
-      : '';
-  const originalCiLogMax =
-    settings.workflow.ciLogMaxChars != null ? String(settings.workflow.ciLogMaxChars) : '';
-  const originalCiPollInterval =
-    settings.workflow.ciWatchPollIntervalSeconds != null
-      ? String(settings.workflow.ciWatchPollIntervalSeconds)
-      : '';
-  const originalAnalyzeTimeout =
-    stageTimeoutsConfig?.analyzeMs != null
-      ? String(Math.round(stageTimeoutsConfig.analyzeMs / 1000))
-      : '';
-  const originalRequirementsTimeout =
-    stageTimeoutsConfig?.requirementsMs != null
-      ? String(Math.round(stageTimeoutsConfig.requirementsMs / 1000))
-      : '';
-  const originalResearchTimeout =
-    stageTimeoutsConfig?.researchMs != null
-      ? String(Math.round(stageTimeoutsConfig.researchMs / 1000))
-      : '';
-  const originalPlanTimeout =
-    stageTimeoutsConfig?.planMs != null
-      ? String(Math.round(stageTimeoutsConfig.planMs / 1000))
-      : '';
-  const originalImplementTimeout =
-    stageTimeoutsConfig?.implementMs != null
-      ? String(Math.round(stageTimeoutsConfig.implementMs / 1000))
-      : '';
-  const originalMergeTimeout =
-    stageTimeoutsConfig?.mergeMs != null
-      ? String(Math.round(stageTimeoutsConfig.mergeMs / 1000))
-      : '';
-  const originalAnalyzeRepoTimeout =
-    analyzeRepoConfig?.analyzeMs != null
-      ? String(Math.round(analyzeRepoConfig.analyzeMs / 1000))
-      : '';
-
-  function parseOptionalInt(value: string): number | undefined {
-    if (value === '') return undefined;
-    const n = parseInt(value, 10);
-    return Number.isNaN(n) || n <= 0 ? undefined : n;
-  }
-
-  function secondsToMs(val: string | undefined): number | undefined {
-    if (val === undefined) return undefined;
-    const n = parseOptionalInt(val);
-    return n != null ? n * 1000 : undefined;
-  }
 
   // Workflow helpers
   function buildWorkflowPayload(
@@ -549,24 +219,11 @@ export function SettingsPageClient({
       enableEvidence?: boolean;
       commitEvidence?: boolean;
       ciWatchEnabled?: boolean;
-      hideCiStatus?: boolean;
       defaultFastMode?: boolean;
       autoArchiveEnabled?: boolean;
       autoArchiveDelay?: string;
-      ciMaxFix?: string;
-      ciTimeout?: string;
-      ciLogMax?: string;
-      ciPollInterval?: string;
-      analyzeTimeout?: string;
-      requirementsTimeout?: string;
-      researchTimeout?: string;
-      planTimeout?: string;
-      implementTimeout?: string;
-      mergeTimeout?: string;
-      analyzeRepoTimeout?: string;
     } = {}
   ) {
-    const timeoutSeconds = parseOptionalInt(overrides.ciTimeout ?? ciTimeout);
     const archiveEnabled = overrides.autoArchiveEnabled ?? autoArchiveEnabled;
     const archiveDelay = parseInt(overrides.autoArchiveDelay ?? autoArchiveDelay, 10);
     return {
@@ -581,28 +238,12 @@ export function SettingsPageClient({
         enableEvidence: overrides.enableEvidence ?? enableEvidence,
         commitEvidence: overrides.commitEvidence ?? commitEvidence,
         ciWatchEnabled: overrides.ciWatchEnabled ?? ciWatchEnabled,
-        hideCiStatus: overrides.hideCiStatus ?? hideCiStatus,
         defaultFastMode: overrides.defaultFastMode ?? defaultFastMode,
         autoArchiveDelayMinutes: archiveEnabled
           ? Number.isNaN(archiveDelay) || archiveDelay < 1
             ? 10
             : archiveDelay
           : 0,
-        ciMaxFixAttempts: parseOptionalInt(overrides.ciMaxFix ?? ciMaxFix),
-        ciWatchTimeoutMs: timeoutSeconds != null ? timeoutSeconds * 1000 : undefined,
-        ciLogMaxChars: parseOptionalInt(overrides.ciLogMax ?? ciLogMax),
-        ciWatchPollIntervalSeconds: parseOptionalInt(overrides.ciPollInterval ?? ciPollInterval),
-        stageTimeouts: {
-          analyzeMs: secondsToMs(overrides.analyzeTimeout ?? analyzeTimeout),
-          requirementsMs: secondsToMs(overrides.requirementsTimeout ?? requirementsTimeout),
-          researchMs: secondsToMs(overrides.researchTimeout ?? researchTimeout),
-          planMs: secondsToMs(overrides.planTimeout ?? planTimeout),
-          implementMs: secondsToMs(overrides.implementTimeout ?? implementTimeout),
-          mergeMs: secondsToMs(overrides.mergeTimeout ?? mergeTimeout),
-        },
-        analyzeRepoTimeouts: {
-          analyzeMs: secondsToMs(overrides.analyzeRepoTimeout ?? analyzeRepoTimeout),
-        },
       },
     };
   }
@@ -1079,100 +720,7 @@ export function SettingsPageClient({
           id="section-ci"
           className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
         >
-          <SettingsSection
-            icon={Activity}
-            title={t('settings.ci.title')}
-            description={t('settings.ci.description')}
-            testId="ci-settings-section"
-          >
-            <SettingsRow
-              label={t('settings.ci.maxFixAttempts')}
-              description={t('settings.ci.maxFixAttemptsDescription')}
-              htmlFor="ci-max-fix"
-            >
-              <NumberStepper
-                id="ci-max-fix"
-                testId="ci-max-fix-input"
-                placeholder="3"
-                value={ciMaxFix}
-                onChange={setCiMaxFix}
-                onBlur={() => {
-                  if (ciMaxFix !== originalCiMaxFix) save(buildWorkflowPayload({ ciMaxFix }));
-                }}
-                min={1}
-                max={10}
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.ci.watchTimeout')}
-              description={t('settings.ci.watchTimeoutDescription')}
-              htmlFor="ci-timeout"
-            >
-              <NumberStepper
-                id="ci-timeout"
-                testId="ci-timeout-input"
-                placeholder="300"
-                value={ciTimeout}
-                onChange={setCiTimeout}
-                onBlur={() => {
-                  if (ciTimeout !== originalCiTimeout) save(buildWorkflowPayload({ ciTimeout }));
-                }}
-                min={30}
-                step={30}
-                suffix="sec"
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.ci.maxLogSize')}
-              description={t('settings.ci.maxLogSizeDescription')}
-              htmlFor="ci-log-max"
-            >
-              <NumberStepper
-                id="ci-log-max"
-                testId="ci-log-max-input"
-                placeholder="50000"
-                value={ciLogMax}
-                onChange={setCiLogMax}
-                onBlur={() => {
-                  if (ciLogMax !== originalCiLogMax) save(buildWorkflowPayload({ ciLogMax }));
-                }}
-                min={1000}
-                step={5000}
-                suffix="chars"
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.ci.pollInterval')}
-              description={t('settings.ci.pollIntervalDescription')}
-              htmlFor="ci-poll-interval"
-            >
-              <NumberStepper
-                id="ci-poll-interval"
-                testId="ci-poll-interval-input"
-                placeholder="30"
-                value={ciPollInterval}
-                onChange={setCiPollInterval}
-                onBlur={() => {
-                  if (ciPollInterval !== originalCiPollInterval)
-                    save(buildWorkflowPayload({ ciPollInterval }));
-                }}
-                min={5}
-                step={5}
-                suffix="sec"
-              />
-            </SettingsRow>
-            <SwitchRow
-              label={t('settings.ci.hideCiStatus')}
-              description={t('settings.ci.hideCiStatusDescription')}
-              id="hide-ci-status"
-              testId="switch-hide-ci-status"
-              checked={hideCiStatus}
-              onChange={(v) => {
-                setHideCiStatus(v);
-                save(buildWorkflowPayload({ hideCiStatus: v }));
-              }}
-            />
-          </SettingsSection>
+          <CiSettingsSection settings={settings} />
           <SectionHint
             links={[
               {
@@ -1194,138 +742,7 @@ export function SettingsPageClient({
           id="section-stage-timeouts"
           className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
         >
-          <SettingsSection
-            icon={Timer}
-            title={t('settings.stageTimeouts.title')}
-            description={t('settings.stageTimeouts.description')}
-            testId="stage-timeouts-settings-section"
-          >
-            <SubsectionLabel>
-              {t('settings.stageTimeouts.subsections.featureAgent')}
-            </SubsectionLabel>
-            <SettingsRow
-              label={t('settings.stageTimeouts.analyze')}
-              description={t('settings.stageTimeouts.analyzeDescription')}
-              htmlFor="timeout-analyze"
-            >
-              <TimeoutSlider
-                id="timeout-analyze"
-                testId="timeout-analyze-input"
-                value={analyzeTimeout}
-                onChange={setAnalyzeTimeout}
-                onBlur={() => {
-                  if (analyzeTimeout !== originalAnalyzeTimeout)
-                    save(buildWorkflowPayload({ analyzeTimeout }));
-                }}
-                defaultSeconds={1800}
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.stageTimeouts.requirements')}
-              description={t('settings.stageTimeouts.requirementsDescription')}
-              htmlFor="timeout-requirements"
-            >
-              <TimeoutSlider
-                id="timeout-requirements"
-                testId="timeout-requirements-input"
-                value={requirementsTimeout}
-                onChange={setRequirementsTimeout}
-                onBlur={() => {
-                  if (requirementsTimeout !== originalRequirementsTimeout)
-                    save(buildWorkflowPayload({ requirementsTimeout }));
-                }}
-                defaultSeconds={1800}
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.stageTimeouts.research')}
-              description={t('settings.stageTimeouts.researchDescription')}
-              htmlFor="timeout-research"
-            >
-              <TimeoutSlider
-                id="timeout-research"
-                testId="timeout-research-input"
-                value={researchTimeout}
-                onChange={setResearchTimeout}
-                onBlur={() => {
-                  if (researchTimeout !== originalResearchTimeout)
-                    save(buildWorkflowPayload({ researchTimeout }));
-                }}
-                defaultSeconds={1800}
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.stageTimeouts.plan')}
-              description={t('settings.stageTimeouts.planDescription')}
-              htmlFor="timeout-plan"
-            >
-              <TimeoutSlider
-                id="timeout-plan"
-                testId="timeout-plan-input"
-                value={planTimeout}
-                onChange={setPlanTimeout}
-                onBlur={() => {
-                  if (planTimeout !== originalPlanTimeout)
-                    save(buildWorkflowPayload({ planTimeout }));
-                }}
-                defaultSeconds={1800}
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.stageTimeouts.implement')}
-              description={t('settings.stageTimeouts.implementDescription')}
-              htmlFor="timeout-implement"
-            >
-              <TimeoutSlider
-                id="timeout-implement"
-                testId="timeout-implement-input"
-                value={implementTimeout}
-                onChange={setImplementTimeout}
-                onBlur={() => {
-                  if (implementTimeout !== originalImplementTimeout)
-                    save(buildWorkflowPayload({ implementTimeout }));
-                }}
-                defaultSeconds={1800}
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.stageTimeouts.merge')}
-              description={t('settings.stageTimeouts.mergeDescription')}
-              htmlFor="timeout-merge"
-            >
-              <TimeoutSlider
-                id="timeout-merge"
-                testId="timeout-merge-input"
-                value={mergeTimeout}
-                onChange={setMergeTimeout}
-                onBlur={() => {
-                  if (mergeTimeout !== originalMergeTimeout)
-                    save(buildWorkflowPayload({ mergeTimeout }));
-                }}
-                defaultSeconds={1800}
-              />
-            </SettingsRow>
-            <SubsectionLabel>
-              {t('settings.stageTimeouts.subsections.analyzeRepoAgent')}
-            </SubsectionLabel>
-            <SettingsRow
-              label={t('settings.stageTimeouts.analyze')}
-              description={t('settings.stageTimeouts.analyzeDescription')}
-              htmlFor="timeout-analyze-repo"
-            >
-              <TimeoutSlider
-                id="timeout-analyze-repo"
-                testId="timeout-analyze-repo-input"
-                value={analyzeRepoTimeout}
-                onChange={setAnalyzeRepoTimeout}
-                onBlur={() => {
-                  if (analyzeRepoTimeout !== originalAnalyzeRepoTimeout)
-                    save(buildWorkflowPayload({ analyzeRepoTimeout }));
-                }}
-                defaultSeconds={600}
-              />
-            </SettingsRow>
-          </SettingsSection>
+          <StageTimeoutsSettingsSection settings={settings} />
           <SectionHint>{t('settings.stageTimeouts.hint')}</SectionHint>
         </div>
 
@@ -1597,87 +1014,7 @@ export function SettingsPageClient({
           id="section-interactive-agent"
           className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
         >
-          <SettingsSection
-            icon={MessageSquare}
-            title={t('settings.interactiveAgent.title')}
-            description={t('settings.interactiveAgent.description')}
-            testId="interactive-agent-settings-section"
-          >
-            <SwitchRow
-              label={t('settings.interactiveAgent.enableChatTab')}
-              description={t('settings.interactiveAgent.enableChatTabDescription')}
-              id="interactive-agent-enabled"
-              testId="switch-interactive-agent-enabled"
-              checked={interactiveEnabled}
-              onChange={(v) => {
-                setInteractiveEnabled(v);
-                save({
-                  interactiveAgent: {
-                    enabled: v,
-                    autoTimeoutMinutes: parseInt(interactiveTimeout, 10) || 15,
-                    maxConcurrentSessions: parseInt(interactiveSessions, 10) || 3,
-                  },
-                });
-              }}
-            />
-            <SettingsRow
-              label={t('settings.interactiveAgent.autoTimeout')}
-              description={t('settings.interactiveAgent.autoTimeoutDescription')}
-              htmlFor="interactive-agent-timeout"
-            >
-              <NumberStepper
-                id="interactive-agent-timeout"
-                testId="input-interactive-agent-timeout"
-                value={interactiveTimeout}
-                placeholder="15"
-                min={1}
-                max={120}
-                suffix="min"
-                onChange={setInteractiveTimeout}
-                onBlur={() => {
-                  const n = parseInt(interactiveTimeout, 10);
-                  const clamped = Number.isNaN(n) ? 15 : Math.min(120, Math.max(1, n));
-                  const clamped_str = String(clamped);
-                  setInteractiveTimeout(clamped_str);
-                  save({
-                    interactiveAgent: {
-                      enabled: interactiveEnabled,
-                      autoTimeoutMinutes: clamped,
-                      maxConcurrentSessions: parseInt(interactiveSessions, 10) || 3,
-                    },
-                  });
-                }}
-              />
-            </SettingsRow>
-            <SettingsRow
-              label={t('settings.interactiveAgent.maxConcurrentSessions')}
-              description={t('settings.interactiveAgent.maxConcurrentSessionsDescription')}
-              htmlFor="interactive-agent-sessions"
-            >
-              <NumberStepper
-                id="interactive-agent-sessions"
-                testId="input-interactive-agent-sessions"
-                value={interactiveSessions}
-                placeholder="3"
-                min={1}
-                max={10}
-                onChange={setInteractiveSessions}
-                onBlur={() => {
-                  const n = parseInt(interactiveSessions, 10);
-                  const clamped = Number.isNaN(n) ? 3 : Math.min(10, Math.max(1, n));
-                  const clamped_str = String(clamped);
-                  setInteractiveSessions(clamped_str);
-                  save({
-                    interactiveAgent: {
-                      enabled: interactiveEnabled,
-                      autoTimeoutMinutes: parseInt(interactiveTimeout, 10) || 15,
-                      maxConcurrentSessions: clamped,
-                    },
-                  });
-                }}
-              />
-            </SettingsRow>
-          </SettingsSection>
+          <InteractiveAgentSettingsSection settings={settings} />
           <SectionHint>{t('settings.interactiveAgent.hint')}</SectionHint>
         </div>
 
@@ -1686,24 +1023,7 @@ export function SettingsPageClient({
           id="section-fab-layout"
           className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
         >
-          <SettingsSection
-            icon={LayoutGrid}
-            title={t('settings.fabLayout.title')}
-            description={t('settings.fabLayout.description')}
-            testId="fab-layout-settings-section"
-          >
-            <SwitchRow
-              label={t('settings.fabLayout.swapPosition')}
-              description={t('settings.fabLayout.swapPositionDescription')}
-              id="fab-swap-position"
-              testId="switch-fab-swap-position"
-              checked={fabSwapPosition}
-              onChange={(v) => {
-                setFabSwapPosition(v);
-                save({ fabLayout: { swapPosition: v } });
-              }}
-            />
-          </SettingsSection>
+          <FabLayoutSettingsSection settings={settings} />
           <SectionHint>{t('settings.fabLayout.hint')}</SectionHint>
         </div>
 
