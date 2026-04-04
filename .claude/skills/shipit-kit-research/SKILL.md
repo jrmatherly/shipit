@@ -10,7 +10,6 @@ metadata:
 
 # Research Technical Approach
 
-
 Document technical decisions, library evaluations, and architectural choices for a feature.
 
 **Full workflow guide:** [docs/development/spec-driven-workflow.md](../../../docs/development/spec-driven-workflow.md)

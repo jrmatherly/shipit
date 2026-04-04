@@ -10,7 +10,6 @@ metadata:
 
 # Commit, Push, PR with CI Watch + Review Loop
 
-
 Create commit, push branch, open PR, watch CI, then autonomously handle review feedback until approval.
 
 ## Workflow

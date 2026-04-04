@@ -10,7 +10,6 @@ metadata:
 
 # Parallel Task via Git Worktree
 
-
 Create an isolated worktree in `.worktrees/` branched from up-to-date main, with spec directory scaffolded.
 
 ## When to Use

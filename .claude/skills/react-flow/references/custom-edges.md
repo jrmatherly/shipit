@@ -4,17 +4,25 @@ Custom edges in React Flow use the `EdgeProps<T>` typing pattern and path utilit
 
 ## Table of Contents
 
-- [Edge Type Definition](#edge-type-definition)
-- [EdgeProps Structure](#edgeprops-structure)
-- [Path Utility Functions](#path-utility-functions)
-- [BaseEdge Component](#baseedge-component)
-- [EdgeLabelRenderer for Interactive Labels](#edgelabelrenderer-for-interactive-labels)
-- [Animated Edges](#animated-edges)
-- [SVG Text Labels](#svg-text-labels)
-- [EdgeText Component](#edgetext-component)
-- [Time Label Edge Example](#time-label-edge-example)
-- [Edge Registration](#edge-registration)
-- [Default Edge Options](#default-edge-options)
+1. [Custom Edges](#custom-edges)
+   1. [Table of Contents](#table-of-contents)
+   2. [Edge Type Definition](#edge-type-definition)
+   3. [EdgeProps Structure](#edgeprops-structure)
+   4. [Path Utility Functions](#path-utility-functions)
+      1. [getBezierPath](#getbezierpath)
+      2. [getStraightPath](#getstraightpath)
+      3. [getSmoothStepPath](#getsmoothsteppath)
+      4. [getSmoothStepPath with borderRadius: 0 (Step Edge)](#getsmoothsteppath-with-borderradius-0-step-edge)
+   5. [BaseEdge Component](#baseedge-component)
+   6. [EdgeLabelRenderer for Interactive Labels](#edgelabelrenderer-for-interactive-labels)
+   7. [Animated Edges](#animated-edges)
+      1. [Dash Animation](#dash-animation)
+      2. [Moving Circle Along Path](#moving-circle-along-path)
+   8. [SVG Text Labels](#svg-text-labels)
+   9. [EdgeText Component](#edgetext-component)
+   10. [Time Label Edge Example](#time-label-edge-example)
+   11. [Edge Registration](#edge-registration)
+   12. [Default Edge Options](#default-edge-options)
 
 ## Edge Type Definition
 

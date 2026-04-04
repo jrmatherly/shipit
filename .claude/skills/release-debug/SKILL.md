@@ -14,17 +14,17 @@ Diagnose why the Release or Dev Release job failed in CI.
 gh run list --branch main --limit 3 --json databaseId,status,conclusion,name
 ```
 
-2. Identify the Release job and check if it failed:
+1. Identify the Release job and check if it failed:
 ```bash
 gh run view <ID> --json jobs --jq '[.jobs[] | select(.name | test("Release")) | {name, conclusion, steps: [.steps[] | select(.conclusion == "failure") | .name]}]'
 ```
 
-3. Get the Release job logs and save them:
+1. Get the Release job logs and save them:
 ```bash
 gh run view <ID> --job <JOB_ID> --log 2>&1 | tee /tmp/release-log.txt | tail -30
 ```
 
-4. Search for common failure patterns:
+1. Search for common failure patterns:
 ```bash
 # npm auth failures
 grep -n "ENEEDAUTH\|EOTP\|E403\|E401\|EINVALIDNPMTOKEN" /tmp/release-log.txt
@@ -42,7 +42,7 @@ grep -n "OIDC\|id-token\|token exchange" /tmp/release-log.txt
 grep -n "protected branch\|push.*rejected\|Permission denied" /tmp/release-log.txt
 ```
 
-5. Cross-reference with known gotchas from CLAUDE.md CI/CD Publishing section.
+1. Cross-reference with known gotchas from CLAUDE.md CI/CD Publishing section.
 
 ## Common Root Causes Checklist
 

@@ -10,7 +10,6 @@ metadata:
 
 # Feature Status & Next Steps
 
-
 Quickly orient the user on the current feature branch: what's done, what to try, and how to proceed.
 
 ## Workflow

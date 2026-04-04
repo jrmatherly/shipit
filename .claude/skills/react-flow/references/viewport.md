@@ -4,19 +4,22 @@ React Flow provides viewport control through the `useReactFlow()` hook, which ex
 
 ## Table of Contents
 
-- [useReactFlow Hook](#usereactflow-hook)
-- [fitView Method](#fitview-method)
-- [Zoom Methods](#zoom-methods)
-- [setViewport Method](#setviewport-method)
-- [setCenter Method](#setcenter-method)
-- [screenToFlowPosition Method](#screentoflowposition-method)
-- [flowToScreenPosition Method](#flowtoscreenposition-method)
-- [Save and Restore Viewport State](#save-and-restore-viewport-state)
-- [Programmatic Pan to Node](#programmatic-pan-to-node)
-- [Controlled Viewport](#controlled-viewport)
-- [useOnViewportChange Hook](#useonviewportchange-hook)
-- [getNodesBounds Method](#getnodesbounds-method)
-- [viewportInitialized Flag](#viewportinitialized-flag)
+1. [Viewport Control](#viewport-control)
+   1. [Table of Contents](#table-of-contents)
+   2. [useReactFlow Hook](#usereactflow-hook)
+   3. [fitView Method](#fitview-method)
+      1. [fitView with Specific Nodes](#fitview-with-specific-nodes)
+   4. [Zoom Methods](#zoom-methods)
+   5. [setViewport Method](#setviewport-method)
+   6. [setCenter Method](#setcenter-method)
+   7. [screenToFlowPosition Method](#screentoflowposition-method)
+   8. [flowToScreenPosition Method](#flowtoscreenposition-method)
+   9. [Save and Restore Viewport State](#save-and-restore-viewport-state)
+   10. [Programmatic Pan to Node](#programmatic-pan-to-node)
+   11. [Controlled Viewport](#controlled-viewport)
+   12. [useOnViewportChange Hook](#useonviewportchange-hook)
+   13. [getNodesBounds Method](#getnodesbounds-method)
+   14. [viewportInitialized Flag](#viewportinitialized-flag)
 
 ## useReactFlow Hook
 

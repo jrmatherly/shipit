@@ -10,7 +10,6 @@ metadata:
 
 # Fast Loop — Rapid Iteration Mode
 
-
 Skip TDD, builds, and commits. Just edit code, let the dev server hot-reload, and iterate based on user feedback.
 
 ## What This Overrides

@@ -10,7 +10,6 @@ metadata:
 
 # Post-Merge Cleanup
 
-
 Switch to main, pull latest changes, and delete the local feature branch.
 
 ## Workflow

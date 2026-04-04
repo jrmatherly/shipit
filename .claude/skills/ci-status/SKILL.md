@@ -14,12 +14,12 @@ Show a concise CI/CD status summary for the current branch.
 BRANCH=$(git branch --show-current)
 ```
 
-2. List all recent workflow runs on this branch:
+1. List all recent workflow runs on this branch:
 ```bash
 gh run list --branch "$BRANCH" --limit 5 --json databaseId,status,conclusion,name,createdAt,event
 ```
 
-3. For each run that is `in_progress` or `failure`:
+1. For each run that is `in_progress` or `failure`:
    - Show job-level status:
    ```bash
    gh run view <ID> --json jobs --jq '[.jobs[] | {name, status, conclusion}]'
@@ -29,12 +29,12 @@ gh run list --branch "$BRANCH" --limit 5 --json databaseId,status,conclusion,nam
    gh run view <ID> --json jobs --jq '[.jobs[] | select(.conclusion == "failure") | {name, steps: [.steps[] | select(.conclusion == "failure") | .name]}]'
    ```
 
-4. Present a table summarizing:
+2. Present a table summarizing:
    - Run name, status, conclusion
    - Which jobs passed/failed/in-progress
    - For failures: which step failed
 
-5. If any runs are in progress, offer to watch them:
+3. If any runs are in progress, offer to watch them:
    ```bash
    gh run watch <ID> --exit-status
    ```

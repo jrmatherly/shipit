@@ -10,7 +10,6 @@ metadata:
 
 # TypeSpec Domain Model Generation
 
-
 Generate TypeSpec domain models following this project's conventions for Clean Architecture entities.
 
 ## Directory Structure

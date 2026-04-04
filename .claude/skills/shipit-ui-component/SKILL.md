@@ -10,7 +10,6 @@ metadata:
 
 # Web UI Component Development
 
-
 Build React components following the four-tier architecture, with mandatory Storybook stories, `data-testid` attributes, and unit tests.
 
 ## Four-Tier Hierarchy

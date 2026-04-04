@@ -4,14 +4,19 @@ React Flow custom nodes use the `NodeProps<T>` typing pattern where `T` is the s
 
 ## Table of Contents
 
-- [Node Type Definition](#node-type-definition)
-- [Handle Component](#handle-component)
-- [Multiple Handles](#multiple-handles)
-- [Dynamic Handles with useUpdateNodeInternals](#dynamic-handles-with-useupdatenodeinternals)
-- [Styling Nodes](#styling-nodes)
-- [Aviation Map Pin Node Example](#aviation-map-pin-node-example)
-- [Preventing Drag and Pan](#preventing-drag-and-pan)
-- [Node Registration](#node-registration)
+1. [Custom Nodes](#custom-nodes)
+   1. [Table of Contents](#table-of-contents)
+   2. [Node Type Definition](#node-type-definition)
+   3. [Handle Component](#handle-component)
+      1. [Multiple Handles](#multiple-handles)
+   4. [Dynamic Handles with useUpdateNodeInternals](#dynamic-handles-with-useupdatenodeinternals)
+   5. [Styling Nodes](#styling-nodes)
+      1. [CSS Classes](#css-classes)
+      2. [Inline Styles in Component](#inline-styles-in-component)
+      3. [Tailwind CSS](#tailwind-css)
+   6. [Aviation Map Pin Node Example](#aviation-map-pin-node-example)
+   7. [Preventing Drag and Pan](#preventing-drag-and-pan)
+   8. [Node Registration](#node-registration)
 
 ## Node Type Definition
 

@@ -39,7 +39,7 @@ specs | shipit-kit | cli | tui | web | api | domain | agents | deployment | tsp 
 - MUST be lowercase only (a–z, 0–9, spaces, and hyphens only)
 - MUST NOT be empty
 - MUST NOT end with a period `.`
-- MUST be <= 72 characters (subject only, not including `<type>(<scope>): `)
+- MUST be <= 72 characters (subject only, not including `<type>(<scope>):`)
 - SHOULD be an imperative phrase (e.g., "add", "fix", "remove", "refactor")
 
 ## Header rules (entire first line)

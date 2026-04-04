@@ -10,7 +10,6 @@ metadata:
 
 # Fast-Track Feature Specification
 
-
 Collapse the full `new-feature → research → plan` pipeline into a single autonomous pass. Produces **all the same YAML artifacts** as the full pipeline but with minimal user interaction (0-2 clarifying questions max).
 
 **Full workflow guide:** [docs/development/spec-driven-workflow.md](../../../docs/development/spec-driven-workflow.md)

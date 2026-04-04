@@ -141,7 +141,7 @@ Last updated: {lastUpdated}
 
 **Execute tasks from `tasks.yaml` in sequence:**
 
-#### For each task:
+#### For each task
 
 **3.1 Update Status (Start)**
 

@@ -10,7 +10,6 @@ metadata:
 
 # Create New Feature Specification
 
-
 Start spec-driven development by creating a feature branch and specification directory.
 
 **Full workflow guide:** [docs/development/spec-driven-workflow.md](../../../docs/development/spec-driven-workflow.md)

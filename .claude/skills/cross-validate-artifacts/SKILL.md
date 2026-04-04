@@ -10,7 +10,6 @@ metadata:
 
 # Cross-Validate Artifacts Skill
 
-
 Cross-validate documentation and artifacts across the codebase for consistency, conflicts, and contradictions.
 
 ## Trigger
