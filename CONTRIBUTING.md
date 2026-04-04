@@ -10,8 +10,8 @@ This project adheres to a Code of Conduct. By participating, you are expected to
 
 ### Prerequisites
 
-- Node.js 18+
-- pnpm 8+ (`npm install -g pnpm`)
+- Node.js 22+
+- pnpm 10+ (`corepack enable` to use the version pinned in `package.json`)
 - Git
 
 ### Development Setup
@@ -19,7 +19,7 @@ This project adheres to a Code of Conduct. By participating, you are expected to
 ```bash
 # Clone the repository
 git clone https://github.com/jrmatherly/shipit.git
-cd cli
+cd shipit
 
 # Install dependencies
 pnpm install
@@ -34,11 +34,11 @@ pnpm test
 ### Running Locally
 
 ```bash
-# Development mode with hot reload
-pnpm dev
+# Run CLI in development mode
+pnpm dev:cli
 
-# Test CLI commands directly
-pnpm cli -- --help
+# Start web dashboard in development mode
+pnpm dev:web
 
 # Link globally for testing
 pnpm link --global
@@ -115,8 +115,12 @@ We follow [Conventional Commits](https://www.conventionalcommits.org/):
 - `docs`: Documentation only
 - `style`: Formatting, no code change
 - `refactor`: Code restructuring
+- `perf`: Performance improvements
 - `test`: Adding or updating tests
+- `build`: Build system or dependencies
+- `ci`: CI configuration changes
 - `chore`: Maintenance tasks
+- `revert`: Revert previous commit
 
 **Examples:**
 
@@ -163,11 +167,12 @@ See [docs/development/tdd-guide.md](./docs/development/tdd-guide.md) for detaile
 ### File Organization
 
 ```
-src/
+packages/core/src/
 ├── domain/           # Pure business logic
 ├── application/      # Use cases and ports
-├── infrastructure/   # External implementations
-└── presentation/     # CLI, TUI, Web
+└── infrastructure/   # External implementations (DB, agents, services)
+
+src/presentation/     # CLI, TUI, Web UI (separate from core package)
 ```
 
 ## Pull Request Process
@@ -251,14 +256,16 @@ Releases are fully automated using [semantic-release](https://semantic-release.g
 | `feat`            | Minor (0.x.0) | `feat(cli): add new command`       |
 | `fix`             | Patch (0.0.x) | `fix(agents): resolve memory leak` |
 | `perf`            | Patch         | `perf(cli): improve startup time`  |
+| `refactor`        | Patch         | `refactor(domain): simplify logic` |
+| `revert`          | Patch         | `revert(cli): undo breaking change`|
 | `BREAKING CHANGE` | Major (x.0.0) | Footer with `BREAKING CHANGE:`     |
 
-Commits with types `docs`, `style`, `refactor`, `test`, `build`, `ci`, `chore` do **not** trigger releases.
+Commits with types `docs`, `style`, `test`, `build`, `ci`, `chore` do **not** trigger releases.
 
 ### For Maintainers
 
-- Ensure `NPM_TOKEN` secret is configured in repository settings
-- The `@shipit-ai` npm organization must exist and have publish permissions
+- npm publishing uses **OIDC trusted publishing** (no `NPM_TOKEN` needed). Configured on npmjs.com for `jrmatherly/shipit` → `ci.yml`.
+- `RELEASE_TOKEN` (fine-grained PAT) is required for semantic-release to push version commits past branch protection.
 
 ## Questions?
 

@@ -80,11 +80,17 @@ Several former god classes are now **facades** delegating to focused sub-service
 ## CI Patterns
 
 - **Idempotent PR comments:** Use `peter-evans/find-comment@v4` + `create-or-update-comment@v5` with hidden HTML marker (`<!-- tag -->`) and `comment-id` + `edit-mode: replace`. The `comment-tag` input does NOT exist on this action.
+- **Concurrency:** All workflows use `concurrency: group: ${{ github.workflow }}-${{ github.ref }}` with `cancel-in-progress: true`. New pushes cancel stale runs on all branches including main.
 
 ## CI/CD Publishing
 
-- **npm publishing:** Uses OIDC trusted publishing (no NPM_TOKEN). Requires `id-token: write` permission + `--provenance` flag. Trusted publisher configured on npmjs.com for `jrmatherly/shipit` → `ci.yml`.
+- **npm publishing:** Uses OIDC trusted publishing (no NPM_TOKEN). Requires `id-token: write` permission. Provenance is automatic with OIDC — do NOT add `--provenance` flag. Trusted publisher configured on npmjs.com for `jrmatherly/shipit` → `ci.yml`.
+- **Node 24 for publish jobs:** OIDC requires npm >= 11.5.1. Node 22 ships npm 10.x (too old). Release and Dev Release jobs use `node-version: '24'`. Do NOT try `npm install -g npm@latest` — npm 10 can't bootstrap npm 11.
+- **No registry-url in Release job:** `registry-url` in setup-node creates an `.npmrc` that conflicts with semantic-release's OIDC auth (causes ENEEDAUTH). Only the Dev Release job (direct `npm publish`) uses `registry-url`.
+- **Slack plugin:** `@timebyping/semantic-release-slack-bot` conditionally loaded in `release.config.mjs` only when `SLACK_WEBHOOK` env var is set. Currently disabled (no Slack workspace).
+- **Branch protection:** main branch has 11 required status checks, force push blocked, deletion blocked. `enforce_admins: false` so `RELEASE_TOKEN` PAT can push release commits.
 - **Releases:** `RELEASE_TOKEN` (fine-grained PAT) required for semantic-release to push version commits. Scoped to `jrmatherly/shipit` with contents:write, issues:write, pull-requests:write.
+- **Version tags:** If semantic-release resets to v1.0.0, it means no git tags exist. Create a tag matching the published npm version: `git tag v<version> && git push origin v<version>`.
 - **gh CLI accounts:** Two accounts configured — `jrmatherly` (repo owner, needed for admin ops like deleting workflow runs) and `Jason-Matherly_aarons` (default active). Switch with `gh auth switch --user <name>`, always switch back after admin ops.
 
 ## Rules

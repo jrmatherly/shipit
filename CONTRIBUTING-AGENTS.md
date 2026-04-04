@@ -87,21 +87,23 @@ specs/NNN-feature-name/
 
 Use the component or area being modified:
 
-| Scope         | Area                            |
-| ------------- | ------------------------------- |
-| `specs`       | Feature specifications          |
-| `cli`         | CLI commands and presentation   |
-| `tui`         | Terminal UI components          |
-| `web`         | Web UI (Next.js)                |
-| `agents`      | LangGraph agent implementations |
-| `domain`      | Domain entities and services    |
-| `application` | Use cases and ports             |
-| `infra`       | Infrastructure layer            |
-| `db`          | Database/persistence            |
-| `config`      | Configuration handling          |
-| `tests`       | Test infrastructure             |
-| `deps`        | Dependencies                    |
-| `build`       | Build configuration             |
+| Scope        | Area                            |
+| ------------ | ------------------------------- |
+| `specs`      | Feature specifications          |
+| `shep-kit`   | Shipit-ai-kit skills/workflow   |
+| `cli`        | CLI commands and presentation   |
+| `tui`        | Terminal UI components          |
+| `web`        | Web UI (Next.js)                |
+| `api`        | API layer                       |
+| `domain`     | Domain entities and services    |
+| `agents`     | AI agent system                 |
+| `deployment` | Deployment configuration        |
+| `tsp`        | TypeSpec models                 |
+| `deps`       | Dependencies                    |
+| `config`     | Configuration handling          |
+| `dx`         | Developer experience            |
+| `release`    | Release related                 |
+| `ci`         | CI/CD workflows                 |
 
 ### Examples
 
@@ -156,18 +158,12 @@ instead of flat structure. Update clients accordingly.
 
 ## Co-Author Attribution
 
-Always include the co-author footer when committing:
+Always include the co-author footer when committing. Include the model name and context size:
 
 ```
 feat(cli): add status command
 
-Co-Authored-By: Claude <noreply@anthropic.com>
-```
-
-For Claude Opus 4.5 specifically:
-
-```
-Co-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>
+Co-Authored-By: Claude Opus 4.6 (1M context) <noreply@anthropic.com>
 ```
 
 ## Code Guidelines
@@ -195,16 +191,16 @@ Presentation → Application → Domain ← Infrastructure
 
 ### File Locations
 
-| What            | Where                                        |
-| --------------- | -------------------------------------------- |
-| Domain entities | `src/domain/entities/`                       |
-| Value objects   | `src/domain/value-objects/`                  |
-| Use cases       | `src/application/use-cases/`                 |
-| Port interfaces | `src/application/ports/`                     |
-| Repositories    | `src/infrastructure/repositories/`           |
-| Agent nodes     | `src/infrastructure/agents/langgraph/nodes/` |
-| CLI commands    | `src/presentation/cli/commands/`             |
-| Web components  | `src/presentation/web/components/`           |
+| What            | Where                                                        |
+| --------------- | ------------------------------------------------------------ |
+| Domain entities | `packages/core/src/domain/`                                  |
+| Value objects   | `packages/core/src/domain/value-objects/`                    |
+| Use cases       | `packages/core/src/application/use-cases/`                   |
+| Port interfaces | `packages/core/src/application/ports/`                       |
+| Repositories    | `packages/core/src/infrastructure/repositories/`             |
+| Agent services  | `packages/core/src/infrastructure/services/agents/`          |
+| CLI commands    | `src/presentation/cli/commands/`                             |
+| Web components  | `src/presentation/web/components/`                           |
 
 ### Testing (TDD Required)
 

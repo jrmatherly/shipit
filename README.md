@@ -245,7 +245,7 @@ The skip-permissions flag is a default, not a requirement. Configure your agent'
 
 | Category | Supported |
 |----------|-----------|
-| **AI Agents** | Claude Code, Cursor CLI, Gemini CLI |
+| **AI Agents** | Claude Code, Cursor CLI, Gemini CLI, Codex CLI, Aider, Continue |
 | **IDEs** | VS Code, Cursor, Zed, Windsurf, and more |
 | **Required** | Git, GitHub CLI (`gh`) |
 

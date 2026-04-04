@@ -14,35 +14,53 @@ Specs live in `specs/NNN-feature-name/`. **Edit YAML only — Markdown is auto-g
 
 ## Commands
 
-| Command          | Purpose                         |
-| ---------------- | ------------------------------- |
-| `pnpm build`     | Build CLI + web                 |
-| `pnpm test`      | Run all tests                   |
-| `pnpm test:unit` | Unit tests only                 |
-| `pnpm test:int`  | Integration tests only          |
-| `pnpm test:e2e`  | Playwright e2e tests            |
-| `pnpm lint:fix`  | Fix lint issues                 |
-| `pnpm validate`  | Lint + format + typecheck + tsp |
-| `pnpm dev:cli`   | Run CLI locally (ts-node)       |
-| `pnpm dev:web`   | Start Next.js dev server        |
+| Command               | Purpose                             |
+| --------------------- | ----------------------------------- |
+| `pnpm build`          | Build CLI only (fast, for dev)      |
+| `pnpm build:release`  | Build CLI + web (CI/packaging)      |
+| `pnpm test`           | Run all tests                       |
+| `pnpm test:unit`      | Unit tests only                     |
+| `pnpm test:int`       | Integration tests only              |
+| `pnpm test:e2e`       | CLI + Web e2e (Vitest + Playwright) |
+| `pnpm lint:fix`       | Fix lint issues                     |
+| `pnpm validate`       | lint:fix + format + typecheck + tsp (modifies files) |
+| `pnpm dev:cli`        | Run CLI locally (ts-node)           |
+| `pnpm dev:web`        | Start Next.js dev server            |
+| `pnpm tsp:codegen`    | Compile TypeSpec + format output    |
+| `pnpm dev:storybook`  | Start Storybook dev server          |
+| `pnpm build:storybook`| Build Storybook for CI              |
 
 ## Architecture
 
-Clean Architecture — four layers in `packages/core/src/` (dependencies point inward):
+Clean Architecture — three core layers in `packages/core/src/`, plus presentation at repo root (dependencies point inward):
 
-- `domain/` — Core business logic, no external deps
-- `application/` — Use cases, output port interfaces
-- `infrastructure/` — External concerns: DB, agents, services
-- `presentation/` — CLI, TUI, Web UI (`src/presentation/`)
+- `packages/core/src/domain/` — Core business logic, no external deps
+- `packages/core/src/application/` — Use cases, output port interfaces
+- `packages/core/src/infrastructure/` — External concerns: DB, agents, services
+- `src/presentation/` — CLI, TUI, Web UI (separate from core package)
 
 See [clean-architecture](./docs/architecture/clean-architecture.md).
+
+### Decomposed Services
+
+Several former god classes are now **facades** delegating to focused sub-services. Don't add logic to the facade — find the right sub-service:
+- `InteractiveSessionService` → SessionStateManager, SessionBootSequence, TurnExecutor, ChatStateBuilder, SubscriberNotifier
+- `GitPrService` → BranchDiscoveryService, PrCreationService, DiffAnalyzerService, CiStatusService, MergeStrategyService
+- `FeatureCreateDrawer` → PromptSection, WorkflowOptionsSection, ParentFeatureCombobox, RepositoryCombobox + useFeatureCreateForm hook
+
+## Security
+
+- All web API routes go through localhost-only middleware (`src/presentation/web/middleware.ts`) — rejects non-localhost requests
+- File-serving routes use `realpath()` before path containment checks to prevent symlink traversal
+- Upload routes block `.env` files and extensionless files
+- 500 errors use `apiError()` from `@/lib/api-helpers` — never expose raw `error.message` to clients
 
 ## Mandatory Rules
 
 - **MANDATORY — TDD**: Write failing tests FIRST (RED → GREEN → REFACTOR). Every plan phase must define explicit TDD cycles. See [tdd-guide](./docs/development/tdd-guide.md).
-- **MANDATORY — TypeSpec-first**: Domain models defined in `tsp/`. Run `pnpm tsp:compile` to generate `packages/core/src/domain/generated/output.ts`. Never edit generated files. See [typespec-guide](./docs/development/typespec-guide.md).
+- **MANDATORY — TypeSpec-first**: Domain models defined in `tsp/`. Run `pnpm tsp:codegen` to generate `packages/core/src/domain/generated/output.ts`. Never edit generated files. See [typespec-guide](./docs/development/typespec-guide.md).
 - **MANDATORY — Agent resolution**: No component may hardcode an agent type. All resolution flows through `IAgentExecutorProvider`. See [agent-system](./docs/architecture/agent-system.md).
-- **MANDATORY — Storybook stories**: Every web UI component MUST have a colocated `.stories.tsx` file. Commits without stories will be rejected.
+- **MANDATORY — Storybook stories**: Every web UI component MUST have a colocated `.stories.tsx` file. Not yet enforced by pre-commit hooks — self-enforce.
 - **MANDATORY — Spec-driven**: All features start with a spec. No implementation without a spec.
 
 ## Commit Format
@@ -50,7 +68,7 @@ See [clean-architecture](./docs/architecture/clean-architecture.md).
 [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>): <subject>`
 
 | Types | feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert |
-| Scopes | specs, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
+| Scopes (recommended) | specs, shep-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
 
 ## Key Docs
 
@@ -70,6 +88,19 @@ See [clean-architecture](./docs/architecture/clean-architecture.md).
 | TUI architecture               | [docs/tui/architecture.md](./docs/tui/architecture.md)                                 |
 | Web UI architecture            | [docs/ui/architecture.md](./docs/ui/architecture.md)                                   |
 | pnpm workspaces + setup        | [docs/development/setup.md](./docs/development/setup.md)                               |
+
+## Testing Patterns
+
+- **Shared factories:** Use `import { createMockFeature, createMockAgentRun, createMockRepository, createMockAgentSession } from '@tests/factories/index.js'` — don't create inline mock factories
+- **Settings factory:** Use `createDefaultSettings()` from `@shipit-ai/core/domain/factories/settings-defaults.factory` for Settings mocks
+- **DI mocking:** Mock `@/lib/server-container` with `vi.mock('@/lib/server-container', () => ({ resolve: ... }))` for server action tests
+- **TypeSpec dates:** All 31 date/timestamp fields are `Date` objects (not strings). Use `new Date('...')` in test mocks, not ISO strings.
+
+**Test frameworks:** Vitest (unit/integration/CLI e2e) + Playwright (web e2e). **Node >= 22** required.
+
+## Tech Debt
+
+Active remediation plan: [`.scratchpad/plans/technical-debt-remediation-plan.md`](./.scratchpad/plans/technical-debt-remediation-plan.md) (74 findings across 5 dimensions). Phases 0-3 complete (security, quick wins, architecture repair, god class decomposition). Phase 4 (test coverage) in progress (6/8 done). Check the plan before starting new work that touches affected areas.
 
 ## General
 ### 1. Self-Improvement Loop

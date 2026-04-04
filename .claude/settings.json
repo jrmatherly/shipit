@@ -52,6 +52,11 @@
             "type": "command",
             "command": ".claude/hooks/check-mock-completeness.sh",
             "timeout": 5
+          },
+          {
+            "type": "command",
+            "command": ".claude/hooks/run-related-tests.sh",
+            "timeout": 10
           }
         ]
       }

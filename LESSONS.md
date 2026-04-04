@@ -127,6 +127,5 @@ There are multiple code paths that spawn an agent process: create, start, resume
 - `approve-agent-run.use-case.ts` → `execute()` (approval gate resume)
 - `reject-agent-run.use-case.ts` → `execute()` (rejection feedback resume)
 - `check-and-unblock-features.use-case.ts` → `execute()` (auto-unblock children)
-- `create-feature.ts` web action → `initializeAndSpawn()` Phase 2 call (passes input to use case)
 
 **Rule:** Treat `create-feature.use-case.ts initializeAndSpawn()` as the canonical spawn. When adding a flag, copy its option-passing pattern to all other sites.
