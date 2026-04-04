@@ -70,8 +70,43 @@
 - 12,841 code review graph nodes, 131,703 edges
 - CI/CD fully operational with OIDC trusted publishing
 
+### Environment Auto-Detection Feature (6 phases, 5 commits)
+- `IEnvironmentDetectorService` port + `EnvironmentDetectorServiceImpl` — detects OS defaults from `$SHELL`, `$EDITOR/$VISUAL`, `$TERM_PROGRAM/$TERM`
+- `DetectEnvironmentDefaultsUseCase` + `createDefaultSettings(overrides?)` factory
+- `InitializeSettingsUseCase` now auto-detects environment on first-time init
+- Server actions: `getAvailableEditors()`, `getAvailableShells()` (follows `getAvailableTerminals()` pattern)
+- Settings Environment dropdowns: "Installed"/"Not Installed" badges, disabled unavailable options
+- Shell tool metadata: bash.json, zsh.json, fish.json, powershell.json with 'shell' tag
+- 42 new unit tests (37 detector + 5 init use case)
+
+### Agent Picker Availability Badges
+- `getAllAgentModels()` checks `IToolInstallerService.checkAvailability()` per agent
+- `AgentModelPicker` shows badges, disables unavailable agents
+- Codex CLI tool metadata created (`codex-cli.json`)
+- Codex CLI added to auth maps (AGENT_LABELS, AGENT_TOOL_MAP, AGENT_BINARY_MAP)
+
+### Auth Check Fix (OAuth + Proxy)
+- Fixed false negative: Claude Code OAuth users saw "needs authentication" because `~/.claude/.credentials.json` doesn't exist for OAuth auth
+- Refactored Tier 1 to return `Tier1Result` (`'env-var' | 'file' | false`)
+- Env-var auth (e.g. ANTHROPIC_API_KEY for LiteLLM proxy) skips Tier 2 subprocess check
+- Tier 1 failure falls through to Tier 2 (`claude auth status`) instead of short-circuiting
+
+### DX Hooks
+- `check-i18n-parity.sh` — warns when en/web.json keys are added without other locales
+- `check-agent-labels.sh` — warns when AGENT_LABELS maps are modified (consistency check)
+- Total hooks: 8 (was 6)
+
+### CLAUDE.md Updates
+- DI registration patterns (services vs use cases)
+- Tool metadata auto-discovery system
+- i18n key parity enforcement
+- Storybook mock requirements
+- Settings factory overrides parameter
+
 ## Remaining Work
 - P4-4: Test 18 CLI commands (16h)
 - P4-6: E2E tests for critical user journeys (16h)
 - Phase 5: Dependency modernization (76h)
 - TypeSpec @doc() annotations still use "Shipit AI" (needs tsp pass)
+- Agent label consolidation: AGENT_LABELS duplicated in 5+ files (tech debt)
+- Storybook story variants for availability badges (WithAllToolsInstalled, WithMixedAvailability, WithMinimalTools)
