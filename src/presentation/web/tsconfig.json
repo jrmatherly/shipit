@@ -16,7 +16,6 @@
     "incremental": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "baseUrl": ".",
     "paths": {
       "@shipit-ai/core": ["../../../packages/core/src/index.ts"],
       "@shipit-ai/core/*": ["../../../packages/core/src/*"],
