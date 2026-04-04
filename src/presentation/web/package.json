@@ -17,7 +17,7 @@
   "dependencies": {
     "@assistant-ui/react": "^0.12.19",
     "@assistant-ui/react-markdown": "^0.12.6",
-    "@dagrejs/dagre": "^2.0.4",
+    "@dagrejs/dagre": "^3.0.0",
     "@shipit-ai/core": "workspace:*",
     "@tanstack/react-query": "^5.95.1",
     "@xyflow/react": "^12.10.0",
