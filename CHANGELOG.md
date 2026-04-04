@@ -1,3 +1,18 @@
+# [1.165.0](https://github.com/jrmatherly/shipit/compare/v1.164.2...v1.165.0) (2026-04-04)
+
+
+### Bug Fixes
+
+* **web:** rename middleware.ts to proxy.ts per next.js deprecation ([055630c](https://github.com/jrmatherly/shipit/commit/055630cc60a849714d6c593bb74a6dae9021acbd))
+* **web:** replace logo, fix sse di error, fix pre-existing type errors ([05e4c78](https://github.com/jrmatherly/shipit/commit/05e4c78751ea39a9f1fa8545baf7a415080b4c9d))
+* **web:** replace remaining shep references and hide empty features section ([56266f0](https://github.com/jrmatherly/shipit/commit/56266f059435a25b46b359162f0d16747c97f10b))
+
+
+### Features
+
+* **web:** add agent availability badges and fix oauth auth detection ([70232f9](https://github.com/jrmatherly/shipit/commit/70232f9997df5d389641b0564ed4d7f46d48fd72))
+* **web:** standardize brand name to shipit across all ui and prompts ([374a7cf](https://github.com/jrmatherly/shipit/commit/374a7cfe79f65c2000f53a889bdb4e4fb313d058))
+
 ## [1.164.2](https://github.com/jrmatherly/shipit/compare/v1.164.1...v1.164.2) (2026-04-03)
 
 ### Bug Fixes
