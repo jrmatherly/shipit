@@ -378,6 +378,12 @@ See [CONTRIBUTING.md](./CONTRIBUTING.md) for humans and [CONTRIBUTING-AGENTS.md]
 
 ---
 
+## Acknowledgments
+
+ShipIT is a fork of [Shep](https://github.com/shep-ai/shep) by [Shep AI](https://github.com/shep-ai). We're grateful for their foundational work on parallel AI agent orchestration.
+
+---
+
 ## License
 
 MIT — see [LICENSE](./LICENSE).
