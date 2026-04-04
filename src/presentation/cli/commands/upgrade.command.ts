@@ -4,7 +4,7 @@
  * Self-upgrades ShipIT AI CLI to the latest published version.
  * Checks current vs latest version before running npm install.
  *
- * Usage: shep upgrade
+ * Usage: shipit-ai upgrade
  */
 
 import { Command } from 'commander';

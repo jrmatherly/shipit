@@ -6,8 +6,8 @@
  * and persists a Feature with lifecycle=Maintain (agent inactive).
  *
  * Usage:
- *   shep feat adopt <branch>
- *   shep feat adopt <branch> -r /path/to/repo
+ *   shipit-ai feat adopt <branch>
+ *   shipit-ai feat adopt <branch> -r /path/to/repo
  */
 
 import { Command } from 'commander';

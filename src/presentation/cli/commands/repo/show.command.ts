@@ -4,7 +4,7 @@
  * Display details of a specific tracked repository.
  *
  * Usage:
- *   shep repo show <id>
+ *   shipit-ai repo show <id>
  */
 
 import { Command } from 'commander';

@@ -1,6 +1,9 @@
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 
+/** Aspect ratio of the ShipIT brain logo PNG (194px height / 319px width) */
+const LOGO_ASPECT_RATIO = 194 / 319;
+
 export interface ShipitAiLogoProps {
   className?: string;
   size?: number;
@@ -13,7 +16,7 @@ export function ShipitAiLogo({ className, size = 24, variant = 'default' }: Ship
       src="/shipit-brain.png"
       alt="ShipIT AI"
       width={size}
-      height={Math.round(size * 0.61)}
+      height={Math.round(size * LOGO_ASPECT_RATIO)}
       className={cn(
         'shrink-0 object-contain dark:brightness-125',
         variant === 'dev' && 'opacity-80',

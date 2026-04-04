@@ -5,8 +5,8 @@
  * Valid editors are derived dynamically from JSON tool metadata.
  *
  * Usage:
- *   shep settings ide                    # Interactive selection
- *   shep settings ide --editor cursor    # Non-interactive
+ *   shipit-ai settings ide                    # Interactive selection
+ *   shipit-ai settings ide --editor cursor    # Non-interactive
  */
 
 import { Command } from 'commander';
@@ -44,9 +44,9 @@ export function createIdeCommand(): Command {
       'after',
       `
 Examples:
-  $ shep settings ide                           Interactive selection
-  $ shep settings ide --editor cursor           Non-interactive
-  $ shep settings ide --editor antigravity      Set Google Antigravity`
+  $ shipit-ai settings ide                           Interactive selection
+  $ shipit-ai settings ide --editor cursor           Non-interactive
+  $ shipit-ai settings ide --editor antigravity      Set Google Antigravity`
     )
     .action(async (options: { editor?: string }) => {
       try {

@@ -4,7 +4,7 @@
  * Sends SIGTERM to a running agent and marks it as interrupted (resumable).
  *
  * Usage:
- *   shep agent stop <id>
+ *   shipit-ai agent stop <id>
  */
 
 import { Command } from 'commander';

@@ -2,17 +2,17 @@
  * Settings Command Group
  *
  * Provides subcommands for managing ShipIT global settings.
- * Running `shep settings` with no subcommand launches the full setup wizard.
+ * Running `shipit-ai settings` with no subcommand launches the full setup wizard.
  *
  * Usage:
- *   shep settings           # Launch full setup wizard (agent + IDE + workflow)
- *   shep settings show      # Display current settings
- *   shep settings init      # Initialize settings to defaults
- *   shep settings agent     # Configure AI coding agent
- *   shep settings ide       # Configure preferred IDE
- *   shep settings workflow  # Configure workflow defaults
- *   shep settings model     # Configure default LLM model
- *   shep settings language  # Configure display language
+ *   shipit-ai settings           # Launch full setup wizard (agent + IDE + workflow)
+ *   shipit-ai settings show      # Display current settings
+ *   shipit-ai settings init      # Initialize settings to defaults
+ *   shipit-ai settings agent     # Configure AI coding agent
+ *   shipit-ai settings ide       # Configure preferred IDE
+ *   shipit-ai settings workflow  # Configure workflow defaults
+ *   shipit-ai settings model     # Configure default LLM model
+ *   shipit-ai settings language  # Configure display language
  */
 
 import { Command } from 'commander';

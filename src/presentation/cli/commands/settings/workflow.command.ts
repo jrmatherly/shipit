@@ -4,9 +4,9 @@
  * Configures default approval gates, push, and PR behavior for new features.
  *
  * Usage:
- *   shep settings workflow                              # Interactive checkbox wizard
- *   shep settings workflow --allow-prd --push           # Non-interactive (set specific flags)
- *   shep settings workflow --allow-all --pr             # Enable all gates + PR
+ *   shipit-ai settings workflow                              # Interactive checkbox wizard
+ *   shipit-ai settings workflow --allow-prd --push           # Non-interactive (set specific flags)
+ *   shipit-ai settings workflow --allow-all --pr             # Enable all gates + PR
  */
 
 import { Command } from 'commander';
@@ -49,9 +49,9 @@ export function createWorkflowCommand(): Command {
       'after',
       `
 Examples:
-  $ shep settings workflow                              Interactive wizard
-  $ shep settings workflow --allow-prd --push           Set specific flags
-  $ shep settings workflow --allow-all --pr             Full autonomous mode`
+  $ shipit-ai settings workflow                              Interactive wizard
+  $ shipit-ai settings workflow --allow-prd --push           Set specific flags
+  $ shipit-ai settings workflow --allow-all --pr             Full autonomous mode`
     )
     .action(async (options: WorkflowOptions) => {
       try {

@@ -3,11 +3,11 @@
  *
  * Creates a new feature with a git branch and worktree.
  *
- * Usage: shep feat new <description> [options]
+ * Usage: shipit-ai feat new <description> [options]
  *
  * @example
- * $ shep feat new "Add user authentication"
- * $ shep feat new "Add login page" --repo /path/to/project
+ * $ shipit-ai feat new "Add user authentication"
+ * $ shipit-ai feat new "Add login page" --repo /path/to/project
  */
 
 import { Command } from 'commander';
@@ -195,7 +195,7 @@ export function createNewCommand(): Command {
         if (feature.lifecycle === SdlcLifecycle.Pending) {
           messages.info(
             t('cli:commands.feat.new.pendingInfo', {
-              command: colors.accent(`shep feat start ${feature.id.slice(0, 8)}`),
+              command: colors.accent(`shipit-ai feat start ${feature.id.slice(0, 8)}`),
             })
           );
         }

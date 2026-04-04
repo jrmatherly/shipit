@@ -16,7 +16,7 @@ import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/
 type GetMergeReviewDataResult = MergeReviewData | { error: string };
 
 /**
- * Compute the shep evidence directory for a given repository and feature.
+ * Compute the ShipIT evidence directory for a given repository and feature.
  * Path: ~/.shipit-ai/repos/<sha256-hash-prefix>/evidence/<featureId>/
  */
 function computeEvidenceDir(repositoryPath: string, featureId: string): string {
@@ -25,11 +25,11 @@ function computeEvidenceDir(repositoryPath: string, featureId: string): string {
 }
 
 /**
- * Normalize evidence paths so they all point to the shep evidence directory.
+ * Normalize evidence paths so they all point to the ShipIT evidence directory.
  * When commitEvidence was enabled, the manifest may contain relative paths
  * (e.g. "specs/066-feature/evidence/file.png"). After merge the worktree is
  * deleted so those paths no longer resolve. The evidence files were also saved
- * to the shep evidence dir with the same filename, so we map relative paths
+ * to the ShipIT evidence dir with the same filename, so we map relative paths
  * to absolute paths there.
  */
 function normalizeEvidencePaths(

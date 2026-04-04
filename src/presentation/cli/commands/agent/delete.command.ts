@@ -4,7 +4,7 @@
  * Remove an agent run record from the database.
  *
  * Usage:
- *   shep agent delete <id>
+ *   shipit-ai agent delete <id>
  */
 
 import { Command } from 'commander';

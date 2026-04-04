@@ -28,21 +28,21 @@ export const PlainText: Story = {
 /** Text with an image attachment reference. */
 export const WithImageAttachment: Story = {
   args: {
-    text: 'The button is misaligned, see screenshot:\n@/home/user/.shep/attachments/pending-abc/screenshot.png',
+    text: 'The button is misaligned, see screenshot:\n@/home/user/.shipit-ai/attachments/pending-abc/screenshot.png',
   },
 };
 
 /** Text with multiple attachment references. */
 export const MultipleAttachments: Story = {
   args: {
-    text: 'Before: @/home/user/.shep/attachments/pending-abc/before.png\nAfter: @/home/user/.shep/attachments/pending-abc/after.png',
+    text: 'Before: @/home/user/.shipit-ai/attachments/pending-abc/before.png\nAfter: @/home/user/.shipit-ai/attachments/pending-abc/after.png',
   },
 };
 
 /** Text with a non-image file attachment. */
 export const FileAttachment: Story = {
   args: {
-    text: 'See the log file:\n@/home/user/.shep/attachments/pending-abc/error.log',
+    text: 'See the log file:\n@/home/user/.shipit-ai/attachments/pending-abc/error.log',
   },
 };
 
@@ -51,8 +51,8 @@ export const ExtraAttachmentPaths: Story = {
   args: {
     text: 'Please fix the layout issues',
     attachmentPaths: [
-      '/home/user/.shep/attachments/pending-abc/screenshot1.png',
-      '/home/user/.shep/attachments/pending-abc/screenshot2.png',
+      '/home/user/.shipit-ai/attachments/pending-abc/screenshot1.png',
+      '/home/user/.shipit-ai/attachments/pending-abc/screenshot2.png',
     ],
   },
 };

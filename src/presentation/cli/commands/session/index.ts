@@ -5,11 +5,11 @@
  * agent provider CLI sessions.
  *
  * Usage:
- *   shep session [subcommand]
+ *   shipit-ai session [subcommand]
  *
  * Subcommands:
- *   shep session ls              List agent provider CLI sessions
- *   shep session show <id>       Display details of a specific session
+ *   shipit-ai session ls              List agent provider CLI sessions
+ *   shipit-ai session show <id>       Display details of a specific session
  */
 
 import { Command } from 'commander';

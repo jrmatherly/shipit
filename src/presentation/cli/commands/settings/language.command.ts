@@ -4,7 +4,7 @@
  * Configures the display language used by the ShipIT CLI and Web UI.
  *
  * Usage:
- *   shep settings language   # Interactive language picker
+ *   shipit-ai settings language   # Interactive language picker
  */
 
 import { Command } from 'commander';
@@ -49,7 +49,7 @@ export function createLanguageCommand(): Command {
       'after',
       `
 Examples:
-  $ shep settings language   Interactive language picker`
+  $ shipit-ai settings language   Interactive language picker`
     )
     .action(async () => {
       try {

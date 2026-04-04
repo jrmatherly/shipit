@@ -4,13 +4,13 @@
  * Deletes a feature, its worktree, and cancels any running agent.
  * Optionally cleans up worktree and branches (local + remote).
  *
- * Usage: shep feat del <id> [--force] [--no-cleanup] [--no-close-pr]
+ * Usage: shipit-ai feat del <id> [--force] [--no-cleanup] [--no-close-pr]
  *
  * @example
- * $ shep feat del feat-123
- * $ shep feat del feat-123 --force
- * $ shep feat del feat-123 --force --no-cleanup
- * $ shep feat del feat-123 --force --no-close-pr
+ * $ shipit-ai feat del feat-123
+ * $ shipit-ai feat del feat-123 --force
+ * $ shipit-ai feat del feat-123 --force --no-cleanup
+ * $ shipit-ai feat del feat-123 --force --no-close-pr
  */
 
 import { Command } from 'commander';

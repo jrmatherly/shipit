@@ -4,9 +4,9 @@
  * Import a GitHub repository by URL or interactively browse user's repos.
  *
  * Usage:
- *   shep repo add                       # Interactive wizard
- *   shep repo add --url owner/repo      # Direct import by URL
- *   shep repo add --url <url> --dest /path  # Override clone destination
+ *   shipit-ai repo add                       # Interactive wizard
+ *   shipit-ai repo add --url owner/repo      # Direct import by URL
+ *   shipit-ai repo add --url <url> --dest /path  # Override clone destination
  */
 
 import { Command } from 'commander';

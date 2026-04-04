@@ -2,7 +2,7 @@
  * Shared Log Viewer
  *
  * Displays a log file with support for follow mode and tail lines.
- * Used by both `shep agent logs` and `shep feat logs`.
+ * Used by both `shipit-ai agent logs` and `shipit-ai feat logs`.
  */
 
 import {

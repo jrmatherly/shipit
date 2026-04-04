@@ -4,11 +4,11 @@
  * Archives a feature to hide it from the canvas without deleting it.
  * Stores the current lifecycle state for restoration on unarchive.
  *
- * Usage: shep feat archive <id> [--force]
+ * Usage: shipit-ai feat archive <id> [--force]
  *
  * @example
- * $ shep feat archive feat-123
- * $ shep feat archive feat-123 --force
+ * $ shipit-ai feat archive feat-123
+ * $ shipit-ai feat archive feat-123 --force
  */
 
 import { Command } from 'commander';

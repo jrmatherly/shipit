@@ -5,7 +5,7 @@
  * the agent to continue with the next phase.
  *
  * Usage:
- *   shep feat approve [id]
+ *   shipit-ai feat approve [id]
  */
 
 import { Command } from 'commander';

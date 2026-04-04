@@ -4,12 +4,12 @@
  * Top-level repo command with subcommands for managing tracked repositories.
  *
  * Usage:
- *   shep repo [subcommand]
+ *   shipit-ai repo [subcommand]
  *
  * Subcommands:
- *   shep repo ls             List tracked repositories
- *   shep repo show <id>      Display details of a tracked repository
- *   shep repo add             Import a GitHub repository
+ *   shipit-ai repo ls             List tracked repositories
+ *   shipit-ai repo show <id>      Display details of a tracked repository
+ *   shipit-ai repo add             Import a GitHub repository
  */
 
 import { Command } from 'commander';

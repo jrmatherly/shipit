@@ -27,7 +27,7 @@ export async function deployRepository(
     }
 
     if (isSameShipitAiInstance(repositoryPath)) {
-      log.warn('rejected — target is the running shep instance');
+      log.warn('rejected — target is the running ShipIT instance');
       return {
         success: false,
         error: 'Cannot start a dev server for the repository ShipIT is running from',

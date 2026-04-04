@@ -4,10 +4,10 @@
  * Starts the ShipIT web UI server.
  * Runs Next.js in the same process as the CLI, sharing the DI container.
  *
- * Usage: shep ui [--port <number>]
+ * Usage: shipit-ai ui [--port <number>]
  *
  * @example
- * $ shep ui
+ * $ shipit-ai ui
  * ShipIT Web UI
  * Starting web server...
  *
@@ -66,9 +66,9 @@ export function createUiCommand(): Command {
       'after',
       `
 Examples:
-  $ shep ui                 Start on default port (4050)
-  $ shep ui --port 8080     Start on custom port
-  $ shep ui --no-open       Start without opening browser`
+  $ shipit-ai ui                 Start on default port (4050)
+  $ shipit-ai ui --port 8080     Start on custom port
+  $ shipit-ai ui --no-open       Start without opening browser`
     )
     .action(async (options: { port?: number; open?: boolean }) => {
       try {

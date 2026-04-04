@@ -112,7 +112,7 @@ async function bootstrap() {
       // task-10: Default action starts the daemon (or shows already-running URL).
       // The onboarding gate above (lines 82-89) ensures the wizard runs on first launch;
       // after the gate, startDaemon() is the correct next step in both cases.
-      // Commander only fires this action when no subcommand matches, so `shep start` etc.
+      // Commander only fires this action when no subcommand matches, so `shipit-ai start` etc.
       // are unaffected.
       .action(async () => {
         await startDaemon();

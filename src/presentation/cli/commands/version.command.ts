@@ -4,7 +4,7 @@
  * Displays detailed version information for ShipIT AI CLI.
  * Provides more context than the --version flag.
  *
- * Usage: shep version
+ * Usage: shipit-ai version
  *
  * @example
  * $ shipit-ai version

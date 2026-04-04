@@ -353,7 +353,7 @@ const SAMPLE_WORKFLOW_DEFAULTS: WorkflowDefaults = {
 /**
  * Drawer pre-populated from workflow settings — PRD and Plan approval gates
  * are checked, Push and Create PR are enabled. These values come from
- * `shep settings workflow` and are read at mount time via `getWorkflowDefaults()`.
+ * `shipit-ai settings workflow` and are read at mount time via `getWorkflowDefaults()`.
  */
 export const WithWorkflowDefaults: Story = {
   render: () => (

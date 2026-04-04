@@ -5,7 +5,7 @@
  * IDE flags (e.g. --vscode, --cursor) are derived dynamically from
  * the JSON tool metadata files in packages/core.
  *
- * Usage: shep ide <feat-id> [--<ide-name>]
+ * Usage: shipit-ai ide <feat-id> [--<ide-name>]
  */
 
 import { Command } from 'commander';

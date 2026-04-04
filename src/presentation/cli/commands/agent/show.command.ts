@@ -5,7 +5,7 @@
  * PID, current node, heartbeat, and output.
  *
  * Usage:
- *   shep agent show <id>
+ *   shipit-ai agent show <id>
  */
 
 import { Command } from 'commander';

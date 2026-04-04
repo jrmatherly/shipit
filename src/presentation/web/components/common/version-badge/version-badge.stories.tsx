@@ -94,7 +94,7 @@ export const Development: Story = {
     commitHash: '5a84c148b3e2f1a9c7d6e8b4a2f1c3d5e7f9a1b3',
     packageName: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
-    instancePath: '/home/user/projects/shep',
+    instancePath: '/home/user/projects/shipit',
   },
 };
 
@@ -140,7 +140,7 @@ export const UpdateAvailableDev: Story = {
     commitHash: '5a84c148b3e2f1a9c7d6e8b4a2f1c3d5e7f9a1b3',
     packageName: '@shipit-ai/cli',
     description: 'Autonomous AI Native SDLC Platform',
-    instancePath: '/home/user/projects/shep',
+    instancePath: '/home/user/projects/shipit',
   },
 };
 

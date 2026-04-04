@@ -4,11 +4,11 @@
  * Lists features in a hierarchical tree view: repo → feature → child → child…
  * Repos and features are ordered by creation date descending.
  *
- * Usage: shep feat ls [options]
+ * Usage: shipit-ai feat ls [options]
  *
  * @example
- * $ shep feat ls
- * $ shep feat ls --repo /path/to/project
+ * $ shipit-ai feat ls
+ * $ shipit-ai feat ls --repo /path/to/project
  */
 
 import path from 'node:path';

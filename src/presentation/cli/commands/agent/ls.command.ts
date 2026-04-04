@@ -5,7 +5,7 @@
  * Auto-detects dead PIDs and shows them as "crashed" instead of "running".
  *
  * Usage:
- *   shep agent ls
+ *   shipit-ai agent ls
  */
 
 import { Command } from 'commander';

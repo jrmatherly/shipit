@@ -15,9 +15,9 @@
  *
  * Gracefully degrades if ps is unavailable (timeout or error).
  *
- * Usage: shep status
- *        shep status --logs
- *        shep status --logs 100 --follow
+ * Usage: shipit-ai status
+ *        shipit-ai status --logs
+ *        shipit-ai status --logs 100 --follow
  */
 
 import { Command } from 'commander';

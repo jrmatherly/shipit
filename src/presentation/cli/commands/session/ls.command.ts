@@ -5,12 +5,12 @@
  * Sessions are grouped by project path and sorted by last activity within each group.
  *
  * Usage:
- *   shep session ls
- *   shep session ls --claude-code
- *   shep session ls --cursor-cli
- *   shep session ls --gemini-cli
- *   shep session ls --limit 10
- *   shep session ls --flat
+ *   shipit-ai session ls
+ *   shipit-ai session ls --claude-code
+ *   shipit-ai session ls --cursor-cli
+ *   shipit-ai session ls --gemini-cli
+ *   shipit-ai session ls --limit 10
+ *   shipit-ai session ls --flat
  */
 
 import { Command } from 'commander';

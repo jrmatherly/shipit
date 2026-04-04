@@ -4,7 +4,7 @@
  * Rejects a paused agent run (waiting_approval) and cancels it.
  *
  * Usage:
- *   shep agent reject <id> [--reason <text>]
+ *   shipit-ai agent reject <id> [--reason <text>]
  */
 
 import { Command } from 'commander';

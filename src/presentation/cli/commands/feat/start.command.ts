@@ -5,7 +5,7 @@
  * and spawning the agent.
  *
  * Usage:
- *   shep feat start <id>
+ *   shipit-ai feat start <id>
  */
 
 import { Command } from 'commander';

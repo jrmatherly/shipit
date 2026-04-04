@@ -4,7 +4,7 @@
  * Approves a paused agent run (waiting_approval) and resumes execution.
  *
  * Usage:
- *   shep agent approve <id>
+ *   shipit-ai agent approve <id>
  */
 
 import { Command } from 'commander';

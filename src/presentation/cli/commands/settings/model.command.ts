@@ -7,7 +7,7 @@
  * the advertised list, as users may enter newly released identifiers.
  *
  * Usage:
- *   shep settings model   # Interactive model picker
+ *   shipit-ai settings model   # Interactive model picker
  */
 
 import { Command } from 'commander';
@@ -33,7 +33,7 @@ export function createModelCommand(): Command {
       'after',
       `
 Examples:
-  $ shep settings model   Interactive model picker`
+  $ shipit-ai settings model   Interactive model picker`
     )
     .action(async () => {
       try {

@@ -28,7 +28,7 @@ export interface SessionResult {
 
 /**
  * Claude Code encodes paths by replacing '/', '\', '.' with '-'.
- * e.g. /home/user/.shep/repos/abc → -home-user--shep-repos-abc
+ * e.g. /home/user/.shipit-ai/repos/abc → -home-user--shep-repos-abc
  */
 function claudeEncodePath(p: string): string {
   return p.replace(/[/\\.]/g, '-');
@@ -37,7 +37,7 @@ function claudeEncodePath(p: string): string {
 /**
  * Cursor encodes paths by stripping the leading '/', removing dots,
  * and replacing '/' and '\' with '-'.
- * e.g. /home/user/.shep/repos/abc → home-user-shep-repos-abc
+ * e.g. /home/user/.shipit-ai/repos/abc → home-user-shep-repos-abc
  */
 function cursorEncodePath(p: string): string {
   return p.replace(/^\//, '').replace(/\./g, '').replace(/[/\\]/g, '-');

@@ -3,8 +3,8 @@
  *
  * Contains the parent-side logic for starting the ShipIT AI web UI as a
  * detached background daemon. Used by both:
- *   - The default `shep` action (index.ts)
- *   - The `shep start` command (start.command.ts)
+ *   - The default `shipit-ai` action (index.ts)
+ *   - The `shipit-ai start` command (start.command.ts)
  *
  * Flow:
  *   1. Resolve available port (respects --port override)

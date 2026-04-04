@@ -4,14 +4,14 @@
  * Top-level agent command with subcommands for managing and viewing agent runs.
  *
  * Usage:
- *   shep agent [subcommand]
+ *   shipit-ai agent [subcommand]
  *
  * Subcommands:
- *   shep agent show <id>     Display details of an agent run
- *   shep agent ls             List all agent runs
- *   shep agent stop <id>     Stop a running agent
- *   shep agent logs <id>     View agent run logs
- *   shep agent delete <id>   Delete an agent run record
+ *   shipit-ai agent show <id>     Display details of an agent run
+ *   shipit-ai agent ls             List all agent runs
+ *   shipit-ai agent stop <id>     Stop a running agent
+ *   shipit-ai agent logs <id>     View agent run logs
+ *   shipit-ai agent delete <id>   Delete an agent run record
  */
 
 import { Command } from 'commander';

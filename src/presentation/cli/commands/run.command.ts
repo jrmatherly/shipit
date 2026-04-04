@@ -3,13 +3,13 @@
  *
  * Runs an AI agent workflow against a repository.
  *
- * Usage: shep run <agent-name> [options]
+ * Usage: shipit-ai run <agent-name> [options]
  *
  * @example
- * $ shep run analyze-repository
- * $ shep run analyze-repository --prompt "Focus on security"
- * $ shep run analyze-repository --repo /path/to/repo
- * $ shep run analyze-repository --stream
+ * $ shipit-ai run analyze-repository
+ * $ shipit-ai run analyze-repository --prompt "Focus on security"
+ * $ shipit-ai run analyze-repository --repo /path/to/repo
+ * $ shipit-ai run analyze-repository --stream
  */
 
 import { Command } from 'commander';

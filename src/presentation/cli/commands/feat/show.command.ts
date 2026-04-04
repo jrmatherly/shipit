@@ -4,7 +4,7 @@
  * Displays detailed information about a specific feature.
  * Derives real-time status from the agent run.
  *
- * Usage: shep feat show <id>
+ * Usage: shipit-ai feat show <id>
  */
 
 import { readFileSync } from 'node:fs';
@@ -491,8 +491,8 @@ export function createShowCommand(): Command {
             content: [
               t('cli:commands.feat.show.awaitingApprovalMessage', { phase }),
               '',
-              `  ${colors.accent(`shep feat approve ${feature.id.slice(0, 8)}`)}  ${t('cli:commands.feat.show.awaitingApprovalApprove')}`,
-              `  ${colors.accent(`shep feat reject ${feature.id.slice(0, 8)}`)}   ${t('cli:commands.feat.show.awaitingApprovalReject')}`,
+              `  ${colors.accent(`shipit-ai feat approve ${feature.id.slice(0, 8)}`)}  ${t('cli:commands.feat.show.awaitingApprovalApprove')}`,
+              `  ${colors.accent(`shipit-ai feat reject ${feature.id.slice(0, 8)}`)}   ${t('cli:commands.feat.show.awaitingApprovalReject')}`,
             ].join('\n'),
           });
         }

@@ -3,7 +3,7 @@
  *
  * Provides version and system info for the Web UI.
  * Reads the version from the DI container's VersionService — the same source
- * used by `shep --version`. Falls back to NEXT_PUBLIC_* env vars if the
+ * used by `shipit-ai --version`. Falls back to NEXT_PUBLIC_* env vars if the
  * container is unavailable.
  *
  * The VersionInfo shape mirrors src/domain/value-objects/version-info.ts

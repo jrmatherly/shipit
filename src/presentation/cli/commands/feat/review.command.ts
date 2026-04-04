@@ -6,7 +6,7 @@
  * then calls approve or reject use case based on user action.
  *
  * Usage:
- *   shep feat review [id]
+ *   shipit-ai feat review [id]
  */
 
 import { Command } from 'commander';

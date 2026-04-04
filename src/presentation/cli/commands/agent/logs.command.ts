@@ -4,9 +4,9 @@
  * View log output for an agent run with efficient streaming.
  *
  * Usage:
- *   shep agent logs <id>         # Print full log
- *   shep agent logs -f <id>      # Follow (tail -f) using fs.watch
- *   shep agent logs -n 50 <id>   # Last 50 lines
+ *   shipit-ai agent logs <id>         # Print full log
+ *   shipit-ai agent logs -f <id>      # Follow (tail -f) using fs.watch
+ *   shipit-ai agent logs -n 50 <id>   # Last 50 lines
  */
 
 import { Command } from 'commander';

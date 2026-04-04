@@ -3,9 +3,9 @@
  *
  * Contains the stop logic for gracefully terminating a running ShipIT daemon.
  * Used by:
- *   - stop.command.ts (shep stop)
- *   - restart.command.ts (shep restart)
- *   - upgrade.command.ts (shep upgrade — stops before install)
+ *   - stop.command.ts (shipit-ai stop)
+ *   - restart.command.ts (shipit-ai restart)
+ *   - upgrade.command.ts (shipit-ai upgrade — stops before install)
  *
  * Stop sequence:
  *   1. Read daemon.json via IDaemonService

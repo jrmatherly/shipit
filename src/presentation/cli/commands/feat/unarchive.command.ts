@@ -4,10 +4,10 @@
  * Restores an archived feature to its previous lifecycle state.
  * No confirmation needed — unarchive is always safe and non-destructive.
  *
- * Usage: shep feat unarchive <id>
+ * Usage: shipit-ai feat unarchive <id>
  *
  * @example
- * $ shep feat unarchive feat-123
+ * $ shipit-ai feat unarchive feat-123
  */
 
 import { Command } from 'commander';

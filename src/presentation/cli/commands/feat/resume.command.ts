@@ -4,7 +4,7 @@
  * Resumes an interrupted or failed feature agent run.
  *
  * Usage:
- *   shep feat resume <id>
+ *   shipit-ai feat resume <id>
  */
 
 import { Command } from 'commander';

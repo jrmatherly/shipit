@@ -4,8 +4,8 @@
  * Re-initializes ShipIT settings to defaults with confirmation prompt.
  *
  * Usage:
- *   shep settings init          # Prompt for confirmation
- *   shep settings init --force  # Skip confirmation
+ *   shipit-ai settings init          # Prompt for confirmation
+ *   shipit-ai settings init --force  # Skip confirmation
  */
 
 import { Command } from 'commander';
@@ -55,9 +55,9 @@ export function createInitCommand(): Command {
       'after',
       `
 Examples:
-  $ shep settings init           Prompt for confirmation before reset
-  $ shep settings init --force   Reset settings without prompting
-  $ shep settings init -f        Same as --force (short flag)`
+  $ shipit-ai settings init           Prompt for confirmation before reset
+  $ shipit-ai settings init --force   Reset settings without prompting
+  $ shipit-ai settings init -f        Same as --force (short flag)`
     )
     .action(async (options: { force?: boolean }) => {
       try {

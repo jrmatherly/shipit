@@ -29,7 +29,7 @@ export interface ControlCenterEmptyStateProps {
   className?: string;
 }
 
-const commands = ['cd ~/my-repo', 'shep feat new "sleek dashboard"'];
+const commands = ['cd ~/my-repo', 'shipit-ai feat new "sleek dashboard"'];
 
 export function ControlCenterEmptyState({
   onRepositorySelect,

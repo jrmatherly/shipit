@@ -42,7 +42,7 @@ export async function deployFeature(
     }
 
     if (isSameShipitAiInstance(feature.repositoryPath)) {
-      log.warn('rejected — feature belongs to the running shep instance');
+      log.warn('rejected — feature belongs to the running ShipIT instance');
       return {
         success: false,
         error: 'Cannot start a dev server for features of the repository ShipIT is running from',

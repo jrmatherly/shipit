@@ -3,9 +3,9 @@
  *
  * Starts the ShipIT web UI as a detached background daemon.
  * All spawn logic lives in the shared startDaemon() helper to avoid
- * duplication between this command and the default `shep` action.
+ * duplication between this command and the default `shipit-ai` action.
  *
- * Usage: shep start [--port <number>]
+ * Usage: shipit-ai start [--port <number>]
  */
 
 import { Command, InvalidArgumentError } from 'commander';
@@ -32,8 +32,8 @@ export function createStartCommand(): Command {
       'after',
       `
 Examples:
-  $ shep start               Start on default port (4050)
-  $ shep start --port 8080   Start on custom port`
+  $ shipit-ai start               Start on default port (4050)
+  $ shipit-ai start --port 8080   Start on custom port`
     )
     .action(async (options: { port?: number }) => {
       await startDaemon({ port: options.port });

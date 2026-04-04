@@ -6,9 +6,9 @@
  * displays the worker log file.
  *
  * Usage:
- *   shep feat logs <id>         # Print full log
- *   shep feat logs -f <id>      # Follow (tail -f) using fs.watch
- *   shep feat logs -n 50 <id>   # Last 50 lines
+ *   shipit-ai feat logs <id>         # Print full log
+ *   shipit-ai feat logs -f <id>      # Follow (tail -f) using fs.watch
+ *   shipit-ai feat logs -n 50 <id>   # Last 50 lines
  */
 
 import { Command } from 'commander';

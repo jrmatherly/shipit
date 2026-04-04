@@ -4,10 +4,10 @@
  * Provides subcommands for managing features through the SDLC lifecycle.
  *
  * Usage:
- *   shep feat new <description>  # Create a new feature
- *   shep feat ls                 # List features
- *   shep feat show <id>          # Show feature details
- *   shep feat del <id>           # Delete a feature
+ *   shipit-ai feat new <description>  # Create a new feature
+ *   shipit-ai feat ls                 # List features
+ *   shipit-ai feat show <id>          # Show feature details
+ *   shipit-ai feat del <id>           # Delete a feature
  */
 
 import { Command } from 'commander';

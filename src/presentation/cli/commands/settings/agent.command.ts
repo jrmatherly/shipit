@@ -4,9 +4,9 @@
  * Configures the AI coding agent used by ShipIT for all LLM-powered operations.
  *
  * Usage:
- *   shep settings agent                                          # Interactive wizard
- *   shep settings agent --agent claude-code --auth session       # Non-interactive
- *   shep settings agent --agent claude-code --auth token --token sk-xxx  # Token auth
+ *   shipit-ai settings agent                                          # Interactive wizard
+ *   shipit-ai settings agent --agent claude-code --auth session       # Non-interactive
+ *   shipit-ai settings agent --agent claude-code --auth token --token sk-xxx  # Token auth
  */
 
 import { Command } from 'commander';
@@ -33,9 +33,9 @@ export function createAgentCommand(): Command {
       'after',
       `
 Examples:
-  $ shep settings agent                                          Interactive wizard
-  $ shep settings agent --agent claude-code --auth session       Non-interactive
-  $ shep settings agent --agent claude-code --auth token --token sk-xxx  Token auth`
+  $ shipit-ai settings agent                                          Interactive wizard
+  $ shipit-ai settings agent --agent claude-code --auth session       Non-interactive
+  $ shipit-ai settings agent --agent claude-code --auth token --token sk-xxx  Token auth`
     )
     .action(async (options: { agent?: string; auth?: string; token?: string }) => {
       try {

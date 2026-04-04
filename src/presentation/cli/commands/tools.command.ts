@@ -4,7 +4,7 @@
  * Provides subcommands for listing and managing development tools.
  *
  * Usage:
- *   shep tools list   # List all tools with their installed status
+ *   shipit-ai tools list   # List all tools with their installed status
  */
 
 import { Command } from 'commander';

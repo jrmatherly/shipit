@@ -190,31 +190,35 @@ export function AppSidebar({
               expandedVisible ? 'opacity-100' : 'opacity-0',
             ].join(' ')}
           >
-            <SidebarSectionHeader label={t('sidebar.features')} />
-            <ScrollArea className="min-h-0 flex-1">
-              {repoGroups.map(({ repoPath, repoName, featureCount, statusGroups }) => (
-                <RepoGroup key={repoPath} repoName={repoName} featureCount={featureCount}>
-                  {statusGroups.map(({ statusKey, label, items }) => (
-                    <FeatureStatusGroup key={statusKey} label={label} count={items.length}>
-                      {items.map((feature) => (
-                        <FeatureListItem
-                          key={feature.featureId}
-                          name={feature.name}
-                          status={feature.status}
-                          startedAt={feature.startedAt}
-                          duration={feature.duration}
-                          agentType={feature.agentType}
-                          modelId={feature.modelId}
-                          onClick={
-                            onFeatureClick ? () => onFeatureClick(feature.featureId) : undefined
-                          }
-                        />
+            {repoGroups.length > 0 && (
+              <>
+                <SidebarSectionHeader label={t('sidebar.features')} />
+                <ScrollArea className="min-h-0 flex-1">
+                  {repoGroups.map(({ repoPath, repoName, featureCount, statusGroups }) => (
+                    <RepoGroup key={repoPath} repoName={repoName} featureCount={featureCount}>
+                      {statusGroups.map(({ statusKey, label, items }) => (
+                        <FeatureStatusGroup key={statusKey} label={label} count={items.length}>
+                          {items.map((feature) => (
+                            <FeatureListItem
+                              key={feature.featureId}
+                              name={feature.name}
+                              status={feature.status}
+                              startedAt={feature.startedAt}
+                              duration={feature.duration}
+                              agentType={feature.agentType}
+                              modelId={feature.modelId}
+                              onClick={
+                                onFeatureClick ? () => onFeatureClick(feature.featureId) : undefined
+                              }
+                            />
+                          ))}
+                        </FeatureStatusGroup>
                       ))}
-                    </FeatureStatusGroup>
+                    </RepoGroup>
                   ))}
-                </RepoGroup>
-              ))}
-            </ScrollArea>
+                </ScrollArea>
+              </>
+            )}
           </div>
         ) : null}
       </SidebarContent>

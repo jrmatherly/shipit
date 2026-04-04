@@ -4,7 +4,7 @@
  * Stops the running ShipIT web UI daemon.
  * Stop logic is implemented in the shared stopDaemon() helper.
  *
- * Usage: shep stop
+ * Usage: shipit-ai stop
  */
 
 import { Command } from 'commander';

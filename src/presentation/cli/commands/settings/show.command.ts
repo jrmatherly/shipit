@@ -4,9 +4,9 @@
  * Displays current ShipIT AI settings with multiple output format support.
  *
  * Usage:
- *   shep settings show                 # Display as table (default)
- *   shep settings show --output json   # Display as JSON
- *   shep settings show -o yaml         # Display as YAML
+ *   shipit-ai settings show                 # Display as table (default)
+ *   shipit-ai settings show --output json   # Display as JSON
+ *   shipit-ai settings show -o yaml         # Display as YAML
  */
 
 import { Command, Option } from 'commander';
@@ -32,9 +32,9 @@ export function createShowCommand(): Command {
       'after',
       `
 Examples:
-  $ shep settings show                 Display settings as table
-  $ shep settings show --output json   Display settings as JSON
-  $ shep settings show -o yaml         Display settings as YAML`
+  $ shipit-ai settings show                 Display settings as table
+  $ shipit-ai settings show --output json   Display settings as JSON
+  $ shipit-ai settings show -o yaml         Display settings as YAML`
     )
     .action((options: { output: OutputFormat }) => {
       try {

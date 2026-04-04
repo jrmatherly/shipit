@@ -4,7 +4,7 @@
  * List all tracked repositories in a formatted table.
  *
  * Usage:
- *   shep repo ls
+ *   shipit-ai repo ls
  */
 
 import { Command } from 'commander';

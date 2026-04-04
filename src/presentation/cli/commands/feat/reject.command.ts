@@ -5,7 +5,7 @@
  * the agent run with an optional reason.
  *
  * Usage:
- *   shep feat reject [id] [--reason <text>]
+ *   shipit-ai feat reject [id] [--reason <text>]
  */
 
 import { Command } from 'commander';

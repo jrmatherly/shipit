@@ -259,8 +259,8 @@ const duplicateSummaryData: FeatureNodeData = {
   agentType: 'claude-code',
   repositoryPath: '/home/user/my-repo',
   branch: 'feat/gpt-chat',
-  userQuery: 'Add support to "gpt chat" experience in the shep app',
-  summary: 'Add support to "gpt chat" experience in the shep app',
+  userQuery: 'Add support to "gpt chat" experience in the ShipIT app',
+  summary: 'Add support to "gpt chat" experience in the ShipIT app',
   createdAt: Date.now() - 5000,
 };
 

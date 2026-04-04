@@ -5,9 +5,9 @@
  * tool usage stats, and conversation messages.
  *
  * Usage:
- *   shep session show <id>
- *   shep session show <id> --messages 50
- *   shep session show <id> --claude-code
+ *   shipit-ai session show <id>
+ *   shipit-ai session show <id> --messages 50
+ *   shipit-ai session show <id> --claude-code
  */
 
 import { Command } from 'commander';

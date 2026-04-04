@@ -2,9 +2,9 @@
  * restart Command
  *
  * Gracefully restarts the ShipIT web UI daemon. If the daemon is not running,
- * starts it instead. Accepts an optional --port flag (parity with shep start).
+ * starts it instead. Accepts an optional --port flag (parity with shipit-ai start).
  *
- * Usage: shep restart [--port <number>]
+ * Usage: shipit-ai restart [--port <number>]
  */
 
 import { Command, InvalidArgumentError } from 'commander';
@@ -35,8 +35,8 @@ export function createRestartCommand(): Command {
       'after',
       `
 Examples:
-  $ shep restart               Restart (or start) on default port
-  $ shep restart --port 8080   Restart on custom port`
+  $ shipit-ai restart               Restart (or start) on default port
+  $ shipit-ai restart --port 8080   Restart on custom port`
     )
     .action(async (options: { port?: number }) => {
       const daemonService = container.resolve<IDaemonService>('IDaemonService');
