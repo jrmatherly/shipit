@@ -2,13 +2,13 @@
  * PR Branding
  *
  * Centralizes the branding footer used in pull request bodies
- * created by Shipit AI. Ensures consistent attribution across all
+ * created by ShipIT AI. Ensures consistent attribution across all
  * PR creation paths (agent-driven, fork-and-PR, etc.).
  */
 
 /** The branding line to append to PR bodies. */
 export const PR_BRANDING =
-  'Built with Shipit AI \uD83D\uDC11 [Shipit AI Bot](https://github.com/jrmatherly/shipit)';
+  'Built with ShipIT AI \uD83D\uDC11 [ShipIT AI Bot](https://github.com/jrmatherly/shipit)';
 
 /**
  * Pattern matching common AI-tool attribution footers that should be
@@ -18,10 +18,10 @@ const UNWANTED_BRANDING_PATTERN =
   /\n*(?:🤖\s*)?Generated with \[Claude Code\]\(https:\/\/claude\.com\/claude-code\)\s*/gi;
 
 /**
- * Ensure a PR body carries the correct Shipit AI branding.
+ * Ensure a PR body carries the correct ShipIT AI branding.
  *
  * 1. Strips any unwanted AI-tool attribution footers
- * 2. Appends the Shipit AI branding line if not already present
+ * 2. Appends the ShipIT AI branding line if not already present
  */
 export function applyPrBranding(body: string): string {
   // Strip unwanted branding

@@ -157,7 +157,7 @@
       "channels": "Canais",
       "inApp": "No Aplicativo",
       "inAppLabel": "No aplicativo",
-      "inAppDescription": "Notificações dentro da interface do Shipit AI",
+      "inAppDescription": "Notificações dentro da interface do ShipIT AI",
       "subsections": {
         "agentEvents": "Eventos do Agente",
         "pullRequestEvents": "Eventos de Pull Request"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "Adicionar um projeto",
     "addProjectDescription": "Adicione sua pasta de projeto para desbloquear a criação de recursos.",
-    "addProjectDescriptionLine2": "Descreva o que você precisa \u2014 o Shipit AI cuida do resto.",
+    "addProjectDescriptionLine2": "Descreva o que você precisa \u2014 o ShipIT AI cuida do resto.",
     "checkingSetup": "Verificando configuração\u2026",
     "ready": "{{label}} pronto",
     "notInstalled": "{{label}} não instalado",
@@ -303,7 +303,7 @@
     "loadingAgents": "Carregando agentes\u2026",
     "chooseAgent": "Escolha seu agente",
     "pickModel": "Escolha um modelo",
-    "selectAgentSubtitle": "Selecione o agente de codificação AI que você quer que o Shipit AI use.",
+    "selectAgentSubtitle": "Selecione o agente de codificação AI que você quer que o ShipIT AI use.",
     "chooseModelSubtitle": "Escolha qual modelo {{label}} executar.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> é necessário para recursos completos de autocorreção CI/CD. <1>Instale aqui</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "Do GitHub"
   },
   "chat": {
-    "shipitAiChat": "Shipit AI Chat",
+    "shipitAiChat": "ShipIT AI Chat",
     "writeMessage": "Escreva uma mensagem...",
     "attachFiles": "Anexar arquivos",
     "forceStopAgent": "Forçar parada do agente",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "Importar do GitHub",
-    "description": "Clonar um repositório GitHub e adicionar ao Shipit AI.",
+    "description": "Clonar um repositório GitHub e adicionar ao ShipIT AI.",
     "githubUrl": "URL do GitHub",
     "urlPlaceholder": "owner/repo ou https://github.com/owner/repo",
     "searchRepositories": "Buscar repositórios..."

@@ -33,7 +33,7 @@ export function GlobalChatDrawerClient() {
             </div>
             <div>
               <h2 className="text-foreground text-base font-semibold tracking-tight">
-                Shep Assistant
+                ShipIT Assistant
               </h2>
               <p className="text-muted-foreground text-xs">
                 Global session — controls all repositories

@@ -23,7 +23,7 @@ describe('CLI i18n initialization', () => {
   it('t() resolves CLI namespace keys', async () => {
     const instance = await initI18n('en');
     const result = instance.t('commands.settings.description', { ns: 'cli' });
-    expect(result).toBe('Manage Shipit AI global settings');
+    expect(result).toBe('Manage ShipIT AI global settings');
   });
 
   it('t() for missing key falls back to English', async () => {

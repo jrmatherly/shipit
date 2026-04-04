@@ -1,7 +1,7 @@
 /**
  * restart Command
  *
- * Gracefully restarts the Shep web UI daemon. If the daemon is not running,
+ * Gracefully restarts the ShipIT web UI daemon. If the daemon is not running,
  * starts it instead. Accepts an optional --port flag (parity with shep start).
  *
  * Usage: shep restart [--port <number>]

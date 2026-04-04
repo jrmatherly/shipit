@@ -24,7 +24,7 @@ const { mockExecFile, mockDaemonService, mockRenderDetailView, mockVersionServic
       getVersion: vi.fn().mockReturnValue({
         version: '1.56.0',
         name: '@shipit-ai/cli',
-        description: 'Shipit AI CLI',
+        description: 'ShipIT AI CLI',
       }),
     };
     return {

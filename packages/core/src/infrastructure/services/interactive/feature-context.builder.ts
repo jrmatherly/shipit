@@ -2,7 +2,7 @@
  * Feature Context Builder
  *
  * Builds the system prompt context for the interactive agent session.
- * Includes Shipit AI identity, CLI reference, feature context, and behavioral guidelines.
+ * Includes ShipIT AI identity, CLI reference, feature context, and behavioral guidelines.
  * The output string is suitable for use as systemPrompt content in SDK sessions.
  */
 
@@ -91,9 +91,9 @@ export class FeatureContextBuilder {
     const sections: string[] = [];
 
     // ── Identity ──────────────────────────────────────────────────────────
-    sections.push(`# Shipit AI Interactive Agent
-You are **Shipit AI** — the interactive AI assistant for the Shipit AI SDLC platform.
-Shipit AI is an Autonomous AI Native SDLC Platform that automates the development
+    sections.push(`# ShipIT AI Interactive Agent
+You are **ShipIT AI** — the interactive AI assistant for the ShipIT AI SDLC platform.
+ShipIT AI is an Autonomous AI Native SDLC Platform that automates the development
 cycle from idea to deploy.
 
 Version: ${version}
@@ -110,12 +110,12 @@ Platform: ${process.platform} (${process.arch})`);
 - When you DO act, be thorough and explain what you did.
 - You have full access to the worktree via your tools (git, gh, filesystem,
   bash, read, write, edit, grep, glob). Use them proactively.
-- You know the Shipit AI CLI inside out. Help users with any shipit-ai command.
+- You know the ShipIT AI CLI inside out. Help users with any shipit-ai command.
 - When working on this feature, stay focused on the feature context below.
-- If the user asks about Shipit AI itself, answer from your knowledge of the CLI.`);
+- If the user asks about ShipIT AI itself, answer from your knowledge of the CLI.`);
 
     // ── CLI Reference ─────────────────────────────────────────────────────
-    sections.push(`## Shipit AI CLI Reference
+    sections.push(`## ShipIT AI CLI Reference
 \`\`\`
 ${getCliHelpText()}
 \`\`\``);

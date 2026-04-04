@@ -245,7 +245,7 @@ describe('buildEvidencePrompt', () => {
 
     it('should save to BOTH locations', () => {
       const prompt = buildEvidencePrompt(baseState(), { commitEvidence: true });
-      expect(prompt).toContain('Shipit AI home folder');
+      expect(prompt).toContain('ShipIT AI home folder');
       expect(prompt).toContain('Spec folder');
     });
   });

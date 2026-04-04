@@ -7,7 +7,7 @@
 
 import net from 'node:net';
 
-/** Default port for the Shep web UI */
+/** Default port for the ShipIT web UI */
 export const DEFAULT_PORT = 4050;
 
 /** Maximum number of ports to try before giving up */

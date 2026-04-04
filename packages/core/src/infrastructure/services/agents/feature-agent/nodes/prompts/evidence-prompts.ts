@@ -67,7 +67,7 @@ ${tasksContent}
 
 Save all evidence files to BOTH locations:
 
-1. **Shipit AI home folder** (persistent local storage):
+1. **ShipIT AI home folder** (persistent local storage):
    \`mkdir -p ${shipitAiEvidenceDir}/\`
    Save each file here first.
 

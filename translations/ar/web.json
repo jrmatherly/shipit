@@ -157,7 +157,7 @@
       "channels": "القنوات",
       "inApp": "داخل التطبيق",
       "inAppLabel": "داخل التطبيق",
-      "inAppDescription": "الإشعارات داخل واجهة Shipit AI",
+      "inAppDescription": "الإشعارات داخل واجهة ShipIT AI",
       "subsections": {
         "agentEvents": "أحداث الوكيل",
         "pullRequestEvents": "أحداث طلب السحب"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "إضافة مشروع",
     "addProjectDescription": "أضف مجلد مشروعك لفتح إمكانية إنشاء الميزات.",
-    "addProjectDescriptionLine2": "صِف ما تحتاجه \u2014 Shipit AI يتولى الباقي.",
+    "addProjectDescriptionLine2": "صِف ما تحتاجه \u2014 ShipIT AI يتولى الباقي.",
     "checkingSetup": "جارٍ التحقق من الإعداد\u2026",
     "ready": "{{label}} جاهز",
     "notInstalled": "{{label}} غير مثبت",
@@ -303,7 +303,7 @@
     "loadingAgents": "جارٍ تحميل الوكلاء\u2026",
     "chooseAgent": "اختر وكيلك",
     "pickModel": "اختر نموذجًا",
-    "selectAgentSubtitle": "اختر وكيل البرمجة بالذكاء الاصطناعي الذي تريد أن يستخدمه Shipit AI.",
+    "selectAgentSubtitle": "اختر وكيل البرمجة بالذكاء الاصطناعي الذي تريد أن يستخدمه ShipIT AI.",
     "chooseModelSubtitle": "اختر نموذج {{label}} المراد تشغيله.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> مطلوب لإمكانيات الإصلاح الذاتي الكاملة لـ CI/CD. <1>قم بتثبيته من هنا</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "من GitHub"
   },
   "chat": {
-    "shipitAiChat": "محادثة Shipit AI",
+    "shipitAiChat": "محادثة ShipIT AI",
     "writeMessage": "اكتب رسالة...",
     "attachFiles": "إرفاق ملفات",
     "forceStopAgent": "إيقاف الوكيل إجبارياً",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "استيراد من GitHub",
-    "description": "استنساخ مستودع GitHub وإضافته إلى Shipit AI.",
+    "description": "استنساخ مستودع GitHub وإضافته إلى ShipIT AI.",
     "githubUrl": "رابط GitHub",
     "urlPlaceholder": "owner/repo أو https://github.com/owner/repo",
     "searchRepositories": "البحث عن مستودعات..."

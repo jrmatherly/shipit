@@ -1,7 +1,7 @@
 {
   "commands": {
     "settings": {
-      "description": "Gérer les paramètres globaux de Shipit AI",
+      "description": "Gérer les paramètres globaux de ShipIT AI",
       "wizardFailed": "L'assistant de paramètres a échoué",
       "show": {
         "description": "Afficher les paramètres actuels",
@@ -78,31 +78,31 @@
       "platformLabel": "Plateforme :"
     },
     "start": {
-      "description": "Démarrer l'interface web Shipit AI en tant que démon en arrière-plan",
+      "description": "Démarrer l'interface web ShipIT AI en tant que démon en arrière-plan",
       "portOption": "Numéro de port (1024-65535)",
       "portValidation": "Le port doit être un entier entre 1024 et 65535"
     },
     "stop": {
-      "description": "Arrêter le démon de l'interface web Shipit AI en cours d'exécution",
-      "noDaemonRunning": "Aucun démon Shipit AI n'est en cours d'exécution."
+      "description": "Arrêter le démon de l'interface web ShipIT AI en cours d'exécution",
+      "noDaemonRunning": "Aucun démon ShipIT AI n'est en cours d'exécution."
     },
     "restart": {
-      "description": "Redémarrer gracieusement le démon de l'interface web Shipit AI (le démarre s'il n'est pas en cours d'exécution)",
+      "description": "Redémarrer gracieusement le démon de l'interface web ShipIT AI (le démarre s'il n'est pas en cours d'exécution)",
       "portOption": "Numéro de port (1024-65535)",
       "portValidation": "Le port doit être un entier entre 1024 et 65535",
       "daemonNotRunning": "Le démon n'était pas en cours d'exécution — démarrage..."
     },
     "status": {
-      "description": "Afficher l'état du démon de l'interface web Shipit AI",
+      "description": "Afficher l'état du démon de l'interface web ShipIT AI",
       "logsOption": "Afficher les N dernières lignes du journal du démon (par défaut 50)",
       "followOption": "Suivre la sortie du journal du démon en temps réel",
       "noLogFile": "Aucun fichier journal du démon trouvé.",
       "expectedAt": "Attendu à : {{path}}",
       "logEmpty": "Le fichier journal est vide.",
       "followHint": "--- suivi de daemon.log (Ctrl+C pour arrêter) ---",
-      "notRunning": "Le démon Shipit AI n'est pas en cours d'exécution.",
+      "notRunning": "Le démon ShipIT AI n'est pas en cours d'exécution.",
       "startHint": "Exécutez `shipit-ai start` pour le lancer.",
-      "title": "État du démon Shipit AI",
+      "title": "État du démon ShipIT AI",
       "pidLabel": "PID",
       "portLabel": "Port",
       "urlLabel": "URL",
@@ -111,7 +111,7 @@
       "cpuLabel": "CPU %",
       "memoryLabel": "Mémoire (RSS)",
       "envTitle": "Environnement",
-      "shipitAiHomeLabel": "Répertoire Shipit AI",
+      "shipitAiHomeLabel": "Répertoire ShipIT AI",
       "cliVersionLabel": "Version CLI",
       "nodeVersionLabel": "Version Node",
       "dbPathLabel": "Chemin BD",
@@ -119,11 +119,11 @@
       "daemonConfigLabel": "Configuration du démon"
     },
     "ui": {
-      "description": "Démarrer l'interface web Shipit AI",
+      "description": "Démarrer l'interface web ShipIT AI",
       "portOption": "Numéro de port (1024-65535)",
       "noOpenOption": "Ne pas ouvrir automatiquement le navigateur",
       "portValidation": "Le port doit être un entier entre 1024 et 65535",
-      "heading": "Interface web Shipit AI",
+      "heading": "Interface web ShipIT AI",
       "startingDev": "Démarrage du serveur web (mode développement)...",
       "starting": "Démarrage du serveur web...",
       "serverReady": "Serveur prêt à {{url}}",
@@ -559,7 +559,7 @@
       }
     },
     "upgrade": {
-      "description": "Mettre à jour Shipit AI CLI vers la dernière version",
+      "description": "Mettre à jour ShipIT AI CLI vers la dernière version",
       "versionCheckTimeout": "Impossible de terminer la vérification de version (délai dépassé)",
       "versionCheckFailed": "Impossible de terminer la vérification de version",
       "alreadyUpToDate": "Déjà à jour (v{{version}})",
@@ -568,7 +568,7 @@
       "stoppingDaemon": "Arrêt du démon avant la mise à jour...",
       "restartingDaemon": "Redémarrage du démon...",
       "daemonRestarted": "Démon redémarré avec succès.",
-      "upgradeSuccess": "Shipit AI CLI mis à jour avec succès",
+      "upgradeSuccess": "ShipIT AI CLI mis à jour avec succès",
       "upgradeFailed": "Échec de la mise à jour",
       "upgradeFailedDaemonRestored": "Échec de la mise à jour — démon restauré sur la version précédente."
     },
@@ -588,17 +588,17 @@
       "installingHeading": "Installation de {{tool}}"
     },
     "daemon": {
-      "alreadyRunning": "Shipit AI est déjà en cours d'exécution à {{url}}",
-      "heading": "Interface web Shipit AI",
+      "alreadyRunning": "ShipIT AI est déjà en cours d'exécution à {{url}}",
+      "heading": "Interface web ShipIT AI",
       "startingServer": "Démarrage du serveur",
       "daemonSpawned": "Démon lancé à {{url}}",
       "serverReady": "Serveur prêt à {{url}}",
       "serverMayBeStarting": "Le serveur est peut-être encore en cours de démarrage à {{url}}",
       "daemonFailed": "Le démon n'a pas pu démarrer (code de sortie {{code}}).",
       "checkLogs": "Vérifiez les journaux : {{path}}",
-      "stoppingDaemon": "Arrêt du démon Shipit AI (PID {{pid}})...",
+      "stoppingDaemon": "Arrêt du démon ShipIT AI (PID {{pid}})...",
       "sigkillFallback": "Le démon ne s'est pas arrêté gracieusement, envoi de SIGKILL...",
-      "daemonStopped": "Démon Shipit AI arrêté."
+      "daemonStopped": "Démon ShipIT AI arrêté."
     },
     "logViewer": {
       "noLogFile": "Aucun fichier journal trouvé pour {{label}}",

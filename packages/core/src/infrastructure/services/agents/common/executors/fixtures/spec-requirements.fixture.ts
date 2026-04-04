@@ -1,16 +1,16 @@
 /**
  * Spec (Requirements Phase) Fixture
  *
- * Realistic fixture for the fictional "Add dark-mode toggle to Shep Web UI" feature.
+ * Realistic fixture for the fictional "Add dark-mode toggle to ShipIT Web UI" feature.
  * Passes validateSpecRequirements() with zero repair iterations.
  */
 
 export const SPEC_REQUIREMENTS_FIXTURE = `name: dark-mode-toggle
 number: 42
 branch: feat/042-dark-mode-toggle
-oneLiner: Add a dark-mode toggle to the Shep web UI settings panel
+oneLiner: Add a dark-mode toggle to the ShipIT web UI settings panel
 summary: >
-  Introduce a persistent dark-mode toggle to the Shep web UI settings panel that
+  Introduce a persistent dark-mode toggle to the ShipIT web UI settings panel that
   applies a CSS class-based theme via Tailwind dark: variants, stores the user
   preference in localStorage, and is surfaced as a shadcn/ui Switch component
   with full Storybook coverage and TDD-driven unit tests.
@@ -42,13 +42,13 @@ openQuestions:
         selected: true
       - option: 'SQLite settings via backend API'
         description: >
-          Persist the preference in the Shep SQLite settings store alongside
+          Persist the preference in the ShipIT SQLite settings store alongside
           other settings. Syncs across devices but requires API changes and a
           settings migration — out of scope for this feature.
         selected: false
     selectionRationale: >
       localStorage is the conventional approach for client-side theme preferences
-      and requires no backend changes. The Shep settings API is out of scope for
+      and requires no backend changes. The ShipIT settings API is out of scope for
       this feature; localStorage ships the value faster with zero migration risk.
     answer: 'localStorage only'
 
@@ -76,7 +76,7 @@ openQuestions:
 content: |
   ## Problem Statement
 
-  The Shep web UI currently renders only in light mode. Developers working in dark
+  The ShipIT web UI currently renders only in light mode. Developers working in dark
   environments or those who prefer dark themes have no way to switch the UI appearance.
 
   ## Success Criteria

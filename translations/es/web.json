@@ -157,7 +157,7 @@
       "channels": "Canales",
       "inApp": "En la aplicación",
       "inAppLabel": "En la aplicación",
-      "inAppDescription": "Notificaciones dentro de la interfaz de Shipit AI",
+      "inAppDescription": "Notificaciones dentro de la interfaz de ShipIT AI",
       "subsections": {
         "agentEvents": "Eventos del agente",
         "pullRequestEvents": "Eventos de Pull Request"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "Agregar un proyecto",
     "addProjectDescription": "Agrega tu carpeta de proyecto para desbloquear la creación de funcionalidades.",
-    "addProjectDescriptionLine2": "Describe lo que necesitas \u2014 Shipit AI se encarga del resto.",
+    "addProjectDescriptionLine2": "Describe lo que necesitas \u2014 ShipIT AI se encarga del resto.",
     "checkingSetup": "Verificando configuración\u2026",
     "ready": "{{label}} listo",
     "notInstalled": "{{label}} no está instalado",
@@ -303,7 +303,7 @@
     "loadingAgents": "Cargando agentes\u2026",
     "chooseAgent": "Elige tu agente",
     "pickModel": "Elige un modelo",
-    "selectAgentSubtitle": "Selecciona el agente de codificación AI que quieres que Shipit AI use.",
+    "selectAgentSubtitle": "Selecciona el agente de codificación AI que quieres que ShipIT AI use.",
     "chooseModelSubtitle": "Elige qué modelo de {{label}} ejecutar.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> es necesario para las capacidades completas de auto-reparación de CI/CD. <1>Instálalo aquí</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "Desde GitHub"
   },
   "chat": {
-    "shipitAiChat": "Shipit AI Chat",
+    "shipitAiChat": "ShipIT AI Chat",
     "writeMessage": "Escribe un mensaje...",
     "attachFiles": "Adjuntar archivos",
     "forceStopAgent": "Forzar detención del agente",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "Importar desde GitHub",
-    "description": "Clonar un repositorio GitHub y agregarlo a Shipit AI.",
+    "description": "Clonar un repositorio GitHub y agregarlo a ShipIT AI.",
     "githubUrl": "URL de GitHub",
     "urlPlaceholder": "owner/repo o https://github.com/owner/repo",
     "searchRepositories": "Buscar repositorios..."

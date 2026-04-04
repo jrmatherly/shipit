@@ -1,7 +1,7 @@
 /**
  * Show Settings Command
  *
- * Displays current Shipit AI settings with multiple output format support.
+ * Displays current ShipIT AI settings with multiple output format support.
  *
  * Usage:
  *   shep settings show                 # Display as table (default)

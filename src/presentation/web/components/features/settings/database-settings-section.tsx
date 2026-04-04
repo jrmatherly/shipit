@@ -23,7 +23,7 @@ export function DatabaseSettingsSection({
         <CardDescription>
           <span className="inline-flex items-center gap-1">
             <Info className="h-3 w-3" />
-            Read-only information about your Shipit AI data directory and database
+            Read-only information about your ShipIT AI data directory and database
           </span>
         </CardDescription>
       </CardHeader>

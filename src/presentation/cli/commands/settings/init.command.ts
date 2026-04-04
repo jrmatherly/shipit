@@ -1,7 +1,7 @@
 /**
  * Init Settings Command
  *
- * Re-initializes Shep settings to defaults with confirmation prompt.
+ * Re-initializes ShipIT settings to defaults with confirmation prompt.
  *
  * Usage:
  *   shep settings init          # Prompt for confirmation

@@ -1,7 +1,7 @@
 /**
  * Agent Configuration Command
  *
- * Configures the AI coding agent used by Shep for all LLM-powered operations.
+ * Configures the AI coding agent used by ShipIT for all LLM-powered operations.
  *
  * Usage:
  *   shep settings agent                                          # Interactive wizard

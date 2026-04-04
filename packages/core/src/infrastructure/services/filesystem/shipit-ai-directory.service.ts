@@ -1,5 +1,5 @@
 /**
- * Shipit AI Directory Service
+ * ShipIT AI Directory Service
  *
  * Manages the ~/.shipit-ai/ directory for global settings and data storage.
  * Ensures directory exists with correct permissions before database operations.
@@ -13,7 +13,7 @@ import { join } from 'node:path';
 import { existsSync } from 'node:fs';
 
 /**
- * Resolves the Shipit AI home directory.
+ * Resolves the ShipIT AI home directory.
  * Respects SHIPIT_AI_HOME env var for test isolation, falls back to ~/.shipit-ai/
  */
 function resolveShipitAiHomeDir(): string {
@@ -21,7 +21,7 @@ function resolveShipitAiHomeDir(): string {
 }
 
 /**
- * Gets the path to the Shipit AI home directory.
+ * Gets the path to the ShipIT AI home directory.
  * Uses SHIPIT_AI_HOME env var if set, otherwise ~/.shipit-ai/
  *
  * @returns Path to shipit-ai home directory
@@ -82,7 +82,7 @@ export async function ensureShipitAiDirectory(): Promise<void> {
     });
   } catch (error) {
     throw new Error(
-      `Failed to create Shipit AI directory at ${shipitAiDir}: ${error instanceof Error ? error.message : String(error)}`
+      `Failed to create ShipIT AI directory at ${shipitAiDir}: ${error instanceof Error ? error.message : String(error)}`
     );
   }
 }

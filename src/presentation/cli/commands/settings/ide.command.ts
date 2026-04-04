@@ -1,7 +1,7 @@
 /**
  * IDE Configuration Command
  *
- * Configures the preferred IDE/editor used by Shep.
+ * Configures the preferred IDE/editor used by ShipIT.
  * Valid editors are derived dynamically from JSON tool metadata.
  *
  * Usage:

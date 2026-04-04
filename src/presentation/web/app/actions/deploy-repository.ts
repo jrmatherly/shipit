@@ -30,7 +30,7 @@ export async function deployRepository(
       log.warn('rejected — target is the running shep instance');
       return {
         success: false,
-        error: 'Cannot start a dev server for the repository Shep is running from',
+        error: 'Cannot start a dev server for the repository ShipIT is running from',
       };
     }
 

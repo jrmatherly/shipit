@@ -18,7 +18,7 @@ import { RouteAnnouncer } from '@/components/common/route-announcer/route-announ
 export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
-  title: 'Shipit AI',
+  title: 'ShipIT AI',
   description:
     'Autonomous AI Native SDLC Platform - Automate the development cycle from idea to deploy',
   icons: [

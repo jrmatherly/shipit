@@ -1,7 +1,7 @@
 /**
  * Feature Adopt Command
  *
- * Adopts an existing git branch into Shep's feature tracking system.
+ * Adopts an existing git branch into ShipIT's feature tracking system.
  * Creates a worktree (if needed), derives metadata from the branch name,
  * and persists a Feature with lifecycle=Maintain (agent inactive).
  *

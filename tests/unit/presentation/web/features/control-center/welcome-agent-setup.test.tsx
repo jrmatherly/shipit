@@ -26,6 +26,15 @@ vi.mock('@/app/actions/update-agent-and-model', () => ({
   updateAgentAndModel: vi.fn(() => Promise.resolve({ ok: true })),
 }));
 
+vi.mock('@/app/actions/check-tool-status', () => ({
+  checkToolStatus: vi.fn(() =>
+    Promise.resolve({
+      git: { installed: true, version: '2.43.0', installCommand: null, installUrl: null },
+      gh: { installed: false, version: null, installCommand: null, installUrl: null },
+    })
+  ),
+}));
+
 vi.mock('@/components/common/feature-node/agent-type-icons', () => ({
   getAgentTypeIcon: () => {
     function MockIcon(props: Record<string, unknown>) {

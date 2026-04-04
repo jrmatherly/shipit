@@ -1,7 +1,7 @@
 /**
  * Language Configuration Command
  *
- * Configures the display language used by the Shep CLI and Web UI.
+ * Configures the display language used by the ShipIT CLI and Web UI.
  *
  * Usage:
  *   shep settings language   # Interactive language picker

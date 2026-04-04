@@ -91,7 +91,7 @@ import { createServeCommand } from '../../../src/presentation/cli/commands/_serv
 function buildTestProgram(): Command {
   const program = new Command()
     .name('shipit-ai')
-    .description('Shipit AI CLI')
+    .description('ShipIT AI CLI')
     .version('1.0.0', '-v, --version')
     // task-10: default action calls startDaemon() instead of outputHelp()
     .action(async () => {

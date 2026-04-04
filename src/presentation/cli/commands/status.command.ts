@@ -1,7 +1,7 @@
 /**
  * status Command
  *
- * Displays live status and metrics for the running Shipit AI web UI daemon.
+ * Displays live status and metrics for the running ShipIT AI web UI daemon.
  *
  * Metrics collected:
  *   - PID, port, URL (from daemon.json)

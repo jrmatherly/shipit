@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Shipit AI CLI Entry Point
+ * ShipIT AI CLI Entry Point
  *
  * Autonomous AI Native SDLC Platform - CLI Interface
  *
@@ -20,8 +20,8 @@
  *   shipit-ai agent        Manage and view agent runs
  *   shipit-ai feat         Manage features through the SDLC lifecycle
  *   shipit-ai repo         Manage tracked repositories
- *   shipit-ai settings     Configure Shipit AI settings
- *   shipit-ai upgrade      Upgrade Shipit AI CLI to the latest version
+ *   shipit-ai settings     Configure ShipIT AI settings
+ *   shipit-ai upgrade      Upgrade ShipIT AI CLI to the latest version
  *   shipit-ai --version    Display version number only
  *
  * Global Options:

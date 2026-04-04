@@ -1,7 +1,7 @@
 {
   "commands": {
     "settings": {
-      "description": "Shipit AI-Globaleinstellungen verwalten",
+      "description": "ShipIT AI-Globaleinstellungen verwalten",
       "wizardFailed": "Einstellungsassistent fehlgeschlagen",
       "show": {
         "description": "Aktuelle Einstellungen anzeigen",
@@ -78,31 +78,31 @@
       "platformLabel": "Plattform:"
     },
     "start": {
-      "description": "Shipit AI-Web-UI als Hintergrunddienst starten",
+      "description": "ShipIT AI-Web-UI als Hintergrunddienst starten",
       "portOption": "Portnummer (1024-65535)",
       "portValidation": "Port muss eine Ganzzahl zwischen 1024 und 65535 sein"
     },
     "stop": {
-      "description": "Laufenden Shipit AI-Hintergrunddienst stoppen",
-      "noDaemonRunning": "Kein Shipit AI-Dienst läuft."
+      "description": "Laufenden ShipIT AI-Hintergrunddienst stoppen",
+      "noDaemonRunning": "Kein ShipIT AI-Dienst läuft."
     },
     "restart": {
-      "description": "Shipit AI-Web-UI-Dienst ordnungsgemäß neu starten (startet ihn, wenn er nicht läuft)",
+      "description": "ShipIT AI-Web-UI-Dienst ordnungsgemäß neu starten (startet ihn, wenn er nicht läuft)",
       "portOption": "Portnummer (1024-65535)",
       "portValidation": "Port muss eine Ganzzahl zwischen 1024 und 65535 sein",
       "daemonNotRunning": "Dienst lief nicht — wird gestartet..."
     },
     "status": {
-      "description": "Status des Shipit AI-Web-UI-Dienstes anzeigen",
+      "description": "Status des ShipIT AI-Web-UI-Dienstes anzeigen",
       "logsOption": "Letzte N Zeilen des Dienst-Logs anzeigen (Standard 50)",
       "followOption": "Dienst-Log-Ausgabe in Echtzeit verfolgen",
       "noLogFile": "Keine Dienst-Log-Datei gefunden.",
       "expectedAt": "Erwartet unter: {{path}}",
       "logEmpty": "Log-Datei ist leer.",
       "followHint": "--- Dienst-Log wird verfolgt (Strg+C zum Stoppen) ---",
-      "notRunning": "Shipit AI-Dienst läuft nicht.",
+      "notRunning": "ShipIT AI-Dienst läuft nicht.",
       "startHint": "Führen Sie `shipit-ai start` aus, um ihn zu starten.",
-      "title": "Shipit AI-Dienststatus",
+      "title": "ShipIT AI-Dienststatus",
       "pidLabel": "PID",
       "portLabel": "Port",
       "urlLabel": "URL",
@@ -111,7 +111,7 @@
       "cpuLabel": "CPU %",
       "memoryLabel": "Speicher (RSS)",
       "envTitle": "Umgebung",
-      "shipitAiHomeLabel": "Shipit AI-Verzeichnis",
+      "shipitAiHomeLabel": "ShipIT AI-Verzeichnis",
       "cliVersionLabel": "CLI-Version",
       "nodeVersionLabel": "Node-Version",
       "dbPathLabel": "DB-Pfad",
@@ -119,11 +119,11 @@
       "daemonConfigLabel": "Dienstkonfiguration"
     },
     "ui": {
-      "description": "Shipit AI-Web-UI starten",
+      "description": "ShipIT AI-Web-UI starten",
       "portOption": "Portnummer (1024-65535)",
       "noOpenOption": "Browser nicht automatisch öffnen",
       "portValidation": "Port muss eine Ganzzahl zwischen 1024 und 65535 sein",
-      "heading": "Shipit AI Web UI",
+      "heading": "ShipIT AI Web UI",
       "startingDev": "Webserver wird gestartet (Entwicklungsmodus)...",
       "starting": "Webserver wird gestartet...",
       "serverReady": "Server bereit unter {{url}}",
@@ -559,7 +559,7 @@
       }
     },
     "upgrade": {
-      "description": "Shipit AI CLI auf die neueste Version aktualisieren",
+      "description": "ShipIT AI CLI auf die neueste Version aktualisieren",
       "versionCheckTimeout": "Versionsprüfung konnte nicht abgeschlossen werden (Zeitüberschreitung)",
       "versionCheckFailed": "Versionsprüfung konnte nicht abgeschlossen werden",
       "alreadyUpToDate": "Bereits aktuell (v{{version}})",
@@ -568,7 +568,7 @@
       "stoppingDaemon": "Dienst wird vor Aktualisierung gestoppt...",
       "restartingDaemon": "Dienst wird neu gestartet...",
       "daemonRestarted": "Dienst erfolgreich neu gestartet.",
-      "upgradeSuccess": "Shipit AI CLI erfolgreich aktualisiert",
+      "upgradeSuccess": "ShipIT AI CLI erfolgreich aktualisiert",
       "upgradeFailed": "Aktualisierung fehlgeschlagen",
       "upgradeFailedDaemonRestored": "Aktualisierung fehlgeschlagen — Dienst mit vorheriger Version wiederhergestellt."
     },
@@ -588,17 +588,17 @@
       "installingHeading": "{{tool}} wird installiert"
     },
     "daemon": {
-      "alreadyRunning": "Shipit AI läuft bereits unter {{url}}",
-      "heading": "Shipit AI Web UI",
+      "alreadyRunning": "ShipIT AI läuft bereits unter {{url}}",
+      "heading": "ShipIT AI Web UI",
       "startingServer": "Server wird gestartet",
       "daemonSpawned": "Dienst gestartet unter {{url}}",
       "serverReady": "Server bereit unter {{url}}",
       "serverMayBeStarting": "Server startet möglicherweise noch unter {{url}}",
       "daemonFailed": "Dienst konnte nicht gestartet werden (Exit-Code {{code}}).",
       "checkLogs": "Logs prüfen: {{path}}",
-      "stoppingDaemon": "Shipit AI-Dienst wird gestoppt (PID {{pid}})...",
+      "stoppingDaemon": "ShipIT AI-Dienst wird gestoppt (PID {{pid}})...",
       "sigkillFallback": "Dienst wurde nicht ordnungsgemäß gestoppt, SIGKILL wird gesendet...",
-      "daemonStopped": "Shipit AI-Dienst gestoppt."
+      "daemonStopped": "ShipIT AI-Dienst gestoppt."
     },
     "logViewer": {
       "noLogFile": "Keine Log-Datei gefunden für {{label}}",

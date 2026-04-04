@@ -1,16 +1,16 @@
 /**
  * Spec (Analyze Phase) Fixture
  *
- * Realistic fixture for the fictional "Add dark-mode toggle to Shep Web UI" feature.
+ * Realistic fixture for the fictional "Add dark-mode toggle to ShipIT Web UI" feature.
  * Passes validateSpecAnalyze() with zero repair iterations.
  */
 
 export const SPEC_ANALYZE_FIXTURE = `name: dark-mode-toggle
 number: 42
 branch: feat/042-dark-mode-toggle
-oneLiner: Add a dark-mode toggle to the Shep web UI settings panel
+oneLiner: Add a dark-mode toggle to the ShipIT web UI settings panel
 summary: >
-  Introduce a persistent dark-mode toggle to the Shep web UI settings panel that
+  Introduce a persistent dark-mode toggle to the ShipIT web UI settings panel that
   applies a CSS class-based theme, stores the user preference in localStorage, and
   is surfaced as a shadcn/ui Switch component with full Storybook coverage.
 phase: Analysis
@@ -33,10 +33,10 @@ openQuestions: []
 content: |
   ## Problem Statement
 
-  The Shep web UI currently renders only in light mode. Developers working in dark
+  The ShipIT web UI currently renders only in light mode. Developers working in dark
   environments or those who prefer dark themes have no way to switch the UI appearance.
   Adding a first-class dark-mode toggle improves developer experience and demonstrates
-  the Shep settings panel as a configurable surface.
+  the ShipIT settings panel as a configurable surface.
 
   ## Codebase Analysis
 

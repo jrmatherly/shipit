@@ -157,7 +157,7 @@
       "channels": "ערוצים",
       "inApp": "באפליקציה",
       "inAppLabel": "באפליקציה",
-      "inAppDescription": "התראות בתוך ממשק Shipit AI",
+      "inAppDescription": "התראות בתוך ממשק ShipIT AI",
       "subsections": {
         "agentEvents": "אירועי סוכן",
         "pullRequestEvents": "אירועי בקשות משיכה"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "הוסף פרויקט",
     "addProjectDescription": "הוסף את תיקיית הפרויקט שלך כדי לאפשר יצירת פיצ'רים.",
-    "addProjectDescriptionLine2": "תאר מה אתה צריך \u2014 Shipit AI מטפל בשאר.",
+    "addProjectDescriptionLine2": "תאר מה אתה צריך \u2014 ShipIT AI מטפל בשאר.",
     "checkingSetup": "בודק הגדרה\u2026",
     "ready": "{{label}} מוכן",
     "notInstalled": "{{label}} לא מותקן",
@@ -303,7 +303,7 @@
     "loadingAgents": "טוען סוכנים\u2026",
     "chooseAgent": "בחר את הסוכן שלך",
     "pickModel": "בחר מודל",
-    "selectAgentSubtitle": "בחר את סוכן הקידוד AI שתרצה ש-Shipit AI ישתמש בו.",
+    "selectAgentSubtitle": "בחר את סוכן הקידוד AI שתרצה ש-ShipIT AI ישתמש בו.",
     "chooseModelSubtitle": "בחר איזה מודל {{label}} להריץ.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> נדרש ליכולות ריפוי עצמי מלאות של CI/CD. <1>התקן אותו כאן</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "מ-GitHub"
   },
   "chat": {
-    "shipitAiChat": "צ'אט Shipit AI",
+    "shipitAiChat": "צ'אט ShipIT AI",
     "writeMessage": "כתוב הודעה...",
     "attachFiles": "צירוף קבצים",
     "forceStopAgent": "עצירת סוכן בכוח",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "ייבוא מ-GitHub",
-    "description": "שכפול מאגר GitHub והוספתו ל-Shipit AI.",
+    "description": "שכפול מאגר GitHub והוספתו ל-ShipIT AI.",
     "githubUrl": "כתובת GitHub",
     "urlPlaceholder": "owner/repo או https://github.com/owner/repo",
     "searchRepositories": "חיפוש מאגרים..."

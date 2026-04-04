@@ -157,7 +157,7 @@
       "channels": "Canaux",
       "inApp": "Dans l'application",
       "inAppLabel": "Dans l'application",
-      "inAppDescription": "Notifications dans l'interface Shipit AI",
+      "inAppDescription": "Notifications dans l'interface ShipIT AI",
       "subsections": {
         "agentEvents": "Événements d'agent",
         "pullRequestEvents": "Événements de pull request"
@@ -279,7 +279,7 @@
   "emptyState": {
     "addProject": "Ajouter un projet",
     "addProjectDescription": "Ajoutez votre dossier de projet pour débloquer la création de fonctionnalités.",
-    "addProjectDescriptionLine2": "Décrivez ce dont vous avez besoin \u2014 Shipit AI s'occupe du reste.",
+    "addProjectDescriptionLine2": "Décrivez ce dont vous avez besoin \u2014 ShipIT AI s'occupe du reste.",
     "checkingSetup": "Vérification de la configuration\u2026",
     "ready": "{{label}} prêt",
     "notInstalled": "{{label}} non installé",
@@ -303,7 +303,7 @@
     "loadingAgents": "Chargement des agents\u2026",
     "chooseAgent": "Choisissez votre agent",
     "pickModel": "Choisissez un modèle",
-    "selectAgentSubtitle": "Sélectionnez l'agent de codage IA que vous souhaitez que Shipit AI utilise.",
+    "selectAgentSubtitle": "Sélectionnez l'agent de codage IA que vous souhaitez que ShipIT AI utilise.",
     "chooseModelSubtitle": "Choisissez quel modèle {{label}} exécuter.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> est requis pour les capacités complètes d'auto-réparation CI/CD. <1>Installez-le ici</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -404,7 +404,7 @@
     "fromGithub": "Depuis GitHub"
   },
   "chat": {
-    "shipitAiChat": "Shipit AI Chat",
+    "shipitAiChat": "ShipIT AI Chat",
     "writeMessage": "Écrire un message...",
     "attachFiles": "Joindre des fichiers",
     "forceStopAgent": "Forcer l'arrêt de l'agent",
@@ -563,7 +563,7 @@
   },
   "githubImport": {
     "title": "Importer depuis GitHub",
-    "description": "Cloner un dépôt GitHub et l'ajouter à Shipit AI.",
+    "description": "Cloner un dépôt GitHub et l'ajouter à ShipIT AI.",
     "githubUrl": "URL GitHub",
     "urlPlaceholder": "owner/repo ou https://github.com/owner/repo",
     "searchRepositories": "Rechercher des dépôts..."

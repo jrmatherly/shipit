@@ -3,7 +3,7 @@
  *
  * Configures the default LLM model used for feature runs.
  * The command resolves the list of supported models from the configured agent
- * and presents an interactive prompt — no Shep-side validation against
+ * and presents an interactive prompt — no ShipIT-side validation against
  * the advertised list, as users may enter newly released identifiers.
  *
  * Usage:

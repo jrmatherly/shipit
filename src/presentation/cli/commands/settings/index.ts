@@ -1,7 +1,7 @@
 /**
  * Settings Command Group
  *
- * Provides subcommands for managing Shep global settings.
+ * Provides subcommands for managing ShipIT global settings.
  * Running `shep settings` with no subcommand launches the full setup wizard.
  *
  * Usage:

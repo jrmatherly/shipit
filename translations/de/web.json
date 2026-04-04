@@ -145,7 +145,7 @@
       "channels": "Kanäle",
       "inApp": "In-App",
       "inAppLabel": "In-App",
-      "inAppDescription": "Benachrichtigungen innerhalb der Shipit AI-UI",
+      "inAppDescription": "Benachrichtigungen innerhalb der ShipIT AI-UI",
       "subsections": {
         "agentEvents": "Agent-Ereignisse",
         "pullRequestEvents": "Pull-Request-Ereignisse"
@@ -265,7 +265,7 @@
   "emptyState": {
     "addProject": "Projekt hinzufügen",
     "addProjectDescription": "Fügen Sie Ihren Projektordner hinzu, um die Feature-Erstellung freizuschalten.",
-    "addProjectDescriptionLine2": "Beschreiben Sie, was Sie brauchen \u2014 Shipit AI erledigt den Rest.",
+    "addProjectDescriptionLine2": "Beschreiben Sie, was Sie brauchen \u2014 ShipIT AI erledigt den Rest.",
     "checkingSetup": "Einrichtung wird geprüft\u2026",
     "ready": "{{label}} bereit",
     "notInstalled": "{{label}} nicht installiert",
@@ -289,7 +289,7 @@
     "loadingAgents": "Agenten werden geladen\u2026",
     "chooseAgent": "Wählen Sie Ihren Agenten",
     "pickModel": "Modell auswählen",
-    "selectAgentSubtitle": "Wählen Sie den KI-Coding-Agenten, den Shipit AI verwenden soll.",
+    "selectAgentSubtitle": "Wählen Sie den KI-Coding-Agenten, den ShipIT AI verwenden soll.",
     "chooseModelSubtitle": "Wählen Sie, welches {{label}}-Modell ausgeführt werden soll.",
     "ghCliNotice": "<0>GitHub CLI (gh)</0> wird für vollständige CI/CD-Selbstheilungsfähigkeiten benötigt. <1>Hier installieren</1>.",
     "ghCliRequired": "GitHub CLI (gh)",
@@ -390,7 +390,7 @@
     "fromGithub": "Von GitHub"
   },
   "chat": {
-    "shipitAiChat": "Shipit AI Chat",
+    "shipitAiChat": "ShipIT AI Chat",
     "writeMessage": "Nachricht schreiben...",
     "attachFiles": "Dateien anhängen",
     "forceStopAgent": "Agent-Prozess erzwingen stoppen",
@@ -549,7 +549,7 @@
   },
   "githubImport": {
     "title": "Von GitHub importieren",
-    "description": "Ein GitHub-Repository klonen und zu Shipit AI hinzufügen.",
+    "description": "Ein GitHub-Repository klonen und zu ShipIT AI hinzufügen.",
     "githubUrl": "GitHub-URL",
     "urlPlaceholder": "owner/repo oder https://github.com/owner/repo",
     "searchRepositories": "Repositories suchen..."

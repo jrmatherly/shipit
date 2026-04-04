@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import { getAllAgentModels } from '@/app/actions/get-all-agent-models';
 import type { AgentModelGroup } from '@/app/actions/get-all-agent-models';
 import { updateAgentAndModel } from '@/app/actions/update-agent-and-model';
+import { checkToolStatus } from '@/app/actions/check-tool-status';
 import { getAgentTypeIcon } from '@/components/common/feature-node/agent-type-icons';
 import { getModelMeta } from '@/lib/model-metadata';
 import { cn } from '@/lib/utils';
@@ -28,12 +29,16 @@ export function WelcomeAgentSetup({ onComplete, className }: WelcomeAgentSetupPr
   const [saving, setSaving] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
   const [visible, setVisible] = useState(true);
+  const [ghInstalled, setGhInstalled] = useState(true);
   const timeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
 
   useEffect(() => {
     getAllAgentModels()
       .then(setGroups)
       .finally(() => setLoading(false));
+    checkToolStatus()
+      .then((status) => setGhInstalled(status.gh.installed))
+      .catch(() => undefined);
   }, []);
 
   const activeGroup = selectedAgent ? groups.find((g) => g.agentType === selectedAgent) : null;
@@ -162,7 +167,7 @@ export function WelcomeAgentSetup({ onComplete, className }: WelcomeAgentSetupPr
           {heroSubtitle}
         </p>
 
-        {step === 'select-agent' && (
+        {step === 'select-agent' && !ghInstalled && (
           <div
             data-testid="gh-cli-notice"
             className="mt-5 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900 dark:bg-amber-950/40"

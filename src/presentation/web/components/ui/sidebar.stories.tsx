@@ -39,7 +39,7 @@ export const Default: Story = {
     <SidebarProvider defaultOpen>
       <Sidebar>
         <SidebarHeader>
-          <div className="px-4 py-3 font-semibold">Shipit AI</div>
+          <div className="px-4 py-3 font-semibold">ShipIT AI</div>
         </SidebarHeader>
         <SidebarContent>
           <SidebarGroup>

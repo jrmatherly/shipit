@@ -1,5 +1,5 @@
 /**
- * Theme type definitions for the Shipit AI Web UI
+ * Theme type definitions for the ShipIT AI Web UI
  */
 
 export type Theme = 'light' | 'dark' | 'system';

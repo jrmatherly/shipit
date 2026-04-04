@@ -1,16 +1,16 @@
 /**
- * Shipit AI TUI Theme
+ * ShipIT AI TUI Theme
  *
- * Custom theme for @inquirer/prompts that matches the Shipit AI CLI design system.
+ * Custom theme for @inquirer/prompts that matches the ShipIT AI CLI design system.
  * Uses picocolors for consistent styling with the rest of the CLI.
  */
 
 import pc from 'picocolors';
 
 /**
- * Shipit AI-branded theme for @inquirer/prompts.
+ * ShipIT AI-branded theme for @inquirer/prompts.
  *
- * Customizes the prefix icon to use the Shipit AI brand color (cyan)
+ * Customizes the prefix icon to use the ShipIT AI brand color (cyan)
  * and provides consistent styling across all TUI prompts.
  */
 export const shipitAiTheme = {

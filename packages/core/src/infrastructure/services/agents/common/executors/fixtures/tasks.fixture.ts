@@ -1,5 +1,5 @@
 /**
- * Tasks Fixture — fictional "Add dark-mode toggle to Shep Web UI" feature.
+ * Tasks Fixture — fictional "Add dark-mode toggle to ShipIT Web UI" feature.
  * Passes validateTasks() against plan phase IDs [phase-1, phase-2, phase-3].
  */
 

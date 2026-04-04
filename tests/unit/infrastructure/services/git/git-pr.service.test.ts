@@ -283,7 +283,7 @@ describe('GitPrService', () => {
       expect(result.number).toBe(42);
     });
 
-    it('should apply Shep branding to the PR body', async () => {
+    it('should apply ShipIT branding to the PR body', async () => {
       vi.mocked(readFileSync).mockReturnValue(prYaml);
       vi.mocked(mockExec).mockResolvedValueOnce({
         stdout: 'https://github.com/org/repo/pull/42\n',

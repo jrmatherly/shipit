@@ -1,6 +1,6 @@
 #!/bin/bash
-# PostToolUse hook: Auto-run related test file when editing source code.
-# Maps src/.../<name>.ts → tests/.../<name>.test.ts and runs it if found.
+# PostToolUse hook: Surface related test file when editing source code.
+# Maps src/.../<name>.ts → tests/.../<name>.test.ts and reports it if found.
 
 INPUT=$(cat)
 FILE_PATH=$(echo "$INPUT" | jq -r '.tool_input.file_path // empty')

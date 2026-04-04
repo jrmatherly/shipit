@@ -373,7 +373,7 @@ export const RepeatingLabelOverflow: Story = {
                 id: 'sqlite',
                 label: 'SQLite settings via backend API',
                 rationale:
-                  'Persist the preference in the Shep SQLite settings store alongside other settings. Syncs across devices but requires API changes and a settings migration — out of scope for this feature.',
+                  'Persist the preference in the ShipIT SQLite settings store alongside other settings. Syncs across devices but requires API changes and a settings migration — out of scope for this feature.',
               },
             ],
           },

@@ -67,14 +67,14 @@
   },
   "wizards": {
     "onboarding": {
-      "welcomeTitle": "Bem-vindo ao Shipit AI AI CLI",
+      "welcomeTitle": "Bem-vindo ao ShipIT AI CLI",
       "welcomeSubtitle": "Vamos configurar seu ambiente em 3 passos rápidos.",
       "prerequisiteWarning": "Pré-requisito: ",
       "prerequisiteLabel": "GitHub CLI (gh)",
       "prerequisiteDescription": "é necessário para recursos completos de autocorreção CI/CD.",
       "installFrom": "Instale em: ",
       "installUrl": "https://cli.github.com/",
-      "setupComplete": "Configuração concluída! Você está pronto para usar o Shipit AI."
+      "setupComplete": "Configuração concluída! Você está pronto para usar o ShipIT AI."
     },
     "agentConfig": {
       "enterApiKey": "Insira sua chave de API Anthropic"

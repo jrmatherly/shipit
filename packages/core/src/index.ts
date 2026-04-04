@@ -1,5 +1,5 @@
 /**
- * @shipit-ai/core - Shipit AI Core Package
+ * @shipit-ai/core - ShipIT AI Core Package
  *
- * Domain, application, and infrastructure layers for the Shep AI platform.
+ * Domain, application, and infrastructure layers for the ShipIT AI platform.
  */

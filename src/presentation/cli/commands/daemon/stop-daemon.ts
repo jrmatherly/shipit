@@ -1,7 +1,7 @@
 /**
  * stopDaemon() — Shared daemon-stop helper
  *
- * Contains the stop logic for gracefully terminating a running Shep daemon.
+ * Contains the stop logic for gracefully terminating a running ShipIT daemon.
  * Used by:
  *   - stop.command.ts (shep stop)
  *   - restart.command.ts (shep restart)
@@ -48,7 +48,7 @@ async function pollUntilDead(
 }
 
 /**
- * Stop the Shep daemon gracefully.
+ * Stop the ShipIT daemon gracefully.
  * Safe to call when no daemon is running — silently cleans up stale daemon.json (NFR-2).
  */
 export async function stopDaemon(daemonService: IDaemonService): Promise<void> {

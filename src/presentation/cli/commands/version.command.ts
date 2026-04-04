@@ -1,7 +1,7 @@
 /**
  * Version Command
  *
- * Displays detailed version information for Shipit AI CLI.
+ * Displays detailed version information for ShipIT AI CLI.
  * Provides more context than the --version flag.
  *
  * Usage: shep version

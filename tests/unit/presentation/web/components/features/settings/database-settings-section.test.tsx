@@ -22,7 +22,7 @@ describe('DatabaseSettingsSection', () => {
     render(<DatabaseSettingsSection shipitAiHome="/home/user/.shipit-ai" dbFileSize="2.4 MB" />);
     expect(screen.getByText('Database Location')).toBeDefined();
     expect(
-      screen.getByText('Read-only information about your Shipit AI data directory and database')
+      screen.getByText('Read-only information about your ShipIT AI data directory and database')
     ).toBeDefined();
   });
 });

@@ -8,7 +8,7 @@
  * import { colors, symbols, fmt, messages } from '@/presentation/cli/ui';
  *
  * messages.success('Repository initialized');
- * console.log(fmt.heading('Shep AI CLI'));
+ * console.log(fmt.heading('ShipIT AI CLI'));
  * console.log(`${colors.muted('Version:')} ${fmt.version('0.1.0')}`);
  */
 

@@ -94,7 +94,7 @@ export async function createGitHarness(): Promise<GitHarness> {
   await realExec('git', ['clone', bareDir, cloneDir], {});
 
   await realExec('git', ['config', 'user.email', 'test@shipit-ai.test'], { cwd: cloneDir });
-  await realExec('git', ['config', 'user.name', 'Shipit AI Test'], { cwd: cloneDir });
+  await realExec('git', ['config', 'user.name', 'ShipIT AI Test'], { cwd: cloneDir });
 
   writeFileSync(join(cloneDir, 'README.md'), '# Test Repo\n');
   await realExec('git', ['add', 'README.md'], { cwd: cloneDir });
@@ -129,7 +129,7 @@ export async function createLocalOnlyHarness(): Promise<{
 
   await realExec('git', ['init'], { cwd: repoDir });
   await realExec('git', ['config', 'user.email', 'test@shipit-ai.test'], { cwd: repoDir });
-  await realExec('git', ['config', 'user.name', 'Shipit AI Test'], { cwd: repoDir });
+  await realExec('git', ['config', 'user.name', 'ShipIT AI Test'], { cwd: repoDir });
 
   writeFileSync(join(repoDir, 'README.md'), '# Test Repo\n');
   await realExec('git', ['add', 'README.md'], { cwd: repoDir });

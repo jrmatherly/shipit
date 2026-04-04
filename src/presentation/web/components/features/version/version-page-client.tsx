@@ -57,7 +57,7 @@ export default function VersionPageClient({ versionInfo, systemInfo }: VersionPa
             <Card>
               <CardHeader>
                 <CardTitle>Package Information</CardTitle>
-                <CardDescription>Details about the Shep AI CLI package</CardDescription>
+                <CardDescription>Details about the ShipIT AI CLI package</CardDescription>
               </CardHeader>
               <CardContent className="space-y-1">
                 <InfoRow label="Package" value={versionInfo.name} />
@@ -68,7 +68,7 @@ export default function VersionPageClient({ versionInfo, systemInfo }: VersionPa
                   badgeVariant="default"
                 />
                 <InfoRow label="License" value="MIT" badge badgeVariant="outline" />
-                <InfoRow label="Author" value="Shipit AI" />
+                <InfoRow label="Author" value="ShipIT AI" />
               </CardContent>
             </Card>
           </TabsContent>
@@ -95,7 +95,7 @@ export default function VersionPageClient({ versionInfo, systemInfo }: VersionPa
             <Card>
               <CardHeader>
                 <CardTitle>Key Features</CardTitle>
-                <CardDescription>What Shep AI can do for you</CardDescription>
+                <CardDescription>What ShipIT AI can do for you</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-2 text-sm">

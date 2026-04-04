@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button';
 
 /**
  * **AdoptBranchDrawer** is a right-side sliding drawer for importing an
- * existing git branch into Shep's feature tracking system.
+ * existing git branch into ShipIT's feature tracking system.
  *
  * ### Form
  * - **Repository** (required) — combobox for selecting which repository to adopt from

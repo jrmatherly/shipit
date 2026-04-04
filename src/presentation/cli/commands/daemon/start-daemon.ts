@@ -1,7 +1,7 @@
 /**
  * startDaemon() — Shared daemon-spawn helper
  *
- * Contains the parent-side logic for starting the Shipit AI web UI as a
+ * Contains the parent-side logic for starting the ShipIT AI web UI as a
  * detached background daemon. Used by both:
  *   - The default `shep` action (index.ts)
  *   - The `shep start` command (start.command.ts)
@@ -41,7 +41,7 @@ export interface StartDaemonOptions {
 }
 
 /**
- * Start the Shipit AI web UI as a detached background daemon.
+ * Start the ShipIT AI web UI as a detached background daemon.
  * Idempotent: if a daemon is already running, prints the existing URL and returns.
  */
 export async function startDaemon(opts: StartDaemonOptions = {}): Promise<void> {

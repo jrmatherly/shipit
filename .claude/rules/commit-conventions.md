@@ -13,7 +13,7 @@ feat | fix | docs | style | refactor | perf | test | build | ci | chore | revert
 
 ## Release-Aware Type Selection (CRITICAL)
 
-Semantic release only publishes on `feat` (minor) and `fix` (patch). Other types (`style`, `refactor`, `perf`, `chore`, etc.) do NOT trigger a release.
+Semantic release publishes on `feat` (minor), `fix` (patch), `perf` (patch), `refactor` (patch), and `revert` (patch). Types `docs`, `style`, `test`, `build`, `ci`, `chore` do NOT trigger a release.
 
 **Rule: If a change is visible to end users or must be propagated to clients, use `feat` or `fix` — NEVER `style`, `refactor`, or `chore`.**
 

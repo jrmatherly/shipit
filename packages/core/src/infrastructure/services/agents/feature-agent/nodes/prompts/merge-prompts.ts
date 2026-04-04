@@ -180,7 +180,7 @@ export function buildCommitPushPrPrompt(
    - Write a descriptive PR title using conventional commit format
    - Write a rich PR body that summarizes the changes using the spec context below
    - The PR body MUST end with this exact branding line (on its own line): \`${PR_BRANDING}\`
-   - Do NOT include any other attribution footer (e.g. "Generated with Claude Code" or similar) — only the Shep branding line above`);
+   - Do NOT include any other attribution footer (e.g. "Generated with Claude Code" or similar) — only the ShipIT branding line above`);
   }
 
   const resumeContext = buildResumeContext(state.resumeReason);

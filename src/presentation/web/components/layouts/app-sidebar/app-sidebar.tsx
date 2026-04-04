@@ -136,7 +136,7 @@ export function AppSidebar({
                     size={20}
                     variant={versionData.isDev ? 'dev' : 'default'}
                   />
-                  <span className="truncate text-sm font-semibold tracking-tight">Shep</span>
+                  <span className="truncate text-sm font-semibold tracking-tight">ShipIT</span>
                   <VersionBadge
                     version={versionData.version}
                     branch={versionData.branch || undefined}

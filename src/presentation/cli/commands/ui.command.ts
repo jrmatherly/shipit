@@ -1,14 +1,14 @@
 /**
  * UI Command
  *
- * Starts the Shep web UI server.
+ * Starts the ShipIT web UI server.
  * Runs Next.js in the same process as the CLI, sharing the DI container.
  *
  * Usage: shep ui [--port <number>]
  *
  * @example
  * $ shep ui
- * Shep Web UI
+ * ShipIT Web UI
  * Starting web server...
  *
  * ✓ Server ready at http://localhost:4050

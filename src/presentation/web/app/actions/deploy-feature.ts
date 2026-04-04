@@ -45,7 +45,7 @@ export async function deployFeature(
       log.warn('rejected — feature belongs to the running shep instance');
       return {
         success: false,
-        error: 'Cannot start a dev server for features of the repository Shep is running from',
+        error: 'Cannot start a dev server for features of the repository ShipIT is running from',
       };
     }
 

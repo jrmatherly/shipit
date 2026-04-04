@@ -163,7 +163,7 @@ export function AdoptBranchDrawer({
         Adopt Branch
       </DrawerTitle>
       <DrawerDescription className="text-muted-foreground text-sm">
-        Import an existing git branch into Shep&apos;s feature tracking
+        Import an existing git branch into ShipIT&apos;s feature tracking
       </DrawerDescription>
     </div>
   );

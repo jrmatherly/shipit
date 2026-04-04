@@ -45,7 +45,7 @@ function git(cwd: string, args: string[]): Promise<{ stdout: string; stderr: str
 /** Configure git user in a repo (required for commits) */
 async function configureGitUser(cwd: string): Promise<void> {
   await git(cwd, ['config', 'user.email', 'test@shipit-ai.test']);
-  await git(cwd, ['config', 'user.name', 'Shipit AI Test']);
+  await git(cwd, ['config', 'user.name', 'ShipIT AI Test']);
 }
 
 /**

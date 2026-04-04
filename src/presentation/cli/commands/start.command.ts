@@ -1,7 +1,7 @@
 /**
  * start Command
  *
- * Starts the Shep web UI as a detached background daemon.
+ * Starts the ShipIT web UI as a detached background daemon.
  * All spawn logic lives in the shared startDaemon() helper to avoid
  * duplication between this command and the default `shep` action.
  *

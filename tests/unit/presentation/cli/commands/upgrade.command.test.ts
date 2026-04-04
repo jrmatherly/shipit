@@ -136,10 +136,10 @@ describe('Upgrade Command', () => {
       expect(cmd.name()).toBe('upgrade');
     });
 
-    it('should have description "Upgrade Shipit AI CLI to the latest version"', () => {
+    it('should have description "Upgrade ShipIT AI CLI to the latest version"', () => {
       const { spawnFn } = createMockSpawn();
       const cmd = createUpgradeCommand(spawnFn as any);
-      expect(cmd.description()).toBe('Upgrade Shipit AI CLI to the latest version');
+      expect(cmd.description()).toBe('Upgrade ShipIT AI CLI to the latest version');
     });
   });
 

@@ -142,7 +142,7 @@ export function ToolCard({ tool, onRefresh, className }: ToolCardProps) {
                     </span>
                   </TooltipTrigger>
                   <TooltipContent side="top">
-                    This tool is required for Shep to function properly
+                    This tool is required for ShipIT to function properly
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>

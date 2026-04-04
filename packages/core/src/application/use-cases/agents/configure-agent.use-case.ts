@@ -1,7 +1,7 @@
 /**
  * Configure Agent Use Case
  *
- * Configures the AI coding agent for the Shep platform.
+ * Configures the AI coding agent for the ShipIT platform.
  * Validates agent availability before persisting configuration.
  *
  * Business Rules:

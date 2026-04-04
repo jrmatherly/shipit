@@ -333,7 +333,7 @@ export function GlobalChatPopup() {
               <Bot className="text-foreground/50 h-4 w-4" />
             </div>
             <div className="relative flex items-baseline gap-2">
-              <span className="text-foreground/90 text-base font-bold tracking-tight">Shep</span>
+              <span className="text-foreground/90 text-base font-bold tracking-tight">ShipIT</span>
               <span className="text-foreground/30 text-xs font-medium tracking-widest uppercase">
                 global
               </span>

@@ -67,14 +67,14 @@
   },
   "wizards": {
     "onboarding": {
-      "welcomeTitle": "ברוכים הבאים ל-Shipit AI AI CLI",
+      "welcomeTitle": "ברוכים הבאים ל-ShipIT AI CLI",
       "welcomeSubtitle": "בואו נגדיר את הסביבה שלכם ב-3 צעדים מהירים.",
       "prerequisiteWarning": "דרישת קדם: ",
       "prerequisiteLabel": "GitHub CLI (gh)",
       "prerequisiteDescription": "נדרש ליכולות ריפוי עצמי מלאות של CI/CD.",
       "installFrom": "התקן מ: ",
       "installUrl": "https://cli.github.com/",
-      "setupComplete": "ההגדרה הושלמה! אתה מוכן להשתמש ב-Shipit AI."
+      "setupComplete": "ההגדרה הושלמה! אתה מוכן להשתמש ב-ShipIT AI."
     },
     "agentConfig": {
       "enterApiKey": "הזן את מפתח ה-API של Anthropic"

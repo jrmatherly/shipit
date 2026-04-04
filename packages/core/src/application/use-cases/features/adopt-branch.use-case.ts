@@ -1,7 +1,7 @@
 /**
  * Adopt Branch Use Case
  *
- * Imports an existing git branch into Shep's feature tracking system.
+ * Imports an existing git branch into ShipIT's feature tracking system.
  * Creates a worktree (if needed), derives feature metadata from the branch name,
  * and persists a Feature entity. Branches with an open PR get lifecycle=Review
  * (shown as "REVIEW" in the UI); all others get lifecycle=Maintain (completed).

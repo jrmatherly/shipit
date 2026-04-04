@@ -168,7 +168,7 @@ describe('buildCommitPushPrPrompt', () => {
     expect(prompt).not.toContain('MUST modify source code');
   });
 
-  it('should include Shep branding instruction when openPr=true', () => {
+  it('should include ShipIT branding instruction when openPr=true', () => {
     const prompt = buildCommitPushPrPrompt(baseState({ openPr: true }), 'feat/test', 'main');
     expect(prompt).toContain(PR_BRANDING);
     expect(prompt).toContain('Do NOT include any other attribution footer');

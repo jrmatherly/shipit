@@ -51,7 +51,7 @@ export function GitHubImportDialog({
       <DialogContent className="overflow-hidden sm:max-w-lg">
         <DialogHeader>
           <DialogTitle>Import from GitHub</DialogTitle>
-          <DialogDescription>Clone a GitHub repository and add it to Shep.</DialogDescription>
+          <DialogDescription>Clone a GitHub repository and add it to ShipIT.</DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="url" className="min-w-0">

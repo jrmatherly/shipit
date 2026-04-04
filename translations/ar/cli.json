@@ -1,7 +1,7 @@
 {
   "commands": {
     "settings": {
-      "description": "إدارة إعدادات Shipit AI العامة",
+      "description": "إدارة إعدادات ShipIT AI العامة",
       "wizardFailed": "فشل معالج الإعدادات",
       "show": {
         "description": "عرض الإعدادات الحالية",
@@ -78,31 +78,31 @@
       "platformLabel": "المنصة:"
     },
     "start": {
-      "description": "بدء واجهة Shipit AI الويب كخدمة خلفية",
+      "description": "بدء واجهة ShipIT AI الويب كخدمة خلفية",
       "portOption": "رقم المنفذ (1024-65535)",
       "portValidation": "يجب أن يكون المنفذ عددًا صحيحًا بين 1024 و 65535"
     },
     "stop": {
-      "description": "إيقاف خدمة Shipit AI الويب الخلفية العاملة",
-      "noDaemonRunning": "لا توجد خدمة Shipit AI خلفية قيد التشغيل."
+      "description": "إيقاف خدمة ShipIT AI الويب الخلفية العاملة",
+      "noDaemonRunning": "لا توجد خدمة ShipIT AI خلفية قيد التشغيل."
     },
     "restart": {
-      "description": "إعادة تشغيل خدمة Shipit AI الويب الخلفية بسلاسة (تبدأها إذا لم تكن قيد التشغيل)",
+      "description": "إعادة تشغيل خدمة ShipIT AI الويب الخلفية بسلاسة (تبدأها إذا لم تكن قيد التشغيل)",
       "portOption": "رقم المنفذ (1024-65535)",
       "portValidation": "يجب أن يكون المنفذ عددًا صحيحًا بين 1024 و 65535",
       "daemonNotRunning": "الخدمة الخلفية لم تكن قيد التشغيل — جارٍ البدء..."
     },
     "status": {
-      "description": "عرض حالة خدمة Shipit AI الويب الخلفية",
+      "description": "عرض حالة خدمة ShipIT AI الويب الخلفية",
       "logsOption": "عرض آخر N سطر من سجل الخدمة الخلفية (الافتراضي 50)",
       "followOption": "متابعة مخرجات سجل الخدمة الخلفية في الوقت الفعلي",
       "noLogFile": "لم يتم العثور على ملف سجل الخدمة الخلفية.",
       "expectedAt": "المتوقع في: {{path}}",
       "logEmpty": "ملف السجل فارغ.",
       "followHint": "--- متابعة daemon.log (Ctrl+C للإيقاف) ---",
-      "notRunning": "خدمة Shipit AI الخلفية ليست قيد التشغيل.",
+      "notRunning": "خدمة ShipIT AI الخلفية ليست قيد التشغيل.",
       "startHint": "شغّل `shipit-ai start` لتشغيلها.",
-      "title": "حالة خدمة Shipit AI الخلفية",
+      "title": "حالة خدمة ShipIT AI الخلفية",
       "pidLabel": "PID",
       "portLabel": "المنفذ",
       "urlLabel": "URL",
@@ -111,7 +111,7 @@
       "cpuLabel": "المعالج %",
       "memoryLabel": "الذاكرة (RSS)",
       "envTitle": "البيئة",
-      "shipitAiHomeLabel": "مجلد Shipit AI الرئيسي",
+      "shipitAiHomeLabel": "مجلد ShipIT AI الرئيسي",
       "cliVersionLabel": "إصدار CLI",
       "nodeVersionLabel": "إصدار Node",
       "dbPathLabel": "مسار قاعدة البيانات",
@@ -119,11 +119,11 @@
       "daemonConfigLabel": "تكوين الخدمة الخلفية"
     },
     "ui": {
-      "description": "بدء واجهة Shipit AI الويب",
+      "description": "بدء واجهة ShipIT AI الويب",
       "portOption": "رقم المنفذ (1024-65535)",
       "noOpenOption": "عدم فتح المتصفح تلقائيًا",
       "portValidation": "يجب أن يكون المنفذ عددًا صحيحًا بين 1024 و 65535",
-      "heading": "واجهة Shipit AI الويب",
+      "heading": "واجهة ShipIT AI الويب",
       "startingDev": "جارٍ بدء خادم الويب (وضع التطوير)...",
       "starting": "جارٍ بدء خادم الويب...",
       "serverReady": "الخادم جاهز على {{url}}",
@@ -559,7 +559,7 @@
       }
     },
     "upgrade": {
-      "description": "ترقية Shipit AI CLI إلى أحدث إصدار",
+      "description": "ترقية ShipIT AI CLI إلى أحدث إصدار",
       "versionCheckTimeout": "تعذر إكمال فحص الإصدار (انتهت المهلة)",
       "versionCheckFailed": "تعذر إكمال فحص الإصدار",
       "alreadyUpToDate": "محدّث بالفعل (v{{version}})",
@@ -568,7 +568,7 @@
       "stoppingDaemon": "جارٍ إيقاف الخدمة الخلفية قبل الترقية...",
       "restartingDaemon": "جارٍ إعادة تشغيل الخدمة الخلفية...",
       "daemonRestarted": "تمت إعادة تشغيل الخدمة الخلفية بنجاح.",
-      "upgradeSuccess": "تمت ترقية Shipit AI CLI بنجاح",
+      "upgradeSuccess": "تمت ترقية ShipIT AI CLI بنجاح",
       "upgradeFailed": "فشلت الترقية",
       "upgradeFailedDaemonRestored": "فشلت الترقية — تمت استعادة الخدمة الخلفية على الإصدار السابق."
     },
@@ -588,17 +588,17 @@
       "installingHeading": "جارٍ تثبيت {{tool}}"
     },
     "daemon": {
-      "alreadyRunning": "Shipit AI يعمل بالفعل على {{url}}",
-      "heading": "واجهة Shipit AI الويب",
+      "alreadyRunning": "ShipIT AI يعمل بالفعل على {{url}}",
+      "heading": "واجهة ShipIT AI الويب",
       "startingServer": "جارٍ بدء الخادم",
       "daemonSpawned": "تم تشغيل الخدمة الخلفية على {{url}}",
       "serverReady": "الخادم جاهز على {{url}}",
       "serverMayBeStarting": "قد يكون الخادم لا يزال في مرحلة البدء على {{url}}",
       "daemonFailed": "فشلت الخدمة الخلفية في البدء (رمز الخروج {{code}}).",
       "checkLogs": "تحقق من السجلات: {{path}}",
-      "stoppingDaemon": "جارٍ إيقاف خدمة Shipit AI الخلفية (PID {{pid}})...",
+      "stoppingDaemon": "جارٍ إيقاف خدمة ShipIT AI الخلفية (PID {{pid}})...",
       "sigkillFallback": "لم تتوقف الخدمة الخلفية بسلاسة، جارٍ إرسال SIGKILL...",
-      "daemonStopped": "تم إيقاف خدمة Shipit AI الخلفية."
+      "daemonStopped": "تم إيقاف خدمة ShipIT AI الخلفية."
     },
     "logViewer": {
       "noLogFile": "لم يتم العثور على ملف سجل لـ {{label}}",

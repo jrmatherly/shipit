@@ -1,7 +1,7 @@
 /**
  * Upgrade Command
  *
- * Self-upgrades Shipit AI CLI to the latest published version.
+ * Self-upgrades ShipIT AI CLI to the latest published version.
  * Checks current vs latest version before running npm install.
  *
  * Usage: shep upgrade
