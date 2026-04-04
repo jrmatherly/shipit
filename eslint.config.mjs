@@ -53,6 +53,9 @@ export default tseslint.config([
       // Spec artifacts (auto-generated YAML/MD, evidence PNGs)
       'specs/**',
 
+      // Scratchpad (one-off scripts, not production code)
+      '.scratchpad/**',
+
       // Claude Code skills (third-party)
       '.claude/skills/**',
 
