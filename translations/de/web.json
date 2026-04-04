@@ -58,6 +58,8 @@
       "terminal": "Terminal",
       "terminalDescription": "Terminal-Emulator für Shell-Sitzungen",
       "systemTerminal": "System-Terminal",
+      "installed": "Installiert",
+      "notInstalled": "Nicht installiert",
       "failedToSave": "IDE- & Terminal-Einstellungen konnten nicht gespeichert werden",
       "hint": "Ihr bevorzugter Editor öffnet Dateien zur Überprüfung. Die Shell-Einstellung steuert generierte Skripte. Der Terminal-Emulator wird gestartet, wenn Shell-Sitzungen über die Web-UI geöffnet werden.",
       "links": { "configurationGuide": "Konfigurationsanleitung" }

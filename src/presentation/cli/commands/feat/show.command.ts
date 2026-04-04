@@ -27,6 +27,7 @@ import { computeWorktreePath } from '@/infrastructure/services/ide-launchers/com
 
 const AGENT_LABELS: Record<string, string> = {
   'claude-code': 'Claude Code',
+  'codex-cli': 'Codex CLI',
   cursor: 'Cursor CLI',
   'gemini-cli': 'Gemini CLI',
   dev: 'Demo',

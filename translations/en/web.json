@@ -58,6 +58,8 @@
       "terminal": "Terminal",
       "terminalDescription": "Terminal emulator for shell sessions",
       "systemTerminal": "System Terminal",
+      "installed": "Installed",
+      "notInstalled": "Not Installed",
       "failedToSave": "Failed to save IDE & Terminal settings",
       "hint": "Your preferred editor opens files for review. The shell setting controls generated scripts. The terminal emulator is launched when opening shell sessions from the web UI.",
       "links": {

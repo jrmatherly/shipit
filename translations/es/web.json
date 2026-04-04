@@ -58,6 +58,8 @@
       "terminal": "Terminal",
       "terminalDescription": "Emulador de terminal para sesiones de shell",
       "systemTerminal": "Terminal del sistema",
+      "installed": "Instalado",
+      "notInstalled": "No instalado",
       "failedToSave": "Error al guardar la configuración de IDE y terminal",
       "hint": "Tu editor preferido abre archivos para revisión. La configuración de shell controla los scripts generados. El emulador de terminal se abre al iniciar sesiones de shell desde la interfaz web.",
       "links": {

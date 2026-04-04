@@ -3,6 +3,7 @@ export async function getAllAgentModels() {
     {
       agentType: 'claude-code',
       label: 'Claude Code',
+      installed: true,
       models: [
         {
           id: 'claude-opus-4-6',
@@ -16,6 +17,7 @@ export async function getAllAgentModels() {
     {
       agentType: 'cursor',
       label: 'Cursor CLI',
+      installed: false,
       models: [
         {
           id: 'claude-opus-4-6',
@@ -34,6 +36,7 @@ export async function getAllAgentModels() {
     {
       agentType: 'gemini-cli',
       label: 'Gemini CLI',
+      installed: true,
       models: [
         { id: 'gemini-3.1-pro', displayName: 'Gemini 3.1 Pro', description: 'Advanced reasoning' },
         {
@@ -48,6 +51,7 @@ export async function getAllAgentModels() {
     {
       agentType: 'dev',
       label: 'Demo',
+      installed: true,
       models: [
         { id: 'gpt-8', displayName: 'GPT-8', description: 'Writes code before you think it' },
         {

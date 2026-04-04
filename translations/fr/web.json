@@ -58,6 +58,8 @@
       "terminal": "Terminal",
       "terminalDescription": "Émulateur de terminal pour les sessions shell",
       "systemTerminal": "Terminal système",
+      "installed": "Installé",
+      "notInstalled": "Non installé",
       "failedToSave": "Échec de l'enregistrement des paramètres IDE et terminal",
       "hint": "Votre éditeur préféré ouvre les fichiers pour examen. Le paramètre shell contrôle les scripts générés. L'émulateur de terminal est lancé lors de l'ouverture de sessions shell depuis l'interface web.",
       "links": {

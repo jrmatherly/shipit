@@ -1,0 +1,31 @@
+{
+  "name": "Codex CLI",
+  "summary": "AI-powered coding agent from OpenAI",
+  "description": "Codex CLI is OpenAI's lightweight coding agent that runs in the terminal. It can write code, fix bugs, and execute commands with natural language instructions.",
+  "tags": ["cli-agent"],
+  "author": "OpenAI",
+  "website": "https://github.com/openai/codex",
+  "platforms": ["linux", "darwin", "win32"],
+  "iconUrl": "https://cdn.simpleicons.org/openai",
+  "binary": "codex",
+  "packageManager": "npm",
+  "commands": {
+    "linux": "npm install -g @openai/codex",
+    "darwin": "npm install -g @openai/codex",
+    "win32": "npm install -g @openai/codex"
+  },
+  "timeout": 300000,
+  "documentationUrl": "https://github.com/openai/codex",
+  "verifyCommand": "codex --version",
+  "autoInstall": true,
+  "openDirectory": "cd {dir} && exec codex",
+  "spawnOptions": {
+    "shell": true,
+    "stdio": "inherit",
+    "detached": false
+  },
+  "terminalCommand": {
+    "linux": "x-terminal-emulator -e bash -c 'cd {dir} && exec codex'",
+    "darwin": "open -a Terminal.app bash -c 'cd {dir} && exec codex'"
+  }
+}

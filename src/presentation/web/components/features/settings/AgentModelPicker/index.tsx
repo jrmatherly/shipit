@@ -2,11 +2,13 @@
 
 import * as React from 'react';
 import { Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 import { getAllAgentModels } from '@/app/actions/get-all-agent-models';
 import type { AgentModelGroup } from '@/app/actions/get-all-agent-models';
 import { updateAgentAndModel } from '@/app/actions/update-agent-and-model';
 import { getAgentTypeIcon } from '@/components/common/feature-node/agent-type-icons';
 import { getModelMeta } from '@/lib/model-metadata';
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { cn } from '@/lib/utils';
@@ -29,6 +31,7 @@ export function AgentModelPicker({
   className,
   mode,
 }: AgentModelPickerProps) {
+  const { t } = useTranslation('web');
   const [open, setOpen] = React.useState(false);
   const [groups, setGroups] = React.useState<AgentModelGroup[]>([]);
   const [loading, setLoading] = React.useState(true);
@@ -170,12 +173,16 @@ export function AgentModelPicker({
                   <button
                     key={group.agentType}
                     type="button"
+                    disabled={!group.installed}
                     className={cn(
-                      'flex w-full cursor-pointer items-center gap-2.5 px-3 py-2 text-xs transition-colors',
-                      'hover:bg-accent hover:text-accent-foreground',
+                      'flex w-full items-center gap-2.5 px-3 py-2 text-xs transition-colors',
+                      group.installed
+                        ? 'hover:bg-accent hover:text-accent-foreground cursor-pointer'
+                        : 'cursor-not-allowed opacity-60',
                       isActive && 'bg-accent/50'
                     )}
                     onClick={() => {
+                      if (!group.installed) return;
                       if (hasModels) {
                         drillInto(group.agentType);
                       } else {
@@ -185,10 +192,23 @@ export function AgentModelPicker({
                   >
                     <GroupIcon className="h-4 w-4 shrink-0" />
                     <span className="flex-1 text-start">{group.label}</span>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        'px-1.5 py-0 text-[10px] leading-4 font-normal',
+                        group.installed
+                          ? 'border-emerald-500/30 text-emerald-500'
+                          : 'border-muted-foreground/30 text-muted-foreground'
+                      )}
+                    >
+                      {group.installed
+                        ? t('settings.environment.installed')
+                        : t('settings.environment.notInstalled')}
+                    </Badge>
                     {isActive && !hasModels ? (
                       <Check className="text-primary h-3.5 w-3.5 shrink-0" />
                     ) : null}
-                    {hasModels ? (
+                    {hasModels && group.installed ? (
                       <ChevronRight className="text-muted-foreground h-3.5 w-3.5 shrink-0" />
                     ) : null}
                   </button>
