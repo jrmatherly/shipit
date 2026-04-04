@@ -70,6 +70,27 @@ Several former god classes are now **facades** delegating to focused sub-service
 - Schema documented in `tools/CLAUDE.md` — follow it exactly for new tool definitions
 - Helpers: `getIdeEntries()`, `getTerminalEntries()`, `getShellEntries()` filter by tag
 
+### Adding New Agent Types
+
+Adding a new CLI agent requires changes across 8+ integration points:
+
+1. `tsp/common/enums/agent-config.tsp` — Add to `AgentType` enum, run `pnpm tsp:codegen`
+2. `packages/core/.../tool-installer/tools/<id>.json` — Tool metadata (auto-discovered by filename)
+3. `packages/core/.../executors/<name>-executor.service.ts` — Extend `ExecutorBase`
+4. `packages/core/.../agent-executor-factory.service.ts` — Update `createExecutor`, `getSupportedAgents`, `getCliInfo`, `getSupportedModels`, `supportsInteractive`
+5. `packages/core/.../agent-validator.service.ts` — Add to `AGENT_BINARY_MAP`
+6. `packages/core/.../di/modules/agents.module.ts` — Register `IAgentSessionRepository` (use `StubSessionRepository` for new agents)
+7. `src/presentation/web/app/actions/check-agent-auth.ts` — `AGENT_LABELS`, `AGENT_TOOL_MAP`, `AGENT_BINARY_MAP`, `tier1AuthCheck`, `tier2AuthVerify`
+8. `src/presentation/web/app/actions/check-agent-tool.ts` — `AGENT_TOOL_MAP`, `AGENT_BINARY_MAP`
+9. `src/presentation/web/app/actions/get-all-agent-models.ts` — `AGENT_LABELS`, `AGENT_ORDER`, `AGENT_TOOL_IDS`
+10. `.storybook/mocks/app/actions/get-all-agent-models.ts` + `check-agent-tool.ts` — Mock data
+
+**Gotcha — duplicate agent maps:** `AGENT_LABELS` and `AGENT_BINARY_MAP` exist in BOTH `check-agent-auth.ts` AND `check-agent-tool.ts` (with inconsistent values for cursor). Update all copies.
+
+**Gotcha — `tier2AuthVerify` mixed pattern:** Cases that set `cmd`/`args` use `break` (falling through to shared `execFile`). Cases that resolve directly MUST use `return` (not `break`) or `cmd`/`args` will be uninitialized.
+
+**Gotcha — `dev` agent special handling:** The `dev` mock agent is intentionally in `AGENT_LABELS` and `AGENT_ORDER` (for display) but NOT in `AGENT_TOOL_IDS` (no tool JSON exists). Line 88 of `get-all-agent-models.ts` explicitly handles this.
+
 ### Presentation Layer Boundaries
 
 - Infrastructure utilities accessed via `src/presentation/web/lib/core-utils.ts` (re-exports `isProcessAlive`, `computeWorktreePath`, `getShipitAiHomeDir`, `createDeploymentLogger`, `IS_WINDOWS`)
