@@ -1,4 +1,4 @@
-import { CircleAlert, Loader2, CircleCheck, Ban, CircleX, Clock } from 'lucide-react';
+import { CircleAlert, LoaderCircle, CircleCheck, Ban, CircleX, Clock } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
 export type FeatureStatus =
@@ -25,7 +25,7 @@ export const featureStatusConfig: Record<FeatureStatus, FeatureStatusConfig> = {
     labelKey: 'sidebar.statusActionNeeded',
   },
   'in-progress': {
-    icon: Loader2,
+    icon: LoaderCircle,
     iconClass: 'text-blue-500 animate-spin',
     bgClass: 'bg-blue-500/10',
     labelKey: 'sidebar.statusInProgress',

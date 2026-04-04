@@ -3,15 +3,15 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Loader2,
-  AlertCircle,
+  LoaderCircle,
+  CircleAlert,
   Clock,
   Zap,
   DollarSign,
   Play,
   RotateCcw,
-  CheckCircle2,
-  XCircle,
+  CircleCheck,
+  CircleX,
   Square,
   Ban,
   MessageSquare,
@@ -132,13 +132,13 @@ const LIFECYCLE_EVENTS: Record<
     label: 'completed',
     colorClass: 'text-emerald-600',
     bgClass: 'bg-emerald-50 dark:bg-emerald-950/30',
-    icon: CheckCircle2,
+    icon: CircleCheck,
   },
   'run:failed': {
     label: 'failed',
     colorClass: 'text-red-600',
     bgClass: 'bg-red-50 dark:bg-red-950/30',
-    icon: XCircle,
+    icon: CircleX,
   },
   'run:stopped': {
     label: 'stopped',
@@ -150,7 +150,7 @@ const LIFECYCLE_EVENTS: Record<
     label: 'crashed',
     colorClass: 'text-red-600',
     bgClass: 'bg-red-50 dark:bg-red-950/30',
-    icon: XCircle,
+    icon: CircleX,
   },
   'run:rejected': {
     label: 'rejected',
@@ -300,7 +300,7 @@ export function ActivityTab({ timings, loading, error, rejectionFeedback }: Acti
   if (loading) {
     return (
       <div data-testid="activity-tab-loading" className="flex items-center justify-center p-8">
-        <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+        <LoaderCircle className="text-muted-foreground h-6 w-6 animate-spin" />
       </div>
     );
   }
@@ -308,7 +308,7 @@ export function ActivityTab({ timings, loading, error, rejectionFeedback }: Acti
   if (error) {
     return (
       <div className="flex items-center gap-2 p-4 text-base text-red-600">
-        <AlertCircle className="h-4 w-4 shrink-0" />
+        <CircleAlert className="h-4 w-4 shrink-0" />
         <span>{error}</span>
       </div>
     );
@@ -510,7 +510,7 @@ function LifecycleEventRow({
                 }`}
               >
                 {isError ? (
-                  <AlertCircle className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-400" />
+                  <CircleAlert className="mt-0.5 h-3.5 w-3.5 shrink-0 text-red-400" />
                 ) : (
                   <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-orange-400" />
                 )}

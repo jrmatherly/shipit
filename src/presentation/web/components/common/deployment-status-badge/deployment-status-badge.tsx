@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Loader2, ExternalLink, Terminal } from 'lucide-react';
+import { LoaderCircle, ExternalLink, Terminal } from 'lucide-react';
 import { DeploymentState } from '@shipit-ai/core/domain/generated/output';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { ServerLogViewer } from '@/components/common/server-log-viewer';
@@ -25,7 +25,7 @@ export function DeploymentStatusBadge({ status, url, targetId }: DeploymentStatu
       return (
         <>
           <div className="flex items-center gap-1 pl-1">
-            <Loader2 className="size-3 animate-spin text-blue-500" />
+            <LoaderCircle className="size-3 animate-spin text-blue-500" />
             <span className="text-muted-foreground text-[11px]">Starting...</span>
             {showLogButton ? (
               <TooltipProvider delayDuration={300}>

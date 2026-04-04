@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
-import { Sparkles, FolderPlus, Github, GitBranch } from 'lucide-react';
+import { Sparkles, FolderPlus, GitBranch } from 'lucide-react';
+import { GithubIcon } from '@/components/ui/github-icon';
 import type { Edge, Viewport } from '@xyflow/react';
 import { useReactFlow } from '@xyflow/react';
 import { FeaturesCanvas } from '@/components/features/features-canvas';
@@ -461,7 +462,7 @@ export function ControlCenterInner({ initialNodes, initialEdges }: ControlCenter
       actions.push({
         id: 'add-github-repo',
         label: t('fab.fromGithub'),
-        icon: <Github className="h-4 w-4" />,
+        icon: <GithubIcon className="h-4 w-4" />,
         onClick: () => {
           window.dispatchEvent(new CustomEvent('shipit-ai:open-github-import'));
         },

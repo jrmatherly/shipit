@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
-import { ChevronsUpDown, CheckIcon, FolderPlus, Loader2 } from 'lucide-react';
+import { ChevronsUpDown, CheckIcon, FolderPlus, LoaderCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -216,7 +216,7 @@ export function RepositoryCombobox({
               data-testid="add-repository-item"
             >
               {isAdding ? (
-                <Loader2 className="h-4 w-4 shrink-0 animate-spin" />
+                <LoaderCircle className="h-4 w-4 shrink-0 animate-spin" />
               ) : (
                 <FolderPlus className="h-4 w-4 shrink-0" />
               )}

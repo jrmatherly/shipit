@@ -5,13 +5,13 @@ import {
   FileText,
   Terminal,
   MessageSquare,
-  CheckCircle2,
+  CircleCheck,
   Coins,
   Server,
   FileCode,
   Play,
   ArrowRight,
-  AlertCircle,
+  CircleAlert,
 } from 'lucide-react';
 import {
   parseLogContent,
@@ -186,7 +186,7 @@ function ResultRow({ line }: { line: ParsedLogLine }) {
       <Timestamp value={line.timestamp} />
       <PhaseBadge phase={line.phase} />
       <div className="flex min-w-0 flex-1 items-start gap-1.5">
-        <CheckCircle2 className="mt-0.5 h-3 w-3 shrink-0 text-emerald-500" />
+        <CircleCheck className="mt-0.5 h-3 w-3 shrink-0 text-emerald-500" />
         <span className="text-xs font-medium text-emerald-600 dark:text-emerald-400">
           Result: {chars.toLocaleString()} chars
         </span>
@@ -280,7 +280,7 @@ function ErrorRow({ line }: { line: ParsedLogLine }) {
       <Timestamp value={line.timestamp} />
       <PhaseBadge phase={line.phase} />
       <div className="flex min-w-0 flex-1 items-start gap-1.5">
-        <AlertCircle className="mt-0.5 h-3 w-3 shrink-0 text-red-500" />
+        <CircleAlert className="mt-0.5 h-3 w-3 shrink-0 text-red-500" />
         <span className="min-w-0 text-xs font-medium break-all text-red-700 dark:text-red-400">
           {line.message}
         </span>

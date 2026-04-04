@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { Loader2 } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { Trans, useTranslation } from 'react-i18next';
 import {
   AlertDialog,
@@ -115,7 +115,7 @@ export function DeleteFeatureDialog({
           >
             {isDeleting ? (
               <>
-                <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                <LoaderCircle className="me-2 h-4 w-4 animate-spin" />
                 {t('deleteFeature.deleting')}
               </>
             ) : (

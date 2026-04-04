@@ -7,7 +7,7 @@ import {
   ExternalLink,
   Download,
   Rocket,
-  Loader2,
+  LoaderCircle,
   Monitor,
   Terminal,
   GitBranch,
@@ -242,7 +242,7 @@ export function ToolDetailDrawer({
               className="cursor-pointer"
             >
               {status === 'streaming' ? (
-                <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" />
+                <LoaderCircle className="me-1.5 h-3.5 w-3.5 animate-spin" />
               ) : (
                 <Download className="me-1.5 h-3.5 w-3.5" />
               )}
@@ -259,7 +259,7 @@ export function ToolDetailDrawer({
               className="cursor-pointer"
             >
               {isLaunching ? (
-                <Loader2 className="me-1.5 h-3.5 w-3.5 animate-spin" />
+                <LoaderCircle className="me-1.5 h-3.5 w-3.5 animate-spin" />
               ) : (
                 <Rocket className="me-1.5 h-3.5 w-3.5" />
               )}

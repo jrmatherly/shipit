@@ -1,7 +1,7 @@
 'use client';
 
 import { useTranslation } from 'react-i18next';
-import { AlertTriangle, CheckCircle2, GitMerge, RefreshCw } from 'lucide-react';
+import { TriangleAlert, CircleCheck, GitMerge, RefreshCw } from 'lucide-react';
 import { CometSpinner } from '@/components/ui/comet-spinner';
 import { ActionButton } from '@/components/common/action-button';
 import { Separator } from '@/components/ui/separator';
@@ -50,7 +50,7 @@ export function BranchSyncStatus({
               </>
             ) : syncError ? (
               <>
-                <AlertTriangle className="h-4 w-4 shrink-0 text-red-500" />
+                <TriangleAlert className="h-4 w-4 shrink-0 text-red-500" />
                 <span className="text-sm text-red-600">{syncError}</span>
               </>
             ) : isRebasing ? (
@@ -66,7 +66,7 @@ export function BranchSyncStatus({
               </>
             ) : isBehind ? (
               <>
-                <AlertTriangle className="h-4 w-4 shrink-0 text-orange-500" />
+                <TriangleAlert className="h-4 w-4 shrink-0 text-orange-500" />
                 <span className="text-sm">
                   {syncStatus.behind} commit{syncStatus.behind === 1 ? '' : 's'} behind{' '}
                   <code className="bg-muted rounded px-1 py-0.5 font-mono text-xs">
@@ -79,7 +79,7 @@ export function BranchSyncStatus({
               </>
             ) : isUpToDate ? (
               <>
-                <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />
+                <CircleCheck className="h-4 w-4 shrink-0 text-green-500" />
                 <span className="text-sm">
                   Up to date with{' '}
                   <code className="bg-muted rounded px-1 py-0.5 font-mono text-xs">

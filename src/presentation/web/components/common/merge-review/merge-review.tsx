@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import {
   ExternalLink,
-  AlertTriangle,
+  TriangleAlert,
   FileDiff,
   GitCommitHorizontal,
   GitBranch,
@@ -248,7 +248,7 @@ export function MergeReview({
                 <div className="flex items-center justify-between">
                   <span className="text-muted-foreground text-xs font-medium">Merge Status</span>
                   <Badge className="border-transparent bg-orange-50 text-orange-700 hover:bg-orange-50">
-                    <AlertTriangle className="me-1 h-3.5 w-3.5" />
+                    <TriangleAlert className="me-1 h-3.5 w-3.5" />
                     Conflicts
                   </Badge>
                 </div>
@@ -311,7 +311,7 @@ export function MergeReview({
         ) : warning ? (
           <div className="border-border rounded-lg border">
             <div className="flex items-center gap-2 px-4 py-3">
-              <AlertTriangle className="text-muted-foreground h-4 w-4 shrink-0" />
+              <TriangleAlert className="text-muted-foreground h-4 w-4 shrink-0" />
               <span className="text-muted-foreground text-xs">{warning}</span>
             </div>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, type KeyboardEvent } from 'react';
-import { Loader2 } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
@@ -68,7 +68,7 @@ export function GitHubUrlInput({ onSubmit, loading = false }: GitHubUrlInputProp
           aria-describedby={error ? 'github-url-error' : undefined}
         />
         <Button onClick={handleSubmit} disabled={loading || !url.trim()} size="sm">
-          {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Import'}
+          {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : 'Import'}
         </Button>
       </div>
       {error ? (

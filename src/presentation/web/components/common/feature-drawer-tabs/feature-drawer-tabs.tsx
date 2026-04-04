@@ -4,8 +4,8 @@ import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { usePathname } from 'next/navigation';
 import {
-  Loader2,
-  AlertCircle,
+  LoaderCircle,
+  CircleAlert,
   LayoutDashboard,
   Activity,
   ScrollText,
@@ -636,7 +636,7 @@ export function FeatureDrawerTabs({
               />
             ) : (
               <div className="flex items-center justify-center p-8">
-                <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+                <LoaderCircle className="text-muted-foreground h-6 w-6 animate-spin" />
               </div>
             )}
           </TabsContent>
@@ -661,7 +661,7 @@ export function FeatureDrawerTabs({
               </div>
             ) : (
               <div className="flex items-center justify-center p-8">
-                <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+                <LoaderCircle className="text-muted-foreground h-6 w-6 animate-spin" />
               </div>
             )}
           </TabsContent>
@@ -672,7 +672,7 @@ export function FeatureDrawerTabs({
           <TabsContent value="product-decisions" className="mt-0 flex-1 overflow-y-auto">
             {productData === null ? (
               <div className="flex items-center justify-center p-8">
-                <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+                <LoaderCircle className="text-muted-foreground h-6 w-6 animate-spin" />
               </div>
             ) : productData ? (
               <ProductDecisionsSummary data={productData} />
@@ -701,10 +701,10 @@ export function FeatureDrawerTabs({
             ) : (
               <div className="flex items-center justify-center p-8">
                 {isMergeLoading ? (
-                  <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+                  <LoaderCircle className="text-muted-foreground h-6 w-6 animate-spin" />
                 ) : (
                   <div className="text-muted-foreground flex flex-col items-center gap-2 text-sm">
-                    <AlertCircle className="h-6 w-6" />
+                    <CircleAlert className="h-6 w-6" />
                     <span>Merge review data unavailable</span>
                   </div>
                 )}

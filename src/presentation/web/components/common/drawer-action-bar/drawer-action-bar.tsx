@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { PaperclipIcon, Send, ChevronLeft, Check, AlertTriangle } from 'lucide-react';
+import { PaperclipIcon, Send, ChevronLeft, Check, TriangleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
@@ -91,7 +91,7 @@ export function DrawerActionBar({
 }: DrawerActionBarProps) {
   const { t } = useTranslation('web');
   const isWarning = approveVariant === 'warning';
-  const ApproveIcon = isWarning ? AlertTriangle : Check;
+  const ApproveIcon = isWarning ? TriangleAlert : Check;
   const accentBg = isWarning ? 'bg-orange-500/85' : 'bg-blue-500/85';
   const accentBorder = isWarning ? 'border-orange-400/60' : 'border-blue-400/60';
   const [internalChatInput, setInternalChatInput] = useState('');

@@ -25,7 +25,7 @@ import {
   X,
   ChevronDown,
   ChevronUp,
-  Loader2,
+  LoaderCircle,
 } from 'lucide-react';
 
 // ── Markdown components for assistant messages ──────────────────────────────
@@ -428,7 +428,7 @@ function AssistantMessageText({ text }: { text: string }) {
 function ActivityIndicator({ label }: { label: string }) {
   return (
     <span className="text-muted-foreground inline-flex items-center gap-2 text-sm italic">
-      <Loader2 className="h-3.5 w-3.5 animate-spin" />
+      <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
       <span>{label}</span>
     </span>
   );

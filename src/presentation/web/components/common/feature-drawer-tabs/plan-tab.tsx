@@ -1,7 +1,7 @@
 'use client';
 
-import { Loader2 } from 'lucide-react';
-import { AlertCircle, ListTodo } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
+import { CircleAlert, ListTodo } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
 import { TaskProgressView } from '@/components/common/task-progress-view';
 import type { PlanData } from '@/app/actions/get-feature-plan';
@@ -22,7 +22,7 @@ export function PlanTab({ plan, loading, error }: PlanTabProps) {
   if (loading) {
     return (
       <div data-testid="plan-tab-loading" className="flex items-center justify-center p-8">
-        <Loader2 className="text-muted-foreground h-6 w-6 animate-spin" />
+        <LoaderCircle className="text-muted-foreground h-6 w-6 animate-spin" />
       </div>
     );
   }
@@ -30,7 +30,7 @@ export function PlanTab({ plan, loading, error }: PlanTabProps) {
   if (error) {
     return (
       <div className="flex items-center gap-2 p-4 text-sm text-red-600">
-        <AlertCircle className="h-4 w-4 shrink-0" />
+        <CircleAlert className="h-4 w-4 shrink-0" />
         <span>{error}</span>
       </div>
     );

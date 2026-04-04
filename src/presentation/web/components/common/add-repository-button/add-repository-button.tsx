@@ -2,7 +2,8 @@
 
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { FolderPlus, Github, Loader2, Plus } from 'lucide-react';
+import { FolderPlus, LoaderCircle, Plus } from 'lucide-react';
+import { GithubIcon } from '@/components/ui/github-icon';
 import { Button } from '@/components/ui/button';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -83,7 +84,7 @@ export function AddRepositoryButton({ onSelect, onGitHubImport }: AddRepositoryB
                   disabled={loading}
                 >
                   {loading ? (
-                    <Loader2 className="h-5 w-5 animate-spin" />
+                    <LoaderCircle className="h-5 w-5 animate-spin" />
                   ) : (
                     <Plus className="h-5 w-5" />
                   )}
@@ -111,7 +112,7 @@ export function AddRepositoryButton({ onSelect, onGitHubImport }: AddRepositoryB
               onClick={handleFromGitHub}
               data-testid="add-repo-from-github"
             >
-              <Github className="h-4 w-4" />
+              <GithubIcon className="h-4 w-4" />
               From GitHub
             </button>
           ) : null}

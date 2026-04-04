@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
-import { Loader2 } from 'lucide-react';
+import { LoaderCircle } from 'lucide-react';
 import { toast } from 'sonner';
 import {
   Dialog,
@@ -28,7 +28,7 @@ const FileManager = dynamic(
 function FileManagerSkeleton() {
   return (
     <div className="flex h-full w-full items-center justify-center">
-      <Loader2 className="text-muted-foreground h-8 w-8 animate-spin" />
+      <LoaderCircle className="text-muted-foreground h-8 w-8 animate-spin" />
     </div>
   );
 }

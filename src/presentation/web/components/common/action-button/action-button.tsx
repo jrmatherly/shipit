@@ -1,7 +1,7 @@
 'use client';
 
 import type { LucideIcon } from 'lucide-react';
-import { Loader2, CircleAlert } from 'lucide-react';
+import { LoaderCircle, CircleAlert } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { useSoundAction } from '@/hooks/use-sound-action';
@@ -54,7 +54,7 @@ export function ActionButton({
       )}
     >
       {loading ? (
-        <Loader2 className="size-4 animate-spin" />
+        <LoaderCircle className="size-4 animate-spin" />
       ) : error ? (
         <CircleAlert className="size-4" />
       ) : (

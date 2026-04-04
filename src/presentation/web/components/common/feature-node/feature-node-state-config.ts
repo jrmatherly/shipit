@@ -1,5 +1,5 @@
 import {
-  Loader2,
+  LoaderCircle,
   CircleAlert,
   CircleCheck,
   Ban,
@@ -296,7 +296,7 @@ export interface FeatureNodeStateConfig {
 
 export const featureNodeStateConfig: Record<FeatureNodeState, FeatureNodeStateConfig> = {
   creating: {
-    icon: Loader2,
+    icon: LoaderCircle,
     borderClass: 'border-s-blue-500',
     labelClass: 'text-blue-500',
     progressClass: 'bg-blue-500',
@@ -306,7 +306,7 @@ export const featureNodeStateConfig: Record<FeatureNodeState, FeatureNodeStateCo
     showProgressBar: false,
   },
   running: {
-    icon: Loader2,
+    icon: LoaderCircle,
     borderClass: 'border-s-blue-500',
     labelClass: 'text-blue-500',
     progressClass: 'bg-blue-500',

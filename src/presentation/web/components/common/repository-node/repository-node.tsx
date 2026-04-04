@@ -4,7 +4,6 @@ import { useState, useCallback } from 'react';
 import { Handle, Position } from '@xyflow/react';
 import { useRouter } from 'next/navigation';
 import {
-  Github,
   Plus,
   Code2,
   Terminal,
@@ -19,6 +18,7 @@ import {
   RotateCcw,
   MessageSquare,
 } from 'lucide-react';
+import { GithubIcon } from '@/components/ui/github-icon';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { ActionButton } from '@/components/common/action-button';
@@ -198,7 +198,7 @@ export function RepositoryNode({
       >
         {/* Row 1: Repository name + action buttons */}
         <div className="flex items-center gap-3 px-4 py-3">
-          <Github className="text-muted-foreground h-5 w-5 shrink-0" />
+          <GithubIcon className="text-muted-foreground h-5 w-5 shrink-0" />
           <span data-testid="repository-node-name" className="min-w-0 truncate text-sm font-medium">
             {data.name}
           </span>

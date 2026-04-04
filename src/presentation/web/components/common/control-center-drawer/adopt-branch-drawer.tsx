@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useCallback, useEffect, useRef } from 'react';
-import { Check, CheckIcon, ChevronsUpDown, GitBranch, Loader2 } from 'lucide-react';
+import { Check, CheckIcon, ChevronsUpDown, GitBranch, LoaderCircle } from 'lucide-react';
 import { BaseDrawer } from '@/components/common/base-drawer';
 import { DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { Button } from '@/components/ui/button';
@@ -316,7 +316,7 @@ export function AdoptBranchDrawer({
                       )}
                       {branchesLoading ? (
                         <CommandEmpty>
-                          <Loader2 className="mx-auto h-4 w-4 animate-spin" />
+                          <LoaderCircle className="mx-auto h-4 w-4 animate-spin" />
                         </CommandEmpty>
                       ) : null}
                       {filteredBranches.length > 0 && (
@@ -382,7 +382,7 @@ export function AdoptBranchDrawer({
             >
               {isSubmitting ? (
                 <>
-                  <Loader2 className="me-2 h-4 w-4 animate-spin" />
+                  <LoaderCircle className="me-2 h-4 w-4 animate-spin" />
                   Adopting...
                 </>
               ) : (

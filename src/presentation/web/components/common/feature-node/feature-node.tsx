@@ -9,7 +9,7 @@ import {
   Trash2,
   Zap,
   ClipboardList,
-  Loader2,
+  LoaderCircle,
   Globe,
   RotateCcw,
   Play,
@@ -488,7 +488,7 @@ export function FeatureNode({
                               }}
                             >
                               {deployAction.stopLoading ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin text-red-500" />
+                                <LoaderCircle className="h-3.5 w-3.5 animate-spin text-red-500" />
                               ) : (
                                 <span className="relative h-3.5 w-3.5">
                                   <Globe className="absolute inset-0 h-3.5 w-3.5 text-green-600 transition-opacity duration-200 group-hover/deploy:opacity-0 dark:text-green-400" />
@@ -535,7 +535,7 @@ export function FeatureNode({
                               }}
                             >
                               {deployAction.stopLoading ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                <LoaderCircle className="h-3.5 w-3.5 animate-spin" />
                               ) : (
                                 <Square className="h-3.5 w-3.5" />
                               )}
@@ -611,7 +611,7 @@ export function FeatureNode({
             {/* Right: in-progress status or action buttons */}
             {data.state === 'deleting' ? (
               <div className="flex items-center gap-1.5 text-xs">
-                <Loader2 className="h-3.5 w-3.5 shrink-0 animate-spin text-gray-400" />
+                <LoaderCircle className="h-3.5 w-3.5 shrink-0 animate-spin text-gray-400" />
                 <span className="text-muted-foreground">{t('featureNode.deleting')}</span>
               </div>
             ) : data.state === 'creating' ? (

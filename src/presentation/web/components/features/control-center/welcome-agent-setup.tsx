@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { ChevronLeft, Loader2, AlertTriangle } from 'lucide-react';
+import { ChevronLeft, LoaderCircle, TriangleAlert } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { getAllAgentModels } from '@/app/actions/get-all-agent-models';
 import type { AgentModelGroup } from '@/app/actions/get-all-agent-models';
@@ -117,7 +117,7 @@ export function WelcomeAgentSetup({ onComplete, className }: WelcomeAgentSetupPr
         data-testid="welcome-agent-setup"
         className={cn('flex flex-col items-center justify-center gap-4', className)}
       >
-        <Loader2 className="text-muted-foreground h-5 w-5 animate-spin" />
+        <LoaderCircle className="text-muted-foreground h-5 w-5 animate-spin" />
         <p className="text-muted-foreground text-sm">{t('welcome.loadingAgents')}</p>
       </div>
     );
@@ -172,7 +172,7 @@ export function WelcomeAgentSetup({ onComplete, className }: WelcomeAgentSetupPr
             data-testid="gh-cli-notice"
             className="mt-5 flex items-start gap-2 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-900 dark:bg-amber-950/40"
           >
-            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
+            <TriangleAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-500" />
             <p className="text-sm leading-relaxed text-amber-800 dark:text-amber-300">
               <span className="font-medium">{t('welcome.ghCliRequired')}</span>{' '}
               {t('welcome.ghCliRequiredText')}{' '}

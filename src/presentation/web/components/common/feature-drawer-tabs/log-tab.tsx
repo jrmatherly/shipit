@@ -2,7 +2,7 @@
 
 import { useRef, useEffect, useState, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
-import { AlertCircle, Terminal, ArrowDown, Code, FileText } from 'lucide-react';
+import { CircleAlert, Terminal, ArrowDown, Code, FileText } from 'lucide-react';
 import { EventLogViewer } from './event-log-viewer';
 
 export interface LogTabProps {
@@ -43,7 +43,7 @@ export function LogTab({ content, isConnected, error }: LogTabProps) {
   if (error) {
     return (
       <div className="flex items-center gap-2 p-4 text-sm text-red-600">
-        <AlertCircle className="h-4 w-4 shrink-0" />
+        <CircleAlert className="h-4 w-4 shrink-0" />
         <span>{error}</span>
       </div>
     );

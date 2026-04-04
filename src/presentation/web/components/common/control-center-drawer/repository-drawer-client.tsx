@@ -11,12 +11,12 @@ import {
   Square,
   Copy,
   Check,
-  Loader2,
+  LoaderCircle,
   LayoutDashboard,
   MessageSquare,
   GitBranch,
   GitCommitHorizontal,
-  AlertTriangle,
+  TriangleAlert,
   Globe,
   Tag,
   Archive,
@@ -149,7 +149,7 @@ export function RepositoryDrawerClient({ data, initialTab }: RepositoryDrawerCli
                           aria-label="Open in IDE"
                         >
                           {repoActions.ideLoading ? (
-                            <Loader2 className="size-3.5 animate-spin" />
+                            <LoaderCircle className="size-3.5 animate-spin" />
                           ) : (
                             <Code2 className="size-4" />
                           )}
@@ -170,7 +170,7 @@ export function RepositoryDrawerClient({ data, initialTab }: RepositoryDrawerCli
                           aria-label="Open terminal"
                         >
                           {repoActions.shellLoading ? (
-                            <Loader2 className="size-3.5 animate-spin" />
+                            <LoaderCircle className="size-3.5 animate-spin" />
                           ) : (
                             <Terminal className="size-4" />
                           )}
@@ -191,7 +191,7 @@ export function RepositoryDrawerClient({ data, initialTab }: RepositoryDrawerCli
                           aria-label="Open folder"
                         >
                           {repoActions.folderLoading ? (
-                            <Loader2 className="size-3.5 animate-spin" />
+                            <LoaderCircle className="size-3.5 animate-spin" />
                           ) : (
                             <FolderOpen className="size-4" />
                           )}
@@ -237,7 +237,7 @@ export function RepositoryDrawerClient({ data, initialTab }: RepositoryDrawerCli
                             aria-label="Sync main"
                           >
                             {repoActions.syncLoading ? (
-                              <Loader2 className="size-3.5 animate-spin" />
+                              <LoaderCircle className="size-3.5 animate-spin" />
                             ) : (
                               <RefreshCw className="size-4" />
                             )}
@@ -269,7 +269,7 @@ export function RepositoryDrawerClient({ data, initialTab }: RepositoryDrawerCli
                             aria-label={isDeployActive ? 'Stop dev server' : 'Start dev server'}
                           >
                             {deployAction.deployLoading || deployAction.stopLoading ? (
-                              <Loader2 className="size-3.5 animate-spin" />
+                              <LoaderCircle className="size-3.5 animate-spin" />
                             ) : isDeployActive ? (
                               <Square className="size-4" />
                             ) : (
@@ -392,7 +392,7 @@ function RepoOverview({
     <div className="pb-4">
       {loading ? (
         <div className="text-foreground/40 flex items-center gap-2 px-4 py-8 text-sm">
-          <Loader2 className="size-4 animate-spin" /> Loading repository info...
+          <LoaderCircle className="size-4 animate-spin" /> Loading repository info...
         </div>
       ) : null}
 
@@ -598,7 +598,7 @@ function RepoOverview({
 
       {/* Errors */}
       {syncError ? (
-        <Section icon={AlertTriangle} title="Issues">
+        <Section icon={TriangleAlert} title="Issues">
           <Card className="bg-destructive/5 border-transparent">
             <p className="text-destructive text-sm">{syncError}</p>
           </Card>

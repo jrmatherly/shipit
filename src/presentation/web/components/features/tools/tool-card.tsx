@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from 'react';
 import {
-  Loader2,
+  LoaderCircle,
   Rocket,
   Download,
   Monitor,
@@ -10,7 +10,7 @@ import {
   GitBranch,
   CircleX,
   Circle,
-  CheckCircle2,
+  CircleCheck,
   Package,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -124,7 +124,7 @@ export function ToolCard({ tool, onRefresh, className }: ToolCardProps) {
               </span>
             ) : isInstalled ? (
               <span className="flex items-center gap-1 text-[10px] text-emerald-600 dark:text-emerald-400">
-                <CheckCircle2 className="h-3 w-3" />
+                <CircleCheck className="h-3 w-3" />
                 Installed
               </span>
             ) : (
@@ -162,7 +162,7 @@ export function ToolCard({ tool, onRefresh, className }: ToolCardProps) {
                 className="h-7 cursor-pointer rounded-md px-3 text-xs"
               >
                 {isPending ? (
-                  <Loader2 className="me-1 h-3 w-3 animate-spin" />
+                  <LoaderCircle className="me-1 h-3 w-3 animate-spin" />
                 ) : (
                   <Rocket className="me-1 h-3 w-3" />
                 )}

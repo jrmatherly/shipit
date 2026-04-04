@@ -3,9 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  AlertTriangle,
+  TriangleAlert,
   Check,
-  CheckCircle2,
+  CircleCheck,
   Clock,
   ExternalLink,
   FileSearch,
@@ -220,7 +220,7 @@ export function OverviewTab({
               </span>
               {data.pr.mergeable === false ? (
                 <span className="inline-flex items-center gap-1 text-xs font-medium text-orange-600 dark:text-orange-400">
-                  <AlertTriangle className="size-3 shrink-0" /> Conflicts
+                  <TriangleAlert className="size-3 shrink-0" /> Conflicts
                 </span>
               ) : null}
               {data.pr.ciStatus && data.hideCiStatus !== true ? (
@@ -312,7 +312,7 @@ export function OverviewTab({
 
       {/* ── Errors ── */}
       {data.blockedBy || data.errorMessage ? (
-        <Section icon={AlertTriangle} title="Issues">
+        <Section icon={TriangleAlert} title="Issues">
           <Card className="border-destructive/20 bg-destructive/5">
             {data.blockedBy ? <KV label="Blocked By">{data.blockedBy}</KV> : null}
             {data.errorMessage ? (
@@ -380,7 +380,7 @@ function SyncCard({
             </>
           ) : syncError ? (
             <>
-              <AlertTriangle className="size-3.5 text-red-500" />
+              <TriangleAlert className="size-3.5 text-red-500" />
               <span className="text-destructive text-xs">{syncError}</span>
             </>
           ) : rebaseLoading ? (
@@ -392,7 +392,7 @@ function SyncCard({
             </>
           ) : isBehind ? (
             <>
-              <AlertTriangle className="size-3.5 text-orange-500" />
+              <TriangleAlert className="size-3.5 text-orange-500" />
               <span>
                 {syncStatus.behind} behind <code className="font-mono text-[11px]">{base}</code>
                 {syncStatus.ahead > 0 ? (
@@ -404,7 +404,7 @@ function SyncCard({
             </>
           ) : isUpToDate ? (
             <>
-              <CheckCircle2 className="size-3.5 text-green-500" />
+              <CircleCheck className="size-3.5 text-green-500" />
               <span>
                 Up to date · <code className="font-mono text-[11px]">{base}</code>
                 {syncStatus.ahead > 0 ? (

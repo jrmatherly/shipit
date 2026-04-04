@@ -8,7 +8,7 @@ import {
   FileText,
   Copy,
   Check,
-  Loader2,
+  LoaderCircle,
   CircleAlert,
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '@/components/ui/tooltip';
@@ -28,7 +28,7 @@ function TbIcon({
   error?: string | null;
   icon: React.ComponentType<{ className?: string }>;
 }) {
-  if (loading) return <Loader2 className="size-3.5 animate-spin" />;
+  if (loading) return <LoaderCircle className="size-3.5 animate-spin" />;
   if (error) return <CircleAlert className="text-destructive size-3.5" />;
   return <Icon className="size-4" />;
 }

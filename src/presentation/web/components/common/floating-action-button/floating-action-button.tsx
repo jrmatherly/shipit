@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { Plus, Loader2, X } from 'lucide-react';
+import { Plus, LoaderCircle, X } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -108,7 +108,7 @@ export function FloatingActionButton({ actions, className, style }: FloatingActi
                 }}
               >
                 <span className="flex h-5 w-5 shrink-0 items-center justify-center">
-                  {action.loading ? <Loader2 className="h-4 w-4 animate-spin" /> : action.icon}
+                  {action.loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : action.icon}
                 </span>
                 <span>{action.label}</span>
               </button>

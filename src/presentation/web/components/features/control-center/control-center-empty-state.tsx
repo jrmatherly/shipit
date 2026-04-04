@@ -5,9 +5,9 @@ import {
   FolderOpen,
   Copy,
   Check,
-  Loader2,
-  CheckCircle2,
-  AlertCircle,
+  LoaderCircle,
+  CircleCheck,
+  CircleAlert,
   Terminal,
   ChevronDown,
   ExternalLink,
@@ -150,7 +150,7 @@ export function ControlCenterEmptyState({
             className="bg-foreground text-background hover:bg-foreground/90 mt-10 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl px-6 py-4 text-base font-medium shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] disabled:cursor-wait disabled:opacity-50"
           >
             {loading ? (
-              <Loader2 className="h-5 w-5 animate-spin" />
+              <LoaderCircle className="h-5 w-5 animate-spin" />
             ) : (
               <FolderOpen className="h-5 w-5" />
             )}
@@ -244,7 +244,9 @@ function AgentAuthBanner({
 
   if (!status) {
     return (
-      <ChecklistRow icon={<Loader2 className="text-muted-foreground/50 h-4 w-4 animate-spin" />}>
+      <ChecklistRow
+        icon={<LoaderCircle className="text-muted-foreground/50 h-4 w-4 animate-spin" />}
+      >
         <span className="text-muted-foreground/50 text-sm">{t('emptyState.checkingSetup')}</span>
       </ChecklistRow>
     );
@@ -252,7 +254,7 @@ function AgentAuthBanner({
 
   if (status.installed && status.authenticated) {
     return (
-      <ChecklistRow icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}>
+      <ChecklistRow icon={<CircleCheck className="h-4 w-4 text-emerald-500" />}>
         <span className="text-sm text-emerald-600 dark:text-emerald-400">
           {t('emptyState.ready', { label: status.label })}
         </span>
@@ -262,7 +264,7 @@ function AgentAuthBanner({
 
   if (!status.installed) {
     return (
-      <ChecklistRow icon={<AlertCircle className="h-4 w-4 text-amber-500" />}>
+      <ChecklistRow icon={<CircleAlert className="h-4 w-4 text-amber-500" />}>
         <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
           {t('emptyState.notInstalled', { label: status.label })}
         </span>
@@ -279,7 +281,7 @@ function AgentAuthBanner({
   }
 
   return (
-    <ChecklistRow icon={<AlertCircle className="h-4 w-4 text-amber-500" />}>
+    <ChecklistRow icon={<CircleAlert className="h-4 w-4 text-amber-500" />}>
       <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
         {t('emptyState.needsAuth', { label: status.label })}
       </span>
@@ -330,7 +332,9 @@ function ToolStatusRow({
 
   if (!status) {
     return (
-      <ChecklistRow icon={<Loader2 className="text-muted-foreground/50 h-4 w-4 animate-spin" />}>
+      <ChecklistRow
+        icon={<LoaderCircle className="text-muted-foreground/50 h-4 w-4 animate-spin" />}
+      >
         <span className="text-muted-foreground/50 text-sm">
           {t('emptyState.checking', { label })}
         </span>
@@ -340,7 +344,7 @@ function ToolStatusRow({
 
   if (status.installed) {
     return (
-      <ChecklistRow icon={<CheckCircle2 className="h-4 w-4 text-emerald-500" />}>
+      <ChecklistRow icon={<CircleCheck className="h-4 w-4 text-emerald-500" />}>
         <span className="flex items-baseline gap-2">
           <span className="text-sm text-emerald-600 dark:text-emerald-400">
             {t('emptyState.ready', { label })}
@@ -354,7 +358,7 @@ function ToolStatusRow({
   }
 
   return (
-    <ChecklistRow icon={<AlertCircle className="h-4 w-4 text-amber-500" />}>
+    <ChecklistRow icon={<CircleAlert className="h-4 w-4 text-amber-500" />}>
       <span className="text-sm font-medium text-amber-600 dark:text-amber-400">
         {t('emptyState.notFound', { label })}
       </span>

@@ -1,5 +1,12 @@
 import type { LucideIcon } from 'lucide-react';
-import { FileIcon, FileTextIcon, ImageIcon, CodeIcon, Trash2Icon, Loader2Icon } from 'lucide-react';
+import {
+  FileIcon,
+  FileTextIcon,
+  ImageIcon,
+  CodeIcon,
+  Trash2Icon,
+  LoaderCircleIcon,
+} from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 
@@ -44,7 +51,7 @@ export function AttachmentCard({
         </span>
       </div>
       {loading ? (
-        <Loader2Icon className="text-muted-foreground h-4 w-4 animate-spin" />
+        <LoaderCircleIcon className="text-muted-foreground h-4 w-4 animate-spin" />
       ) : (
         <Button
           type="button"

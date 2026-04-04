@@ -5,7 +5,16 @@ import { cn } from '@/lib/utils';
 import { useTranslation } from 'react-i18next';
 import { useRouter, usePathname } from 'next/navigation';
 import { toast } from 'sonner';
-import { Loader2, Trash2, Play, Square, Copy, Check, Archive, ArchiveRestore } from 'lucide-react';
+import {
+  LoaderCircle,
+  Trash2,
+  Play,
+  Square,
+  Copy,
+  Check,
+  Archive,
+  ArchiveRestore,
+} from 'lucide-react';
 import type {
   PrdApprovalPayload,
   QuestionSelectionChange,
@@ -636,7 +645,7 @@ export function FeatureDrawerClient({
                       }
                     >
                       {deployAction.deployLoading || deployAction.stopLoading ? (
-                        <Loader2 className="size-4 animate-spin" />
+                        <LoaderCircle className="size-4 animate-spin" />
                       ) : isFeatureDeployActive ? (
                         <Square className="size-4" />
                       ) : (
@@ -707,7 +716,7 @@ export function FeatureDrawerClient({
                           onClick={() => handleUnarchive(featureNode.featureId)}
                         >
                           {isArchiving ? (
-                            <Loader2 className="size-4 animate-spin" />
+                            <LoaderCircle className="size-4 animate-spin" />
                           ) : (
                             <ArchiveRestore className="size-3" />
                           )}
@@ -729,7 +738,7 @@ export function FeatureDrawerClient({
                           onClick={() => handleArchive(featureNode.featureId)}
                         >
                           {isArchiving ? (
-                            <Loader2 className="size-4 animate-spin" />
+                            <LoaderCircle className="size-4 animate-spin" />
                           ) : (
                             <Archive className="size-3" />
                           )}
@@ -751,7 +760,7 @@ export function FeatureDrawerClient({
                         onClick={() => setDeleteDialogOpen(true)}
                       >
                         {isDeleting ? (
-                          <Loader2 className="size-4 animate-spin" />
+                          <LoaderCircle className="size-4 animate-spin" />
                         ) : (
                           <Trash2 className="size-3" />
                         )}

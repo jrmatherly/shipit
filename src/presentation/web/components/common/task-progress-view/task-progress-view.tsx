@@ -3,12 +3,12 @@
 import { useState, useCallback, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
-  Loader2,
+  LoaderCircle,
   Circle,
   Check,
   Eye,
   ChevronRight,
-  CheckCircle2,
+  CircleCheck,
   CircleDashed,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -35,7 +35,7 @@ const taskStateConfig: Record<
     label: 'Todo',
   },
   'Work in Progress': {
-    icon: Loader2,
+    icon: LoaderCircle,
     colorClass: 'text-blue-600',
     borderClass: 'border-blue-200',
     spinning: true,
@@ -126,7 +126,7 @@ function ProgressSummary({ tasks }: { tasks: PlanTaskData[] }) {
         ) : null}
         {counts.wip > 0 ? (
           <StatChip
-            icon={Loader2}
+            icon={LoaderCircle}
             label={t('taskProgress.inProgress')}
             count={counts.wip}
             className="text-blue-600"
@@ -244,7 +244,7 @@ function ActionItemRow({ item }: { item: ActionItemData }) {
     <div data-testid="action-item" className="flex flex-col gap-1.5">
       <div className="flex items-start gap-2">
         {allVerified ? (
-          <CheckCircle2 className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
+          <CircleCheck className="mt-0.5 h-3.5 w-3.5 shrink-0 text-emerald-600" />
         ) : (
           <CircleDashed className="text-muted-foreground mt-0.5 h-3.5 w-3.5 shrink-0" />
         )}

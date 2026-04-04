@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Lock, Globe, Loader2, Search, AlertCircle } from 'lucide-react';
+import { Lock, Globe, LoaderCircle, Search, CircleAlert } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -112,7 +112,7 @@ export function GitHubRepoBrowser({
         className="flex flex-col items-center gap-2 py-8 text-center"
         data-testid="repo-browser-error"
       >
-        <AlertCircle className="text-destructive h-8 w-8" />
+        <CircleAlert className="text-destructive h-8 w-8" />
         <p className="text-destructive text-sm">{error}</p>
       </div>
     );
@@ -206,7 +206,7 @@ export function GitHubRepoBrowser({
                   </p>
                 ) : null}
               </div>
-              {disabled ? <Loader2 className="mt-0.5 h-4 w-4 shrink-0 animate-spin" /> : null}
+              {disabled ? <LoaderCircle className="mt-0.5 h-4 w-4 shrink-0 animate-spin" /> : null}
             </button>
           ))
         )}

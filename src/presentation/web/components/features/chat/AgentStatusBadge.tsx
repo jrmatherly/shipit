@@ -2,7 +2,7 @@
 
 import { cn } from '@/lib/utils';
 import { InteractiveSessionStatus } from '@shipit-ai/core/domain/generated/output';
-import { Loader2, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
+import { LoaderCircle, CircleCheck, CircleX, CircleAlert } from 'lucide-react';
 
 /** Named boot stages shown during the agent startup sequence. */
 export type BootStage = 'spawning' | 'loading-context';
@@ -29,37 +29,37 @@ interface StatusConfig {
 const STATUS_CONFIG: Record<AgentStatusValue, StatusConfig> = {
   [InteractiveSessionStatus.booting]: {
     label: 'Booting...',
-    icon: <Loader2 className="size-3 animate-spin" />,
+    icon: <LoaderCircle className="size-3 animate-spin" />,
     className:
       'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:border-amber-700',
   },
   spawning: {
     label: 'Spawning process',
-    icon: <Loader2 className="size-3 animate-spin" />,
+    icon: <LoaderCircle className="size-3 animate-spin" />,
     className:
       'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-900/30 dark:text-blue-300 dark:border-blue-700',
   },
   'loading-context': {
     label: 'Loading context',
-    icon: <Loader2 className="size-3 animate-spin" />,
+    icon: <LoaderCircle className="size-3 animate-spin" />,
     className:
       'bg-indigo-100 text-indigo-800 border-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:border-indigo-700',
   },
   [InteractiveSessionStatus.ready]: {
     label: 'Ready',
-    icon: <CheckCircle2 className="size-3" />,
+    icon: <CircleCheck className="size-3" />,
     className:
       'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:border-emerald-700',
   },
   [InteractiveSessionStatus.stopped]: {
     label: 'Stopped',
-    icon: <XCircle className="size-3" />,
+    icon: <CircleX className="size-3" />,
     className:
       'bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-400 dark:border-zinc-600',
   },
   [InteractiveSessionStatus.error]: {
     label: 'Error',
-    icon: <AlertCircle className="size-3" />,
+    icon: <CircleAlert className="size-3" />,
     className:
       'bg-red-100 text-red-700 border-red-200 dark:bg-red-900/30 dark:text-red-400 dark:border-red-700',
   },

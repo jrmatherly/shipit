@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element -- Local file preview requires raw <img>, not next/image */
 'use client';
 
-import { X, Loader2Icon, DownloadIcon, StickyNoteIcon } from 'lucide-react';
+import { X, LoaderCircleIcon, DownloadIcon, StickyNoteIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Dialog, DialogTrigger, DialogContent, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
@@ -63,7 +63,7 @@ export function AttachmentChip({
   if (loading) {
     return (
       <div className="flex h-12 w-12 items-center justify-center rounded-md border">
-        <Loader2Icon className="text-muted-foreground h-5 w-5 animate-spin" />
+        <LoaderCircleIcon className="text-muted-foreground h-5 w-5 animate-spin" />
       </div>
     );
   }

@@ -39,7 +39,7 @@ describe('RepositoryNode', () => {
 
   it('renders GitHub icon', () => {
     const { container } = renderRepositoryNode();
-    const svg = container.querySelector('svg.lucide-github');
+    const svg = container.querySelector('svg[role="img"]');
     expect(svg).toBeInTheDocument();
   });
 
