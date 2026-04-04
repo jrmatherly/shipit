@@ -90,6 +90,7 @@ Several former god classes are now **facades** delegating to focused sub-service
 - **Serena MCP:** Onboarded — use for semantic symbol navigation, find references, code overview
 - **Code Review Graph:** Built — use for impact analysis, flow tracing, PR review context
 - **IDE workflow linter:** `secrets.*` and dynamic `env.*` (set via `$GITHUB_ENV`) references in GitHub Actions workflows show "context access might be invalid" — these are false positives from static analysis.
+- **Bulk rename:** For project-wide text replacements, use `git grep -l 'old' -- ':!node_modules/' | while read f; do perl -pi -e 's/old/new/g' "$f"; done` — faster and safer than `sed` on macOS.
 
 ## CI Patterns
 
@@ -118,6 +119,8 @@ CLAUDE.md is the canonical reference. When updating commands, paths, scopes, or 
 - `CONTRIBUTING.md` — human contributor guide (Node version, pnpm version, directory paths)
 - `CONTRIBUTING-AGENTS.md` — AI agent contributor guide (commit scopes, directory paths, co-author line)
 - `.serena/memories/` — Serena onboarding memories (commands, checklist)
+- `docs/FEATURES.md` — user-facing features guide (CLI command examples)
+- `docs/development/shipit-kit-reference.md` — skills toolkit reference
 
 ## Mandatory Rules
 
@@ -157,6 +160,7 @@ Scopes are enforced at warning level by commitlint — commits succeed but prefe
 | pnpm workspaces + setup        | [docs/development/setup.md](./docs/development/setup.md)                               |
 | Tech debt remediation plan     | [.scratchpad/plans/technical-debt-remediation-plan.md](./.scratchpad/plans/technical-debt-remediation-plan.md) |
 | Security proxy            | [src/presentation/web/proxy.ts](./src/presentation/web/proxy.ts)              |
+| Shipit-kit skills reference | [docs/development/shipit-kit-reference.md](./docs/development/shipit-kit-reference.md) |
 
 ## Naming Conventions (Post-Rename)
 
@@ -167,7 +171,7 @@ Scopes are enforced at warning level by commitlint — commits succeed but prefe
 - CSS classes: `shipit-ai-*` prefix — test IDs: `data-testid="shipit-ai-*"`
 - Container registry: `ghcr.io/jrmatherly/shipit`
 - E2E test target repo: `jrmatherly/shipped`
-- `/shipit-kit` skill name prefix: internal developer workflow, not user-facing
+- `/shipit-kit` skill name prefix — skill directories in `.claude/skills/shipit-kit-*/`
 
 ## Tech Debt
 

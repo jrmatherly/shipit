@@ -61,6 +61,20 @@ enum AgentType {
   Continue: "continue",
 
   /**
+   * GitHub Copilot CLI terminal agent.
+   * Supported — uses the `copilot` binary for CLI execution.
+   */
+  @doc("GitHub Copilot CLI by GitHub")
+  CopilotCli: "copilot-cli",
+
+  /**
+   * Atlassian Rovo Dev CLI agent.
+   * Supported — uses `acli rovodev run` for CLI execution with Atlassian integration.
+   */
+  @doc("Rovo Dev CLI by Atlassian")
+  RovoDev: "rovo-dev",
+
+  /**
    * Cursor AI coding agent.
    * Supported — uses the `agent` binary for CLI execution.
    */

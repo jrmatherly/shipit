@@ -10,15 +10,19 @@ import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-
  */
 const AGENT_TOOL_MAP: Record<string, string> = {
   'claude-code': 'claude-code',
+  'copilot-cli': 'copilot-cli',
   cursor: 'cursor-cli',
   'gemini-cli': 'gemini-cli',
+  'rovo-dev': 'rovo-dev',
 };
 
 /** CLI binary names matching the `binary` field in each tool JSON */
 const AGENT_BINARY_MAP: Record<string, string> = {
   'claude-code': 'claude',
+  'copilot-cli': 'copilot',
   cursor: 'cursor',
   'gemini-cli': 'gemini',
+  'rovo-dev': 'acli',
 };
 
 export interface AgentToolStatus {

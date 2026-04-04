@@ -21,8 +21,10 @@ export interface AgentModelGroup {
 const AGENT_LABELS: Record<string, string> = {
   'claude-code': 'Claude Code',
   'codex-cli': 'Codex CLI',
+  'copilot-cli': 'GitHub Copilot CLI',
   cursor: 'Cursor CLI',
   'gemini-cli': 'Gemini CLI',
+  'rovo-dev': 'Rovo Dev CLI',
   dev: 'Demo',
 };
 
@@ -30,8 +32,10 @@ const AGENT_LABELS: Record<string, string> = {
 const AGENT_ORDER: Record<string, number> = {
   'claude-code': 0,
   'codex-cli': 1,
-  cursor: 2,
-  'gemini-cli': 3,
+  'copilot-cli': 2,
+  cursor: 3,
+  'gemini-cli': 4,
+  'rovo-dev': 5,
   dev: 99,
 };
 
@@ -42,8 +46,10 @@ const AGENT_ORDER: Record<string, number> = {
 const AGENT_TOOL_IDS: Record<string, string> = {
   'claude-code': 'claude-code',
   'codex-cli': 'codex-cli',
+  'copilot-cli': 'copilot-cli',
   cursor: 'cursor-cli',
   'gemini-cli': 'gemini-cli',
+  'rovo-dev': 'rovo-dev',
 };
 
 export async function getAllAgentModels(): Promise<AgentModelGroup[]> {

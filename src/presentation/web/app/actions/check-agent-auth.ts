@@ -28,8 +28,10 @@ export interface AgentAuthStatus {
 const AGENT_LABELS: Record<string, string> = {
   'claude-code': 'Claude Code',
   'codex-cli': 'Codex CLI',
+  'copilot-cli': 'GitHub Copilot CLI',
   cursor: 'Cursor CLI',
   'gemini-cli': 'Gemini CLI',
+  'rovo-dev': 'Rovo Dev CLI',
   aider: 'Aider',
   continue: 'Continue',
   dev: 'Demo',
@@ -38,15 +40,19 @@ const AGENT_LABELS: Record<string, string> = {
 const AGENT_TOOL_MAP: Record<string, string> = {
   'claude-code': 'claude-code',
   'codex-cli': 'codex-cli',
+  'copilot-cli': 'copilot-cli',
   cursor: 'cursor-cli',
   'gemini-cli': 'gemini-cli',
+  'rovo-dev': 'rovo-dev',
 };
 
 const AGENT_BINARY_MAP: Record<string, string> = {
   'claude-code': 'claude',
   'codex-cli': 'codex',
+  'copilot-cli': 'copilot',
   cursor: 'cursor-agent',
   'gemini-cli': 'gemini',
+  'rovo-dev': 'acli',
 };
 
 /**
@@ -90,6 +96,20 @@ function tier1AuthCheck(agentType: string): Tier1Result {
       const accountsPath = join(home, '.gemini', 'google_accounts.json');
       return existsSync(accountsPath) ? 'file' : false;
     }
+    case 'copilot-cli': {
+      if (process.env['COPILOT_GITHUB_TOKEN']) return 'env-var';
+      if (process.env['GH_TOKEN']) return 'env-var';
+      if (process.env['GITHUB_TOKEN']) return 'env-var';
+      const configPath = process.env['COPILOT_HOME']
+        ? join(process.env['COPILOT_HOME'], 'config.json')
+        : join(home, '.copilot', 'config.json');
+      return existsSync(configPath) ? 'file' : false;
+    }
+    case 'rovo-dev': {
+      if (process.env['ATLASSIAN_API_TOKEN']) return 'env-var';
+      const acliDir = join(home, '.acli');
+      return existsSync(acliDir) ? 'file' : false;
+    }
     default:
       // dev, aider, continue — assume no auth needed
       return 'env-var';
@@ -118,6 +138,17 @@ function tier2AuthVerify(agentType: string, binaryName: string): Promise<boolean
         // Codex CLI has no `auth status` command — cannot verify via subprocess
         resolve(false);
         return;
+      case 'copilot-cli':
+        // No auth status command — trust tier 1
+        resolve(true);
+        return;
+      case 'rovo-dev': {
+        const rovoOpts = IS_WINDOWS ? { timeout: 5000, windowsHide: true } : { timeout: 5000 };
+        execFile('acli', ['rovodev', 'auth', 'status'], rovoOpts, (error) => {
+          resolve(!error);
+        });
+        return;
+      }
       default:
         // No tier 2 command available — trust tier 1
         resolve(true);

@@ -125,6 +125,12 @@ export function registerAgentsModule(container: DependencyContainer): void {
   container.register(`IAgentSessionRepository:${AgentType.CodexCli}`, {
     useFactory: () => new CodexCliSessionRepository(),
   });
+  container.register(`IAgentSessionRepository:${AgentType.CopilotCli}`, {
+    useFactory: () => new StubSessionRepository(AgentType.CopilotCli),
+  });
+  container.register(`IAgentSessionRepository:${AgentType.RovoDev}`, {
+    useFactory: () => new StubSessionRepository(AgentType.RovoDev),
+  });
 
   container.registerSingleton(AgentSessionRepositoryRegistry);
   container.registerSingleton(ListAgentSessionsUseCase);

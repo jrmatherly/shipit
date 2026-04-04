@@ -1,0 +1,31 @@
+{
+  "name": "Rovo Dev CLI",
+  "summary": "AI-powered coding agent from Atlassian",
+  "description": "Rovo Dev CLI is Atlassian's agentic AI coding assistant that runs in the terminal with deep Jira, Confluence, and Bitbucket integration via the Teamwork Graph.",
+  "tags": ["cli-agent"],
+  "author": "Atlassian",
+  "website": "https://www.atlassian.com/software/rovo",
+  "platforms": ["linux", "darwin", "win32"],
+  "iconUrl": "https://cdn.simpleicons.org/atlassian",
+  "binary": "acli",
+  "packageManager": "brew",
+  "commands": {
+    "linux": "curl -LO \"https://acli.atlassian.com/linux/latest/acli_linux_$(uname -m | sed 's/x86_64/amd64/' | sed 's/aarch64/arm64/')/acli\" && chmod +x ./acli && sudo mv ./acli /usr/local/bin/acli",
+    "darwin": "brew tap atlassian/homebrew-acli && brew install acli",
+    "win32": "powershell -Command \"Invoke-WebRequest -Uri https://acli.atlassian.com/windows/latest/acli_windows_amd64/acli.exe -OutFile acli.exe; Move-Item acli.exe $env:LOCALAPPDATA\\Programs\\acli\\acli.exe -Force\""
+  },
+  "timeout": 300000,
+  "documentationUrl": "https://support.atlassian.com/rovo/docs/install-and-run-rovo-dev-cli-on-your-device/",
+  "verifyCommand": "acli --version",
+  "autoInstall": true,
+  "openDirectory": "cd {dir} && exec acli rovodev run",
+  "spawnOptions": {
+    "shell": true,
+    "stdio": "inherit",
+    "detached": false
+  },
+  "terminalCommand": {
+    "linux": "x-terminal-emulator -e bash -c 'cd {dir} && exec acli rovodev run'",
+    "darwin": "open -a Terminal.app bash -c 'cd {dir} && exec acli rovodev run'"
+  }
+}

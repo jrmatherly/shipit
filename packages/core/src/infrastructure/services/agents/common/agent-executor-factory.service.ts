@@ -21,6 +21,8 @@ import { CursorExecutorService } from './executors/cursor-executor.service.js';
 import { DevAgentExecutorService } from './executors/dev-executor.service.js';
 import { GeminiCliExecutorService } from './executors/gemini-cli-executor.service.js';
 import { CodexCliExecutorService } from './executors/codex-cli-executor.service.js';
+import { CopilotCliExecutorService } from './executors/copilot-cli-executor.service.js';
+import { RovoDevExecutorService } from './executors/rovo-dev-executor.service.js';
 import type { SpawnFunction } from './types.js';
 
 /**
@@ -67,6 +69,12 @@ export class AgentExecutorFactory implements IAgentExecutorFactory {
       case 'codex-cli':
         executor = new CodexCliExecutorService(this.spawn, _authConfig);
         break;
+      case 'copilot-cli':
+        executor = new CopilotCliExecutorService(this.spawn);
+        break;
+      case 'rovo-dev':
+        executor = new RovoDevExecutorService(this.spawn);
+        break;
       default:
         throw new Error(
           `Unsupported agent type: ${agentType}. Supported: ${this.getSupportedAgents().join(', ')}`
@@ -89,6 +97,8 @@ export class AgentExecutorFactory implements IAgentExecutorFactory {
       'dev' as AgentType,
       'gemini-cli' as AgentType,
       'codex-cli' as AgentType,
+      'copilot-cli' as AgentType,
+      'rovo-dev' as AgentType,
     ];
   }
 
@@ -98,6 +108,8 @@ export class AgentExecutorFactory implements IAgentExecutorFactory {
       { agentType: 'gemini-cli' as AgentType, cmd: 'gemini', versionArgs: ['--version'] },
       { agentType: 'cursor' as AgentType, cmd: 'cursor', versionArgs: ['--version'] },
       { agentType: 'codex-cli' as AgentType, cmd: 'codex', versionArgs: ['--version'] },
+      { agentType: 'copilot-cli' as AgentType, cmd: 'copilot', versionArgs: ['--version'] },
+      { agentType: 'rovo-dev' as AgentType, cmd: 'acli', versionArgs: ['--version'] },
     ];
   }
 
@@ -118,6 +130,10 @@ export class AgentExecutorFactory implements IAgentExecutorFactory {
         return CURSOR_MODELS;
       case 'codex-cli':
         return CODEX_CLI_MODELS;
+      case 'copilot-cli':
+        return COPILOT_CLI_MODELS;
+      case 'rovo-dev':
+        return ROVO_DEV_MODELS;
       default:
         return [];
     }
@@ -188,4 +204,21 @@ const CODEX_CLI_MODELS: string[] = [
   'gpt-5-codex',
   'gpt-5-codex-mini',
   'gpt-5',
+];
+const COPILOT_CLI_MODELS: string[] = [
+  'claude-sonnet-4-5',
+  'claude-opus-4-5',
+  'gpt-5.3-codex',
+  'gpt-5.2-codex',
+  'claude-haiku-4-5',
+  'gemini-3-pro',
+];
+const ROVO_DEV_MODELS: string[] = [
+  'auto',
+  'claude-haiku-4-5',
+  'claude-sonnet-4-5',
+  'claude-opus-4-5',
+  'claude-opus-4-6',
+  'gpt-5.2',
+  'gpt-5.2-codex',
 ];

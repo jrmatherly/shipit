@@ -7,6 +7,8 @@ enum:
   - gemini-cli
   - aider
   - continue
+  - copilot-cli
+  - rovo-dev
   - cursor
   - dev
 description: AI coding agent tool selection

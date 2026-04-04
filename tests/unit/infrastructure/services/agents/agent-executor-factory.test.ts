@@ -168,8 +168,10 @@ describe('AgentExecutorFactory', () => {
       expect(supported).toContain('cursor');
       expect(supported).toContain('gemini-cli');
       expect(supported).toContain('codex-cli');
+      expect(supported).toContain('copilot-cli');
+      expect(supported).toContain('rovo-dev');
       expect(supported).toContain('dev');
-      expect(supported).toHaveLength(5);
+      expect(supported).toHaveLength(7);
     });
 
     it('should not include unsupported agents', () => {

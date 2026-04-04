@@ -1,0 +1,31 @@
+{
+  "name": "GitHub Copilot CLI",
+  "summary": "AI-powered coding agent from GitHub",
+  "description": "GitHub Copilot CLI is a full agentic coding assistant that brings AI-powered coding directly to your terminal with plan mode, autopilot, delegation, and MCP server support.",
+  "tags": ["cli-agent"],
+  "author": "GitHub",
+  "website": "https://github.com/features/copilot/cli",
+  "platforms": ["linux", "darwin", "win32"],
+  "iconUrl": "https://cdn.simpleicons.org/githubcopilot",
+  "binary": "copilot",
+  "packageManager": "npm",
+  "commands": {
+    "linux": "npm install -g @github/copilot",
+    "darwin": "brew install copilot-cli",
+    "win32": "winget install GitHub.Copilot"
+  },
+  "timeout": 300000,
+  "documentationUrl": "https://docs.github.com/en/copilot/how-tos/copilot-cli/cli-getting-started",
+  "verifyCommand": "copilot --version",
+  "autoInstall": true,
+  "openDirectory": "cd {dir} && exec copilot",
+  "spawnOptions": {
+    "shell": true,
+    "stdio": "inherit",
+    "detached": false
+  },
+  "terminalCommand": {
+    "linux": "x-terminal-emulator -e bash -c 'cd {dir} && exec copilot'",
+    "darwin": "open -a Terminal.app bash -c 'cd {dir} && exec copilot'"
+  }
+}

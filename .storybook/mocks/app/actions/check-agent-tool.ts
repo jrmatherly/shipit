@@ -3,11 +3,15 @@ export async function checkAgentTool(agentType: string) {
     'claude-code': 'claude-code',
     cursor: 'cursor-cli',
     'gemini-cli': 'gemini-cli',
+    'copilot-cli': 'copilot-cli',
+    'rovo-dev': 'rovo-dev',
   };
   const binaryMap: Record<string, string> = {
     'claude-code': 'claude',
     cursor: 'cursor',
     'gemini-cli': 'gemini',
+    'copilot-cli': 'copilot',
+    'rovo-dev': 'acli',
   };
   const toolId = toolMap[agentType] ?? null;
   const binaryName = binaryMap[agentType] ?? null;
@@ -27,7 +31,11 @@ export async function checkAgentTool(agentType: string) {
           ? 'Claude Code'
           : agentType === 'cursor'
             ? 'Cursor CLI'
-            : 'Gemini CLI',
+            : agentType === 'copilot-cli'
+              ? 'GitHub Copilot CLI'
+              : agentType === 'rovo-dev'
+                ? 'Rovo Dev CLI'
+                : 'Gemini CLI',
       summary: 'AI-powered coding agent',
       description: 'Mock tool for Storybook',
       tags: ['cli-agent'],
