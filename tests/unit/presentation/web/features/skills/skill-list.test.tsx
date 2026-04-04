@@ -20,7 +20,7 @@ function makeSkill(overrides: Partial<SkillData> = {}): SkillData {
 describe('SkillList', () => {
   it('renders category headings for groups with skills', () => {
     const skills = [
-      makeSkill({ name: 'shep-kit:plan', displayName: 'plan', category: 'Workflow' }),
+      makeSkill({ name: 'shipit-kit:plan', displayName: 'plan', category: 'Workflow' }),
       makeSkill({ name: 'shadcn-ui', displayName: 'shadcn-ui', category: 'Reference' }),
     ];
     render(<SkillList skills={skills} onSkillSelect={vi.fn()} />);
@@ -31,7 +31,7 @@ describe('SkillList', () => {
 
   it('does not render heading for empty categories', () => {
     const skills = [
-      makeSkill({ name: 'shep-kit:plan', displayName: 'plan', category: 'Workflow' }),
+      makeSkill({ name: 'shipit-kit:plan', displayName: 'plan', category: 'Workflow' }),
     ];
     render(<SkillList skills={skills} onSkillSelect={vi.fn()} />);
 
@@ -43,8 +43,8 @@ describe('SkillList', () => {
 
   it('shows skill count in category heading', () => {
     const skills = [
-      makeSkill({ name: 'shep-kit:plan', displayName: 'plan', category: 'Workflow' }),
-      makeSkill({ name: 'shep-kit:implement', displayName: 'implement', category: 'Workflow' }),
+      makeSkill({ name: 'shipit-kit:plan', displayName: 'plan', category: 'Workflow' }),
+      makeSkill({ name: 'shipit-kit:implement', displayName: 'implement', category: 'Workflow' }),
     ];
     render(<SkillList skills={skills} onSkillSelect={vi.fn()} />);
 
@@ -53,14 +53,14 @@ describe('SkillList', () => {
 
   it('renders correct number of SkillCard components', () => {
     const skills = [
-      makeSkill({ name: 'shep-kit:plan', displayName: 'plan', category: 'Workflow' }),
-      makeSkill({ name: 'shep-kit:implement', displayName: 'implement', category: 'Workflow' }),
+      makeSkill({ name: 'shipit-kit:plan', displayName: 'plan', category: 'Workflow' }),
+      makeSkill({ name: 'shipit-kit:implement', displayName: 'implement', category: 'Workflow' }),
       makeSkill({ name: 'shadcn-ui', displayName: 'shadcn-ui', category: 'Reference' }),
     ];
     render(<SkillList skills={skills} onSkillSelect={vi.fn()} />);
 
-    expect(screen.getByTestId('skill-card-shep-kit:plan')).toBeInTheDocument();
-    expect(screen.getByTestId('skill-card-shep-kit:implement')).toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-kit:plan')).toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-kit:implement')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-shadcn-ui')).toBeInTheDocument();
   });
 
@@ -80,7 +80,7 @@ describe('SkillList', () => {
       makeSkill({ name: 'ref-skill', displayName: 'ref-skill', category: 'Reference' }),
       makeSkill({ name: 'reviewer', displayName: 'reviewer', category: 'Analysis' }),
       makeSkill({ name: 'shipit-ai:ui', displayName: 'ui', category: 'Code Generation' }),
-      makeSkill({ name: 'shep-kit:plan', displayName: 'plan', category: 'Workflow' }),
+      makeSkill({ name: 'shipit-kit:plan', displayName: 'plan', category: 'Workflow' }),
     ];
     render(<SkillList skills={skills} onSkillSelect={vi.fn()} />);
 

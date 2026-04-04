@@ -17,7 +17,7 @@ status:
   notes: 'CI fully green. All checks pass including E2E CLI, Docker Build, and security scans.'
   currentTask: null
   lastUpdated: '2026-02-16T18:15:00Z'
-  lastUpdatedBy: 'shep-kit:commit-pr'
+  lastUpdatedBy: 'shipit-kit:commit-pr'
 
 prUrl: 'https://github.com/jrmatherly/shipit/pull/49'
 
@@ -35,23 +35,23 @@ tasks:
 checkpoints:
   - phase: 'feature-created'
     completedAt: '2026-02-12T20:31:19Z'
-    completedBy: 'shep-kit:new-feature'
+    completedBy: 'shipit-kit:new-feature'
   - phase: 'research-complete'
     completedAt: '2026-02-12T22:45:00Z'
-    completedBy: 'shep-kit:research'
+    completedBy: 'shipit-kit:research'
   - phase: 'plan-complete'
     completedAt: '2026-02-12T23:30:00Z'
-    completedBy: 'shep-kit:plan'
+    completedBy: 'shipit-kit:plan'
   - phase: 'implementation-reopened'
     completedAt: '2026-02-15T22:00:00Z'
     completedBy: 'manual'
     notes: 'Reopened tasks 8, 10 — direct SQL in web layer replaced with use cases via DI bridge'
   - phase: 'implementation-complete'
     completedAt: '2026-02-16T05:22:00Z'
-    completedBy: 'shep-kit:implement'
+    completedBy: 'shipit-kit:implement'
   - phase: 'pr-created'
     completedAt: '2026-02-16T05:25:00Z'
-    completedBy: 'shep-kit:commit-pr'
+    completedBy: 'shipit-kit:commit-pr'
   - phase: 'specs-reworked'
     completedAt: '2026-02-16T12:00:00Z'
     completedBy: 'manual'
@@ -70,7 +70,7 @@ checkpoints:
       final validation. Size estimate upgraded to XL.
   - phase: 'core-extraction-complete'
     completedAt: '2026-02-16T22:35:00Z'
-    completedBy: 'shep-kit:implement'
+    completedBy: 'shipit-kit:implement'
     notes: >
       All 8 extraction tasks (15-22) completed. @shipit-ai/core workspace package created with
       domain, application, and infrastructure layers. Control center now derives state from
@@ -78,7 +78,7 @@ checkpoints:
       to use ListFeaturesUseCase. 841 unit tests + 117 integration tests pass. All typechecks clean.
   - phase: 'ci-green'
     completedAt: '2026-02-16T18:15:00Z'
-    completedBy: 'shep-kit:commit-pr'
+    completedBy: 'shipit-kit:commit-pr'
     notes: >
       All CI checks pass: Type Check, Unit Tests, E2E (CLI/TUI/Web), Lint & Format,
       Docker Build, Trivy (deps/container), Gitleaks, Semgrep, Hadolint. Fixed: TypeSpec
@@ -86,7 +86,7 @@ checkpoints:
       packages/core, web-server/version-service path resolution, cross-platform test.
   - phase: 'review-watching'
     completedAt: '2026-02-16T18:15:00Z'
-    completedBy: 'shep-kit:commit-pr'
+    completedBy: 'shipit-kit:commit-pr'
     notes: 'No actionable review comments. Human comments are FYI/future considerations.'
 
 errors:

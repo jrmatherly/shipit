@@ -29,7 +29,7 @@
  *
  * Design decisions:
  * - The CLAUDECODE env var is stripped to prevent nested-session detection
- *   errors when shep itself is running inside a Claude Code session.
+ *   errors when shipit-ai itself is running inside a Claude Code session.
  * - SDK message types are mapped to our own InteractiveAgentEvent to
  *   keep the application layer decoupled from SDK specifics.
  */

@@ -14,7 +14,7 @@ status:
     percentage: 100
   currentTask: null
   lastUpdated: '2026-02-24T20:40:00.000Z'
-  lastUpdatedBy: shep-kit:commit-pr
+  lastUpdatedBy: shipit-kit:commit-pr
   completedPhases:
     - analyze
     - requirements
@@ -42,13 +42,13 @@ checkpoints:
     completedBy: feature-agent
   - phase: pr-created
     completedAt: '2026-02-24T16:50:00.000Z'
-    completedBy: shep-kit:commit-pr
+    completedBy: shipit-kit:commit-pr
   - phase: review-fixes-applied-1
     completedAt: '2026-02-24T19:10:00.000Z'
-    completedBy: shep-kit:commit-pr
+    completedBy: shipit-kit:commit-pr
   - phase: review-fixes-applied-2
     completedAt: '2026-02-24T20:40:00.000Z'
-    completedBy: shep-kit:commit-pr
+    completedBy: shipit-kit:commit-pr
 errors:
   current: null
   history: []

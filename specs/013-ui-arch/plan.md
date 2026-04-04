@@ -256,4 +256,4 @@ import path changes and restoring barrel exports.
 
 ---
 
-_Updated by `/shep-kit:plan` — see tasks.md for detailed breakdown_
+_Updated by `/shipit-kit:plan` — see tasks.md for detailed breakdown_

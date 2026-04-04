@@ -62,8 +62,8 @@ export default {
       1, // Warning, not error
       'always',
       [
-        'specs', // Feature specifications (shep-kit)
-        'shep-kit', // Shipit-ai-kit skills and workflow
+        'specs', // Feature specifications (shipit-kit)
+        'shipit-kit', // Shipit-ai-kit skills and workflow
         'cli', // CLI commands and interface
         'tui', // Terminal UI
         'web', // Web UI

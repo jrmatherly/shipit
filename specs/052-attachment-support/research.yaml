@@ -705,4 +705,4 @@ content: |
   10. Unit tests: Vitest for file validation, dedup, prompt composition, CLI parsing
   11. E2E test: Playwright for full web drag-drop -> create -> agent prompt flow
 
-  _Research complete — proceed with /shep-kit:plan_
+  _Research complete — proceed with /shipit-kit:plan_

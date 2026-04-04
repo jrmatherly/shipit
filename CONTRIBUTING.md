@@ -49,12 +49,12 @@ shipit-ai --help
 
 ### Starting a Feature (MANDATORY)
 
-**All feature work MUST begin with `/shep-kit:new-feature`.** This ensures consistent specifications across all contributions.
+**All feature work MUST begin with `/shipit-kit:new-feature`.** This ensures consistent specifications across all contributions.
 
 See [Spec-Driven Workflow](./docs/development/spec-driven-workflow.md) for complete details.
 
 ```
-/shep-kit:new-feature → /shep-kit:research → /shep-kit:plan → implement
+/shipit-kit:new-feature → /shipit-kit:research → /shipit-kit:plan → implement
 ```
 
 The workflow creates:

@@ -14,7 +14,7 @@ status:
     percentage: 100
   currentTask: null
   lastUpdated: '2026-02-23T14:10:00Z'
-  lastUpdatedBy: 'shep-kit:commit-pr'
+  lastUpdatedBy: 'shipit-kit:commit-pr'
 
 prUrl: 'https://github.com/jrmatherly/shipit/pull/92'
 
@@ -34,19 +34,19 @@ tasks:
 checkpoints:
   - phase: 'feature-created'
     completedAt: '2026-02-23T11:18:18Z'
-    completedBy: 'shep-kit:new-feature-fast'
+    completedBy: 'shipit-kit:new-feature-fast'
   - phase: 'research-complete'
     completedAt: '2026-02-23T11:25:00Z'
-    completedBy: 'shep-kit:new-feature-fast'
+    completedBy: 'shipit-kit:new-feature-fast'
   - phase: 'plan-complete'
     completedAt: '2026-02-23T11:30:00Z'
-    completedBy: 'shep-kit:new-feature-fast'
+    completedBy: 'shipit-kit:new-feature-fast'
   - phase: 'implementation-complete'
     completedAt: '2026-02-23T14:08:00Z'
-    completedBy: 'shep-kit:implement'
+    completedBy: 'shipit-kit:implement'
   - phase: 'pr-created'
     completedAt: '2026-02-23T14:10:00Z'
-    completedBy: 'shep-kit:commit-pr'
+    completedBy: 'shipit-kit:commit-pr'
 
 errors:
   current: null

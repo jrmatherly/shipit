@@ -8,9 +8,9 @@ Guidance for Claude Code working in this repository.
 
 ## Spec Workflow
 
-**All feature work MUST begin with `/shep-kit:new-feature`.** See [spec-driven-workflow](./docs/development/spec-driven-workflow.md).
+**All feature work MUST begin with `/shipit-kit:new-feature`.** See [spec-driven-workflow](./docs/development/spec-driven-workflow.md).
 
-`/shep-kit:new-feature → /shep-kit:research → /shep-kit:plan → /shep-kit:implement → /shep-kit:commit-pr`
+`/shipit-kit:new-feature → /shipit-kit:research → /shipit-kit:plan → /shipit-kit:implement → /shipit-kit:commit-pr`
 
 Specs live in `specs/NNN-feature-name/`. **Edit YAML only — Markdown is auto-generated.**
 
@@ -125,7 +125,7 @@ CLAUDE.md is the canonical reference. When updating commands, paths, scopes, or 
 - **MANDATORY — TypeSpec-first**: Domain models defined in `tsp/`. Run `pnpm tsp:codegen` to generate `packages/core/src/domain/generated/output.ts`. Never edit generated files. Emitter patched via `patches/@typespec-tools__emitter-typescript@0.3.0.patch` to map `utcDateTime` → `Date`. See [typespec-guide](./docs/development/typespec-guide.md).
 - **MANDATORY — Agent resolution**: No component may hardcode an agent type. All resolution flows through `IAgentExecutorProvider`. See [AGENTS.md](./AGENTS.md).
 - **MANDATORY — Storybook stories**: Every web UI component MUST have a colocated `.stories.tsx` file. Not yet enforced by pre-commit hooks — self-enforce.
-- **MANDATORY — Spec-driven**: All features start with `/shep-kit:new-feature`. No implementation without a spec.
+- **MANDATORY — Spec-driven**: All features start with `/shipit-kit:new-feature`. No implementation without a spec.
 - **MANDATORY — Own every failure**: You are the ONLY developer. Every test failure, CI failure, and security scan failure is YOUR responsibility. NEVER use the words "unrelated", "pre-existing", or "not our changes". See [integrity rules](./.claude/rules/integrity.md).
 
 ## Commit Format
@@ -133,7 +133,7 @@ CLAUDE.md is the canonical reference. When updating commands, paths, scopes, or 
 [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>): <subject>`
 
 | Types | feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert |
-| Scopes (recommended) | specs, shep-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
+| Scopes (recommended) | specs, shipit-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
 
 Scopes are enforced at warning level by commitlint — commits succeed but prefer using listed scopes.
 
@@ -167,7 +167,7 @@ Scopes are enforced at warning level by commitlint — commits succeed but prefe
 - CSS classes: `shipit-ai-*` prefix — test IDs: `data-testid="shipit-ai-*"`
 - Container registry: `ghcr.io/jrmatherly/shipit`
 - E2E test target repo: `jrmatherly/shipped`
-- `/shep-kit` skill names: **kept as-is** (internal developer workflow, not user-facing)
+- `/shipit-kit` skill name prefix: internal developer workflow, not user-facing
 
 ## Tech Debt
 

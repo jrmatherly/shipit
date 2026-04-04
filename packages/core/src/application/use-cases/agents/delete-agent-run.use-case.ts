@@ -25,7 +25,7 @@ export class DeleteAgentRunUseCase {
     if (run.status === AgentRunStatus.running) {
       return {
         deleted: false,
-        reason: `Cannot delete a running agent. Stop it first with: shep agent stop ${id.substring(0, 8)}`,
+        reason: `Cannot delete a running agent. Stop it first with: shipit-ai agent stop ${id.substring(0, 8)}`,
       };
     }
 

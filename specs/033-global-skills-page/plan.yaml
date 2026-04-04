@@ -149,7 +149,7 @@ content: |
   }
 
   interface SkillData {
-    name: string;           // Full skill name (e.g., 'shep-kit:implement')
+    name: string;           // Full skill name (e.g., 'shipit-kit:implement')
     displayName: string;    // Prefix-stripped (e.g., 'implement')
     description: string;
     context?: string;       // e.g., 'fork'
@@ -207,7 +207,7 @@ content: |
   ### 4. Category Derivation: Ordered Rules Array
 
   A pure function `deriveCategory(name: string): SkillCategory` with rules:
-  1. Name starts with `shep-kit:` → **Workflow** (covers: implement, commit-pr, merged,
+  1. Name starts with `shipit-kit:` → **Workflow** (covers: implement, commit-pr, merged,
      new-feature, new-feature-fast, parallel-task, plan, research)
   2. Name starts with `shep:` → **Code Generation** (covers: ui-component)
   3. Name contains `review`, `validate`, or `cross-validate` → **Analysis** (covers:
@@ -219,9 +219,9 @@ content: |
 
   ### 5. Display Name Formatting
 
-  Strip `shep-kit:` and `shep:` prefixes for the display title. Show full name as a
+  Strip `shipit-kit:` and `shep:` prefixes for the display title. Show full name as a
   muted subtitle below the title. This produces cleaner card titles (e.g., "implement"
-  instead of "shep-kit:implement") while preserving the full invocation name.
+  instead of "shipit-kit:implement") while preserving the full invocation name.
 
   ### 6. process.cwd() for Project Root
 

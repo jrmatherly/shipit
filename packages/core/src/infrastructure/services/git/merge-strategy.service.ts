@@ -100,7 +100,7 @@ export class MergeStrategyService implements IMergeStrategyService {
       if (status.trim().length > 0) {
         // Write commit message to a temp file to avoid shell splitting on Windows
         // (DI-injected execFile uses shell: true on Windows, which splits on spaces)
-        const msgFile = join(tmpdir(), `shep-merge-msg-${Date.now()}.txt`);
+        const msgFile = join(tmpdir(), `shipit-ai-merge-msg-${Date.now()}.txt`);
         try {
           writeFileSync(msgFile, commitMessage, 'utf8');
           await this.execFile('git', ['commit', '--file', msgFile], { cwd });

@@ -14,7 +14,7 @@ status:
     percentage: 100
   currentTask: null
   lastUpdated: '2026-03-23T18:00:00Z'
-  lastUpdatedBy: 'shep-kit:merged'
+  lastUpdatedBy: 'shipit-kit:merged'
 
 mergedAt: '2026-03-23T18:00:00Z'
 
@@ -31,16 +31,16 @@ tasks:
 checkpoints:
   - phase: 'feature-created'
     completedAt: '2026-03-23T14:30:00Z'
-    completedBy: 'shep-kit:new-feature-fast'
+    completedBy: 'shipit-kit:new-feature-fast'
   - phase: 'research-complete'
     completedAt: '2026-03-23T14:30:00Z'
-    completedBy: 'shep-kit:new-feature-fast'
+    completedBy: 'shipit-kit:new-feature-fast'
   - phase: 'plan-complete'
     completedAt: '2026-03-23T14:30:00Z'
-    completedBy: 'shep-kit:new-feature-fast'
+    completedBy: 'shipit-kit:new-feature-fast'
   - phase: 'feature-merged'
     completedAt: '2026-03-23T18:00:00Z'
-    completedBy: 'shep-kit:merged'
+    completedBy: 'shipit-kit:merged'
 
 errors:
   current: null

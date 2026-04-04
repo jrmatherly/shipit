@@ -156,7 +156,7 @@ decisions:
       rule wins, with a "Reference" fallback. This is trivially testable (pure input→output),
       satisfies NFR-8 (adding a category = adding one array entry), and keeps the logic in a
       single location (lib/skills.ts or a dedicated constants file). The categories from the spec:
-      Workflow (shep-kit:*), Code Generation (shep:*), Analysis (*review*, *validate*,
+      Workflow (shipit-kit:*), Code Generation (shep:*), Analysis (*review*, *validate*,
       *cross-validate*), Reference (fallback).
 
   - title: 'Component Architecture and File Organization'
@@ -197,16 +197,16 @@ decisions:
     chosen: 'Strip prefix for display title, show full name as subtitle/badge'
     rejected:
       - >
-        Show full name only — Names like "shep-kit:new-feature-fast" are long and the prefix is
+        Show full name only — Names like "shipit-kit:new-feature-fast" are long and the prefix is
         noise when skills are already grouped by category (which derives from the prefix). The
         prefix is redundant visual information within a category group.
       - >
         Strip prefix and hide original — Loses information. Users who know skills by their full
-        invocation name (e.g., /shep-kit:implement) need to see the full name somewhere.
+        invocation name (e.g., /shipit-kit:implement) need to see the full name somewhere.
     rationale: >
-      The spec (FR-8) requires: "Skill name as the card title (formatted: strip shep-kit: or
+      The spec (FR-8) requires: "Skill name as the card title (formatted: strip shipit-kit: or
       shep: prefix for display, show full name as subtitle)". This produces cleaner card titles
-      (e.g., "implement" instead of "shep-kit:implement") while preserving the full invocation
+      (e.g., "implement" instead of "shipit-kit:implement") while preserving the full invocation
       name as a secondary label. The stripping logic is a simple string operation applied at
       render time in the SkillCard component.
 
@@ -469,7 +469,7 @@ content: |
   }
 
   interface SkillData {
-    name: string;           // Full skill name from frontmatter (e.g., 'shep-kit:implement')
+    name: string;           // Full skill name from frontmatter (e.g., 'shipit-kit:implement')
     displayName: string;    // Prefix-stripped name (e.g., 'implement')
     description: string;
     context?: string;       // e.g., 'fork'

@@ -32,7 +32,7 @@ Think about it: if the change affects what users see or experience, it must reac
 
 ## Allowed <scope>
 
-specs | shep-kit | cli | tui | web | api | domain | agents | deployment | tsp | deps | config | dx | release | ci
+specs | shipit-kit | cli | tui | web | api | domain | agents | deployment | tsp | deps | config | dx | release | ci
 
 ## <subject> rules
 
@@ -47,7 +47,7 @@ specs | shep-kit | cli | tui | web | api | domain | agents | deployment | tsp | 
 - MUST be <= 100 characters total
 - MUST match this regex exactly:
 
-^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)\((specs|shep-kit|cli|tui|web|api|domain|agents|deployment|tsp|deps|config|dx|release|ci)\): [a-z0-9][a-z0-9\- ]{0,71}$
+^(feat|fix|docs|style|refactor|perf|test|build|ci|chore|revert)\((specs|shipit-kit|cli|tui|web|api|domain|agents|deployment|tsp|deps|config|dx|release|ci)\): [a-z0-9][a-z0-9\- ]{0,71}$
 
 ## Body / Footer (optional)
 

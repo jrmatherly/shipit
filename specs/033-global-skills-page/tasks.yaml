@@ -22,22 +22,22 @@ tasks:
       Create lib/skills.ts with TypeScript type definitions (SkillData, SkillCategory,
       SkillSource, SkillResource) and the pure deriveCategory() function. The category
       rules are defined as an ordered array constant. Also implement the display name
-      formatter (strip shep-kit: and shep: prefixes). Start with tests for deriveCategory
+      formatter (strip shipit-kit: and shep: prefixes). Start with tests for deriveCategory
       covering all 20 known skills (16 project + 4 global) plus edge cases.
     state: Todo
     dependencies: []
     acceptanceCriteria:
       - 'SkillData, SkillCategory, SkillSource, SkillResource types are exported from lib/skills.ts'
-      - 'deriveCategory() returns Workflow for shep-kit:* names'
+      - 'deriveCategory() returns Workflow for shipit-kit:* names'
       - 'deriveCategory() returns Code Generation for shep:* names'
       - 'deriveCategory() returns Analysis for names containing review, validate, or cross-validate'
       - 'deriveCategory() returns Reference for all other names'
-      - 'getDisplayName() strips shep-kit: and shep: prefixes, returns original name if no prefix'
+      - 'getDisplayName() strips shipit-kit: and shep: prefixes, returns original name if no prefix'
       - 'Unit tests pass for all category rules and display name formatting'
     tdd:
       red:
-        - 'Write tests for deriveCategory() with inputs: shep-kit:implement → Workflow, shep:ui-component → Code Generation, architecture-reviewer → Analysis, cross-validate-artifacts → Analysis, shadcn-ui → Reference, mermaid-diagrams → Reference'
-        - 'Write tests for getDisplayName(): shep-kit:implement → implement, shep:ui-component → ui-component, shadcn-ui → shadcn-ui'
+        - 'Write tests for deriveCategory() with inputs: shipit-kit:implement → Workflow, shipit-ai:ui-component → Code Generation, architecture-reviewer → Analysis, cross-validate-artifacts → Analysis, shadcn-ui → Reference, mermaid-diagrams → Reference'
+        - 'Write tests for getDisplayName(): shipit-kit:implement → implement, shipit-ai:ui-component → ui-component, shadcn-ui → shadcn-ui'
       green:
         - 'Implement deriveCategory() with CATEGORY_RULES ordered array and first-match logic'
         - 'Implement getDisplayName() with prefix stripping'

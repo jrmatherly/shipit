@@ -41,7 +41,7 @@ checkpoints:
     completedBy: feature-agent
   - phase: plan-complete
     completedAt: '2026-03-09T14:00:00Z'
-    completedBy: shep-kit:plan
+    completedBy: shipit-kit:plan
 errors:
   current: null
   history: []

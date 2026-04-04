@@ -1,6 +1,6 @@
-# Research: shep-kit
+# Research: shipit-kit
 
-> Technical analysis for 001-shep-kit
+> Technical analysis for 001-shipit-kit
 
 ## Status
 

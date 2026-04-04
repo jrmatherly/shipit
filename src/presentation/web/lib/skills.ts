@@ -28,7 +28,7 @@ export interface SkillData {
 // ── Category Derivation ──────────────────────────────────────────────────────
 
 const CATEGORY_RULES: { test: (name: string) => boolean; category: SkillCategory }[] = [
-  { test: (name) => name.startsWith('shep-kit:'), category: 'Workflow' },
+  { test: (name) => name.startsWith('shipit-kit:'), category: 'Workflow' },
   { test: (name) => name.startsWith('shipit-ai:'), category: 'Code Generation' },
   { test: (name) => /(?:review|validate|cross-validate)/.test(name), category: 'Analysis' },
 ];
@@ -42,7 +42,7 @@ export function deriveCategory(name: string): SkillCategory {
 
 // ── Display Name ─────────────────────────────────────────────────────────────
 
-const DISPLAY_NAME_PREFIXES = ['shep-kit:', 'shipit-ai:'];
+const DISPLAY_NAME_PREFIXES = ['shipit-kit:', 'shipit-ai:'];
 
 export function getDisplayName(name: string): string {
   for (const prefix of DISPLAY_NAME_PREFIXES) {

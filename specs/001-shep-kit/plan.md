@@ -1,6 +1,6 @@
-# Plan: shep-kit
+# Plan: shipit-kit
 
-> Implementation plan for 001-shep-kit
+> Implementation plan for 001-shipit-kit
 
 ## Status
 
@@ -11,7 +11,7 @@
 
 ```
 .claude/skills/
-├── shep-kit:new-feature/
+├── shipit-kit:new-feature/
 │   ├── SKILL.md                    # Main instructions
 │   ├── templates/
 │   │   ├── spec.md                 # Spec template with {{PLACEHOLDERS}}
@@ -25,14 +25,14 @@
 │   └── scripts/
 │       └── init-feature.sh         # Scaffolds spec directory
 │
-├── shep-kit:research/
+├── shipit-kit:research/
 │   ├── SKILL.md
 │   ├── templates/
 │   │   └── research.md
 │   └── examples/
 │       └── sample-research.md
 │
-└── shep-kit:plan/
+└── shipit-kit:plan/
     ├── SKILL.md
     ├── templates/
     │   ├── plan.md
@@ -63,9 +63,9 @@ docs/development/
 
 ### Phase 2: Skills
 
-4. Write `/shep-kit:new-feature` SKILL.md
-5. Write `/shep-kit:research` SKILL.md
-6. Write `/shep-kit:plan` SKILL.md
+4. Write `/shipit-kit:new-feature` SKILL.md
+5. Write `/shipit-kit:research` SKILL.md
+6. Write `/shipit-kit:plan` SKILL.md
 
 ### Phase 3: Templates
 
@@ -83,7 +83,7 @@ docs/development/
 
 ## Risk Mitigation
 
-- Bootstrap using our own spec (001-shep-kit) to validate design
+- Bootstrap using our own spec (001-shipit-kit) to validate design
 - Keep skills minimal, iterate based on usage
 
 ---

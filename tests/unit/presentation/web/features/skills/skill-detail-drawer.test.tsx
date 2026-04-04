@@ -6,7 +6,7 @@ import type { SkillData } from '@/lib/skills';
 
 function makeSkill(overrides: Partial<SkillData> = {}): SkillData {
   return {
-    name: 'shep-kit:implement',
+    name: 'shipit-kit:implement',
     displayName: 'implement',
     description: 'Validate specs and autonomously execute implementation tasks',
     category: 'Workflow',
@@ -25,7 +25,7 @@ describe('SkillDetailDrawer', () => {
 
   it('renders full skill name as sheet description', () => {
     render(<SkillDetailDrawer skill={makeSkill()} onClose={vi.fn()} />);
-    expect(screen.getByText('shep-kit:implement')).toBeInTheDocument();
+    expect(screen.getByText('shipit-kit:implement')).toBeInTheDocument();
   });
 
   it('renders skill description', () => {

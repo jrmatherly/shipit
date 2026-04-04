@@ -3,19 +3,19 @@
 Every feature begins with a specification before any code is written.
 
 ```
-/shep-kit:new-feature → /shep-kit:research → /shep-kit:plan → /shep-kit:implement → /shep-kit:commit-pr → /shep-kit:merged
+/shipit-kit:new-feature → /shipit-kit:research → /shipit-kit:plan → /shipit-kit:implement → /shipit-kit:commit-pr → /shipit-kit:merged
 ```
 
 ## Quick Reference
 
 | Command                 | Purpose                   | Output                                        |
 | ----------------------- | ------------------------- | --------------------------------------------- |
-| `/shep-kit:new-feature` | Start new feature         | Branch + `spec.yaml`                          |
-| `/shep-kit:research`    | Technical analysis        | `research.yaml`                               |
-| `/shep-kit:plan`        | Implementation plan       | `plan.yaml` + `tasks.yaml`                    |
-| `/shep-kit:implement`   | Autonomous implementation | Code + tests + updated `feature.yaml`         |
-| `/shep-kit:commit-pr`   | Commit, push, PR, CI      | Pull request (watches CI, fixes failures)     |
-| `/shep-kit:merged`      | Post-merge cleanup        | Clean workspace                               |
+| `/shipit-kit:new-feature` | Start new feature         | Branch + `spec.yaml`                          |
+| `/shipit-kit:research`    | Technical analysis        | `research.yaml`                               |
+| `/shipit-kit:plan`        | Implementation plan       | `plan.yaml` + `tasks.yaml`                    |
+| `/shipit-kit:implement`   | Autonomous implementation | Code + tests + updated `feature.yaml`         |
+| `/shipit-kit:commit-pr`   | Commit, push, PR, CI      | Pull request (watches CI, fixes failures)     |
+| `/shipit-kit:merged`      | Post-merge cleanup        | Clean workspace                               |
 
 ## Spec Directory
 
@@ -265,7 +265,7 @@ tasks:
 
 ## Rules
 
-- Start every feature with `/shep-kit:new-feature`
+- Start every feature with `/shipit-kit:new-feature`
 - Tests before implementation (TDD — no exceptions)
 - Run `pnpm spec:validate` before implementing
 - Keep specs in sync with implementation

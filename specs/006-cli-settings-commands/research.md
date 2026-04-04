@@ -238,4 +238,4 @@ All questions resolved.
 
 ---
 
-_Updated by `/shep-kit:research` — proceed with `/shep-kit:plan`_
+_Updated by `/shipit-kit:research` — proceed with `/shipit-kit:plan`_

@@ -2315,7 +2315,7 @@ export type AgentSession = BaseEntity & {
    */
   preview?: string;
   /**
-   * Conversation messages — populated only in the detail view (shep session show)
+   * Conversation messages — populated only in the detail view (shipit-ai session show)
    */
   messages?: AgentSessionMessage[];
   /**

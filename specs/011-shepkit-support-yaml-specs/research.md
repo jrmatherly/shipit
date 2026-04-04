@@ -95,7 +95,7 @@ This eliminates the need for Handlebars or any template engine. The generated `.
 2. Validate against the generated TypeScript types (compile-time safety)
 3. Run semantic checks (open questions resolved, task dependencies valid, etc.)
 
-This replaces the 50+ grep/awk validation rules in `.claude/skills/shep-kit:implement/validation/` with testable, typed Node.js code. No Zod needed since TypeSpec already generates the type definitions.
+This replaces the 50+ grep/awk validation rules in `.claude/skills/shipit-kit:implement/validation/` with testable, typed Node.js code. No Zod needed since TypeSpec already generates the type definitions.
 
 ### 6. Skill Instruction Updates — Direct YAML Reading
 
@@ -233,7 +233,7 @@ phase: Research
 sizeEstimate: L
 
 relatedFeatures:
-  - 001-shep-kit
+  - 001-shipit-kit
 
 technologies:
   - TypeSpec
@@ -249,7 +249,7 @@ content: |
 
   ## Success Criteria
 
-  - All shep-kit skills can read/write specs in YAML format
+  - All shipit-kit skills can read/write specs in YAML format
   - Markdown files are auto-generated from YAML content field
   ...
 
@@ -257,7 +257,7 @@ content: |
 
   | Area | Impact | Reasoning |
   | ---- | ------ | --------- |
-  | `.claude/skills/shep-kit:*/` | High | All skills need updated parsing |
+  | `.claude/skills/shipit-kit:*/` | High | All skills need updated parsing |
   ...
 ```
 
@@ -279,7 +279,7 @@ The current spec-driven workflow uses Markdown files as the source of truth...
 
 ## Success Criteria
 
-- All shep-kit skills can read/write specs in YAML format
+- All shipit-kit skills can read/write specs in YAML format
 - Markdown files are auto-generated from YAML content field
   ...
 ```
@@ -317,13 +317,13 @@ No performance implications identified. Spec parsing and Markdown generation are
 
 | Skill                    | Current Parsing                        | Migration Effort                           |
 | ------------------------ | -------------------------------------- | ------------------------------------------ |
-| `shep-kit:new-feature`   | Directory listing only                 | Low — update templates to YAML             |
-| `shep-kit:research`      | grep/awk for Open Questions gate check | Low — read `spec.yaml` openQuestions field |
-| `shep-kit:plan`          | grep/awk for gate check + task count   | Low — read YAML arrays                     |
-| `shep-kit:implement`     | 50+ grep/awk validation rules          | High — replace with `pnpm spec:validate`   |
-| `shep-kit:commit-pr`     | Reads feature.yaml only                | None — already YAML                        |
-| `shep-kit:parallel-task` | Uses init-feature.sh                   | Low — update script                        |
-| `shep-kit:merged`        | Reads feature.yaml only                | None — already YAML                        |
+| `shipit-kit:new-feature`   | Directory listing only                 | Low — update templates to YAML             |
+| `shipit-kit:research`      | grep/awk for Open Questions gate check | Low — read `spec.yaml` openQuestions field |
+| `shipit-kit:plan`          | grep/awk for gate check + task count   | Low — read YAML arrays                     |
+| `shipit-kit:implement`     | 50+ grep/awk validation rules          | High — replace with `pnpm spec:validate`   |
+| `shipit-kit:commit-pr`     | Reads feature.yaml only                | None — already YAML                        |
+| `shipit-kit:parallel-task` | Uses init-feature.sh                   | Low — update script                        |
+| `shipit-kit:merged`        | Reads feature.yaml only                | None — already YAML                        |
 
 ### Current patterns being replaced
 
@@ -342,4 +342,4 @@ All questions resolved.
 
 ---
 
-_Updated by `/shep-kit:research` — proceed with `/shep-kit:plan`_
+_Updated by `/shipit-kit:research` — proceed with `/shipit-kit:plan`_

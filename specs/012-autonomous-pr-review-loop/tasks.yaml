@@ -8,7 +8,7 @@ updatedAt: '2026-02-10'
 
 # Relationships
 relatedFeatures:
-  - '001-shep-kit'
+  - '001-shipit-kit'
   - '002-semantic-release-cicd'
 technologies:
   - GitHub CLI (gh api)
@@ -99,7 +99,7 @@ tasks:
     description: >
       Add review-watching and review-fixing phases to the feature-yaml-protocol.md
       documentation. Document the new review loop checkpoints and the reviewLoop
-      field schema. Update the /shep-kit:commit-pr section with review loop behavior.
+      field schema. Update the /shipit-kit:commit-pr section with review loop behavior.
     state: Todo
     dependencies:
       - task-3
@@ -107,7 +107,7 @@ tasks:
       - review-watching and review-fixing phases added to Phases by Lifecycle table
       - Review loop checkpoints documented (review-loop-started, review-fixes-applied-N, etc.)
       - reviewLoop field schema documented (iteration, maxIterations, commentsAddressed, etc.)
-      - /shep-kit:commit-pr section updated with review loop state transitions
+      - /shipit-kit:commit-pr section updated with review loop state transitions
     tdd: null # No TDD — documentation
     estimatedEffort: S
 

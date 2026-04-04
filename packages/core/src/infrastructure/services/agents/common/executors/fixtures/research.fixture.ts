@@ -63,7 +63,7 @@ decisions:
   - title: 'Persistence Layer for Theme Preference'
     chosen: >
       localStorage Web API. Read on ThemeProvider mount to restore the preference;
-      write on every toggleTheme() call. Key: shep-theme, values: light or dark.
+      write on every toggleTheme() call. Key: shipit-ai-theme, values: light or dark.
     rejected:
       - >
         SQLite settings via backend API: requires a new settings field, API endpoint,
@@ -103,7 +103,7 @@ content: |
 
   ### 3. Persistence Layer
 
-  **Chosen:** localStorage (key: shep-theme, values: light | dark)
+  **Chosen:** localStorage (key: shipit-ai-theme, values: light | dark)
 
   **Rejected:**
   - SQLite settings via API — out of scope, requires migration

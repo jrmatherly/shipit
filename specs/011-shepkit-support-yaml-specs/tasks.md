@@ -18,8 +18,8 @@
 
 ### Phase 2: YAML Templates & Scaffolding (Foundational - No Tests)
 
-- [ ] Create YAML template files in `.claude/skills/shep-kit:new-feature/templates/`: `spec.yaml`, `research.yaml`, `plan.yaml`, `tasks.yaml` — matching TypeSpec model shapes with `{{PLACEHOLDER}}` substitution variables
-- [ ] Update `.claude/skills/shep-kit:new-feature/scripts/init-feature.sh` to scaffold YAML files alongside Markdown, calling `spec-generate-md` for initial Markdown generation
+- [ ] Create YAML template files in `.claude/skills/shipit-kit:new-feature/templates/`: `spec.yaml`, `research.yaml`, `plan.yaml`, `tasks.yaml` — matching TypeSpec model shapes with `{{PLACEHOLDER}}` substitution variables
+- [ ] Update `.claude/skills/shipit-kit:new-feature/scripts/init-feature.sh` to scaffold YAML files alongside Markdown, calling `spec-generate-md` for initial Markdown generation
 - [ ] Add `spec:generate-md` and `spec:validate` npm script entries to root `package.json`
 
 ### Phase 3: Markdown Generation Script (TDD Cycle 1)
@@ -54,10 +54,10 @@
 
 ### Phase 5: Skill Prompt Migration (No Tests) [P]
 
-- [ ] Update `.claude/skills/shep-kit:new-feature/SKILL.md`: reference YAML templates, update scaffolding instructions to produce YAML-first with generated Markdown
-- [ ] Update `.claude/skills/shep-kit:research/SKILL.md`: gate check reads `spec.yaml` openQuestions array instead of grep on spec.md
-- [ ] Update `.claude/skills/shep-kit:plan/SKILL.md`: gate check reads `research.yaml` openQuestions, task counting from YAML arrays
-- [ ] Update `.claude/skills/shep-kit:implement/SKILL.md`: replace inline grep/awk validation with `pnpm spec:validate <feature-id>` invocation
+- [ ] Update `.claude/skills/shipit-kit:new-feature/SKILL.md`: reference YAML templates, update scaffolding instructions to produce YAML-first with generated Markdown
+- [ ] Update `.claude/skills/shipit-kit:research/SKILL.md`: gate check reads `spec.yaml` openQuestions array instead of grep on spec.md
+- [ ] Update `.claude/skills/shipit-kit:plan/SKILL.md`: gate check reads `research.yaml` openQuestions, task counting from YAML arrays
+- [ ] Update `.claude/skills/shipit-kit:implement/SKILL.md`: replace inline grep/awk validation with `pnpm spec:validate <feature-id>` invocation
 - [ ] Update validation documents (`completeness.md`, `architecture.md`, `consistency.md`) to reference YAML field checks instead of Markdown grep patterns
 
 ### Phase 6: Documentation & Verification (No Tests)

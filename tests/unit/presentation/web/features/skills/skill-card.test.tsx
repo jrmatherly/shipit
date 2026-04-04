@@ -6,7 +6,7 @@ import type { SkillData } from '@/lib/skills';
 
 function makeSkill(overrides: Partial<SkillData> = {}): SkillData {
   return {
-    name: 'shep-kit:implement',
+    name: 'shipit-kit:implement',
     displayName: 'implement',
     description: 'Validate specs and autonomously execute implementation tasks',
     category: 'Workflow',
@@ -25,7 +25,7 @@ describe('SkillCard', () => {
 
   it('renders full skill name as muted subtitle', () => {
     render(<SkillCard skill={makeSkill()} onSelect={vi.fn()} />);
-    expect(screen.getByText('shep-kit:implement')).toBeInTheDocument();
+    expect(screen.getByText('shipit-kit:implement')).toBeInTheDocument();
   });
 
   it('renders description text', () => {
@@ -98,7 +98,7 @@ describe('SkillCard', () => {
     const skill = makeSkill();
     render(<SkillCard skill={skill} onSelect={onSelect} />);
 
-    await user.click(screen.getByTestId('skill-card-shep-kit:implement'));
+    await user.click(screen.getByTestId('skill-card-shipit-kit:implement'));
     expect(onSelect).toHaveBeenCalledOnce();
     expect(onSelect).toHaveBeenCalledWith(skill);
   });
@@ -109,7 +109,7 @@ describe('SkillCard', () => {
     const skill = makeSkill();
     render(<SkillCard skill={skill} onSelect={onSelect} />);
 
-    const card = screen.getByTestId('skill-card-shep-kit:implement');
+    const card = screen.getByTestId('skill-card-shipit-kit:implement');
     card.focus();
     await user.keyboard('{Enter}');
     expect(onSelect).toHaveBeenCalledOnce();
@@ -121,7 +121,7 @@ describe('SkillCard', () => {
     const skill = makeSkill();
     render(<SkillCard skill={skill} onSelect={onSelect} />);
 
-    const card = screen.getByTestId('skill-card-shep-kit:implement');
+    const card = screen.getByTestId('skill-card-shipit-kit:implement');
     card.focus();
     await user.keyboard(' ');
     expect(onSelect).toHaveBeenCalledOnce();

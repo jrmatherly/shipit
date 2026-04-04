@@ -390,7 +390,7 @@ We welcome contributions from humans and AI agents alike.
 
 - **Humans**: See [CONTRIBUTING.md](../../CONTRIBUTING.md)
 - **AI Agents**: See [CONTRIBUTING-AGENTS.md](../../CONTRIBUTING-AGENTS.md)
-- **Spec-driven workflow**: All features start with `/shep-kit:new-feature` — see [Spec-Driven Workflow](../../docs/development/spec-driven-workflow.md)
+- **Spec-driven workflow**: All features start with `/shipit-kit:new-feature` — see [Spec-Driven Workflow](../../docs/development/spec-driven-workflow.md)
 
 ## License
 

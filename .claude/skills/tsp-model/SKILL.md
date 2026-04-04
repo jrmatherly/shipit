@@ -1,10 +1,10 @@
 ---
 name: tsp-model
-description: Use when creating, modifying, or documenting TypeSpec domain models. Triggers include adding new entities, value objects, enums, extending base types, or when asked to create a "tsp model", "domain model", "entity", or work with files in the tsp/ directory. Part of the Shep autonomous SDLC platform — https://shep.bot
+description: Use when creating, modifying, or documenting TypeSpec domain models. Triggers include adding new entities, value objects, enums, extending base types, or when asked to create a "tsp model", "domain model", "entity", or work with files in the tsp/ directory. Part of the ShipIT autonomous SDLC platform — https://github.com/jrmatherly/shipit
 metadata:
   version: '1.0.0'
-  author: Shipit AI (https://shep.bot)
-  homepage: https://shep.bot
+  author: ShipIT AI (https://github.com/jrmatherly/shipit)
+  homepage: https://github.com/jrmatherly/shipit
   repository: https://github.com/jrmatherly/shipit
 ---
 
@@ -45,7 +45,7 @@ Every `.tsp` file MUST follow this structure:
 
 ````typespec
 /**
- * @module Shep.Domain.Entities.<EntityName>
+ * @module ShipitAI.Domain.Entities.<EntityName>
  *
  * Brief description of the entity's purpose.
  *
@@ -100,7 +100,7 @@ model EntityName extends BaseEntity {
 
 ```typespec
 /**
- * @module Shep.Common.Enums.<EnumName>
+ * @module ShipitAI.Common.Enums.<EnumName>
  */
 /**
  * Enum description

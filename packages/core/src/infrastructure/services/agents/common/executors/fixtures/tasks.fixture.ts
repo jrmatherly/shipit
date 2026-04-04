@@ -23,7 +23,7 @@ tasks:
       - 'ThemeProvider renders children without error'
       - 'useTheme returns { theme, toggleTheme } where theme is "light" or "dark"'
       - 'toggleTheme() switches theme and toggles html element dark class'
-      - 'Theme persists to localStorage key "shep-theme" on toggle'
+      - 'Theme persists to localStorage key "shipit-ai-theme" on toggle'
     tdd:
       red: ['Write test: useTheme default is "light" with no localStorage entry', 'Write test: toggleTheme() adds dark class to html element']
       green: ['Implement ThemeProvider reading localStorage and calling classList.toggle', 'Implement useTheme hook calling useContext(ThemeContext)']

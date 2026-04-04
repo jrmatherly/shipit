@@ -112,14 +112,14 @@
 
 ### Phase 5: Skill Prompt Migration (No Tests)
 
-**Goal:** Update all shep-kit skill SKILL.md files to read YAML instead of Markdown for gate checks and validation.
+**Goal:** Update all shipit-kit skill SKILL.md files to read YAML instead of Markdown for gate checks and validation.
 
 **Steps:**
 
-1. Update `shep-kit:new-feature` SKILL.md: reference YAML templates, update scaffolding instructions
-2. Update `shep-kit:research` SKILL.md: gate check reads `spec.yaml` openQuestions field instead of grep on spec.md
-3. Update `shep-kit:plan` SKILL.md: gate check reads `research.yaml` openQuestions, task counting from YAML
-4. Update `shep-kit:implement` SKILL.md: replace inline validation with `pnpm spec:validate` invocation
+1. Update `shipit-kit:new-feature` SKILL.md: reference YAML templates, update scaffolding instructions
+2. Update `shipit-kit:research` SKILL.md: gate check reads `spec.yaml` openQuestions field instead of grep on spec.md
+3. Update `shipit-kit:plan` SKILL.md: gate check reads `research.yaml` openQuestions, task counting from YAML
+4. Update `shipit-kit:implement` SKILL.md: replace inline validation with `pnpm spec:validate` invocation
 5. Update validation documents (completeness.md, architecture.md, consistency.md) to reference YAML fields
 
 **Deliverables:** Updated SKILL.md files for 4 skills, updated 3 validation documents
@@ -148,10 +148,10 @@
 | `tsp/domain/entities/research-spec.tsp`                       | ResearchSpec entity (research.yaml)                                     |
 | `tsp/domain/entities/plan-spec.tsp`                           | PlanSpec entity (plan.yaml)                                             |
 | `tsp/domain/entities/tasks-spec.tsp`                          | TasksSpec entity (tasks.yaml)                                           |
-| `.claude/skills/shep-kit:new-feature/templates/spec.yaml`     | YAML template for feature specs                                         |
-| `.claude/skills/shep-kit:new-feature/templates/research.yaml` | YAML template for research artifacts                                    |
-| `.claude/skills/shep-kit:new-feature/templates/plan.yaml`     | YAML template for plans                                                 |
-| `.claude/skills/shep-kit:new-feature/templates/tasks.yaml`    | YAML template for task breakdowns                                       |
+| `.claude/skills/shipit-kit:new-feature/templates/spec.yaml`     | YAML template for feature specs                                         |
+| `.claude/skills/shipit-kit:new-feature/templates/research.yaml` | YAML template for research artifacts                                    |
+| `.claude/skills/shipit-kit:new-feature/templates/plan.yaml`     | YAML template for plans                                                 |
+| `.claude/skills/shipit-kit:new-feature/templates/tasks.yaml`    | YAML template for task breakdowns                                       |
 | `scripts/spec-generate-md.ts`                                 | YAML-to-Markdown generation script                                      |
 | `scripts/spec-validate.ts`                                    | Spec validation script (replaces grep/awk rules)                        |
 | `tests/unit/scripts/spec-generate-md.test.ts`                 | Unit tests for Markdown generation                                      |
@@ -164,14 +164,14 @@
 | `tsp/domain/entities/index.tsp`                                | Import new spec entity files                       |
 | `tsp/domain/value-objects/index.tsp`                           | Import spec-metadata.tsp                           |
 | `package.json`                                                 | Add `spec:generate-md` and `spec:validate` scripts |
-| `.claude/skills/shep-kit:new-feature/scripts/init-feature.sh`  | Scaffold YAML files, invoke Markdown generation    |
-| `.claude/skills/shep-kit:new-feature/SKILL.md`                 | Reference YAML templates and workflow              |
-| `.claude/skills/shep-kit:research/SKILL.md`                    | Gate check reads spec.yaml                         |
-| `.claude/skills/shep-kit:plan/SKILL.md`                        | Gate check reads research.yaml                     |
-| `.claude/skills/shep-kit:implement/SKILL.md`                   | Use `pnpm spec:validate` instead of inline rules   |
-| `.claude/skills/shep-kit:implement/validation/completeness.md` | Reference YAML fields                              |
-| `.claude/skills/shep-kit:implement/validation/architecture.md` | Reference YAML fields                              |
-| `.claude/skills/shep-kit:implement/validation/consistency.md`  | Reference YAML fields                              |
+| `.claude/skills/shipit-kit:new-feature/scripts/init-feature.sh`  | Scaffold YAML files, invoke Markdown generation    |
+| `.claude/skills/shipit-kit:new-feature/SKILL.md`                 | Reference YAML templates and workflow              |
+| `.claude/skills/shipit-kit:research/SKILL.md`                    | Gate check reads spec.yaml                         |
+| `.claude/skills/shipit-kit:plan/SKILL.md`                        | Gate check reads research.yaml                     |
+| `.claude/skills/shipit-kit:implement/SKILL.md`                   | Use `pnpm spec:validate` instead of inline rules   |
+| `.claude/skills/shipit-kit:implement/validation/completeness.md` | Reference YAML fields                              |
+| `.claude/skills/shipit-kit:implement/validation/architecture.md` | Reference YAML fields                              |
+| `.claude/skills/shipit-kit:implement/validation/consistency.md`  | Reference YAML fields                              |
 | `docs/development/spec-driven-workflow.md`                     | Document YAML-first workflow                       |
 | `CLAUDE.md`                                                    | Add YAML spec format references                    |
 
@@ -218,4 +218,4 @@ Feature is additive and backward-compatible:
 
 ---
 
-_Updated by `/shep-kit:plan` — see tasks.md for detailed breakdown_
+_Updated by `/shipit-kit:plan` — see tasks.md for detailed breakdown_

@@ -157,7 +157,7 @@ content: |
   - ✅ Feature entity (TypeSpec model exists)
   - ✅ Agent configuration (Settings.agent with type/token)
   - ✅ Agent execution framework (run.command.ts, RunAgentUseCase)
-  - ✅ Spec-driven workflow (shep-kit skills for spec/research/plan/tasks)
+  - ✅ Spec-driven workflow (shipit-kit skills for spec/research/plan/tasks)
 
   ## Size Estimate
 
@@ -258,4 +258,4 @@ content: |
 
   ---
 
-  _Specification created with `/shep-kit:new-feature` — proceed with `/shep-kit:research`_
+  _Specification created with `/shipit-kit:new-feature` — proceed with `/shipit-kit:research`_

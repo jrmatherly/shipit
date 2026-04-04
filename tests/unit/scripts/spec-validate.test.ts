@@ -198,7 +198,7 @@ status:
     percentage: 0
   currentTask: null
   lastUpdated: '2026-02-10T00:00:00Z'
-  lastUpdatedBy: 'shep-kit:implement'
+  lastUpdatedBy: 'shipit-kit:implement'
 
 validation:
   lastRun: null

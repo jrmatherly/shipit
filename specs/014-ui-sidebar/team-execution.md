@@ -1,6 +1,6 @@
 # 014-ui-sidebar: Parallel Team Execution Protocol
 
-> **Purpose**: Replace the standard `/shep-kit:implement` with a parallel development team.
+> **Purpose**: Replace the standard `/shipit-kit:implement` with a parallel development team.
 > **Paste this prompt to the EM agent to kick off execution.**
 
 ---
@@ -219,7 +219,7 @@ staff-eng:
   → [TASK-READY] to EM
 
 EM → updates feature.yaml (6/6 = 100%)
-EM → [USER-UPDATE] All tasks complete. All checks passing. Ready for /shep-kit:commit-pr.
+EM → [USER-UPDATE] All tasks complete. All checks passing. Ready for /shipit-kit:commit-pr.
 ```
 
 ---

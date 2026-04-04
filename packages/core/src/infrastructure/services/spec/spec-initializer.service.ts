@@ -2,7 +2,7 @@
  * Spec Initializer Service
  *
  * Creates feature specification directories with YAML template files.
- * Templates match exactly what /shep-kit:new-feature produces,
+ * Templates match exactly what /shipit-kit:new-feature produces,
  * enabling dogfooding — the CLI and the skill use the same spec format.
  */
 
@@ -54,7 +54,7 @@ function applyTemplate(
 }
 
 // ─── YAML Templates ────────────────────────────────────────────────
-// These match .claude/skills/shep-kit-new-feature/templates/ exactly.
+// These match .claude/skills/shipit-kit-new-feature/templates/ exactly.
 
 const SPEC_YAML = `# Feature Specification (YAML)
 # This is the source of truth. Markdown is auto-generated from this file.
@@ -274,7 +274,7 @@ export class SpecInitializerService implements ISpecInitializerService {
     mode?: 'fast'
   ): Promise<SpecInitializerResult> {
     // Scan existing specs/ directory for highest NNN prefix to avoid collisions
-    // (specs may have been created outside the DB, e.g., via /shep-kit:new-feature)
+    // (specs may have been created outside the DB, e.g., via /shipit-kit:new-feature)
     const resolvedNumber = await this.resolveNextNumber(basePath, featureNumber);
 
     const nnn = padNumber(resolvedNumber);

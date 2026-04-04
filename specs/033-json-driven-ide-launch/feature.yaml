@@ -13,7 +13,7 @@ status:
     percentage: 100
   currentTask: null
   lastUpdated: '2026-02-19T22:20:00.000Z'
-  lastUpdatedBy: shep-kit:commit-pr
+  lastUpdatedBy: shipit-kit:commit-pr
   completedPhases:
     - analyze
     - requirements

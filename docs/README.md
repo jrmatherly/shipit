@@ -51,7 +51,7 @@ Central navigation for all Shipit AI CLI documentation.
 - [Building](./development/building.md)
 - [Adding Agents](./development/adding-agents.md)
 - [Web Component Library](./development/web-component-library.md)
-- [Shep-Kit Reference](./development/shep-kit-reference.md)
+- [Shep-Kit Reference](./development/shipit-kit-reference.md)
 - [feature.yaml Protocol](./development/feature-yaml-protocol.md)
 
 ### Guides

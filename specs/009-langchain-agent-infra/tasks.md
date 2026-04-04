@@ -310,4 +310,4 @@ Before marking feature complete:
 
 ---
 
-_Task breakdown for implementation tracking — Execute with `/shep-kit:implement` or manually with agent teams for parallelizable phases_
+_Task breakdown for implementation tracking — Execute with `/shipit-kit:implement` or manually with agent teams for parallelizable phases_

@@ -237,4 +237,4 @@ Rollback = revert the feature branch merge. No destructive changes to existing d
 
 ---
 
-_Updated by `/shep-kit:plan` — see tasks.md for detailed breakdown_
+_Updated by `/shipit-kit:plan` — see tasks.md for detailed breakdown_

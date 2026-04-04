@@ -38,13 +38,13 @@ const skillWithResources: SkillData = {
 };
 
 const skillWithoutResources: SkillData = {
-  name: 'shep-kit:implement',
+  name: 'shipit-kit:implement',
   displayName: 'implement',
   description:
-    'Validate specs and autonomously execute implementation tasks with status tracking. Use after /shep-kit:plan when ready to start implementation.',
+    'Validate specs and autonomously execute implementation tasks with status tracking. Use after /shipit-kit:plan when ready to start implementation.',
   category: 'Workflow',
   source: 'project',
-  body: '## Usage\n\nRun /shep-kit:implement after planning is complete to start autonomous implementation.\n\n## What it does\n\n1. Pre-Implementation Validation Gate\n2. Autonomous Execution\n3. Status Tracking',
+  body: '## Usage\n\nRun /shipit-kit:implement after planning is complete to start autonomous implementation.\n\n## What it does\n\n1. Pre-Implementation Validation Gate\n2. Autonomous Execution\n3. Status Tracking',
   resources: [],
 };
 

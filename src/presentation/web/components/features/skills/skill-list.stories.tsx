@@ -24,7 +24,7 @@ type Story = StoryObj<typeof meta>;
 
 const workflowSkills: SkillData[] = [
   {
-    name: 'shep-kit:implement',
+    name: 'shipit-kit:implement',
     displayName: 'implement',
     description: 'Validate specs and autonomously execute implementation tasks.',
     category: 'Workflow',
@@ -33,7 +33,7 @@ const workflowSkills: SkillData[] = [
     resources: [],
   },
   {
-    name: 'shep-kit:plan',
+    name: 'shipit-kit:plan',
     displayName: 'plan',
     description: 'Create implementation plan and task breakdown.',
     category: 'Workflow',
@@ -42,7 +42,7 @@ const workflowSkills: SkillData[] = [
     resources: [],
   },
   {
-    name: 'shep-kit:research',
+    name: 'shipit-kit:research',
     displayName: 'research',
     description: 'Analyze technical approach, evaluate libraries, document decisions.',
     category: 'Workflow',

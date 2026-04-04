@@ -25,7 +25,7 @@ model AgentSession extends BaseEntity {
   @doc("Truncated first user message text used as a session summary preview (optional)")
   preview?: string;
 
-  @doc("Conversation messages — populated only in the detail view (shep session show)")
+  @doc("Conversation messages — populated only in the detail view (shipit-ai session show)")
   messages?: AgentSessionMessage[];
 
   @doc("Timestamp of the first message in the session (optional)")

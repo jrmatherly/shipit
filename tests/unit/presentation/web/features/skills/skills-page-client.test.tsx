@@ -6,7 +6,7 @@ import type { SkillData } from '@/lib/skills';
 
 function makeSkill(overrides: Partial<SkillData> = {}): SkillData {
   return {
-    name: 'shep-kit:implement',
+    name: 'shipit-kit:implement',
     displayName: 'implement',
     description: 'Validate specs and autonomously execute implementation tasks',
     category: 'Workflow',
@@ -19,13 +19,13 @@ function makeSkill(overrides: Partial<SkillData> = {}): SkillData {
 
 const sampleSkills: SkillData[] = [
   makeSkill({
-    name: 'shep-kit:plan',
+    name: 'shipit-kit:plan',
     displayName: 'plan',
     description: 'Create implementation plans',
     category: 'Workflow',
   }),
   makeSkill({
-    name: 'shep-kit:implement',
+    name: 'shipit-kit:implement',
     displayName: 'implement',
     description: 'Validate specs and execute tasks',
     category: 'Workflow',
@@ -58,8 +58,8 @@ describe('SkillsPageClient', () => {
 
   it('renders all skills when no filters applied', () => {
     render(<SkillsPageClient skills={sampleSkills} />);
-    expect(screen.getByTestId('skill-card-shep-kit:plan')).toBeInTheDocument();
-    expect(screen.getByTestId('skill-card-shep-kit:implement')).toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-kit:plan')).toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-kit:implement')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-shipit-ai:ui-component')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-architecture-reviewer')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-shadcn-ui')).toBeInTheDocument();
@@ -77,7 +77,7 @@ describe('SkillsPageClient', () => {
     const searchInput = screen.getByPlaceholderText(/search skills/i);
     await user.type(searchInput, 'plan');
 
-    expect(screen.getByTestId('skill-card-shep-kit:plan')).toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-kit:plan')).toBeInTheDocument();
     expect(screen.queryByTestId('skill-card-shipit-ai:ui-component')).not.toBeInTheDocument();
     expect(screen.queryByTestId('skill-card-shadcn-ui')).not.toBeInTheDocument();
   });
@@ -90,7 +90,7 @@ describe('SkillsPageClient', () => {
     await user.type(searchInput, 'architecture');
 
     expect(screen.getByTestId('skill-card-architecture-reviewer')).toBeInTheDocument();
-    expect(screen.queryByTestId('skill-card-shep-kit:plan')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('skill-card-shipit-kit:plan')).not.toBeInTheDocument();
   });
 
   it('search is case-insensitive', async () => {
@@ -100,7 +100,7 @@ describe('SkillsPageClient', () => {
     const searchInput = screen.getByPlaceholderText(/search skills/i);
     await user.type(searchInput, 'PLAN');
 
-    expect(screen.getByTestId('skill-card-shep-kit:plan')).toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-kit:plan')).toBeInTheDocument();
   });
 
   it('category filter shows only skills in selected category', async () => {
@@ -110,7 +110,7 @@ describe('SkillsPageClient', () => {
     await user.click(screen.getByRole('button', { name: /^Analysis/ }));
 
     expect(screen.getByTestId('skill-card-architecture-reviewer')).toBeInTheDocument();
-    expect(screen.queryByTestId('skill-card-shep-kit:plan')).not.toBeInTheDocument();
+    expect(screen.queryByTestId('skill-card-shipit-kit:plan')).not.toBeInTheDocument();
     expect(screen.queryByTestId('skill-card-shadcn-ui')).not.toBeInTheDocument();
   });
 
@@ -124,8 +124,8 @@ describe('SkillsPageClient', () => {
     const searchInput = screen.getByPlaceholderText(/search skills/i);
     await user.type(searchInput, 'plan');
 
-    expect(screen.getByTestId('skill-card-shep-kit:plan')).toBeInTheDocument();
-    expect(screen.queryByTestId('skill-card-shep-kit:implement')).not.toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-kit:plan')).toBeInTheDocument();
+    expect(screen.queryByTestId('skill-card-shipit-kit:implement')).not.toBeInTheDocument();
   });
 
   it('clicking "All" category button shows all categories', async () => {
@@ -169,7 +169,7 @@ describe('SkillsPageClient', () => {
     await user.click(screen.getByRole('button', { name: /clear filters/i }));
 
     // All skills should be visible again
-    expect(screen.getByTestId('skill-card-shep-kit:plan')).toBeInTheDocument();
+    expect(screen.getByTestId('skill-card-shipit-kit:plan')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-shadcn-ui')).toBeInTheDocument();
   });
 
@@ -177,7 +177,7 @@ describe('SkillsPageClient', () => {
     const user = userEvent.setup();
     render(<SkillsPageClient skills={sampleSkills} />);
 
-    await user.click(screen.getByTestId('skill-card-shep-kit:plan'));
+    await user.click(screen.getByTestId('skill-card-shipit-kit:plan'));
 
     // Drawer should show the skill detail — description appears in both card and drawer
     const descriptions = screen.getAllByText('Create implementation plans');
@@ -192,7 +192,7 @@ describe('SkillsPageClient', () => {
     render(<SkillsPageClient skills={sampleSkills} />);
 
     // Open drawer
-    await user.click(screen.getByTestId('skill-card-shep-kit:plan'));
+    await user.click(screen.getByTestId('skill-card-shipit-kit:plan'));
 
     // Close drawer
     const closeButton = screen.getByRole('button', { name: /close/i });

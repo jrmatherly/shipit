@@ -17,7 +17,7 @@ Guides for developing and contributing to Shipit AI CLI.
 | [adding-agents.md](./adding-agents.md)                 | Adding new LangGraph agent nodes        |
 | [feature-yaml-protocol.md](./feature-yaml-protocol.md) | feature.yaml status tracking protocol   |
 | [web-component-library.md](./web-component-library.md) | Web UI component library reference      |
-| [shep-kit-reference.md](./shep-kit-reference.md)       | Shep-kit skills complete reference      |
+| [shipit-kit-reference.md](./shipit-kit-reference.md)       | Shep-kit skills complete reference      |
 
 ## Quick Start for Contributors
 
@@ -58,7 +58,7 @@ pnpm dev:web
 - Write tests for new functionality (TDD mandatory)
 - Keep commits atomic and well-described
 - Update documentation for user-facing changes
-- All features start with `/shep-kit:new-feature`
+- All features start with `/shipit-kit:new-feature`
 
 ## Related Documents
 

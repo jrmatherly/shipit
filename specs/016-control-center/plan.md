@@ -291,4 +291,4 @@ Feature is purely additive UI. Rollback by reverting the feature branch merge. N
 
 ---
 
-_Updated by `/shep-kit:plan` — see tasks.md for detailed breakdown_
+_Updated by `/shipit-kit:plan` — see tasks.md for detailed breakdown_

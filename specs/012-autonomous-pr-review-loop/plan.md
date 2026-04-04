@@ -5,7 +5,7 @@
 
 ## Architecture Overview
 
-This feature extends the existing `shep-kit:commit-pr` SKILL.md with two new
+This feature extends the existing `shipit-kit:commit-pr` SKILL.md with two new
 steps that create an autonomous review-fix-push cycle after CI passes.
 
 **No TypeScript code, domain models, or database changes are needed.** This is
@@ -138,7 +138,7 @@ feedback, commit, push, and loop until resolved.
    - Add `review-watching` and `review-fixing` phases
    - Add review loop checkpoints
    - Add `reviewLoop` field documentation
-   - Update the `/shep-kit:commit-pr` section
+   - Update the `/shipit-kit:commit-pr` section
 2. Update `docs/development/spec-driven-workflow.md`:
    - Update Step 5 (commit-pr) description to mention the review loop
    - Add note about autonomous review handling
@@ -170,7 +170,7 @@ _None — this feature only modifies existing files._
 
 | File                                         | Changes                                                                                  |
 | -------------------------------------------- | ---------------------------------------------------------------------------------------- |
-| `.claude/skills/shep-kit:commit-pr/SKILL.md` | Add Steps 6-7 (review watch + fix loop), update flow diagram, red flags, quick reference |
+| `.claude/skills/shipit-kit:commit-pr/SKILL.md` | Add Steps 6-7 (review watch + fix loop), update flow diagram, red flags, quick reference |
 | `docs/development/feature-yaml-protocol.md`  | Add review loop phases, checkpoints, and `reviewLoop` field docs                         |
 | `docs/development/spec-driven-workflow.md`   | Update commit-pr section to mention review loop                                          |
 
@@ -203,4 +203,4 @@ no infrastructure changes.
 
 ---
 
-_Updated by `/shep-kit:plan` — see tasks.md for detailed breakdown_
+_Updated by `/shipit-kit:plan` — see tasks.md for detailed breakdown_

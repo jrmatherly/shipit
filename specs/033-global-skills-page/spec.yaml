@@ -182,7 +182,7 @@ content: >
   - [ ] Skills are visually grouped by category (Workflow, Code Generation,
   Analysis, Reference)
 
-  - [ ] Category is derived from skill name prefix (`shep-kit:*` → Workflow,
+  - [ ] Category is derived from skill name prefix (`shipit-kit:*` → Workflow,
   `shep:*` → Code Generation) with a fallback heuristic
 
   - [ ] A search input filters skills by name or description (client-side,
@@ -250,7 +250,7 @@ content: >
 
   - **FR-6: Category Derivation** — Skills are categorized using a deterministic
   rule set:
-    - Name starts with `shep-kit:` → **Workflow**
+    - Name starts with `shipit-kit:` → **Workflow**
     - Name starts with `shep:` → **Code Generation**
     - Name contains `review`, `validate`, or `cross-validate` → **Analysis**
     - All others → **Reference**
@@ -264,7 +264,7 @@ content: >
 
 
   - **FR-8: Skill Card** — Each skill card shows:
-    - Skill name as the card title (formatted: strip `shep-kit:` or `shep:` prefix for display, show full name as subtitle)
+    - Skill name as the card title (formatted: strip `shipit-kit:` or `shep:` prefix for display, show full name as subtitle)
     - Description text (truncated to 2 lines when collapsed)
     - Context badge (e.g., "fork") — only shown if the skill has a `context` field
     - Allowed-tools badge — only shown if the skill has an `allowed-tools` field

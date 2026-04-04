@@ -59,7 +59,7 @@
 
 - Singletons, module-level caches, and global accessor functions are BANNED outside of infrastructure bootstrapping code
 - Application and presentation layers access all services through dependency injection — never by importing a global function or module-scoped instance
-- If a convenient global accessor exists (e.g., `getSettings()`, `getShepHomeDir()`), it must NOT be called from use cases, commands, or components — inject the dependency instead
+- If a convenient global accessor exists (e.g., `getSettings()`, `getShipitAiHomeDir()`), it must NOT be called from use cases, commands, or components — inject the dependency instead
 - This ensures testability (mocking via DI, not module patching) and enforces the dependency rule
 
 ## No Direct Infrastructure Imports in Application or Presentation

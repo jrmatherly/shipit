@@ -24,7 +24,7 @@ import { ExecutorBase } from './executor-base.js';
 import { IS_WINDOWS } from '../../../../platform.js';
 
 /**
- * Map canonical model IDs (used across shep) to Cursor CLI model names.
+ * Map canonical model IDs (used across shipit-ai) to Cursor CLI model names.
  * Cursor uses short names like "sonnet-4.6" instead of "claude-sonnet-4-6".
  * Models that already match Cursor's naming pass through unchanged.
  */
@@ -312,7 +312,7 @@ export class CursorExecutorService extends ExecutorBase {
       // Write prompt to temp file to bypass cmd.exe argument mangling
       const tmpFile = join(
         tmpdir(),
-        `shep-cursor-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.txt`
+        `shipit-ai-cursor-${Date.now()}-${Math.random().toString(36).slice(2, 6)}.txt`
       );
       writeFileSync(tmpFile, prompt, 'utf8');
 

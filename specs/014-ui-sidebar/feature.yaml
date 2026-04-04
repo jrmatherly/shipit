@@ -9,7 +9,7 @@ feature:
 status:
   phase: 'in-review'
   lastUpdated: '2026-02-11T21:40:00Z'
-  lastUpdatedBy: 'shep-kit:commit-pr'
+  lastUpdatedBy: 'shipit-kit:commit-pr'
   progress:
     completed: 6
     total: 6
@@ -38,16 +38,16 @@ prUrl: 'https://github.com/jrmatherly/shipit/pull/46'
 checkpoints:
   - phase: 'feature-created'
     completedAt: '2026-02-11T15:16:23Z'
-    completedBy: 'shep-kit:new-feature'
+    completedBy: 'shipit-kit:new-feature'
   - phase: 'research-complete'
     completedAt: '2026-02-11T18:00:00Z'
-    completedBy: 'shep-kit:research'
+    completedBy: 'shipit-kit:research'
   - phase: 'plan-complete'
     completedAt: '2026-02-11T19:00:00Z'
-    completedBy: 'shep-kit:plan'
+    completedBy: 'shipit-kit:plan'
   - phase: 'pr-created'
     completedAt: '2026-02-11T20:00:00Z'
-    completedBy: 'shep-kit:commit-pr'
+    completedBy: 'shipit-kit:commit-pr'
 
 errors:
   current: null

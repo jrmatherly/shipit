@@ -152,4 +152,4 @@ retry loops) testable via unit tests with mocked dependencies.
 
 ---
 
-_Updated by `/shep-kit:plan` -- see tasks.md for detailed breakdown_
+_Updated by `/shipit-kit:plan` -- see tasks.md for detailed breakdown_

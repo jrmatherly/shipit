@@ -68,7 +68,7 @@ Several former god classes are now **facades** delegating to focused sub-service
 [Conventional Commits](https://www.conventionalcommits.org/): `<type>(<scope>): <subject>`
 
 | Types | feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert |
-| Scopes (recommended) | specs, shep-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
+| Scopes (recommended) | specs, shipit-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci |
 
 ## Key Docs
 

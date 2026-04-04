@@ -8,7 +8,7 @@ updatedAt: '2026-02-10'
 
 # Relationships
 relatedFeatures:
-  - '001-shep-kit'
+  - '001-shipit-kit'
   - '002-semantic-release-cicd'
 technologies:
   - GitHub REST API (PR reviews, review comments)
@@ -429,4 +429,4 @@ content: |
 
   ---
 
-  _Updated by `/shep-kit:research` - proceed with `/shep-kit:plan`_
+  _Updated by `/shipit-kit:research` - proceed with `/shipit-kit:plan`_

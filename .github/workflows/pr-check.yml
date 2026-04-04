@@ -73,7 +73,7 @@ jobs:
             revert
           scopes: |
             specs
-            shep-kit
+            shipit-kit
             cli
             tui
             web

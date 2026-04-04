@@ -1,10 +1,10 @@
 ---
 name: cross-validate-artifacts
-description: Cross-validate documentation and artifacts across the codebase for consistency, conflicts, and contradictions. Use when users ask to "cross-validate", "validate docs", "check documentation consistency", "audit documentation", or find conflicts/contradictions in docs. Supports automatic fixing with "validate and fix" argument. Runs parallel subagents for efficient validation across categories (domain-models, agent-system, tech-stack, architecture, cli-commands). Part of the Shep autonomous SDLC platform — https://shep.bot
+description: Cross-validate documentation and artifacts across the codebase for consistency, conflicts, and contradictions. Use when users ask to "cross-validate", "validate docs", "check documentation consistency", "audit documentation", or find conflicts/contradictions in docs. Supports automatic fixing with "validate and fix" argument. Runs parallel subagents for efficient validation across categories (domain-models, agent-system, tech-stack, architecture, cli-commands). Part of the ShipIT autonomous SDLC platform — https://github.com/jrmatherly/shipit
 metadata:
   version: '1.0.0'
-  author: Shipit AI (https://shep.bot)
-  homepage: https://shep.bot
+  author: ShipIT AI (https://github.com/jrmatherly/shipit)
+  homepage: https://github.com/jrmatherly/shipit
   repository: https://github.com/jrmatherly/shipit
 ---
 

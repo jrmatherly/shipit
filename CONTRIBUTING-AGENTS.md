@@ -6,7 +6,7 @@ Rules and guidelines for AI agents (Cursor, Claude Code, Copilot, etc.) when con
 
 | Rule         | Requirement                                         |
 | ------------ | --------------------------------------------------- |
-| **Specs**    | **Start ALL features with `/shep-kit:new-feature`** |
+| **Specs**    | **Start ALL features with `/shipit-kit:new-feature`** |
 | Commits      | Conventional Commits format, always                 |
 | Scope        | Required for all commits                            |
 | Co-author    | Include `Co-Authored-By` footer                     |
@@ -16,23 +16,23 @@ Rules and guidelines for AI agents (Cursor, Claude Code, Copilot, etc.) when con
 
 ## Spec-Driven Development (MANDATORY)
 
-**All feature work MUST begin with `/shep-kit:new-feature`.** No exceptions.
+**All feature work MUST begin with `/shipit-kit:new-feature`.** No exceptions.
 
 See [Spec-Driven Workflow](./docs/development/spec-driven-workflow.md) for complete details.
 
 ### Workflow
 
 ```
-/shep-kit:new-feature → /shep-kit:research → /shep-kit:plan → implement
+/shipit-kit:new-feature → /shipit-kit:research → /shipit-kit:plan → implement
 ```
 
 ### Quick Commands
 
 | Command                 | Purpose             | Output                            |
 | ----------------------- | ------------------- | --------------------------------- |
-| `/shep-kit:new-feature` | Start new feature   | Branch + `specs/NNN-name/spec.md` |
-| `/shep-kit:research`    | Technical analysis  | `research.md`                     |
-| `/shep-kit:plan`        | Implementation plan | `plan.md` + `tasks.md`            |
+| `/shipit-kit:new-feature` | Start new feature   | Branch + `specs/NNN-name/spec.md` |
+| `/shipit-kit:research`    | Technical analysis  | `research.md`                     |
+| `/shipit-kit:plan`        | Implementation plan | `plan.md` + `tasks.md`            |
 
 ### What the Agent Does
 
@@ -90,7 +90,7 @@ Use the component or area being modified:
 | Scope        | Area                            |
 | ------------ | ------------------------------- |
 | `specs`      | Feature specifications          |
-| `shep-kit`   | Shipit-ai-kit skills/workflow   |
+| `shipit-kit`   | Shipit-ai-kit skills/workflow   |
 | `cli`        | CLI commands and presentation   |
 | `tui`        | Terminal UI components          |
 | `web`        | Web UI (Next.js)                |

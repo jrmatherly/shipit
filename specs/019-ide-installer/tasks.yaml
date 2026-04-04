@@ -4,7 +4,7 @@ phase: implementation
 status:
   phase: implementation
   updatedAt: '2026-02-16T00:00:00Z'
-  updatedBy: shep-kit:plan
+  updatedBy: shipit-kit:plan
 
 summary: >
   8 implementation tasks following TDD (RED-GREEN-REFACTOR) for unified tool installer.

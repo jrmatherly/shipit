@@ -652,7 +652,7 @@ export function executeNode(
 }
 
 /**
- * Save evidence manifest to the shep home evidence folder so the
+ * Save evidence manifest to the shipit-ai home evidence folder so the
  * merge review UI can read it without accessing graph state.
  */
 export function saveEvidenceManifest(

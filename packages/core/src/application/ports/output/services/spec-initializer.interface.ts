@@ -3,7 +3,7 @@
  *
  * Output port for initializing feature specification directories.
  * Creates the spec YAML files (spec.yaml, research.yaml, plan.yaml,
- * tasks.yaml, feature.yaml) using the same templates as /shep-kit:new-feature.
+ * tasks.yaml, feature.yaml) using the same templates as /shipit-kit:new-feature.
  */
 
 export interface SpecInitializerResult {

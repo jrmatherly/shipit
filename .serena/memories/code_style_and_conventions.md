@@ -21,7 +21,7 @@
 ## Commit Messages
 - Conventional Commits format: `<type>(<scope>): <subject>`
 - Types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert
-- Scopes: specs, shep-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci
+- Scopes: specs, shipit-kit, cli, tui, web, api, domain, agents, deployment, tsp, deps, config, dx, release, ci
 - Subject: lowercase, imperative, no period, ≤72 chars
 - Enforced by commitlint + husky
 

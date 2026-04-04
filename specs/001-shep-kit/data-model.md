@@ -1,6 +1,6 @@
-# Data Model: shep-kit
+# Data Model: shipit-kit
 
-> Entity definitions for 001-shep-kit
+> Entity definitions for 001-shipit-kit
 
 ## Status
 
@@ -26,12 +26,12 @@ specs/NNN-feature-name/
 
 | File            | Purpose                               | Created By              |
 | --------------- | ------------------------------------- | ----------------------- |
-| `spec.md`       | Requirements, scope, dependencies     | `/shep-kit:new-feature` |
-| `research.md`   | Technical decisions, analysis         | `/shep-kit:research`    |
-| `plan.md`       | Architecture, implementation strategy | `/shep-kit:plan`        |
-| `tasks.md`      | Task breakdown with parallelization   | `/shep-kit:plan`        |
-| `data-model.md` | Entity changes (if needed)            | `/shep-kit:plan`        |
-| `contracts/`    | API specs (if needed)                 | `/shep-kit:plan`        |
+| `spec.md`       | Requirements, scope, dependencies     | `/shipit-kit:new-feature` |
+| `research.md`   | Technical decisions, analysis         | `/shipit-kit:research`    |
+| `plan.md`       | Architecture, implementation strategy | `/shipit-kit:plan`        |
+| `tasks.md`      | Task breakdown with parallelization   | `/shipit-kit:plan`        |
+| `data-model.md` | Entity changes (if needed)            | `/shipit-kit:plan`        |
+| `contracts/`    | API specs (if needed)                 | `/shipit-kit:plan`        |
 
 ## Future Considerations
 

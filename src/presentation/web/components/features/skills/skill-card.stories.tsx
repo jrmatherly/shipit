@@ -23,12 +23,12 @@ type Story = StoryObj<typeof meta>;
  * ------------------------------------------------------------------------- */
 
 const baseSkill: SkillData = {
-  name: 'shep-kit:implement',
+  name: 'shipit-kit:implement',
   displayName: 'implement',
   description: 'Validate specs and autonomously execute implementation tasks with status tracking.',
   category: 'Workflow',
   source: 'project',
-  body: '## Usage\n\nRun /shep-kit:implement after planning is complete.',
+  body: '## Usage\n\nRun /shipit-kit:implement after planning is complete.',
   resources: [],
 };
 

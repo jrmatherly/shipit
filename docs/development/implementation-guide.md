@@ -1,6 +1,6 @@
 # Implementation Guide
 
-This guide provides detailed instructions for executing implementation plans created via `/shep-kit:plan`.
+This guide provides detailed instructions for executing implementation plans created via `/shipit-kit:plan`.
 
 **Prerequisites**: Completed plan.md and tasks.md in `specs/NNN-feature-name/`
 
@@ -314,7 +314,7 @@ After all phases are done:
    pnpm test      # all tests pass
    ```
 2. **Update spec files** to "Complete" phase
-3. **Use `/shep-kit:commit-pr`** for final PR creation with CI validation
+3. **Use `/shipit-kit:commit-pr`** for final PR creation with CI validation
 
 ## Related Docs
 

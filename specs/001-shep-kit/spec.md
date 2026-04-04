@@ -1,4 +1,4 @@
-# Feature: shep-kit
+# Feature: shipit-kit
 
 > Spec-driven development workflow for Shipit AI contributors
 
@@ -6,7 +6,7 @@
 
 - **Number:** 001
 - **Created:** 2026-02-02
-- **Branch:** feat/001-shep-kit
+- **Branch:** feat/001-shipit-kit
 - **Phase:** Complete
 - **Merged:** 2026-02-02
 
@@ -23,9 +23,9 @@ Shep-kit provides a spec-driven workflow (inspired by GitHub's SpecKit) that man
 
 ## Success Criteria
 
-- [x] `/shep-kit:new-feature` skill creates branch + spec directory with templates
-- [x] `/shep-kit:research` skill guides technical decision documentation
-- [x] `/shep-kit:plan` skill creates implementation plan with task breakdown
+- [x] `/shipit-kit:new-feature` skill creates branch + spec directory with templates
+- [x] `/shipit-kit:research` skill guides technical decision documentation
+- [x] `/shipit-kit:plan` skill creates implementation plan with task breakdown
 - [x] All template files scaffold correctly via init script
 - [x] Agent infers affected areas, dependencies, and size from codebase analysis
 - [x] Existing specs are scanned to discover feature dependencies
@@ -36,12 +36,12 @@ Shep-kit provides a spec-driven workflow (inspired by GitHub's SpecKit) that man
 
 | Area                     | Impact | Reasoning                                      |
 | ------------------------ | ------ | ---------------------------------------------- |
-| `.claude/skills/`        | High   | New shep-kit skill directory with 3 skills     |
+| `.claude/skills/`        | High   | New shipit-kit skill directory with 3 skills     |
 | `specs/`                 | High   | New root-level directory for all feature specs |
 | `docs/development/`      | High   | New spec-driven-workflow.md guide              |
 | `CONTRIBUTING.md`        | Medium | Add mandatory workflow section                 |
 | `CONTRIBUTING-AGENTS.md` | Medium | Add mandatory workflow section                 |
-| `CLAUDE.md`              | Medium | Reference specs/ and shep-kit commands         |
+| `CLAUDE.md`              | Medium | Reference specs/ and shipit-kit commands         |
 | `README.md`              | Low    | Brief spec-driven development section          |
 | `AGENTS.md`              | Low    | Link specs to agent workflow                   |
 
@@ -57,8 +57,8 @@ None identified. This is the foundational workflow spec.
 
 ## Open Questions
 
-- [x] Should `/shep-kit:validate` be implemented in initial release or deferred?
-- [x] Should `/shep-kit:status` and `/shep-kit:continue` be implemented initially?
+- [x] Should `/shipit-kit:validate` be implemented in initial release or deferred?
+- [x] Should `/shipit-kit:status` and `/shipit-kit:continue` be implemented initially?
 
 ## Decision
 

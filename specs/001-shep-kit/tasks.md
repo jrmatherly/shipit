@@ -1,6 +1,6 @@
-# Tasks: shep-kit
+# Tasks: shipit-kit
 
-> Task breakdown for 001-shep-kit
+> Task breakdown for 001-shipit-kit
 
 ## Status
 
@@ -11,11 +11,11 @@
 
 ### Phase 1: Core Infrastructure
 
-- [x] Create `specs/001-shep-kit/` directory structure
+- [x] Create `specs/001-shipit-kit/` directory structure
 - [x] Create spec.md with requirements
 - [x] Create research.md with technical decisions
 - [x] Create plan.md with architecture
-- [x] Create `.claude/skills/shep-kit:*` directory structure (flat naming)
+- [x] Create `.claude/skills/shipit-kit:*` directory structure (flat naming)
 
 ### Phase 2: new-feature Skill
 
@@ -52,7 +52,7 @@
 
 ### Phase 6: Validation
 
-- [x] Test `/shep-kit:new-feature` end-to-end (bootstrapped 001-shep-kit itself)
+- [x] Test `/shipit-kit:new-feature` end-to-end (bootstrapped 001-shipit-kit itself)
 - [x] Verify templates render correctly
 - [x] Cross-validate documentation consistency
 - [x] Fix CI scope validation (added 'specs' to commitlint + pr-check.yml)

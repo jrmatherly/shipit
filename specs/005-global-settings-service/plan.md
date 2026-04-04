@@ -596,4 +596,4 @@ Build Pipeline Flow:
 
 ---
 
-_Updated by `/shep-kit:plan` (TDD-compliant) — see tasks.md for detailed TDD breakdown_
+_Updated by `/shipit-kit:plan` (TDD-compliant) — see tasks.md for detailed TDD breakdown_

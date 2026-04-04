@@ -20,17 +20,17 @@ type Story = StoryObj<typeof meta>;
 
 const sampleSkills: SkillData[] = [
   {
-    name: 'shep-kit:implement',
+    name: 'shipit-kit:implement',
     displayName: 'implement',
     description:
       'Validate specs and autonomously execute implementation tasks with status tracking.',
     category: 'Workflow',
     source: 'project',
-    body: '## Usage\n\nRun /shep-kit:implement after planning is complete.',
+    body: '## Usage\n\nRun /shipit-kit:implement after planning is complete.',
     resources: [],
   },
   {
-    name: 'shep-kit:plan',
+    name: 'shipit-kit:plan',
     displayName: 'plan',
     description: 'Create implementation plan and task breakdown.',
     category: 'Workflow',
@@ -39,7 +39,7 @@ const sampleSkills: SkillData[] = [
     resources: [],
   },
   {
-    name: 'shep-kit:research',
+    name: 'shipit-kit:research',
     displayName: 'research',
     description: 'Analyze technical approach, evaluate libraries, document decisions.',
     category: 'Workflow',
@@ -103,7 +103,7 @@ const sampleSkills: SkillData[] = [
 const manySkills: SkillData[] = [
   ...sampleSkills,
   {
-    name: 'shep-kit:commit-pr',
+    name: 'shipit-kit:commit-pr',
     displayName: 'commit-pr',
     description: 'Use when ready to commit, push, and create a PR with CI verification.',
     category: 'Workflow',
@@ -112,7 +112,7 @@ const manySkills: SkillData[] = [
     resources: [],
   },
   {
-    name: 'shep-kit:new-feature',
+    name: 'shipit-kit:new-feature',
     displayName: 'new-feature',
     description: 'Use when starting any new feature, functionality, or enhancement.',
     category: 'Workflow',
@@ -121,7 +121,7 @@ const manySkills: SkillData[] = [
     resources: [],
   },
   {
-    name: 'shep-kit:new-feature-fast',
+    name: 'shipit-kit:new-feature-fast',
     displayName: 'new-feature-fast',
     description: 'Fast-track feature creation that collapses new-feature, research, and planning.',
     category: 'Workflow',
@@ -130,7 +130,7 @@ const manySkills: SkillData[] = [
     resources: [],
   },
   {
-    name: 'shep-kit:merged',
+    name: 'shipit-kit:merged',
     displayName: 'merged',
     description: 'Use after a PR has been merged to clean up branches.',
     category: 'Workflow',

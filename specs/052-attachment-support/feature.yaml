@@ -13,7 +13,7 @@ status:
     percentage: 100
   currentTask: null
   lastUpdated: '2026-03-08T18:25:00Z'
-  lastUpdatedBy: shep-kit:implement
+  lastUpdatedBy: shipit-kit:implement
   completedPhases:
     - analyze
     - requirements
@@ -36,10 +36,10 @@ checkpoints:
     completedBy: feature-agent
   - phase: validation-passed
     completedAt: '2026-03-08T17:30:00Z'
-    completedBy: shep-kit:implement
+    completedBy: shipit-kit:implement
   - phase: implementation-complete
     completedAt: '2026-03-08T18:25:00Z'
-    completedBy: shep-kit:implement
+    completedBy: shipit-kit:implement
 errors:
   current: null
   history: []

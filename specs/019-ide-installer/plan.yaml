@@ -5,7 +5,7 @@ phase: implementation
 status:
   phase: planning
   updatedAt: '2026-02-16T00:00:00Z'
-  updatedBy: shep-kit:plan
+  updatedBy: shipit-kit:plan
 
 summary: >
   Unified tool installer for IDEs and CLI agents. TypeSpec-first architecture defining ToolType enum,

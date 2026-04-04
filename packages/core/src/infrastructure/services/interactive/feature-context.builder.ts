@@ -18,7 +18,7 @@ const MAX_TASKS = 30;
 let cachedCliHelp: string | null = null;
 
 /**
- * Generates the full recursive CLI help text by running `shep --help` and
+ * Generates the full recursive CLI help text by running `shipit-ai --help` and
  * subcommand help for all registered commands. Cached after first call.
  */
 function getCliHelpText(): string {

@@ -13,7 +13,7 @@ status:
     percentage: 100
   currentTask: null
   lastUpdated: '2026-02-18T13:20:00Z'
-  lastUpdatedBy: shep-kit:implement
+  lastUpdatedBy: shipit-kit:implement
   completedPhases:
     - analyze
     - requirements
@@ -48,7 +48,7 @@ checkpoints:
     note: 'Removed CLI flags and backend interrupt logic from scope. Presentation-layer + TypeSpec model only.'
   - phase: implementation-complete
     completedAt: '2026-02-18T13:20:00Z'
-    completedBy: shep-kit:implement
+    completedBy: shipit-kit:implement
     note: '7/7 tasks completed. All tests pass. Ready for code review.'
 errors:
   current: null

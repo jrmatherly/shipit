@@ -278,7 +278,7 @@ describe('feature.yaml → FeatureStatus mapping', () => {
         progress: { completed: 17, total: 17, percentage: 100 },
         currentTask: undefined,
         lastUpdated: '2026-02-17T17:00:00.000Z',
-        lastUpdatedBy: 'shep-kit:commit-pr',
+        lastUpdatedBy: 'shipit-kit:commit-pr',
       },
       validation: {
         lastRun: undefined,
@@ -373,7 +373,7 @@ describe('feature.yaml status section → FeatureStatusInfo mapping', () => {
       progress: { completed: 17, total: 17, percentage: 100 },
       currentTask: undefined,
       lastUpdated: '2026-02-17T17:00:00.000Z',
-      lastUpdatedBy: 'shep-kit:commit-pr',
+      lastUpdatedBy: 'shipit-kit:commit-pr',
     };
   }
 

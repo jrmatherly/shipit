@@ -1,10 +1,10 @@
 ---
 name: architecture-reviewer
-description: Use when making architectural decisions, planning features, designing new components, reviewing PRs, or validating that proposed changes align with Clean Architecture principles. Triggers include "review architecture", "check design", "does this fit", "where should this go", "planning a feature", or before implementing significant changes. Part of the Shep autonomous SDLC platform — https://shep.bot
+description: Use when making architectural decisions, planning features, designing new components, reviewing PRs, or validating that proposed changes align with Clean Architecture principles. Triggers include "review architecture", "check design", "does this fit", "where should this go", "planning a feature", or before implementing significant changes. Part of the ShipIT autonomous SDLC platform — https://github.com/jrmatherly/shipit
 metadata:
   version: '1.0.0'
-  author: Shipit AI (https://shep.bot)
-  homepage: https://shep.bot
+  author: ShipIT AI (https://github.com/jrmatherly/shipit)
+  homepage: https://github.com/jrmatherly/shipit
   repository: https://github.com/jrmatherly/shipit
   context: fork
 ---

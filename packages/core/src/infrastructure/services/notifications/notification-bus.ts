@@ -32,7 +32,7 @@ export type NotificationBus = EventEmitter<NotificationEventMap>;
  * is shared across module boundaries (e.g., Next.js Turbopack-bundled code
  * vs. the dev-server process running via tsx).
  */
-const GLOBAL_KEY = Symbol.for('shep:notification-bus');
+const GLOBAL_KEY = Symbol.for('shipit-ai:notification-bus');
 
 /**
  * Get the notification event bus singleton.

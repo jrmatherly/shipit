@@ -5,16 +5,16 @@ import { tmpdir } from 'node:os';
 import { deriveCategory, getDisplayName, parseFrontmatter, getSkills } from '@/lib/skills';
 
 describe('deriveCategory', () => {
-  // Workflow: shep-kit:* prefix
+  // Workflow: shipit-kit:* prefix
   it.each([
-    'shep-kit:implement',
-    'shep-kit:commit-pr',
-    'shep-kit:merged',
-    'shep-kit:new-feature',
-    'shep-kit:new-feature-fast',
-    'shep-kit:parallel-task',
-    'shep-kit:plan',
-    'shep-kit:research',
+    'shipit-kit:implement',
+    'shipit-kit:commit-pr',
+    'shipit-kit:merged',
+    'shipit-kit:new-feature',
+    'shipit-kit:new-feature-fast',
+    'shipit-kit:parallel-task',
+    'shipit-kit:plan',
+    'shipit-kit:research',
   ])('returns Workflow for %s', (name) => {
     expect(deriveCategory(name)).toBe('Workflow');
   });
@@ -47,8 +47,8 @@ describe('deriveCategory', () => {
   });
 
   // Edge cases
-  it('returns Workflow for shep-kit: with no suffix', () => {
-    expect(deriveCategory('shep-kit:')).toBe('Workflow');
+  it('returns Workflow for shipit-kit: with no suffix', () => {
+    expect(deriveCategory('shipit-kit:')).toBe('Workflow');
   });
 
   it('returns Code Generation for shipit-ai: with no suffix', () => {
@@ -65,8 +65,8 @@ describe('deriveCategory', () => {
 });
 
 describe('getDisplayName', () => {
-  it('strips shep-kit: prefix', () => {
-    expect(getDisplayName('shep-kit:implement')).toBe('implement');
+  it('strips shipit-kit: prefix', () => {
+    expect(getDisplayName('shipit-kit:implement')).toBe('implement');
   });
 
   it('strips shipit-ai: prefix', () => {
@@ -81,8 +81,8 @@ describe('getDisplayName', () => {
     expect(getDisplayName('architecture-reviewer')).toBe('architecture-reviewer');
   });
 
-  it('strips shep-kit: prefix from new-feature-fast', () => {
-    expect(getDisplayName('shep-kit:new-feature-fast')).toBe('new-feature-fast');
+  it('strips shipit-kit: prefix from new-feature-fast', () => {
+    expect(getDisplayName('shipit-kit:new-feature-fast')).toBe('new-feature-fast');
   });
 });
 
@@ -226,11 +226,11 @@ describe('getSkills', () => {
   });
 
   it('reads skills from both project and global directories', async () => {
-    const projSkill = join(projectRoot, '.claude', 'skills', 'shep-kit-plan');
+    const projSkill = join(projectRoot, '.claude', 'skills', 'shipit-kit-plan');
     await mkdir(projSkill, { recursive: true });
     await writeFile(
       join(projSkill, 'SKILL.md'),
-      makeSkillMd({ name: 'shep-kit:plan', description: 'Planning skill' })
+      makeSkillMd({ name: 'shipit-kit:plan', description: 'Planning skill' })
     );
 
     const globalSkill = join(homeDir, '.claude', 'skills', 'find-skills');
@@ -242,10 +242,10 @@ describe('getSkills', () => {
 
     const skills = await getSkills(projectRoot, homeDir);
     expect(skills).toHaveLength(2);
-    // Sorted alphabetically: find-skills < shep-kit:plan
+    // Sorted alphabetically: find-skills < shipit-kit:plan
     expect(skills[0].name).toBe('find-skills');
     expect(skills[0].source).toBe('global');
-    expect(skills[1].name).toBe('shep-kit:plan');
+    expect(skills[1].name).toBe('shipit-kit:plan');
     expect(skills[1].source).toBe('project');
   });
 
@@ -348,11 +348,11 @@ describe('getSkills', () => {
   });
 
   it('derives displayName and category correctly', async () => {
-    const skillDir = join(projectRoot, '.claude', 'skills', 'shep-kit-implement');
+    const skillDir = join(projectRoot, '.claude', 'skills', 'shipit-kit-implement');
     await mkdir(skillDir, { recursive: true });
     await writeFile(
       join(skillDir, 'SKILL.md'),
-      makeSkillMd({ name: 'shep-kit:implement', description: 'Implementation' })
+      makeSkillMd({ name: 'shipit-kit:implement', description: 'Implementation' })
     );
 
     const skills = await getSkills(projectRoot, homeDir);

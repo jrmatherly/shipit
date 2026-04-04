@@ -10,7 +10,7 @@
 **Key Principles:**
 
 - **First thing to read** when starting work on a feature in a new session
-- **Updated by all shep-kit skills** as work progresses
+- **Updated by all shipit-kit skills** as work progresses
 - **Never edited manually** - only via automated skill updates
 - **tasks.md is source of truth** for task definitions (feature.yaml only tracks status)
 
@@ -176,7 +176,7 @@ status:
     percentage: 67
   currentTask: "task-9"
   lastUpdated: "2026-02-05T15:45:00Z"
-  lastUpdatedBy: "shep-kit:implement"
+  lastUpdatedBy: "shipit-kit:implement"
 ```
 
 ### Example: Add Checkpoint
@@ -185,14 +185,14 @@ status:
 checkpoints:
   - phase: 'research'
     completedAt: '2026-02-03T16:00:00Z'
-    completedBy: 'shep-kit:research'
+    completedBy: 'shipit-kit:research'
   - phase: 'plan'
     completedAt: '2026-02-04T18:30:00Z'
-    completedBy: 'shep-kit:plan'
+    completedBy: 'shipit-kit:plan'
   # NEW
   - phase: 'implementation-started'
     completedAt: '2026-02-05T09:00:00Z'
-    completedBy: 'shep-kit:implement'
+    completedBy: 'shipit-kit:implement'
 ```
 
 ### Example: Record Error
@@ -231,7 +231,7 @@ errors:
 
 ## Skill-Specific Instructions
 
-### `/shep-kit:new-feature`
+### `/shipit-kit:new-feature`
 
 **When:** Creating new feature spec
 
@@ -258,15 +258,15 @@ status:
   progress: { completed: 0, total: 0, percentage: 0 }
   currentTask: null
   lastUpdated: '2026-02-05T16:00:00Z'
-  lastUpdatedBy: 'shep-kit:new-feature'
+  lastUpdatedBy: 'shipit-kit:new-feature'
 
 checkpoints:
   - phase: 'feature-created'
     completedAt: '2026-02-05T16:00:00Z'
-    completedBy: 'shep-kit:new-feature'
+    completedBy: 'shipit-kit:new-feature'
 ```
 
-### `/shep-kit:research`
+### `/shipit-kit:research`
 
 **When:** Research phase completes
 
@@ -275,7 +275,7 @@ checkpoints:
 - Set `lifecycle: "planning"`, `phase: "planning"`
 - Add checkpoint: "research-complete"
 
-### `/shep-kit:plan`
+### `/shipit-kit:plan`
 
 **When:** Plan and tasks.md written
 
@@ -293,7 +293,7 @@ checkpoints:
 total_tasks=$(grep -c "^## Task [0-9]" tasks.md)
 ```
 
-### `/shep-kit:implement`
+### `/shipit-kit:implement`
 
 **When:** Starting implementation
 
@@ -321,7 +321,7 @@ total_tasks=$(grep -c "^## Task [0-9]" tasks.md)
   - Set `phase: "blocked"`
   - Add task ID to `tasks.failed`
 
-### `/shep-kit:commit-pr`
+### `/shipit-kit:commit-pr`
 
 **When:** PR created and review loop running
 
@@ -360,7 +360,7 @@ in-review → review-watching → review-fixing → review-watching (loop)
                               review-watching → in-review (approved / no issues)
 ```
 
-### `/shep-kit:merged`
+### `/shipit-kit:merged`
 
 **When:** PR merged
 
@@ -423,7 +423,7 @@ All `feature.yaml` files MUST have:
 
 **Cause:** Feature created before protocol was implemented
 
-**Solution:** Create from template manually or re-run `/shep-kit:new-feature`
+**Solution:** Create from template manually or re-run `/shipit-kit:new-feature`
 
 ### State is stale/incorrect
 
@@ -450,7 +450,7 @@ All `feature.yaml` files MUST have:
 
 ## Examples
 
-See `.claude/skills/shep-kit-implement/examples/validation-report.md` for complete examples of validation output and error handling.
+See `.claude/skills/shipit-kit-implement/examples/validation-report.md` for complete examples of validation output and error handling.
 
 ## Version History
 
@@ -460,4 +460,4 @@ See `.claude/skills/shep-kit-implement/examples/validation-report.md` for comple
 
 ---
 
-**Reference:** This protocol is used by all shep-kit skills. See skill-specific SKILL.md files for detailed implementation instructions.
+**Reference:** This protocol is used by all shipit-kit skills. See skill-specific SKILL.md files for detailed implementation instructions.

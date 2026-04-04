@@ -15,7 +15,7 @@ status:
     percentage: 100
   currentTask: null
   lastUpdated: '2026-03-09T15:20:00.000Z'
-  lastUpdatedBy: shep-kit:merged
+  lastUpdatedBy: shipit-kit:merged
   completedPhases:
     - analyze
     - requirements
@@ -43,10 +43,10 @@ checkpoints:
     completedBy: feature-agent
   - phase: pr-created
     completedAt: '2026-03-04T13:20:00.000Z'
-    completedBy: shep-kit:commit-pr
+    completedBy: shipit-kit:commit-pr
   - phase: feature-merged
     completedAt: '2026-03-09T15:20:00.000Z'
-    completedBy: shep-kit:merged
+    completedBy: shipit-kit:merged
 errors:
   current: null
   history: []

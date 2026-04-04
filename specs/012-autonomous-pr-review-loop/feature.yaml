@@ -14,7 +14,7 @@ status:
     percentage: 100
   currentTask: null
   lastUpdated: '2026-02-11T00:45:00Z'
-  lastUpdatedBy: 'shep-kit:merged'
+  lastUpdatedBy: 'shipit-kit:merged'
 
 prUrl: 'https://github.com/jrmatherly/shipit/pull/41'
 
@@ -33,22 +33,22 @@ tasks:
 checkpoints:
   - phase: 'feature-created'
     completedAt: '2026-02-10T19:12:16Z'
-    completedBy: 'shep-kit:new-feature'
+    completedBy: 'shipit-kit:new-feature'
   - phase: 'research-complete'
     completedAt: '2026-02-10T21:30:00Z'
-    completedBy: 'shep-kit:research'
+    completedBy: 'shipit-kit:research'
   - phase: 'plan-complete'
     completedAt: '2026-02-10T22:00:00Z'
-    completedBy: 'shep-kit:plan'
+    completedBy: 'shipit-kit:plan'
   - phase: 'implementation-complete'
     completedAt: '2026-02-11T00:30:00Z'
-    completedBy: 'shep-kit:implement'
+    completedBy: 'shipit-kit:implement'
   - phase: 'pr-created'
     completedAt: '2026-02-10T20:20:00Z'
-    completedBy: 'shep-kit:commit-pr'
+    completedBy: 'shipit-kit:commit-pr'
   - phase: 'feature-merged'
     completedAt: '2026-02-11T00:45:00Z'
-    completedBy: 'shep-kit:merged'
+    completedBy: 'shipit-kit:merged'
 
 errors:
   current: null

@@ -351,4 +351,4 @@ Since CLI commands integrate use cases with UI, E2E tests serve as integration t
 
 ---
 
-_Updated by `/shep-kit:plan` — see tasks.md for detailed breakdown_
+_Updated by `/shipit-kit:plan` — see tasks.md for detailed breakdown_

@@ -127,4 +127,4 @@ All changes are additive (new files + one import line in `index.ts`). Rollback b
 
 ---
 
-_Updated by `/shep-kit:plan` — see tasks.md for detailed breakdown_
+_Updated by `/shipit-kit:plan` — see tasks.md for detailed breakdown_
