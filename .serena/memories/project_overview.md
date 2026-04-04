@@ -1,6 +1,7 @@
 # Project Overview
 
-**Name:** `@shipit-ai/cli` (forked at v1.164.1 from shep-ai/shep)
+**Name:** `@shipit-ai/cli` (forked from shep-ai/shep, current: v1.164.2)
+**Display Name:** ShipIT AI (uppercase IT)
 **Purpose:** Autonomous AI Native SDLC Platform. Users run `shipit-ai` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
 **License:** MIT
 **Repository:** https://github.com/jrmatherly/shipit.git

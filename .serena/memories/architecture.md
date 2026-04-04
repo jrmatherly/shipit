@@ -26,4 +26,8 @@ Former god classes are now **facades** delegating to focused sub-services:
 - Shared factories: `tests/factories/` (Feature, AgentRun, Repository, AgentSession)
 - Settings factory: `createDefaultSettings()` from domain
 - TypeSpec dates: all 31 fields are `Date` objects (emitter patched)
-- 5677 tests across 395 files
+- 5719+ tests across 397+ files
+
+## Security
+- Localhost-only proxy at `src/presentation/web/proxy.ts` (renamed from middleware.ts in Next.js 16)
+- Web API routes string-token DI via `web-tokens.module.ts` (Turbopack can't resolve .js→.ts imports)
