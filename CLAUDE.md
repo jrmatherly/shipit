@@ -64,7 +64,7 @@ Several former god classes are now **facades** delegating to focused sub-service
 
 ## Security
 
-- All web API routes go through localhost-only middleware (`src/presentation/web/middleware.ts`) — rejects non-localhost requests
+- All web API routes go through localhost-only proxy (`src/presentation/web/proxy.ts`) — rejects non-localhost requests
 - File-serving routes use `realpath()` before path containment checks to prevent symlink traversal
 - Upload routes block `.env` files and extensionless files
 - 500 errors use `apiError()` from `@/lib/api-helpers` — never expose raw `error.message` to clients
@@ -142,7 +142,7 @@ Scopes are enforced at warning level by commitlint — commits succeed but prefe
 | Web UI architecture            | [docs/ui/architecture.md](./docs/ui/architecture.md)                                   |
 | pnpm workspaces + setup        | [docs/development/setup.md](./docs/development/setup.md)                               |
 | Tech debt remediation plan     | [.scratchpad/plans/technical-debt-remediation-plan.md](./.scratchpad/plans/technical-debt-remediation-plan.md) |
-| Security middleware            | [src/presentation/web/middleware.ts](./src/presentation/web/middleware.ts)              |
+| Security middleware            | [src/presentation/web/proxy.ts](./src/presentation/web/proxy.ts)              |
 
 ## Naming Conventions (Post-Rename)
 

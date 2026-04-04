@@ -50,7 +50,7 @@ Several former god classes are now **facades** delegating to focused sub-service
 
 ## Security
 
-- All web API routes go through localhost-only middleware (`src/presentation/web/middleware.ts`) — rejects non-localhost requests
+- All web API routes go through localhost-only proxy (`src/presentation/web/proxy.ts`) — rejects non-localhost requests
 - File-serving routes use `realpath()` before path containment checks to prevent symlink traversal
 - Upload routes block `.env` files and extensionless files
 - 500 errors use `apiError()` from `@/lib/api-helpers` — never expose raw `error.message` to clients

@@ -8,15 +8,15 @@ import type { NextRequest } from 'next/server';
  *
  * SECURITY NOTES:
  * - x-forwarded-for is client-controllable. An attacker can spoof
- *   "X-Forwarded-For: 127.0.0.1" to bypass this check. This middleware
+ *   "X-Forwarded-For: 127.0.0.1" to bypass this check. This proxy
  *   is defense-in-depth, not the sole security boundary. The primary
  *   control is binding the server to 127.0.0.1 at the network level.
  * - When request.ip is undefined (common in Next.js dev mode) and no
- *   x-forwarded-for header is present, the middleware fails open to
+ *   x-forwarded-for header is present, the proxy fails open to
  *   avoid breaking local development. This is an accepted trade-off
  *   for a developer tool that is not exposed to the public internet.
  */
-export function middleware(request: NextRequest): NextResponse | undefined {
+export function proxy(request: NextRequest): NextResponse | undefined {
   // Only gate /api/ routes
   if (!request.nextUrl.pathname.startsWith('/api/')) {
     return undefined;
