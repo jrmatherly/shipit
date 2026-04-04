@@ -465,6 +465,8 @@ export enum AgentType {
   GeminiCli = 'gemini-cli',
   Aider = 'aider',
   Continue = 'continue',
+  CopilotCli = 'copilot-cli',
+  RovoDev = 'rovo-dev',
   Cursor = 'cursor',
   Dev = 'dev',
 }

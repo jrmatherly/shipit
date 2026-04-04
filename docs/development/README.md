@@ -8,7 +8,7 @@ Guides for developing and contributing to Shipit AI CLI.
 | ------------------------------------------------------ | --------------------------------------- |
 | [setup.md](./setup.md)                                 | Development environment setup           |
 | [tdd-guide.md](./tdd-guide.md)                         | TDD methodology with Clean Architecture |
-| [spec-driven-workflow.md](./spec-driven-workflow.md)   | Shep-kit spec-driven development flow   |
+| [spec-driven-workflow.md](./spec-driven-workflow.md)   | shipit-kit spec-driven development flow   |
 | [implementation-guide.md](./implementation-guide.md)   | Implementation discipline and patterns  |
 | [testing.md](./testing.md)                             | Testing strategy and commands           |
 | [building.md](./building.md)                           | Build process and tooling               |
@@ -17,7 +17,7 @@ Guides for developing and contributing to Shipit AI CLI.
 | [adding-agents.md](./adding-agents.md)                 | Adding new LangGraph agent nodes        |
 | [feature-yaml-protocol.md](./feature-yaml-protocol.md) | feature.yaml status tracking protocol   |
 | [web-component-library.md](./web-component-library.md) | Web UI component library reference      |
-| [shipit-kit-reference.md](./shipit-kit-reference.md)       | Shep-kit skills complete reference      |
+| [shipit-kit-reference.md](./shipit-kit-reference.md)       | shipit-kit skills complete reference      |
 
 ## Quick Start for Contributors
 

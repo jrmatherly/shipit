@@ -20,7 +20,7 @@ properties:
     type: array
     items:
       $ref: AgentSessionMessage.yaml
-    description: Conversation messages — populated only in the detail view (shep session show)
+    description: Conversation messages — populated only in the detail view (shipit-ai session show)
   firstMessageAt:
     type: string
     format: date-time

@@ -2,7 +2,7 @@
 
 > **Autonomous AI-Native SDLC Platform** — From idea to deployed code, fully automated.
 
-Shep is the first truly autonomous software development lifecycle platform. Describe what you want in plain English, and Shep handles requirements gathering, research, planning, implementation, code review, and deployment — with human-in-the-loop approval gates at every critical decision point.
+ShipIT is the first truly autonomous software development lifecycle platform. Describe what you want in plain English, and ShipIT handles requirements gathering, research, planning, implementation, code review, and deployment — with human-in-the-loop approval gates at every critical decision point.
 
 ---
 
@@ -32,13 +32,13 @@ Shep is the first truly autonomous software development lifecycle platform. Desc
 npm install -g @shipit-ai/cli
 
 # Start the platform — opens the web dashboard automatically
-shep
+shipit-ai
 
 # Create your first feature (one command, fully autonomous)
-shep feat new "Add user authentication with OAuth2"
+shipit-ai feat new "Add user authentication with OAuth2"
 
 # Or with full control
-shep feat new "Add dark mode toggle" \
+shipit-ai feat new "Add dark mode toggle" \
   --repo ./my-app \
   --allow-prd \
   --allow-plan \
@@ -46,13 +46,13 @@ shep feat new "Add dark mode toggle" \
   --pr
 ```
 
-That's it. Shep launches a beautiful web dashboard at `http://localhost:4050` and begins autonomously working through the entire development lifecycle. You review and approve at key checkpoints — or let it run fully hands-free.
+That's it. ShipIT launches a beautiful web dashboard at `http://localhost:4050` and begins autonomously working through the entire development lifecycle. You review and approve at key checkpoints — or let it run fully hands-free.
 
 ---
 
 ## Onboarding
 
-On first launch, Shep walks you through a guided setup wizard — choose your AI agent (Claude Code, Cursor CLI, Gemini CLI, or Demo), pick a model, authenticate, and add your first repository. The same flow is available via the CLI when running `shep` or `shep feat new` for the first time.
+On first launch, ShipIT walks you through a guided setup wizard — choose your AI agent (Claude Code, Cursor CLI, Gemini CLI, or Demo), pick a model, authenticate, and add your first repository. The same flow is available via the CLI when running `shipit-ai` or `shipit-ai feat new` for the first time.
 
 ![Onboarding — Choose Your Agent](screenshots/features-guide/18-onboarding-choose-agent.png)
 
@@ -122,10 +122,10 @@ Click the **+** button on any repository node to open the feature creation drawe
 
 ```bash
 # Minimal — just describe it
-shep feat new "Add search functionality to the products page"
+shipit-ai feat new "Add search functionality to the products page"
 
 # Full control — specify every option
-shep feat new "Implement WebSocket real-time notifications" \
+shipit-ai feat new "Implement WebSocket real-time notifications" \
   --repo /path/to/project \
   --model claude-opus-4-6 \
   --allow-prd \
@@ -262,7 +262,7 @@ Not all tabs are visible at all times. Tabs appear dynamically based on the feat
 
 ## Quick Actions & Dev Server
 
-Shep integrates directly with your development tools. Every repository node and feature drawer provides one-click access to your IDE, terminal, file system, and local dev server.
+ShipIT integrates directly with your development tools. Every repository node and feature drawer provides one-click access to your IDE, terminal, file system, and local dev server.
 
 ### Repository Quick Actions
 
@@ -307,7 +307,7 @@ When a dev server is running, each repository node shows:
 
 ## Settings & Configuration
 
-A comprehensive settings panel with seven sections for complete control over Shep's behavior.
+A comprehensive settings panel with seven sections for complete control over ShipIT's behavior.
 
 ![Settings Page](screenshots/features-guide/08-settings-page.png)
 
@@ -367,7 +367,7 @@ View local SQLite database info:
 
 ## Tool Management
 
-Shep detects, installs, and launches your development tools. The Tools page shows every supported tool with its install status, category, and quick actions.
+ShipIT detects, installs, and launches your development tools. The Tools page shows every supported tool with its install status, category, and quick actions.
 
 ![Tools Page](screenshots/features-guide/09-tools-page.png)
 
@@ -396,13 +396,13 @@ Click any tool card to open a detail drawer with full description, install comma
 
 ```bash
 # List all tools with install status
-shep tools list
+shipit-ai tools list
 
 # Install a specific tool
-shep install cursor
+shipit-ai install cursor
 
 # See installation instructions without installing
-shep install warp --how
+shipit-ai install warp --how
 ```
 
 ---
@@ -428,18 +428,18 @@ Dark mode is persisted across sessions and applies to all pages: dashboard, feat
 ### Core Commands
 
 ```bash
-shep                              # Start daemon + onboarding
-shep start [--port <number>]      # Start web UI daemon (default: 4050)
-shep stop                         # Stop the running daemon
-shep restart                      # Restart the daemon
-shep status                       # Show daemon status and metrics
-shep ui [--port] [--no-open]      # Start web UI in foreground
+shipit-ai                              # Start daemon + onboarding
+shipit-ai start [--port <number>]      # Start web UI daemon (default: 4050)
+shipit-ai stop                         # Stop the running daemon
+shipit-ai restart                      # Restart the daemon
+shipit-ai status                       # Show daemon status and metrics
+shipit-ai ui [--port] [--no-open]      # Start web UI in foreground
 ```
 
 ### Feature Management
 
 ```bash
-shep feat new <description>       # Create a new feature
+shipit-ai feat new <description>       # Create a new feature
   --repo <path>                   #   Target repository
   --push                          #   Push branch on completion
   --pr                            #   Open PR on completion
@@ -452,58 +452,58 @@ shep feat new <description>       # Create a new feature
   --model <name>                  #   Specify AI model
   --attach <path>                 #   Attach reference files
 
-shep feat ls [--repo]             # List features
-shep feat show <id>               # Show feature details
-shep feat del <id>                # Delete a feature
-shep feat resume <id>             # Resume paused feature
-shep feat review <id>             # Review feature
-shep feat approve <id>            # Approve current phase
-shep feat reject <id>             # Reject with feedback
-shep feat logs <id>               # View feature logs
+shipit-ai feat ls [--repo]             # List features
+shipit-ai feat show <id>               # Show feature details
+shipit-ai feat del <id>                # Delete a feature
+shipit-ai feat resume <id>             # Resume paused feature
+shipit-ai feat review <id>             # Review feature
+shipit-ai feat approve <id>            # Approve current phase
+shipit-ai feat reject <id>             # Reject with feedback
+shipit-ai feat logs <id>               # View feature logs
 ```
 
 ### Agent Management
 
 ```bash
-shep agent ls                     # List all agents
-shep agent show <id>              # Show agent details
-shep agent stop <id>              # Stop running agent
-shep agent logs <id>              # View agent logs
-shep agent delete <id>            # Delete agent
-shep agent approve <id>           # Approve agent action
-shep agent reject <id>            # Reject agent action
+shipit-ai agent ls                     # List all agents
+shipit-ai agent show <id>              # Show agent details
+shipit-ai agent stop <id>              # Stop running agent
+shipit-ai agent logs <id>              # View agent logs
+shipit-ai agent delete <id>            # Delete agent
+shipit-ai agent approve <id>           # Approve agent action
+shipit-ai agent reject <id>            # Reject agent action
 ```
 
 ### Repository & Session Management
 
 ```bash
-shep repo ls                      # List repositories
-shep repo show <id>               # Show repository details
-shep session ls                   # List sessions
-shep session show <id>            # Show session details
+shipit-ai repo ls                      # List repositories
+shipit-ai repo show <id>               # Show repository details
+shipit-ai session ls                   # List sessions
+shipit-ai session show <id>            # Show session details
 ```
 
 ### Settings & Configuration
 
 ```bash
-shep settings                     # Launch setup wizard
-shep settings show                # Display current config
-shep settings init                # Initialize settings
-shep settings agent               # Configure AI agent
-shep settings ide                 # Configure IDE
-shep settings workflow            # Configure workflow
-shep settings model               # Configure model
+shipit-ai settings                     # Launch setup wizard
+shipit-ai settings show                # Display current config
+shipit-ai settings init                # Initialize settings
+shipit-ai settings agent               # Configure AI agent
+shipit-ai settings ide                 # Configure IDE
+shipit-ai settings workflow            # Configure workflow
+shipit-ai settings model               # Configure model
 ```
 
 ### Tools & Utilities
 
 ```bash
-shep tools list                   # List tools with install status
-shep install <tool> [--how]       # Install a dev tool
-shep ide-open [--ide] [--dir]     # Open IDE in directory
-shep version                      # Show version info
-shep upgrade                      # Upgrade to latest version
-shep run <agent> [-p prompt]      # Run agent directly
+shipit-ai tools list                   # List tools with install status
+shipit-ai install <tool> [--how]       # Install a dev tool
+shipit-ai ide-open [--ide] [--dir]     # Open IDE in directory
+shipit-ai version                      # Show version info
+shipit-ai upgrade                      # Upgrade to latest version
+shipit-ai run <agent> [-p prompt]      # Run agent directly
 ```
 
 ---
@@ -512,7 +512,7 @@ shep run <agent> [-p prompt]      # Run agent directly
 
 ### Clean Architecture
 
-Shep follows Clean Architecture principles with four layers (dependencies point inward):
+ShipIT follows Clean Architecture principles with four layers (dependencies point inward):
 
 ```
 Presentation (CLI, TUI, Web UI)
@@ -569,16 +569,16 @@ Domain (Core business logic, no external deps)
 
 ```bash
 # Fully autonomous — describe and walk away
-shep feat new "Add Stripe payment integration" --allow-all --push --pr
+shipit-ai feat new "Add Stripe payment integration" --allow-all --push --pr
 ```
 
-Shep handles everything: analyzes your codebase, writes a PRD, researches Stripe's API, plans the implementation, writes the code with tests, opens a PR, and monitors CI.
+ShipIT handles everything: analyzes your codebase, writes a PRD, researches Stripe's API, plans the implementation, writes the code with tests, opens a PR, and monitors CI.
 
 ### Team Lead
 
 ```bash
 # Review at every checkpoint
-shep feat new "Refactor authentication to use JWT tokens"
+shipit-ai feat new "Refactor authentication to use JWT tokens"
 ```
 
 Review the PRD, approve the plan, then inspect the final PR diff before merging. Full human oversight with AI doing the heavy lifting.
@@ -587,7 +587,7 @@ Review the PRD, approve the plan, then inspect the final PR diff before merging.
 
 ```bash
 # Fast mode — skip planning, go straight to code
-shep feat new "Create a landing page with hero section" --fast --allow-all
+shipit-ai feat new "Create a landing page with hero section" --fast --allow-all
 ```
 
 Get a working implementation in minutes, not hours. Perfect for prototypes and MVPs.
@@ -596,8 +596,8 @@ Get a working implementation in minutes, not hours. Perfect for prototypes and M
 
 ```bash
 # Target specific repositories
-shep feat new "Add shared auth middleware" --repo ./backend
-shep feat new "Add login page component" --repo ./frontend
+shipit-ai feat new "Add shared auth middleware" --repo ./backend
+shipit-ai feat new "Add login page component" --repo ./frontend
 ```
 
 Manage features across multiple repositories from a single dashboard.
