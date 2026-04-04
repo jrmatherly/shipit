@@ -23,7 +23,7 @@ export interface ToolMetadata {
   description: string;
 
   /** Tool tags for grouping in listings. A tool can belong to multiple categories. */
-  tags: ('ide' | 'cli-agent' | 'vcs' | 'terminal')[];
+  tags: ('ide' | 'cli-agent' | 'vcs' | 'terminal' | 'shell')[];
 
   /** Company or developer name */
   author?: string;
@@ -151,4 +151,12 @@ export function getTerminalEntries(): [string, ToolMetadata][] {
   return Object.entries(TOOL_METADATA).filter(
     ([, meta]) => meta.tags.includes('terminal') && meta.openDirectory != null
   );
+}
+
+/**
+ * Returns entries from TOOL_METADATA tagged as "shell".
+ * Each entry is [toolId, metadata].
+ */
+export function getShellEntries(): [string, ToolMetadata][] {
+  return Object.entries(TOOL_METADATA).filter(([, meta]) => meta.tags.includes('shell'));
 }

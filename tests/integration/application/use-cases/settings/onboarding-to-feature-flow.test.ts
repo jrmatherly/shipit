@@ -93,7 +93,8 @@ describe('Onboarding defaults flow into feature command (integration)', () => {
    * Helper: initialize settings and complete onboarding with given wizard choices.
    */
   async function completeOnboarding(workflowDefaults: CompleteOnboardingInput['workflowDefaults']) {
-    const initUseCase = new InitializeSettingsUseCase(repository);
+    const mockEnvDetector = { detectDefaults: () => ({}) } as never;
+    const initUseCase = new InitializeSettingsUseCase(repository, mockEnvDetector);
     const settings = await initUseCase.execute();
     initializeSettings(settings);
 

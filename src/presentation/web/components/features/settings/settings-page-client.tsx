@@ -26,10 +26,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import { Badge } from '@/components/ui/badge';
 import { updateSettingsAction } from '@/app/actions/update-settings';
 import {
   type AgentType,
-  EditorType,
+  type EditorType,
   Language,
   TerminalType,
 } from '@shipit-ai/core/domain/generated/output';
@@ -54,19 +55,21 @@ import type {
   NotificationPreferences,
 } from '@shipit-ai/core/domain/generated/output';
 import type { AvailableTerminal } from '@/app/actions/get-available-terminals';
+import type { AvailableEditor } from '@/app/actions/get-available-editors';
+import type { AvailableShell } from '@/app/actions/get-available-shells';
 
-const EDITOR_OPTIONS = [
-  { value: EditorType.VsCode, label: 'VS Code' },
-  { value: EditorType.Cursor, label: 'Cursor' },
-  { value: EditorType.Windsurf, label: 'Windsurf' },
-  { value: EditorType.Zed, label: 'Zed' },
-  { value: EditorType.Antigravity, label: 'Antigravity' },
+const DEFAULT_EDITOR_OPTIONS: AvailableEditor[] = [
+  { id: 'vscode', name: 'VS Code', available: true },
+  { id: 'cursor', name: 'Cursor', available: true },
+  { id: 'windsurf', name: 'Windsurf', available: true },
+  { id: 'zed', name: 'Zed', available: true },
+  { id: 'antigravity', name: 'Antigravity', available: true },
 ];
 
-const SHELL_OPTIONS = [
-  { value: 'bash', label: 'Bash' },
-  { value: 'zsh', label: 'Zsh' },
-  { value: 'fish', label: 'Fish' },
+const DEFAULT_SHELL_OPTIONS: AvailableShell[] = [
+  { id: 'bash', name: 'Bash', available: true },
+  { id: 'zsh', name: 'Zsh', available: true },
+  { id: 'fish', name: 'Fish', available: true },
 ];
 
 const SECTIONS = [
@@ -88,6 +91,8 @@ export interface SettingsPageClientProps {
   shipitAiHome: string;
   dbFileSize: string;
   availableTerminals?: AvailableTerminal[];
+  availableEditors?: AvailableEditor[];
+  availableShells?: AvailableShell[];
 }
 
 function useSaveIndicator() {
@@ -145,6 +150,8 @@ export function SettingsPageClient({
   shipitAiHome,
   dbFileSize,
   availableTerminals,
+  availableEditors,
+  availableShells,
 }: SettingsPageClientProps) {
   const { t } = useTranslation('web');
   const { showSaving, showSaved, save } = useSaveIndicator();
@@ -168,16 +175,16 @@ export function SettingsPageClient({
     settings.environment.terminalPreference ?? TerminalType.System
   );
 
-  // Filter to only show installed terminals
-  const terminalOptions = availableTerminals
-    ? availableTerminals.filter((t) => t.available)
-    : [
-        {
-          id: TerminalType.System,
-          name: t('settings.environment.systemTerminal'),
-          available: true as const,
-        },
-      ];
+  const terminalOptions = availableTerminals ?? [
+    {
+      id: TerminalType.System,
+      name: t('settings.environment.systemTerminal'),
+      available: true as const,
+    },
+  ];
+
+  const editorOptions = availableEditors ?? DEFAULT_EDITOR_OPTIONS;
+  const shellOptions = availableShells ?? DEFAULT_SHELL_OPTIONS;
 
   // Workflow state
   const [openPr, setOpenPr] = useState(settings.workflow.openPrOnImplementationComplete);
@@ -437,18 +444,29 @@ export function SettingsPageClient({
                 <SelectTrigger
                   id="default-editor"
                   data-testid="editor-select"
-                  className="w-55 cursor-pointer text-xs"
+                  className="w-64 cursor-pointer text-xs"
                 >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {EDITOR_OPTIONS.map((opt) => {
-                    const Icon = getEditorTypeIcon(opt.value);
+                  {editorOptions.map((opt) => {
+                    const Icon = getEditorTypeIcon(opt.id as EditorType);
                     return (
-                      <SelectItem key={opt.value} value={opt.value}>
+                      <SelectItem key={opt.id} value={opt.id} disabled={!opt.available}>
                         <span className="flex items-center gap-2 text-xs">
                           <Icon className="h-4 w-4 shrink-0" />
-                          {opt.label}
+                          {opt.name}
+                          <Badge
+                            variant="outline"
+                            className={cn(
+                              'ml-auto px-1.5 py-0 text-[10px] leading-4 font-normal',
+                              opt.available
+                                ? 'border-emerald-500/30 text-emerald-500'
+                                : 'border-muted-foreground/30 text-muted-foreground'
+                            )}
+                          >
+                            {opt.available ? 'Installed' : 'Not Installed'}
+                          </Badge>
                         </span>
                       </SelectItem>
                     );
@@ -477,14 +495,27 @@ export function SettingsPageClient({
                 <SelectTrigger
                   id="shell-preference"
                   data-testid="shell-select"
-                  className="w-55 cursor-pointer text-xs"
+                  className="w-64 cursor-pointer text-xs"
                 >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {SHELL_OPTIONS.map((opt) => (
-                    <SelectItem key={opt.value} value={opt.value}>
-                      {opt.label}
+                  {shellOptions.map((opt) => (
+                    <SelectItem key={opt.id} value={opt.id} disabled={!opt.available}>
+                      <span className="flex items-center gap-2 text-xs">
+                        {opt.name}
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            'ml-auto px-1.5 py-0 text-[10px] leading-4 font-normal',
+                            opt.available
+                              ? 'border-emerald-500/30 text-emerald-500'
+                              : 'border-muted-foreground/30 text-muted-foreground'
+                          )}
+                        >
+                          {opt.available ? 'Installed' : 'Not Installed'}
+                        </Badge>
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -511,14 +542,27 @@ export function SettingsPageClient({
                 <SelectTrigger
                   id="terminal-preference"
                   data-testid="terminal-select"
-                  className="w-55 cursor-pointer text-xs"
+                  className="w-64 cursor-pointer text-xs"
                 >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   {terminalOptions.map((opt) => (
-                    <SelectItem key={opt.id} value={opt.id}>
-                      {opt.name}
+                    <SelectItem key={opt.id} value={opt.id} disabled={!opt.available}>
+                      <span className="flex items-center gap-2 text-xs">
+                        {opt.name}
+                        <Badge
+                          variant="outline"
+                          className={cn(
+                            'ml-auto px-1.5 py-0 text-[10px] leading-4 font-normal',
+                            opt.available
+                              ? 'border-emerald-500/30 text-emerald-500'
+                              : 'border-muted-foreground/30 text-muted-foreground'
+                          )}
+                        >
+                          {opt.available ? 'Installed' : 'Not Installed'}
+                        </Badge>
+                      </span>
                     </SelectItem>
                   ))}
                 </SelectContent>

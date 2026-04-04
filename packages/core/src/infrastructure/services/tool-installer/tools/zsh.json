@@ -1,0 +1,19 @@
+{
+  "name": "Zsh",
+  "summary": "Z shell - default shell on macOS since Catalina",
+  "description": "Zsh is a powerful shell with advanced features like improved tab completion, globbing, and plugin support via frameworks like Oh My Zsh.",
+  "tags": ["shell"],
+  "author": "Paul Falstad",
+  "website": "https://www.zsh.org/",
+  "platforms": ["linux", "darwin"],
+  "binary": "zsh",
+  "packageManager": "apt",
+  "commands": {
+    "linux": "sudo apt-get install -y zsh",
+    "darwin": "brew install zsh"
+  },
+  "timeout": 120000,
+  "documentationUrl": "https://zsh.sourceforge.io/Doc/",
+  "verifyCommand": "zsh --version",
+  "autoInstall": true
+}

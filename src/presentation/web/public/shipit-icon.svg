@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <defs>
+    <linearGradient id="brain-grad" x1="10" y1="50" x2="54" y2="10" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="50%" stop-color="#22D3EE"/>
+      <stop offset="100%" stop-color="#06B6D4"/>
+    </linearGradient>
+    <linearGradient id="circuit-grad" x1="0" y1="64" x2="64" y2="0" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#7C3AED"/>
+      <stop offset="100%" stop-color="#22D3EE"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Circuit traces radiating outward -->
+  <g stroke="url(#circuit-grad)" stroke-width="1.5" stroke-linecap="round" opacity="0.7">
+    <!-- Top -->
+    <line x1="32" y1="14" x2="32" y2="6"/>
+    <circle cx="32" cy="5" r="1.5" fill="url(#circuit-grad)"/>
+    <line x1="26" y1="15" x2="22" y2="7"/>
+    <circle cx="21.5" cy="6.5" r="1.5" fill="url(#circuit-grad)"/>
+    <line x1="38" y1="15" x2="42" y2="7"/>
+    <circle cx="42.5" cy="6.5" r="1.5" fill="url(#circuit-grad)"/>
+    <!-- Top-left -->
+    <line x1="20" y1="18" x2="13" y2="12"/>
+    <circle cx="12.5" cy="11.5" r="1.5" fill="url(#circuit-grad)"/>
+    <!-- Top-right -->
+    <line x1="44" y1="18" x2="51" y2="12"/>
+    <circle cx="51.5" cy="11.5" r="1.5" fill="url(#circuit-grad)"/>
+    <!-- Left -->
+    <line x1="16" y1="28" x2="8" y2="26"/>
+    <circle cx="7" cy="25.5" r="1.5" fill="url(#circuit-grad)"/>
+    <line x1="16" y1="34" x2="8" y2="36"/>
+    <circle cx="7" cy="36.5" r="1.5" fill="url(#circuit-grad)"/>
+    <!-- Right -->
+    <line x1="48" y1="28" x2="56" y2="26"/>
+    <circle cx="57" cy="25.5" r="1.5" fill="url(#circuit-grad)"/>
+    <line x1="48" y1="34" x2="56" y2="36"/>
+    <circle cx="57" cy="36.5" r="1.5" fill="url(#circuit-grad)"/>
+  </g>
+
+  <!-- Brain shape -->
+  <g transform="translate(14, 12)">
+    <!-- Left hemisphere -->
+    <path d="M18 2C12 2 6 6 4 12C2 18 3 24 5 28C7 32 10 35 14 36L16 36C16 36 15 32 14 28C13 24 14 18 18 14"
+          fill="url(#brain-grad)" opacity="0.85"/>
+    <!-- Right hemisphere -->
+    <path d="M18 2C24 2 30 6 32 12C34 18 33 24 31 28C29 32 26 35 22 36L20 36C20 36 21 32 22 28C23 24 22 18 18 14"
+          fill="url(#brain-grad)" opacity="0.95"/>
+    <!-- Central fissure -->
+    <path d="M18 4C18 4 16 10 17 16C18 22 18 28 17 36"
+          stroke="#E0F2FE" stroke-width="1" fill="none" opacity="0.5"/>
+    <!-- Brain folds - left -->
+    <path d="M8 14C10 13 13 14 14 16" stroke="#E0F2FE" stroke-width="0.8" fill="none" opacity="0.4"/>
+    <path d="M6 20C9 19 12 20 14 22" stroke="#E0F2FE" stroke-width="0.8" fill="none" opacity="0.4"/>
+    <path d="M7 26C9 25 12 26 14 28" stroke="#E0F2FE" stroke-width="0.8" fill="none" opacity="0.4"/>
+    <!-- Brain folds - right -->
+    <path d="M28 14C26 13 23 14 22 16" stroke="#E0F2FE" stroke-width="0.8" fill="none" opacity="0.4"/>
+    <path d="M30 20C27 19 24 20 22 22" stroke="#E0F2FE" stroke-width="0.8" fill="none" opacity="0.4"/>
+    <path d="M29 26C27 25 24 26 22 28" stroke="#E0F2FE" stroke-width="0.8" fill="none" opacity="0.4"/>
+  </g>
+
+  <!-- Brain stem / flowing lines at bottom -->
+  <g stroke="url(#circuit-grad)" stroke-width="1.5" fill="none" stroke-linecap="round" opacity="0.6">
+    <path d="M28 48C26 52 24 56 20 60"/>
+    <path d="M32 48C32 52 32 56 32 60"/>
+    <path d="M36 48C38 52 40 56 44 60"/>
+  </g>
+</svg>

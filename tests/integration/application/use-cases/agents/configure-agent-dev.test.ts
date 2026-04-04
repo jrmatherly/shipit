@@ -32,7 +32,8 @@ describe('ConfigureAgentUseCase — dev agent type persistence (integration)', (
     repository = new SQLiteSettingsRepository(db);
 
     // Initialize settings (simulates first CLI run)
-    const initUseCase = new InitializeSettingsUseCase(repository);
+    const mockEnvDetector = { detectDefaults: () => ({}) } as never;
+    const initUseCase = new InitializeSettingsUseCase(repository, mockEnvDetector);
     await initUseCase.execute();
 
     // AgentValidatorService requires an ExecFunction but dev type bypasses it;

@@ -1,0 +1,19 @@
+{
+  "name": "Fish",
+  "summary": "Friendly Interactive Shell with smart features",
+  "description": "Fish is a smart and user-friendly command line shell with features like autosuggestions, syntax highlighting, and web-based configuration.",
+  "tags": ["shell"],
+  "author": "Fish Shell Contributors",
+  "website": "https://fishshell.com/",
+  "platforms": ["linux", "darwin"],
+  "binary": "fish",
+  "packageManager": "apt",
+  "commands": {
+    "linux": "sudo apt-add-repository -y ppa:fish-shell/release-3 && sudo apt-get update && sudo apt-get install -y fish",
+    "darwin": "brew install fish"
+  },
+  "timeout": 300000,
+  "documentationUrl": "https://fishshell.com/docs/current/",
+  "verifyCommand": "fish --version",
+  "autoInstall": true
+}

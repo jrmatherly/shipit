@@ -20,7 +20,8 @@ describe('InitializeSettingsUseCase', () => {
 
   beforeEach(() => {
     mockRepository = new MockSettingsRepository();
-    useCase = new InitializeSettingsUseCase(mockRepository as any);
+    const mockEnvDetector = { detectDefaults: () => ({}) } as never;
+    useCase = new InitializeSettingsUseCase(mockRepository as any, mockEnvDetector);
   });
 
   describe('when settings do not exist', () => {

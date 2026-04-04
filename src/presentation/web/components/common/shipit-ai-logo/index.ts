@@ -1,2 +1,2 @@
-export { ShipitAiLogo } from './shep-logo';
-export type { ShipitAiLogoProps } from './shep-logo';
+export { ShipitAiLogo } from './shipit-ai-logo';
+export type { ShipitAiLogoProps } from './shipit-ai-logo';

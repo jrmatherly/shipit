@@ -129,7 +129,8 @@ describe('Workflow command → feature defaults flow (integration)', () => {
     repository = new SQLiteSettingsRepository(db);
 
     // Complete onboarding first (prerequisite for workflow command)
-    const initUseCase = new InitializeSettingsUseCase(repository);
+    const mockEnvDetector = { detectDefaults: () => ({}) } as never;
+    const initUseCase = new InitializeSettingsUseCase(repository, mockEnvDetector);
     const settings = await initUseCase.execute();
     initializeSettings(settings);
 

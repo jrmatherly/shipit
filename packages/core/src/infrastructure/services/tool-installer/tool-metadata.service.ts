@@ -3,7 +3,12 @@ import type {
   IToolMetadataService,
   ToolMetadata,
 } from '../../../application/ports/output/services/tool-metadata-service.interface.js';
-import { TOOL_METADATA, getIdeEntries, getTerminalEntries } from './tool-metadata.js';
+import {
+  TOOL_METADATA,
+  getIdeEntries,
+  getTerminalEntries,
+  getShellEntries,
+} from './tool-metadata.js';
 
 /**
  * DI-injectable wrapper around the tool metadata module.
@@ -25,5 +30,9 @@ export class ToolMetadataServiceImpl implements IToolMetadataService {
 
   getTerminalEntries(): [string, ToolMetadata][] {
     return getTerminalEntries() as [string, ToolMetadata][];
+  }
+
+  getShellEntries(): [string, ToolMetadata][] {
+    return getShellEntries() as [string, ToolMetadata][];
   }
 }

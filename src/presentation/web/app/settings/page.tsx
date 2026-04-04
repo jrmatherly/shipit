@@ -1,14 +1,23 @@
 import { loadSettings } from '@/app/actions/load-settings';
 import { getAvailableTerminals } from '@/app/actions/get-available-terminals';
+import { getAvailableEditors } from '@/app/actions/get-available-editors';
+import { getAvailableShells } from '@/app/actions/get-available-shells';
 import { SettingsPageClient } from '@/components/features/settings/settings-page-client';
 
 /** Skip static pre-rendering since we need runtime DI container and server context. */
 export const dynamic = 'force-dynamic';
 
 export default async function SettingsPage() {
-  const [{ settings, shipitAiHome, dbFileSize, error }, availableTerminals] = await Promise.all([
+  const [
+    { settings, shipitAiHome, dbFileSize, error },
+    availableTerminals,
+    availableEditors,
+    availableShells,
+  ] = await Promise.all([
     loadSettings(),
     getAvailableTerminals(),
+    getAvailableEditors(),
+    getAvailableShells(),
   ]);
 
   if (error || !settings) {
@@ -26,6 +35,8 @@ export default async function SettingsPage() {
         shipitAiHome={shipitAiHome ?? ''}
         dbFileSize={dbFileSize ?? 'Unknown'}
         availableTerminals={availableTerminals}
+        availableEditors={availableEditors}
+        availableShells={availableShells}
       />
     </div>
   );

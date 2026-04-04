@@ -132,8 +132,8 @@ export function AppSidebar({
                   aria-hidden={!expandedVisible}
                 >
                   <ShipitAiLogo
-                    className="shrink-0"
-                    size={20}
+                    className="shrink-0 drop-shadow-[0_0_4px_rgba(34,211,238,0.4)]"
+                    size={28}
                     variant={versionData.isDev ? 'dev' : 'default'}
                   />
                   <span className="truncate text-sm font-semibold tracking-tight">ShipIT</span>

@@ -80,16 +80,31 @@ const DEFAULT_AUTH_METHOD = AgentAuthMethod.Session;
  * - User profile: empty (all fields optional)
  * - Agent: Claude Code with session auth
  *
+ * @param overrides - Optional environment overrides detected from the user's
+ *   OS environment. When provided, these values take precedence over the
+ *   hardcoded defaults for editor, shell, and terminal preferences.
  * @returns Settings entity with default values
  *
  * @example
  * ```typescript
+ * // Use factory defaults
  * const settings = createDefaultSettings();
- * console.log(settings.models.default); // "claude-sonnet-4-6"
  * console.log(settings.environment.defaultEditor); // "vscode"
+ *
+ * // Use auto-detected overrides
+ * const settings = createDefaultSettings({
+ *   defaultEditor: EditorType.Zed,
+ *   shellPreference: 'zsh',
+ * });
+ * console.log(settings.environment.defaultEditor); // "zed"
+ * console.log(settings.environment.shellPreference); // "zsh"
  * ```
  */
-export function createDefaultSettings(): Settings {
+export function createDefaultSettings(overrides?: {
+  defaultEditor?: EditorType;
+  shellPreference?: string;
+  terminalPreference?: TerminalType;
+}): Settings {
   const now = new Date();
 
   const models: ModelConfiguration = {
@@ -99,9 +114,9 @@ export function createDefaultSettings(): Settings {
   const user: UserProfile = {};
 
   const environment: EnvironmentConfig = {
-    defaultEditor: DEFAULT_EDITOR,
-    shellPreference: DEFAULT_SHELL,
-    terminalPreference: DEFAULT_TERMINAL,
+    defaultEditor: overrides?.defaultEditor ?? DEFAULT_EDITOR,
+    shellPreference: overrides?.shellPreference ?? DEFAULT_SHELL,
+    terminalPreference: overrides?.terminalPreference ?? DEFAULT_TERMINAL,
     defaultCloneDirectory: '~/repos',
   };
 

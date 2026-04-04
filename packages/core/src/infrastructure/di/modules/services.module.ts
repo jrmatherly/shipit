@@ -42,6 +42,8 @@ import { FileSystemService } from '../../services/filesystem/filesystem.service.
 import type { IToolMetadataService } from '../../../application/ports/output/services/tool-metadata-service.interface.js';
 import { ToolMetadataServiceImpl } from '../../services/tool-installer/tool-metadata.service.js';
 import type { IAttachmentStorageService } from '../../../application/ports/output/services/attachment-storage-service.interface.js';
+import type { IEnvironmentDetectorService } from '../../../application/ports/output/services/environment-detector.service.js';
+import { EnvironmentDetectorServiceImpl } from '../../services/environment-detector.service.js';
 
 /**
  * Register business services (singletons and factories).
@@ -81,6 +83,10 @@ export function registerServicesModule(
   container.registerSingleton<IToolInstallerService>(
     'IToolInstallerService',
     ToolInstallerServiceImpl
+  );
+  container.registerSingleton<IEnvironmentDetectorService>(
+    'IEnvironmentDetectorService',
+    EnvironmentDetectorServiceImpl
   );
   container.registerSingleton<IDiffAnalyzerService>('IDiffAnalyzerService', DiffAnalyzerService);
   container.registerSingleton<IBranchDiscoveryService>(

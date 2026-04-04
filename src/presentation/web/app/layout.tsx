@@ -22,18 +22,9 @@ export const metadata: Metadata = {
   description:
     'Autonomous AI Native SDLC Platform - Automate the development cycle from idea to deploy',
   icons: [
-    {
-      rel: 'icon',
-      url: '/favicon-light.svg',
-      type: 'image/svg+xml',
-      media: '(prefers-color-scheme: light)',
-    },
-    {
-      rel: 'icon',
-      url: '/favicon-dark.svg',
-      type: 'image/svg+xml',
-      media: '(prefers-color-scheme: dark)',
-    },
+    { rel: 'icon', url: '/shipit-icon.svg', type: 'image/svg+xml' },
+    { rel: 'icon', url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    { rel: 'apple-touch-icon', url: '/apple-touch-icon.png', sizes: '180x180' },
   ],
 };
 

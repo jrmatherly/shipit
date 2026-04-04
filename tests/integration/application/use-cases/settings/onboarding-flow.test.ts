@@ -57,7 +57,8 @@ describe('Onboarding flow (integration)', () => {
 
   it('should report onboarding incomplete on a fresh database', async () => {
     // Initialize settings (simulates first CLI bootstrap on fresh SHIPIT_AI_HOME)
-    const initUseCase = new InitializeSettingsUseCase(repository);
+    const mockEnvDetector = { detectDefaults: () => ({}) } as never;
+    const initUseCase = new InitializeSettingsUseCase(repository, mockEnvDetector);
     const settings = await initUseCase.execute();
     initializeSettings(settings);
 
@@ -70,7 +71,8 @@ describe('Onboarding flow (integration)', () => {
 
   it('should report onboarding complete after wizard finishes', async () => {
     // Bootstrap: initialize + load settings into singleton
-    const initUseCase = new InitializeSettingsUseCase(repository);
+    const mockEnvDetector = { detectDefaults: () => ({}) } as never;
+    const initUseCase = new InitializeSettingsUseCase(repository, mockEnvDetector);
     const settings = await initUseCase.execute();
     initializeSettings(settings);
 
@@ -91,7 +93,8 @@ describe('Onboarding flow (integration)', () => {
 
   it('should persist onboarding_complete=true so subsequent runs skip the wizard', async () => {
     // === First run: initialize + complete onboarding ===
-    const initUseCase = new InitializeSettingsUseCase(repository);
+    const mockEnvDetector = { detectDefaults: () => ({}) } as never;
+    const initUseCase = new InitializeSettingsUseCase(repository, mockEnvDetector);
     const settings = await initUseCase.execute();
     initializeSettings(settings);
 
@@ -113,7 +116,8 @@ describe('Onboarding flow (integration)', () => {
   });
 
   it('should persist all wizard choices to the database', async () => {
-    const initUseCase = new InitializeSettingsUseCase(repository);
+    const mockEnvDetector = { detectDefaults: () => ({}) } as never;
+    const initUseCase = new InitializeSettingsUseCase(repository, mockEnvDetector);
     const settings = await initUseCase.execute();
     initializeSettings(settings);
 

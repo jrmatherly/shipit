@@ -10,7 +10,7 @@ export interface ToolMetadata {
   name: string;
   summary: string;
   description: string;
-  tags: ('ide' | 'cli-agent' | 'vcs' | 'terminal')[];
+  tags: ('ide' | 'cli-agent' | 'vcs' | 'terminal' | 'shell')[];
   author?: string;
   website?: string;
   platforms?: ('linux' | 'darwin' | 'win32')[];
@@ -52,4 +52,9 @@ export interface IToolMetadataService {
    * Get terminal tools that can open a directory (tagged "terminal" with `openDirectory`).
    */
   getTerminalEntries(): [string, ToolMetadata][];
+
+  /**
+   * Get shell interpreter tools (tagged "shell").
+   */
+  getShellEntries(): [string, ToolMetadata][];
 }

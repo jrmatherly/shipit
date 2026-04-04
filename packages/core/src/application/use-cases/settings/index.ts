@@ -12,3 +12,4 @@ export { CompleteOnboardingUseCase } from './complete-onboarding.use-case.js';
 export type { CompleteOnboardingInput } from './complete-onboarding.use-case.js';
 export { CompleteWebOnboardingUseCase } from './complete-web-onboarding.use-case.js';
 export type { CompleteWebOnboardingInput } from './complete-web-onboarding.use-case.js';
+export { DetectEnvironmentDefaultsUseCase } from './detect-environment-defaults.use-case.js';

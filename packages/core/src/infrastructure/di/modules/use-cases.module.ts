@@ -6,6 +6,7 @@ import { LoadSettingsUseCase } from '../../../application/use-cases/settings/loa
 import { UpdateSettingsUseCase } from '../../../application/use-cases/settings/update-settings.use-case.js';
 import { CompleteOnboardingUseCase } from '../../../application/use-cases/settings/complete-onboarding.use-case.js';
 import { CompleteWebOnboardingUseCase } from '../../../application/use-cases/settings/complete-web-onboarding.use-case.js';
+import { DetectEnvironmentDefaultsUseCase } from '../../../application/use-cases/settings/detect-environment-defaults.use-case.js';
 
 // Agent use cases
 import { ConfigureAgentUseCase } from '../../../application/use-cases/agents/configure-agent.use-case.js';
@@ -79,6 +80,7 @@ export function registerUseCasesModule(container: DependencyContainer): void {
   container.registerSingleton(UpdateSettingsUseCase);
   container.registerSingleton(CompleteOnboardingUseCase);
   container.registerSingleton(CompleteWebOnboardingUseCase);
+  container.registerSingleton(DetectEnvironmentDefaultsUseCase);
 
   // Agents
   container.registerSingleton(ConfigureAgentUseCase);

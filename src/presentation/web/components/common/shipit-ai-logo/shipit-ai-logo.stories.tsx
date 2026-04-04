@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { ShipitAiLogo } from './shep-logo';
+import { ShipitAiLogo } from './shipit-ai-logo';
 
 const meta: Meta<typeof ShipitAiLogo> = {
   title: 'Composed/ShipitAiLogo',

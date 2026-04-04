@@ -1,12 +1,8 @@
 <div align="center">
 
 <h1>
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="src/presentation/web/public/favicon-light.svg">
-    <source media="(prefers-color-scheme: light)" srcset="src/presentation/web/public/favicon-dark.svg">
-    <img src="src/presentation/web/public/favicon-light.svg" alt="Shipit logo" width="28" valign="middle" />
-  </picture>
-  Shipit
+  <img src="src/presentation/web/public/shipit-logo.png" alt="ShipIT AI logo" width="32" valign="middle" />
+  ShipIT
 </h1>
 
 ### Run multiple AI agents in parallel. Each in its own worktree

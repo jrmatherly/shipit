@@ -1,0 +1,24 @@
+{
+  "name": "PowerShell",
+  "summary": "Cross-platform task automation shell from Microsoft",
+  "description": "PowerShell is a cross-platform task automation solution with a command-line shell, scripting language, and configuration management framework.",
+  "tags": ["shell"],
+  "author": "Microsoft",
+  "website": "https://github.com/PowerShell/PowerShell",
+  "platforms": ["linux", "darwin", "win32"],
+  "binary": {
+    "darwin": "pwsh",
+    "linux": "pwsh",
+    "win32": "powershell"
+  },
+  "packageManager": "brew",
+  "commands": {
+    "linux": "sudo apt-get install -y powershell",
+    "darwin": "brew install powershell",
+    "win32": "Pre-installed on Windows"
+  },
+  "timeout": 300000,
+  "documentationUrl": "https://learn.microsoft.com/en-us/powershell/",
+  "verifyCommand": "pwsh --version",
+  "autoInstall": true
+}

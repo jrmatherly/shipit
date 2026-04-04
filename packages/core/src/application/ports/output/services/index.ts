@@ -59,3 +59,9 @@ export type {
   UnsubscribeFn,
   ChatState,
 } from './interactive-session-service.interface.js';
+export type {
+  IEnvironmentDetectorService,
+  DetectedEnvironment,
+  AvailableEditorEntry,
+  AvailableShellEntry,
+} from './environment-detector.service.js';
