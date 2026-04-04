@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { Edge } from '@xyflow/react';
 import { ReactFlowProvider } from '@xyflow/react';
 import { AgentEventsProvider } from '@/hooks/agent-events-provider';

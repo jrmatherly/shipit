@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Inbox, FileQuestion, Plus } from 'lucide-react';
 import { EmptyState } from './empty-state';
 import { Button } from '@/components/ui/button';

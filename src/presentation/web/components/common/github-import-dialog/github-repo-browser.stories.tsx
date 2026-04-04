@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 import { GitHubRepoBrowser } from './github-repo-browser';
 import type { GitHubRepo } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';
 import type { GitHubOrganization } from '@shipit-ai/core/application/ports/output/services/github-repository-service.interface';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SoundToggle } from './sound-toggle';
 
 const meta: Meta<typeof SoundToggle> = {

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { DiffView } from './diff-view';
 import type { MergeReviewFileDiff } from './merge-review-config';
 

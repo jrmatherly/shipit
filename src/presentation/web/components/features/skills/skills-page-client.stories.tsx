@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SkillsPageClient } from './skills-page-client';
 import type { SkillData } from '@/lib/skills';
 

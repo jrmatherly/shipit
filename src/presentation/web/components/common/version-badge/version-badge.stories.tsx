@@ -1,4 +1,4 @@
-import type { Meta, StoryObj, Decorator } from '@storybook/react';
+import type { Meta, StoryObj, Decorator } from '@storybook/react-vite';
 import { VersionBadge } from './version-badge';
 
 /**

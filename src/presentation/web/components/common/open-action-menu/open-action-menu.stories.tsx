@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 import { OpenActionMenu } from './open-action-menu';
 import type { FeatureActionsState } from '@/components/common/feature-drawer/use-feature-actions';
 

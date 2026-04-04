@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Code2, Terminal } from 'lucide-react';
 import { ActionButton } from './action-button';
 

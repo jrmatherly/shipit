@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 import type { Edge } from '@xyflow/react';
 import { DeploymentState, PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { FeaturesCanvas } from './features-canvas';
@@ -7,7 +7,6 @@ import type { CanvasNodeType } from './features-canvas';
 import type { FeatureNodeType } from '@/components/common/feature-node';
 import type { RepositoryNodeType } from '@/components/common/repository-node';
 import { layoutWithDagre } from '@/lib/layout-with-dagre';
-import { DEFAULT_VIEWPORT } from '@/hooks/use-viewport-persistence';
 
 const meta: Meta<typeof FeaturesCanvas> = {
   title: 'Features/FeaturesCanvas',
@@ -620,7 +619,6 @@ export const WithSavedViewport: Story = {
     nodes: repoFeatureNodes,
     edges: repoFeatureEdges,
     defaultViewport: { x: 200, y: 150, zoom: 1.0 },
-    onResetViewport: () => DEFAULT_VIEWPORT,
   },
 };
 
@@ -629,7 +627,6 @@ export const ZoomedOutViewport: Story = {
     nodes: mixedLayoutedNodes,
     edges: mixedLayoutedEdges,
     defaultViewport: { x: 0, y: 0, zoom: 0.5 },
-    onResetViewport: () => DEFAULT_VIEWPORT,
   },
 };
 

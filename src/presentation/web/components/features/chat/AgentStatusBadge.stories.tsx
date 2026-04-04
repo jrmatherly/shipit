@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { InteractiveSessionStatus } from '@shipit-ai/core/domain/generated/output';
 import { AgentStatusBadge } from './AgentStatusBadge';
 

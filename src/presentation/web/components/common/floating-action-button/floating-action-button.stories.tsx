@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Plus, FolderPlus } from 'lucide-react';
 import { FloatingActionButton, type FloatingActionButtonAction } from './floating-action-button';
 

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { FeatureDrawerTabs } from './feature-drawer-tabs';
 import type { FeatureNodeData } from '@/components/common/feature-node';

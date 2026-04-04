@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ProductDecisionsSummary } from './product-decisions-summary';
 import type { ProductDecisionsSummaryData } from './product-decisions-summary-config';
 

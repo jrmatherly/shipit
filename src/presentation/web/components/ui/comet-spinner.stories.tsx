@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CometSpinner } from './comet-spinner';
 
 const meta: Meta<typeof CometSpinner> = {

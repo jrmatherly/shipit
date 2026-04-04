@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ToolCard } from './tool-card';
 import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
 

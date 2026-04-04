@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { within, userEvent, fn, expect } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { within, userEvent, fn, expect } from 'storybook/test';
 import { FeatureCreateDrawer } from './feature-create-drawer';
 import type { FeatureCreatePayload, RepositoryOption } from './feature-create-drawer';
 import type { WorkflowDefaults } from '@/app/actions/get-workflow-defaults';

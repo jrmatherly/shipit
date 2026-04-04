@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/react';
+import type { Preview } from '@storybook/react-vite';
 import React, { useEffect } from 'react';
 import '../src/presentation/web/app/globals.css';
 
@@ -7,7 +7,7 @@ const ThemeDecorator = (
   Story: React.FC,
   context: { globals: { backgrounds?: { value?: string } } }
 ) => {
-  const isDark = context.globals?.backgrounds?.value === '#0a0a0a';
+  const isDark = context.globals?.backgrounds?.value === 'dark';
 
   useEffect(() => {
     if (isDark) {
@@ -45,11 +45,10 @@ const preview: Preview = {
       },
     },
     backgrounds: {
-      default: 'light',
-      values: [
-        { name: 'light', value: '#ffffff' },
-        { name: 'dark', value: '#0a0a0a' },
-      ],
+      options: {
+        light: { name: 'light', value: '#ffffff' },
+        dark: { name: 'dark', value: '#0a0a0a' },
+      },
     },
     layout: 'centered',
     options: {
@@ -58,7 +57,14 @@ const preview: Preview = {
       },
     },
   },
+
   decorators: [ThemeDecorator, DrawerPageDecorator],
+
+  initialGlobals: {
+    backgrounds: {
+      value: 'light',
+    },
+  },
 };
 
 export default preview;

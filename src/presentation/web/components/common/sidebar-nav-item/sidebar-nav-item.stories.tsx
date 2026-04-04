@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Home, Brain, Settings, LayoutDashboard } from 'lucide-react';
 import { SidebarProvider, SidebarMenu } from '@/components/ui/sidebar';
 import { SidebarNavItem } from './sidebar-nav-item';

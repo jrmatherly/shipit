@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LanguageSettingsSection } from './language-settings-section';
 import { Language } from '@shipit-ai/core/domain/generated/output';
 

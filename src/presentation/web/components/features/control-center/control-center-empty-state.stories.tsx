@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ControlCenterEmptyState } from './control-center-empty-state';
 
 const meta: Meta<typeof ControlCenterEmptyState> = {

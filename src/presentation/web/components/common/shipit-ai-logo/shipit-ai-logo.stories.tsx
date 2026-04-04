@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ShipitAiLogo } from './shipit-ai-logo';
 
 const meta: Meta<typeof ShipitAiLogo> = {

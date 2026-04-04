@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { RepositoryCombobox } from './feature-create-drawer';
 import type { RepositoryOption } from './feature-create-drawer';
 

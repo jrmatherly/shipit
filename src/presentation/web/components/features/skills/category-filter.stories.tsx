@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { CategoryFilter } from './category-filter';
 import type { SkillCategory } from '@/lib/skills';
 

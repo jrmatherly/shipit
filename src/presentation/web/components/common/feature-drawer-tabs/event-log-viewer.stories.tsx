@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EventLogViewer } from './event-log-viewer';
 
 const meta: Meta<typeof EventLogViewer> = {

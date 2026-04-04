@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SidebarProvider, SidebarMenu, SidebarMenuItem } from '@/components/ui/sidebar';
 import { SidebarCollapseToggle } from './sidebar-collapse-toggle';
 

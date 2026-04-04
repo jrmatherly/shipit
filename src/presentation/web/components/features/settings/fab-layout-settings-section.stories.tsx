@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FabLayoutSettingsSection } from './fab-layout-settings-section';
 import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
 

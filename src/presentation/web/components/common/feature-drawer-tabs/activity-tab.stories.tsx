@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ActivityTab } from './activity-tab';
 import type { PhaseTimingData } from '@/app/actions/get-feature-phase-timings';
 

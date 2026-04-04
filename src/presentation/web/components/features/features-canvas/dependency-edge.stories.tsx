@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ReactFlow, ReactFlowProvider } from '@xyflow/react';
 import { DependencyEdge } from './dependency-edge';
 import { FeatureNode } from '@/components/common/feature-node';

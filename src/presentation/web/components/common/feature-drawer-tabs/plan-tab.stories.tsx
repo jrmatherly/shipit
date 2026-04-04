@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { PlanTab } from './plan-tab';
 import type { PlanData } from '@/app/actions/get-feature-plan';
 

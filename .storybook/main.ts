@@ -6,12 +6,7 @@ const config: StorybookConfig = {
     '../src/presentation/web/**/*.stories.@(js|jsx|mjs|ts|tsx|mdx)',
     '../src/presentation/web/docs/**/*.mdx',
   ],
-  addons: [
-    '@storybook/addon-essentials',
-    '@storybook/addon-links',
-    '@storybook/addon-a11y',
-    '@storybook/addon-interactions',
-  ],
+  addons: ['@storybook/addon-a11y', '@storybook/addon-docs'],
   framework: {
     name: '@storybook/react-vite',
     options: {},
@@ -28,16 +23,16 @@ const config: StorybookConfig = {
     config.resolve = config.resolve ?? {};
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@/components': resolve(__dirname, '../src/presentation/web/components'),
-      '@/lib': resolve(__dirname, '../src/presentation/web/lib'),
-      '@/hooks': resolve(__dirname, '../src/presentation/web/hooks'),
-      '@/types': resolve(__dirname, '../src/presentation/web/types'),
+      '@/components': resolve(import.meta.dirname, '../src/presentation/web/components'),
+      '@/lib': resolve(import.meta.dirname, '../src/presentation/web/lib'),
+      '@/hooks': resolve(import.meta.dirname, '../src/presentation/web/hooks'),
+      '@/types': resolve(import.meta.dirname, '../src/presentation/web/types'),
       // Mock server actions (Node.js/DI deps unavailable in Storybook)
-      '@/app/actions': resolve(__dirname, 'mocks/app/actions'),
+      '@/app/actions': resolve(import.meta.dirname, 'mocks/app/actions'),
       // Mock Next.js in Storybook (no Next runtime; avoids process is not defined)
-      'next/navigation': resolve(__dirname, 'next-navigation-mock.ts'),
-      'next/link': resolve(__dirname, 'next-link-mock.tsx'),
-      'next/image': resolve(__dirname, 'next-image-mock.tsx'),
+      'next/navigation': resolve(import.meta.dirname, 'next-navigation-mock.ts'),
+      'next/link': resolve(import.meta.dirname, 'next-link-mock.tsx'),
+      'next/image': resolve(import.meta.dirname, 'next-image-mock.tsx'),
     };
 
     config.define = {

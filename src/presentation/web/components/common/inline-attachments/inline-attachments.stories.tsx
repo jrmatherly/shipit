@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { InlineAttachments } from './inline-attachments';
 
 const meta: Meta<typeof InlineAttachments> = {

@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
-import { within, userEvent, fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { within, userEvent, fn } from 'storybook/test';
 import { AdoptBranchDrawer } from './adopt-branch-drawer';
 import { Button } from '@/components/ui/button';
 

@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import type { Decorator } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import type { Decorator } from '@storybook/react-vite';
 import { FeatureSessionsDropdown } from './feature-sessions-dropdown';
 import { SessionsProvider } from '@/hooks/sessions-provider';
 

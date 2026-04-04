@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { WorkflowOptionsSection } from './workflow-options-section';
 

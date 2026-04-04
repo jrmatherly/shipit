@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { getAgentTypeIcon, DefaultAgentIcon, type AgentTypeValue } from './agent-type-icons';
 
 const allAgentTypes: { type: AgentTypeValue; label: string }[] = [

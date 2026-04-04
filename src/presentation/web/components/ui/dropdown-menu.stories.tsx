@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { User, Settings, LogOut, CreditCard, Plus, ChevronRight } from 'lucide-react';
 import { Button } from './button';
 import {

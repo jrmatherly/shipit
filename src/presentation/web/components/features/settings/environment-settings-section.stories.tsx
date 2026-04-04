@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EnvironmentSettingsSection } from './environment-settings-section';
 import { EditorType, TerminalType } from '@shipit-ai/core/domain/generated/output';
 

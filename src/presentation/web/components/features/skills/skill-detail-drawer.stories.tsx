@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SkillDetailDrawer } from './skill-detail-drawer';
 import { Button } from '@/components/ui/button';
 import type { SkillData } from '@/lib/skills';

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { LogEntry } from '@shipit-ai/core/application/ports/output/services/deployment-service.interface';
 import { ServerLogViewerContent } from './server-log-viewer';
 

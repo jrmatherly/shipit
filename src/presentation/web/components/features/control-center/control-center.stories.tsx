@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import type { Edge } from '@xyflow/react';
 import { ControlCenter } from './control-center';
 import type { CanvasNodeType } from '@/components/features/features-canvas';

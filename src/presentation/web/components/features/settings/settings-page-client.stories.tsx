@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SettingsPageClient } from './settings-page-client';
 import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
 import { AgentType } from '@shipit-ai/core/domain/generated/output';

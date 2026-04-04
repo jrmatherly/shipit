@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ElapsedTime } from './elapsed-time';
 
 const meta: Meta<typeof ElapsedTime> = {

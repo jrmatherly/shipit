@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { ReactFlowProvider, ReactFlow } from '@xyflow/react';
 import { RepositoryNode } from './repository-node';
 import type { RepositoryNodeData, RepositoryNodeType } from './repository-node-config';

@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FeatureFlagsSettingsSection } from './feature-flags-settings-section';
 
 const meta = {

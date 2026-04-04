@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { InteractiveMessageRole } from '@shipit-ai/core/domain/generated/output';
 import type { InteractiveMessage } from '@shipit-ai/core/domain/generated/output';
 import { ChatMessageList } from './ChatMessageList';

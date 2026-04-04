@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { useState, useCallback } from 'react';
-import { fn } from '@storybook/test';
+import { fn } from 'storybook/test';
 import type { ThreadMessageLike, AppendMessage } from '@assistant-ui/react';
 import { AssistantRuntimeProvider, useExternalStoreRuntime } from '@assistant-ui/react';
 import { ChatComposer } from './ChatComposer';

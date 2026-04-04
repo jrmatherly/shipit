@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Button } from '@/components/ui/button';
 import { FeatureFlagsProvider } from '@/hooks/feature-flags-context';
 import { RepositoryDrawer } from './repository-drawer';

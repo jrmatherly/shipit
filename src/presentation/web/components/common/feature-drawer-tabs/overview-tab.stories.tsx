@@ -1,5 +1,5 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
+import type { Meta, StoryObj } from '@storybook/react-vite';
+import { fn } from 'storybook/test';
 import { PrStatus, CiStatus } from '@shipit-ai/core/domain/generated/output';
 import { OverviewTab } from './overview-tab';
 import type { FeatureNodeData } from '@/components/common/feature-node';

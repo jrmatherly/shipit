@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { TaskProgressView } from './task-progress-view';
 import type { PlanTaskData } from '@/app/actions/get-feature-plan';
 

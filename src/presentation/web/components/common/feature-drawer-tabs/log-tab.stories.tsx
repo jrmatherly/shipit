@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { LogTab } from './log-tab';
 
 const meta: Meta<typeof LogTab> = {

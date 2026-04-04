@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { SidebarProvider, SidebarMenu } from '@/components/ui/sidebar';
 import { FeatureListItem } from './feature-list-item';
 
