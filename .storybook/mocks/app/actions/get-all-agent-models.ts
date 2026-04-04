@@ -57,7 +57,11 @@ export async function getAllAgentModels() {
         { id: 'claude-opus-4-5', displayName: 'Claude Opus 4.5', description: 'Complex tasks' },
         { id: 'gpt-5.3-codex', displayName: 'GPT-5.3 Codex', description: 'Code specialist' },
         { id: 'gpt-5.2-codex', displayName: 'GPT-5.2 Codex', description: 'Code generation' },
-        { id: 'claude-haiku-4-5', displayName: 'Claude Haiku 4.5', description: 'Lightweight & quick' },
+        {
+          id: 'claude-haiku-4-5',
+          displayName: 'Claude Haiku 4.5',
+          description: 'Lightweight & quick',
+        },
         { id: 'gemini-3-pro', displayName: 'Gemini 3 Pro', description: 'General coding' },
       ],
     },
@@ -67,8 +71,16 @@ export async function getAllAgentModels() {
       installed: false,
       models: [
         { id: 'auto', displayName: 'Auto', description: 'Automatic model selection' },
-        { id: 'claude-sonnet-4-5', displayName: 'Claude Sonnet 4.5', description: 'General development' },
-        { id: 'claude-opus-4-5', displayName: 'Claude Opus 4.5', description: 'Complex architecture' },
+        {
+          id: 'claude-sonnet-4-5',
+          displayName: 'Claude Sonnet 4.5',
+          description: 'General development',
+        },
+        {
+          id: 'claude-opus-4-5',
+          displayName: 'Claude Opus 4.5',
+          description: 'Complex architecture',
+        },
         { id: 'claude-opus-4-6', displayName: 'Claude Opus 4.6', description: 'Latest model' },
         { id: 'gpt-5.2', displayName: 'GPT-5.2', description: 'General development' },
         { id: 'gpt-5.2-codex', displayName: 'GPT-5.2 Codex', description: 'Code generation' },
