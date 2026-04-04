@@ -56,6 +56,20 @@ Several former god classes are now **facades** delegating to focused sub-service
 - `GitPrService` → BranchDiscoveryService, PrCreationService, DiffAnalyzerService, CiStatusService, MergeStrategyService
 - `FeatureCreateDrawer` → PromptSection, WorkflowOptionsSection, ParentFeatureCombobox, RepositoryCombobox + useFeatureCreateForm hook
 
+### DI Registration Patterns
+
+- **Services:** `container.registerSingleton<IInterface>('StringToken', ImplClass)` in `packages/core/src/infrastructure/di/modules/services.module.ts` — resolved by string token
+- **Use cases:** `container.registerSingleton(UseCaseClass)` in `use-cases.module.ts` — resolved by class constructor token (no string token)
+- **New ports:** Must add barrel export to `packages/core/src/application/ports/output/services/index.ts`
+- **Server actions:** Use `resolve<T>('StringToken')` from `@/lib/server-container` — never import services directly
+
+### Tool Metadata System
+
+- Tool JSON files in `packages/core/src/infrastructure/services/tool-installer/tools/` are auto-discovered by filename (no registration needed)
+- `tags` field is a strict TypeScript union: `('ide' | 'cli-agent' | 'vcs' | 'terminal' | 'shell')[]` — adding new tags requires updating the `ToolMetadata` interface in `tool-metadata.ts`
+- Schema documented in `tools/CLAUDE.md` — follow it exactly for new tool definitions
+- Helpers: `getIdeEntries()`, `getTerminalEntries()`, `getShellEntries()` filter by tag
+
 ### Presentation Layer Boundaries
 
 - Infrastructure utilities accessed via `src/presentation/web/lib/core-utils.ts` (re-exports `isProcessAlive`, `computeWorktreePath`, `getShipitAiHomeDir`, `createDeploymentLogger`, `IS_WINDOWS`)
@@ -142,7 +156,7 @@ Scopes are enforced at warning level by commitlint — commits succeed but prefe
 | Web UI architecture            | [docs/ui/architecture.md](./docs/ui/architecture.md)                                   |
 | pnpm workspaces + setup        | [docs/development/setup.md](./docs/development/setup.md)                               |
 | Tech debt remediation plan     | [.scratchpad/plans/technical-debt-remediation-plan.md](./.scratchpad/plans/technical-debt-remediation-plan.md) |
-| Security middleware            | [src/presentation/web/proxy.ts](./src/presentation/web/proxy.ts)              |
+| Security proxy            | [src/presentation/web/proxy.ts](./src/presentation/web/proxy.ts)              |
 
 ## Naming Conventions (Post-Rename)
 
@@ -162,9 +176,15 @@ Active remediation plan: [`.scratchpad/plans/technical-debt-remediation-plan.md`
 ## Testing Patterns
 
 - **Shared factories:** Use `import { createMockFeature, createMockAgentRun, createMockRepository, createMockAgentSession } from '@tests/factories/index.js'` — don't create inline mock factories
-- **Settings factory:** Use `createDefaultSettings()` from `@shipit-ai/core/domain/factories/settings-defaults.factory` for Settings mocks
+- **Settings factory:** Use `createDefaultSettings(overrides?)` from `@shipit-ai/core/domain/factories/settings-defaults.factory` — accepts optional `{ defaultEditor?, shellPreference?, terminalPreference? }` overrides for auto-detection
 - **DI mocking:** Mock `@/lib/server-container` with `vi.mock('@/lib/server-container', () => ({ resolve: ... }))` for server action tests
 - **TypeSpec dates:** All 31 date/timestamp fields are `Date` objects (not strings). Use `new Date('...')` in test mocks, not ISO strings.
+- **Storybook server action mocks:** New server actions MUST have corresponding mocks in `.storybook/mocks/app/actions/` — Storybook aliases `@/app/actions` to this directory. Missing mocks break `pnpm build:storybook`.
+
+### i18n Key Parity
+
+- Translation completeness tests enforce that ALL 8 locale files (`translations/{en,ar,de,es,fr,he,pt,ru}/web.json`) have identical key sets
+- Adding a key to `en/web.json` requires adding it to all 7 other locale files or tests fail
 
 ## Working Practices
 ### 1. Self-Improvement Loop
