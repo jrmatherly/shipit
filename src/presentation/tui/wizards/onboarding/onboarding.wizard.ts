@@ -13,9 +13,11 @@ import { CompleteOnboardingUseCase } from '@/application/use-cases/settings/comp
 import { resetSettings, initializeSettings } from '@/infrastructure/services/settings.service.js';
 import { getTuiI18n } from '../../i18n.js';
 import { runAgentStep } from './steps/agent.step.js';
+import { runAgentPermissionsStep } from './steps/agent-permissions.step.js';
 import { runIdeStep } from './steps/ide.step.js';
 import { runWorkflowDefaultsStep } from './steps/workflow-defaults.step.js';
 import type { AgentConfigResult } from '../agent-config.wizard.js';
+import type { AgentType } from '@/domain/generated/output.js';
 import type { WorkflowDefaultsResult } from './types.js';
 
 /**
@@ -44,13 +46,15 @@ function showWelcomeBanner(): void {
  *
  * Steps:
  * 1. Agent configuration (type + auth)
- * 2. IDE selection
- * 3. Workflow defaults (checkboxes)
+ * 2. Permission mode selection for chosen agent
+ * 3. IDE selection
+ * 4. Workflow defaults (checkboxes)
  *
  * Step functions are injectable via parameters for testability.
  */
 export async function onboardingWizard(
   agentStep: () => Promise<AgentConfigResult> = runAgentStep,
+  permissionsStep: (agentType: AgentType) => Promise<string | undefined> = runAgentPermissionsStep,
   ideStep: () => Promise<string> = runIdeStep,
   workflowStep: () => Promise<WorkflowDefaultsResult> = runWorkflowDefaultsStep
 ): Promise<void> {
@@ -60,16 +64,20 @@ export async function onboardingWizard(
     // Step 1: Agent configuration
     const agent = await agentStep();
 
-    // Step 2: IDE selection
+    // Step 2: Permission mode for chosen agent
+    const permissionMode = await permissionsStep(agent.type);
+
+    // Step 3: IDE selection
     const ide = await ideStep();
 
-    // Step 3: Workflow defaults
+    // Step 4: Workflow defaults
     const workflowDefaults = await workflowStep();
 
     // Persist all wizard results atomically
     const useCase = container.resolve(CompleteOnboardingUseCase);
     const updatedSettings = await useCase.execute({
       agent,
+      permissionMode,
       ide,
       workflowDefaults,
     });

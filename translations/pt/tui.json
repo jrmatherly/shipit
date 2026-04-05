@@ -108,6 +108,12 @@
       "approveComment": "Algum comentário? (opcional, pressione Enter para pular)",
       "feedbackRequired": "Feedback é obrigatório para rejeição"
     },
+    "permissions": {
+      "title": "Modo de permissoes para {{agent}}",
+      "description": "Escolha como {{agent}} lida com permissoes quando o ShipIT o executa.",
+      "skip": "Pular — usar padrao para este agente",
+      "selected": "Modo de permissoes definido para {{mode}}"
+    },
     "workflowDefaults": {
       "message": "Selecione os padrões de fluxo de trabalho para novos recursos",
       "instructions": "(Espaço para alternar, Enter para confirmar)",

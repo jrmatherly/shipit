@@ -655,6 +655,42 @@ describe('CLI: settings initialization', () => {
 - **No passwords:** Settings never contain credentials
 - **API keys:** Stored separately (not in Settings model)
 
+## Agent Permission Settings
+
+### `agent.permissions` Field
+
+The `AgentConfig` type includes an `AgentPermissionSettings` object with six optional per-agent permission mode fields:
+
+| Field        | Type                          | Description                          |
+| ------------ | ----------------------------- | ------------------------------------ |
+| `claudeCode` | `ClaudeCodePermissionMode?`   | Claude Code permission mode          |
+| `cursor`     | `CursorPermissionMode?`       | Cursor permission mode               |
+| `geminiCli`  | `GeminiPermissionMode?`       | Gemini CLI approval mode             |
+| `codexCli`   | `CodexPermissionMode?`        | Codex CLI sandbox mode               |
+| `copilotCli` | `CopilotPermissionMode?`      | Copilot CLI permission mode          |
+| `rovoDev`    | `RovoDevPermissionMode?`      | Rovo Dev permission mode             |
+
+When a field is `undefined`, the resolver falls back to the hardcoded default for that agent (see [Agent System -- Permission Modes](./agent-system.md#per-agent-permission-modes)).
+
+### `features.permissionMode` (Per-Feature Override)
+
+The `Feature` entity includes an optional `permissionMode?: string` field. When set (via `shipit-ai feat new --permission-mode <mode>`), this value takes precedence over the per-agent setting from `agent.permissions`. This allows users to run a single feature with tighter or looser permissions without changing their global defaults.
+
+### ISettingsReader Port
+
+`ISettingsReader` (in `packages/core/src/application/ports/output/services/settings-reader.interface.ts`) is a read-only port interface for accessing settings:
+
+```typescript
+export interface ISettingsReader {
+  hasSettings(): boolean;
+  getSettings(): Settings | undefined;
+}
+```
+
+Infrastructure services that need to read settings (such as the permission resolver, structured agent caller, and conflict resolution service) inject `ISettingsReader` via DI instead of calling the global `getSettings()` function directly. This enables clean unit testing without module-level mocking.
+
+Registered in the DI container as `'ISettingsReader'` string token.
+
 ## Future Enhancements
 
 ### Planned Features

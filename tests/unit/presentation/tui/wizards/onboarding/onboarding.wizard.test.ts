@@ -25,6 +25,8 @@ import { AgentType, AgentAuthMethod } from '@/domain/generated/output.js';
 import type { AgentConfigResult } from '../../../../../../src/presentation/tui/wizards/agent-config.wizard.js';
 import type { WorkflowDefaultsResult } from '../../../../../../src/presentation/tui/wizards/onboarding/types.js';
 
+type PermissionsStepFn = (agentType: AgentType) => Promise<string | undefined>;
+
 describe('onboardingWizard', () => {
   const mockAgentResult: AgentConfigResult = {
     type: AgentType.ClaudeCode,
@@ -45,6 +47,7 @@ describe('onboardingWizard', () => {
 
   let mockExecute: ReturnType<typeof vi.fn>;
   let mockAgentStep: () => Promise<AgentConfigResult>;
+  let mockPermissionsStep: PermissionsStepFn;
   let mockIdeStep: () => Promise<string>;
   let mockWorkflowStep: () => Promise<WorkflowDefaultsResult>;
   beforeEach(() => {
@@ -54,6 +57,7 @@ describe('onboardingWizard', () => {
     vi.mocked(container.resolve).mockReturnValue({ execute: mockExecute });
 
     mockAgentStep = vi.fn<() => Promise<AgentConfigResult>>().mockResolvedValue(mockAgentResult);
+    mockPermissionsStep = vi.fn<PermissionsStepFn>().mockResolvedValue(undefined);
     mockIdeStep = vi.fn<() => Promise<string>>().mockResolvedValue(mockIdeResult);
     mockWorkflowStep = vi
       .fn<() => Promise<WorkflowDefaultsResult>>()
@@ -66,11 +70,15 @@ describe('onboardingWizard', () => {
     vi.restoreAllMocks();
   });
 
-  it('should call steps in order: agent, ide, workflow', async () => {
+  it('should call steps in order: agent, permissions, ide, workflow', async () => {
     const callOrder: string[] = [];
     mockAgentStep = vi.fn<() => Promise<AgentConfigResult>>().mockImplementation(async () => {
       callOrder.push('agent');
       return mockAgentResult;
+    });
+    mockPermissionsStep = vi.fn<PermissionsStepFn>().mockImplementation(async () => {
+      callOrder.push('permissions');
+      return undefined;
     });
     mockIdeStep = vi.fn<() => Promise<string>>().mockImplementation(async () => {
       callOrder.push('ide');
@@ -83,23 +91,43 @@ describe('onboardingWizard', () => {
         return mockWorkflowResult;
       });
 
-    await onboardingWizard(mockAgentStep, mockIdeStep, mockWorkflowStep);
+    await onboardingWizard(mockAgentStep, mockPermissionsStep, mockIdeStep, mockWorkflowStep);
 
-    expect(callOrder).toEqual(['agent', 'ide', 'workflow']);
+    expect(callOrder).toEqual(['agent', 'permissions', 'ide', 'workflow']);
+  });
+
+  it('should pass agent type to permissions step', async () => {
+    await onboardingWizard(mockAgentStep, mockPermissionsStep, mockIdeStep, mockWorkflowStep);
+
+    expect(mockPermissionsStep).toHaveBeenCalledWith(AgentType.ClaudeCode);
   });
 
   it('should call CompleteOnboardingUseCase.execute() with combined results', async () => {
-    await onboardingWizard(mockAgentStep, mockIdeStep, mockWorkflowStep);
+    await onboardingWizard(mockAgentStep, mockPermissionsStep, mockIdeStep, mockWorkflowStep);
 
     expect(mockExecute).toHaveBeenCalledWith({
       agent: mockAgentResult,
+      permissionMode: undefined,
+      ide: mockIdeResult,
+      workflowDefaults: mockWorkflowResult,
+    });
+  });
+
+  it('should include permissionMode when permissions step returns a value', async () => {
+    mockPermissionsStep = vi.fn<PermissionsStepFn>().mockResolvedValue('bypassPermissions');
+
+    await onboardingWizard(mockAgentStep, mockPermissionsStep, mockIdeStep, mockWorkflowStep);
+
+    expect(mockExecute).toHaveBeenCalledWith({
+      agent: mockAgentResult,
+      permissionMode: 'bypassPermissions',
       ide: mockIdeResult,
       workflowDefaults: mockWorkflowResult,
     });
   });
 
   it('should call resetSettings() + initializeSettings() after use case', async () => {
-    await onboardingWizard(mockAgentStep, mockIdeStep, mockWorkflowStep);
+    await onboardingWizard(mockAgentStep, mockPermissionsStep, mockIdeStep, mockWorkflowStep);
 
     expect(resetSettings).toHaveBeenCalledOnce();
     expect(initializeSettings).toHaveBeenCalledWith(mockUpdatedSettings);
@@ -111,7 +139,7 @@ describe('onboardingWizard', () => {
     exitError.name = 'ExitPromptError';
     const failingStep = vi.fn<() => Promise<AgentConfigResult>>().mockRejectedValue(exitError);
 
-    await onboardingWizard(failingStep, mockIdeStep, mockWorkflowStep);
+    await onboardingWizard(failingStep, mockPermissionsStep, mockIdeStep, mockWorkflowStep);
 
     expect(exitSpy).toHaveBeenCalledWith(0);
     exitSpy.mockRestore();
@@ -123,7 +151,7 @@ describe('onboardingWizard', () => {
     exitError.name = 'ExitPromptError';
     const failingIdeStep = vi.fn<() => Promise<string>>().mockRejectedValue(exitError);
 
-    await onboardingWizard(mockAgentStep, failingIdeStep, mockWorkflowStep);
+    await onboardingWizard(mockAgentStep, mockPermissionsStep, failingIdeStep, mockWorkflowStep);
 
     expect(mockExecute).not.toHaveBeenCalled();
     exitSpy.mockRestore();
@@ -132,7 +160,7 @@ describe('onboardingWizard', () => {
   it('should display GitHub CLI prerequisite notice in welcome banner', async () => {
     const consoleSpy = vi.spyOn(console, 'log');
 
-    await onboardingWizard(mockAgentStep, mockIdeStep, mockWorkflowStep);
+    await onboardingWizard(mockAgentStep, mockPermissionsStep, mockIdeStep, mockWorkflowStep);
 
     const allLogs = consoleSpy.mock.calls.map((c) => c.join(' ')).join('\n');
     expect(allLogs).toContain('GitHub CLI (gh)');
@@ -145,8 +173,8 @@ describe('onboardingWizard', () => {
       .fn<() => Promise<AgentConfigResult>>()
       .mockRejectedValue(new Error('Unexpected error'));
 
-    await expect(onboardingWizard(failingStep, mockIdeStep, mockWorkflowStep)).rejects.toThrow(
-      'Unexpected error'
-    );
+    await expect(
+      onboardingWizard(failingStep, mockPermissionsStep, mockIdeStep, mockWorkflowStep)
+    ).rejects.toThrow('Unexpected error');
   });
 });

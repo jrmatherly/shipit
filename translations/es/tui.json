@@ -108,6 +108,12 @@
       "approveComment": "¿Algún comentario? (opcional, presiona Enter para omitir)",
       "feedbackRequired": "Los comentarios son obligatorios para el rechazo"
     },
+    "permissions": {
+      "title": "Modo de permisos para {{agent}}",
+      "description": "Elige como {{agent}} maneja los permisos cuando ShipIT lo ejecuta.",
+      "skip": "Omitir — usar el predeterminado para este agente",
+      "selected": "Modo de permisos configurado a {{mode}}"
+    },
     "workflowDefaults": {
       "message": "Selecciona los valores predeterminados del flujo de trabajo para nuevas funcionalidades",
       "instructions": "(Espacio para alternar, Enter para confirmar)",

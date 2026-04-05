@@ -11,9 +11,22 @@ import type {
   Settings,
   AgentType,
   AgentAuthMethod,
+  AgentPermissionSettings,
   EditorType,
 } from '../../../domain/generated/output.js';
 import type { ISettingsRepository } from '../../ports/output/repositories/settings.repository.interface.js';
+
+/**
+ * Maps AgentType enum values to their corresponding AgentPermissionSettings key.
+ */
+const PERMISSION_KEY_BY_AGENT: Record<string, keyof AgentPermissionSettings> = {
+  'claude-code': 'claudeCode',
+  cursor: 'cursor',
+  'gemini-cli': 'geminiCli',
+  'codex-cli': 'codexCli',
+  'copilot-cli': 'copilotCli',
+  'rovo-dev': 'rovoDev',
+};
 
 /**
  * Input for completing onboarding.
@@ -24,6 +37,8 @@ export interface CompleteOnboardingInput {
     authMethod: AgentAuthMethod;
     token?: string;
   };
+  /** Permission mode selected for the agent, or undefined if skipped */
+  permissionMode?: string;
   ide: string;
   workflowDefaults: {
     allowPrd: boolean;
@@ -52,12 +67,25 @@ export class CompleteOnboardingUseCase {
       throw new Error('Settings not found. Please run initialization first.');
     }
 
+    // Build permissions: start from current or defaults, then overlay any chosen mode
+    let permissions = settings.agent.permissions;
+    if (input.permissionMode !== undefined) {
+      const key = PERMISSION_KEY_BY_AGENT[input.agent.type as string];
+      if (key) {
+        permissions = {
+          ...permissions,
+          [key]: input.permissionMode,
+        };
+      }
+    }
+
     const updatedSettings: Settings = {
       ...settings,
       agent: {
         type: input.agent.type,
         authMethod: input.agent.authMethod,
         ...(input.agent.token !== undefined && { token: input.agent.token }),
+        ...(permissions !== undefined && { permissions }),
       },
       environment: {
         ...settings.environment,

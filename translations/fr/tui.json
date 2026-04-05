@@ -108,6 +108,12 @@
       "approveComment": "Des commentaires ? (optionnel, appuyez sur Entrée pour ignorer)",
       "feedbackRequired": "Un retour est requis pour le rejet"
     },
+    "permissions": {
+      "title": "Mode de permissions pour {{agent}}",
+      "description": "Choisissez comment {{agent}} gere les permissions lorsque ShipIT l'execute.",
+      "skip": "Passer — utiliser la valeur par defaut pour cet agent",
+      "selected": "Mode de permissions defini sur {{mode}}"
+    },
     "workflowDefaults": {
       "message": "Sélectionnez les valeurs par défaut du workflow pour les nouvelles fonctionnalités",
       "instructions": "(Espace pour basculer, Entrée pour confirmer)",

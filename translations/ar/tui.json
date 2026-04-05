@@ -108,6 +108,12 @@
       "approveComment": "أي تعليقات؟ (اختياري، اضغط Enter للتخطي)",
       "feedbackRequired": "الملاحظات مطلوبة للرفض"
     },
+    "permissions": {
+      "title": "وضع الأذونات لـ {{agent}}",
+      "description": "اختر كيف يتعامل {{agent}} مع الأذونات عندما يشغله ShipIT.",
+      "skip": "تخطي — استخدم الافتراضي لهذا الوكيل",
+      "selected": "تم تعيين وضع الأذونات إلى {{mode}}"
+    },
     "workflowDefaults": {
       "message": "اختر الإعدادات الافتراضية لسير العمل للميزات الجديدة",
       "instructions": "(مسافة للتبديل، Enter للتأكيد)",

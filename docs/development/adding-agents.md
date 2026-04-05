@@ -467,6 +467,40 @@ src/infrastructure/services/agents/feature-agent/
 └── heartbeat.ts                # Node heartbeat reporting
 ```
 
+## Adding a Permission Mode Enum for a New Agent
+
+When adding a new agent type to Shipit, you must declare a TypeSpec enum for its native permission modes. This is required before the executor can consume permission settings.
+
+### Step: Declare the Permission Mode Enum in TypeSpec
+
+Add your enum to [`tsp/common/enums/agent-permissions.tsp`](../../tsp/common/enums/agent-permissions.tsp). Use the existing enums as a template:
+
+```typespec
+@doc("YourAgent permission modes")
+enum YourAgentPermissionMode {
+  @doc("Description of default behavior")
+  Default: "default",
+
+  @doc("Description of full bypass mode. Current default for batch.")
+  Yolo: "yolo",
+}
+```
+
+**Requirements:**
+
+1. Each value must map to an actual upstream CLI flag or behavior
+2. Document which value is the "current default for batch" (non-interactive execution)
+3. Run `pnpm tsp:codegen` to regenerate `packages/core/src/domain/generated/output.ts`
+
+Then wire it through the system:
+
+1. Add a field to `AgentPermissionSettings` in `tsp/domain/entities/settings.tsp`
+2. Add an entry in `SETTINGS_KEY_BY_AGENT` and `DEFAULT_MODE_BY_AGENT` in `packages/core/src/infrastructure/services/agents/common/agent-permissions.ts`
+3. Add the valid modes list in `src/presentation/cli/commands/settings/permission-modes.ts`
+4. Update the [Agent Permission Flag Reference](./agent-flag-reference.md) with the upstream CLI flags and source URL
+
+For the full list of integration points when adding a new agent, see [CLAUDE.md -- Adding New Agent Types](../../CLAUDE.md#adding-new-agent-types).
+
 ## Checklist
 
 Before submitting your new node:

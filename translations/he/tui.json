@@ -108,6 +108,12 @@
       "approveComment": "הערות? (אופציונלי, לחץ Enter לדילוג)",
       "feedbackRequired": "נדרש משוב לדחייה"
     },
+    "permissions": {
+      "title": "מצב הרשאות עבור {{agent}}",
+      "description": "בחר כיצד {{agent}} מטפל בהרשאות כאשר ShipIT מריץ אותו.",
+      "skip": "דלג — השתמש בברירת מחדל עבור סוכן זה",
+      "selected": "מצב הרשאות הוגדר ל-{{mode}}"
+    },
     "workflowDefaults": {
       "message": "בחר ברירות מחדל לתהליך עבודה עבור פיצ'רים חדשים",
       "instructions": "(רווח לשינוי, Enter לאישור)",

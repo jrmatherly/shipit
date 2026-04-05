@@ -93,6 +93,12 @@
       "approveComment": "Kommentare? (optional, Enter zum Überspringen)",
       "feedbackRequired": "Feedback ist für eine Ablehnung erforderlich"
     },
+    "permissions": {
+      "title": "Berechtigungsmodus fuer {{agent}}",
+      "description": "Waehlen Sie, wie {{agent}} Berechtigungen handhabt, wenn ShipIT es ausfuehrt.",
+      "skip": "Ueberspringen — Standard fuer diesen Agenten verwenden",
+      "selected": "Berechtigungsmodus auf {{mode}} gesetzt"
+    },
     "workflowDefaults": {
       "message": "Workflow-Standardeinstellungen für neue Features wählen",
       "instructions": "(Leertaste zum Umschalten, Enter zum Bestätigen)",

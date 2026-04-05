@@ -87,6 +87,24 @@ Create a new feature.
 
 **Source**: `src/presentation/cli/commands/feat/new.command.ts`
 
+**Options** (selected):
+
+| Option                       | Description                                                |
+| ---------------------------- | ---------------------------------------------------------- |
+| `--permission-mode <mode>`   | Override the agent's permission mode for this feature only |
+
+The `--permission-mode` value is validated against the currently configured agent's valid modes. For example, if the agent is `claude-code`, valid modes are `default`, `acceptEdits`, `plan`, `bypassPermissions`. Invalid modes produce an error with the list of valid options.
+
+**Examples**:
+
+```bash
+# Create a feature with read-only plan mode (Claude Code)
+shipit-ai feat new "add payments" --permission-mode plan
+
+# Create a feature with workspace-only writes (Codex CLI)
+shipit-ai feat new "add payments" --permission-mode workspace-write
+```
+
 ### `shep feat ls`
 
 List all features.
@@ -336,6 +354,44 @@ Configure workflow defaults.
 Configure default LLM model.
 
 **Source**: `src/presentation/cli/commands/settings/model.command.ts`
+
+### `shep settings permissions`
+
+Configure the permission mode for an AI coding agent. Each agent has its own set of valid modes matching its upstream CLI flags.
+
+**Source**: `src/presentation/cli/commands/settings/permissions.command.ts`
+
+**Options**:
+
+| Option           | Description                                 |
+| ---------------- | ------------------------------------------- |
+| `--agent <type>` | Agent type (e.g. `claude-code`, `gemini-cli`) |
+| `--mode <mode>`  | Permission mode (must be valid for the agent) |
+| `--reset`        | Reset the agent's permission mode to default |
+
+**Examples**:
+
+```bash
+# Interactive wizard
+shipit-ai settings permissions
+
+# Set Claude Code to plan mode (non-interactive)
+shipit-ai settings permissions --agent claude-code --mode plan
+
+# Set Gemini CLI to auto-edit mode
+shipit-ai settings permissions --agent gemini-cli --mode auto_edit
+
+# Reset Claude Code to its default (bypassPermissions)
+shipit-ai settings permissions --agent claude-code --reset
+```
+
+**Behavior**:
+
+- Without flags: launches an interactive wizard that shows valid modes for the currently configured agent.
+- With `--agent` and `--mode`: validates the mode against the agent's allowed values and persists.
+- With `--reset`: removes the per-agent override, reverting to the hardcoded default.
+
+See [Agent Permission Flag Reference](../development/agent-flag-reference.md) for the full list of modes per agent.
 
 ---
 

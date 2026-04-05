@@ -178,6 +178,48 @@ describe('CompleteOnboardingUseCase', () => {
     ).rejects.toThrow();
   });
 
+  it('should merge permissionMode into agent.permissions for the selected agent', async () => {
+    const existingSettings = createTestSettings();
+    vi.mocked(mockRepository.load).mockResolvedValue(existingSettings);
+    vi.mocked(mockRepository.update).mockResolvedValue();
+
+    const result = await useCase.execute({
+      agent: { type: AgentType.ClaudeCode, authMethod: AgentAuthMethod.Session },
+      permissionMode: 'plan',
+      ide: 'vscode',
+      workflowDefaults: {
+        allowPrd: false,
+        allowPlan: false,
+        allowMerge: false,
+        pushOnImplementationComplete: false,
+        openPrOnImplementationComplete: false,
+      },
+    });
+
+    expect(result.agent.permissions?.claudeCode).toBe('plan');
+  });
+
+  it('should not set permissions when permissionMode is undefined', async () => {
+    const existingSettings = createTestSettings();
+    vi.mocked(mockRepository.load).mockResolvedValue(existingSettings);
+    vi.mocked(mockRepository.update).mockResolvedValue();
+
+    const result = await useCase.execute({
+      agent: { type: AgentType.ClaudeCode, authMethod: AgentAuthMethod.Session },
+      ide: 'vscode',
+      workflowDefaults: {
+        allowPrd: false,
+        allowPlan: false,
+        allowMerge: false,
+        pushOnImplementationComplete: false,
+        openPrOnImplementationComplete: false,
+      },
+    });
+
+    // permissions should remain as they were (undefined in test fixture)
+    expect(result.agent.permissions).toBeUndefined();
+  });
+
   it('should set updatedAt to current time', async () => {
     const existingSettings = createTestSettings();
     vi.mocked(mockRepository.load).mockResolvedValue(existingSettings);

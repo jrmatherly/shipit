@@ -18,7 +18,16 @@ import type {
   EnvironmentConfig,
   SystemConfig,
 } from '@/domain/generated/output.js';
-import { AgentType, AgentAuthMethod } from '@/domain/generated/output.js';
+import {
+  AgentType,
+  AgentAuthMethod,
+  ClaudeCodePermissionMode,
+  CursorPermissionMode,
+  GeminiPermissionMode,
+  CodexPermissionMode,
+  CopilotPermissionMode,
+  RovoDevPermissionMode,
+} from '@/domain/generated/output.js';
 
 describe('createDefaultSettings', () => {
   describe('return type and structure', () => {
@@ -230,6 +239,22 @@ describe('createDefaultSettings', () => {
       expect(settings.agent.token).toBeUndefined();
     });
 
+    it('should have permissions with all 6 agent fields set to most-permissive defaults', () => {
+      // Act
+      const settings = createDefaultSettings();
+
+      // Assert
+      expect(settings.agent.permissions).toBeDefined();
+      expect(settings.agent.permissions).toEqual({
+        claudeCode: ClaudeCodePermissionMode.BypassPermissions,
+        cursor: CursorPermissionMode.Yolo,
+        geminiCli: GeminiPermissionMode.Yolo,
+        codexCli: CodexPermissionMode.DangerFullAccess,
+        copilotCli: CopilotPermissionMode.Yolo,
+        rovoDev: RovoDevPermissionMode.Yolo,
+      });
+    });
+
     it('should match TypeSpec model defaults', () => {
       // Act
       const settings = createDefaultSettings();
@@ -238,6 +263,14 @@ describe('createDefaultSettings', () => {
       expect(settings.agent).toEqual({
         type: AgentType.ClaudeCode,
         authMethod: AgentAuthMethod.Session,
+        permissions: {
+          claudeCode: ClaudeCodePermissionMode.BypassPermissions,
+          cursor: CursorPermissionMode.Yolo,
+          geminiCli: GeminiPermissionMode.Yolo,
+          codexCli: CodexPermissionMode.DangerFullAccess,
+          copilotCli: CopilotPermissionMode.Yolo,
+          rovoDev: RovoDevPermissionMode.Yolo,
+        },
       });
     });
   });
@@ -371,6 +404,14 @@ describe('createDefaultSettings', () => {
       expect(settings.agent).toEqual({
         type: AgentType.ClaudeCode,
         authMethod: AgentAuthMethod.Session,
+        permissions: {
+          claudeCode: ClaudeCodePermissionMode.BypassPermissions,
+          cursor: CursorPermissionMode.Yolo,
+          geminiCli: GeminiPermissionMode.Yolo,
+          codexCli: CodexPermissionMode.DangerFullAccess,
+          copilotCli: CopilotPermissionMode.Yolo,
+          rovoDev: RovoDevPermissionMode.Yolo,
+        },
       });
       expect(settings.notifications).toEqual({
         inApp: { enabled: true },

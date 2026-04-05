@@ -22,6 +22,8 @@ export interface WorkflowDefaultsResult {
  */
 export interface OnboardingResult {
   agent: AgentConfigResult;
+  /** Permission mode selected for the agent, or undefined if skipped */
+  permissionMode?: string;
   ide: string;
   workflowDefaults: WorkflowDefaultsResult;
 }

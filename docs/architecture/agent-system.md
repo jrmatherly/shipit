@@ -169,6 +169,48 @@ For implementation details, see [docs/development/adding-agents.md](../developme
 
 ---
 
+## Per-Agent Permission Modes
+
+Each agent has its own set of native permission flags (e.g. Claude Code's `--permission-mode`, Gemini's `--approval-mode`). Shipit models these as **per-agent TypeSpec enums** so that each executor only accepts values valid for its agent.
+
+### TypeSpec Enums
+
+Six enums are defined in [`tsp/common/enums/agent-permissions.tsp`](../../tsp/common/enums/agent-permissions.tsp):
+
+| Enum                       | Agent        | Example Values                                           |
+| -------------------------- | ------------ | -------------------------------------------------------- |
+| `ClaudeCodePermissionMode` | Claude Code  | `default`, `acceptEdits`, `plan`, `bypassPermissions`    |
+| `CursorPermissionMode`     | Cursor       | `propose`, `yolo`                                        |
+| `GeminiPermissionMode`     | Gemini CLI   | `default`, `auto_edit`, `yolo`                           |
+| `CodexPermissionMode`      | Codex CLI    | `read-only`, `workspace-write`, `danger-full-access`     |
+| `CopilotPermissionMode`    | Copilot CLI  | `prompt`, `allow-paths`, `yolo`                          |
+| `RovoDevPermissionMode`    | Rovo Dev     | `config`, `shadow`, `yolo`                               |
+
+### Settings Integration
+
+`AgentPermissionSettings` is a field on `AgentConfig` in the TypeSpec domain model. It holds six optional per-agent mode values (one per enum). Users configure these via `shipit-ai settings permissions` or the web settings UI.
+
+### Permission Mode Resolver
+
+`resolveAgentPermissionMode()` (in `packages/core/src/infrastructure/services/agents/common/agent-permissions.ts`) resolves the effective mode for a given agent using this precedence chain:
+
+1. **CLI override** -- `--permission-mode <mode>` passed to `shipit-ai feat new`
+2. **Feature row** -- `features.permissionMode` stored on the Feature entity
+3. **Per-agent setting** -- `settings.agent.permissions.<agentKey>`
+4. **Hardcoded default** -- matches the previous hardcoded bypass behavior (e.g. `bypassPermissions` for Claude Code, `yolo` for Gemini)
+
+### Executor Consumption
+
+Each executor receives only its own native enum type. For example, `ClaudeCodeExecutorService` receives a `ClaudeCodePermissionMode` value and maps it to the appropriate CLI flags. Executors never see permission values intended for other agents.
+
+### ISettingsReader Port
+
+`ISettingsReader` (in `packages/core/src/application/ports/output/services/settings-reader.interface.ts`) provides a testable, DI-friendly port for reading settings. Infrastructure services like the permission resolver use this port instead of the global `getSettings()` accessor directly, enabling clean unit testing.
+
+For the full list of upstream CLI flags per agent, see [Agent Permission Flag Reference](../development/agent-flag-reference.md).
+
+---
+
 ## Maintaining This Document
 
 **Update when:**

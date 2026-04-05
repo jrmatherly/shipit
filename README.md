@@ -224,16 +224,37 @@ Shipit runs entirely on your machine.
 
 ### Agent Permissions
 
-Shipit runs your agent non-interactively — it can't pause for "allow this command?" prompts mid-pipeline. By default, it passes permission-bypass flags (e.g., `--dangerously-skip-permissions` for Claude Code — each agent has an equivalent).
+Shipit runs your agent non-interactively -- it can't pause for "allow this command?" prompts mid-pipeline. Each agent has its own permission modes mapped to native CLI flags:
+
+| Agent | Default (batch) | Tighter Options |
+|-------|----------------|-----------------|
+| Claude Code | `bypassPermissions` | `acceptEdits`, `plan`, `default` |
+| Cursor | `yolo` | `propose` |
+| Gemini CLI | `yolo` | `auto_edit`, `default` |
+| Codex CLI | `danger-full-access` | `workspace-write`, `read-only` |
+| Copilot CLI | `yolo` | `allow-paths`, `prompt` |
+| Rovo Dev | `yolo` | `shadow`, `config` |
+
+Configure per-agent defaults or override per-feature:
+
+```bash
+# Set Claude Code to auto-approve edits but prompt for shell commands
+shipit-ai settings permissions --agent claude-code --mode acceptEdits
+
+# Run a single feature in read-only plan mode
+shipit-ai feat new "redesign auth" --permission-mode plan
+```
 
 **Your safety net is three layers deep:**
-1. **Worktree isolation** — the agent works on a copy, not your checkout
-2. **Draft PRs** — you review the diff before anything is merged
-3. **CI pipeline** — your tests, linters, and security scanners run before merge
+1. **Worktree isolation** -- the agent works on a copy, not your checkout
+2. **Draft PRs** -- you review the diff before anything is merged
+3. **CI pipeline** -- your tests, linters, and security scanners run before merge
 
-The skip-permissions flag is a default, not a requirement. Configure your agent's permission model independently if you need tighter control.
+The bypass default is not a requirement. Tighten permissions globally or per-feature to match your risk tolerance.
 
 **What Shipit does NOT protect you from:** If your CI doesn't catch a vulnerability, Shipit won't either. Shipit is an orchestration layer, not a security scanner.
+
+> **[Full agent permission flag reference -->](./docs/development/agent-flag-reference.md)**
 
 ---
 

@@ -24,7 +24,18 @@ import type {
   ApprovalGateDefaults,
   FeatureFlags,
 } from '../generated/output';
-import { AgentType, AgentAuthMethod, EditorType, TerminalType } from '../generated/output';
+import {
+  AgentType,
+  AgentAuthMethod,
+  EditorType,
+  TerminalType,
+  ClaudeCodePermissionMode,
+  CursorPermissionMode,
+  GeminiPermissionMode,
+  CodexPermissionMode,
+  CopilotPermissionMode,
+  RovoDevPermissionMode,
+} from '../generated/output';
 
 /**
  * Default AI model for all SDLC agents.
@@ -128,6 +139,14 @@ export function createDefaultSettings(overrides?: {
   const agent: AgentConfig = {
     type: DEFAULT_AGENT_TYPE,
     authMethod: DEFAULT_AUTH_METHOD,
+    permissions: {
+      claudeCode: ClaudeCodePermissionMode.BypassPermissions,
+      cursor: CursorPermissionMode.Yolo,
+      geminiCli: GeminiPermissionMode.Yolo,
+      codexCli: CodexPermissionMode.DangerFullAccess,
+      copilotCli: CopilotPermissionMode.Yolo,
+      rovoDev: RovoDevPermissionMode.Yolo,
+    },
   };
 
   const notifications: NotificationPreferences = {
