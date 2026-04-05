@@ -1,3 +1,16 @@
+# [1.166.0](https://github.com/jrmatherly/shipit/compare/v1.165.0...v1.166.0) (2026-04-05)
+
+
+### Bug Fixes
+
+* **dx:** normalize tsp output.ts in validate script ([bf44c27](https://github.com/jrmatherly/shipit/commit/bf44c27e512d301c508b02283e16821c0305284b))
+
+
+### Features
+
+* **agents:** add github copilot cli and rovo dev cli as supported agents ([8a5d7b0](https://github.com/jrmatherly/shipit/commit/8a5d7b047b51f6822140950ff82362b9a32799a6))
+* **deps:** upgrade lucide-react from 0.563 to 1.7.0 ([28c8082](https://github.com/jrmatherly/shipit/commit/28c8082017a78df33b1350851022708b59b1e356))
+
 # [1.165.0](https://github.com/jrmatherly/shipit/compare/v1.164.2...v1.165.0) (2026-04-04)
 
 
