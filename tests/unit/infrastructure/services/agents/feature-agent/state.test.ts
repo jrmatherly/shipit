@@ -58,7 +58,7 @@ describe('FeatureAgentAnnotation', () => {
       expect(channelNames).toContain('ciWatchEnabled');
       expect(channelNames).toContain('enableEvidence');
       expect(channelNames).toContain('commitEvidence');
-      expect(channelNames.length).toBe(32);
+      expect(channelNames.length).toBe(33);
     });
   });
 

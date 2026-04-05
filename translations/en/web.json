@@ -42,6 +42,12 @@
         "agentSystem": "Agent system",
         "addingAgents": "Adding agents",
         "configurationGuide": "Configuration guide"
+      },
+      "permissions": {
+        "title": "Permissions",
+        "description": "Configure permission mode for {{agent}}",
+        "interactiveOnly": "Interactive only",
+        "batchSafe": "Works in batch"
       }
     },
     "environment": {
@@ -604,5 +610,14 @@
     "imageNotes": "Image notes",
     "viewServerLogs": "View server logs",
     "toggleSidebar": "Toggle Sidebar"
+  },
+  "feature": {
+    "create": {
+      "permissionMode": "Perms",
+      "permissionModeDefault": "Use agent default"
+    },
+    "card": {
+      "permissionOverride": "Permission: {{mode}}"
+    }
   }
 }

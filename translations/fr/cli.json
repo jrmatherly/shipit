@@ -70,6 +70,21 @@
         "success": "Langue définie sur : {{language}}",
         "cancelled": "Configuration annulée.",
         "failed": "Échec de la configuration de la langue"
+      },
+      "permissions": {
+        "description": "Configurer le mode de permissions de l'agent",
+        "agentOption": "Type d'agent (ex., claude-code)",
+        "modeOption": "Mode de permissions à définir",
+        "resetOption": "Réinitialiser le mode de permissions par défaut",
+        "modeRequired": "--mode est requis lors de l'utilisation de --agent sans --reset",
+        "currentAgent": "Agent actuel : {{agent}}",
+        "currentMode": "Mode de permissions actuel : {{mode}}",
+        "selectMode": "Sélectionnez le mode de permissions pour {{agent}} :",
+        "updated": "Mode de permissions mis à jour à {{mode}}",
+        "reset": "Mode de permissions réinitialisé par défaut",
+        "invalidMode": "{{mode}} n'est pas un mode valide pour {{agent}}. Modes valides : {{validModes}}",
+        "cancelled": "Configuration annulée.",
+        "failed": "Échec de la configuration du mode de permissions"
       }
     },
     "version": {
@@ -207,6 +222,7 @@
         "modelOption": "Identifiant du modèle LLM pour cette exécution (par ex. claude-opus-4-6)",
         "noRebaseOption": "Skip syncing main from remote before creating the feature branch",
         "attachOption": "Joindre un fichier (répétable)",
+        "permissionModeOption": "Remplacement du mode de permissions pour cette fonctionnalité",
         "parentNotFound": "Fonctionnalité parente introuvable : {{id}}",
         "attachmentNotFound": "Pièce jointe introuvable : {{path}}",
         "spinnerText": "Réflexion en cours",

@@ -70,6 +70,21 @@
         "success": "Idioma establecido a: {{language}}",
         "cancelled": "Configuración cancelada.",
         "failed": "Error al configurar el idioma"
+      },
+      "permissions": {
+        "description": "Configurar modo de permisos del agente",
+        "agentOption": "Tipo de agente (ej., claude-code)",
+        "modeOption": "Modo de permisos a establecer",
+        "resetOption": "Restablecer modo de permisos al valor predeterminado",
+        "modeRequired": "--mode es requerido al usar --agent sin --reset",
+        "currentAgent": "Agente actual: {{agent}}",
+        "currentMode": "Modo de permisos actual: {{mode}}",
+        "selectMode": "Selecciona modo de permisos para {{agent}}:",
+        "updated": "Modo de permisos actualizado a {{mode}}",
+        "reset": "Modo de permisos restablecido al valor predeterminado",
+        "invalidMode": "{{mode}} no es un modo válido para {{agent}}. Modos válidos: {{validModes}}",
+        "cancelled": "Configuración cancelada.",
+        "failed": "Error al configurar el modo de permisos"
       }
     },
     "version": {
@@ -207,6 +222,7 @@
         "modelOption": "Identificador del modelo LLM para esta ejecución (ej., claude-opus-4-6)",
         "noRebaseOption": "Skip syncing main from remote before creating the feature branch",
         "attachOption": "Adjuntar un archivo (repetible)",
+        "permissionModeOption": "Anulación del modo de permisos para esta funcionalidad",
         "parentNotFound": "Funcionalidad padre no encontrada: {{id}}",
         "attachmentNotFound": "Archivo adjunto no encontrado: {{path}}",
         "spinnerText": "Pensando",

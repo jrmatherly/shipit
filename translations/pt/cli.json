@@ -70,6 +70,21 @@
         "success": "Idioma definido como: {{language}}",
         "cancelled": "Configuração cancelada.",
         "failed": "Falha ao configurar idioma"
+      },
+      "permissions": {
+        "description": "Configurar modo de permissões do agente",
+        "agentOption": "Tipo de agente (ex., claude-code)",
+        "modeOption": "Modo de permissões a definir",
+        "resetOption": "Redefinir modo de permissões para padrão",
+        "modeRequired": "--mode é obrigatório ao usar --agent sem --reset",
+        "currentAgent": "Agente atual: {{agent}}",
+        "currentMode": "Modo de permissões atual: {{mode}}",
+        "selectMode": "Selecione o modo de permissões para {{agent}}:",
+        "updated": "Modo de permissões atualizado para {{mode}}",
+        "reset": "Modo de permissões redefinido para padrão",
+        "invalidMode": "{{mode}} não é um modo válido para {{agent}}. Modos válidos: {{validModes}}",
+        "cancelled": "Configuração cancelada.",
+        "failed": "Falha ao configurar modo de permissões"
       }
     },
     "version": {
@@ -207,6 +222,7 @@
         "modelOption": "Identificador do modelo LLM para esta execução (ex: claude-opus-4-6)",
         "noRebaseOption": "Skip syncing main from remote before creating the feature branch",
         "attachOption": "Anexar um arquivo (repetível)",
+        "permissionModeOption": "Substituição do modo de permissões para este recurso",
         "parentNotFound": "Recurso pai não encontrado: {{id}}",
         "attachmentNotFound": "Anexo não encontrado: {{path}}",
         "spinnerText": "Pensando",

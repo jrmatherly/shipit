@@ -97,6 +97,9 @@ properties:
     items:
       $ref: Attachment.yaml
     description: Files attached by the user when creating or messaging this feature
+  permissionMode:
+    type: string
+    description: Per-feature permission mode override (overrides agent default from settings)
 required:
   - name
   - userQuery

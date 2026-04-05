@@ -70,6 +70,21 @@
         "success": "تم تعيين اللغة إلى: {{language}}",
         "cancelled": "تم إلغاء التكوين.",
         "failed": "فشل تكوين اللغة"
+      },
+      "permissions": {
+        "description": "تكوين وضع أذونات الوكيل",
+        "agentOption": "نوع الوكيل (مثال: claude-code)",
+        "modeOption": "وضع الأذونات المراد تعيينه",
+        "resetOption": "إعادة تعيين وضع الأذونات إلى الافتراضي",
+        "modeRequired": "--mode مطلوب عند استخدام --agent بدون --reset",
+        "currentAgent": "الوكيل الحالي: {{agent}}",
+        "currentMode": "وضع الأذونات الحالي: {{mode}}",
+        "selectMode": "اختر وضع الأذونات لـ {{agent}}:",
+        "updated": "تم تحديث وضع الأذونات إلى {{mode}}",
+        "reset": "تم إعادة تعيين وضع الأذونات إلى الافتراضي",
+        "invalidMode": "{{mode}} ليس وضعًا صالحًا لـ {{agent}}. الأوضاع الصالحة: {{validModes}}",
+        "cancelled": "تم إلغاء التكوين.",
+        "failed": "فشل تكوين وضع الأذونات"
       }
     },
     "version": {
@@ -207,6 +222,7 @@
         "modelOption": "معرّف نموذج LLM لهذا التشغيل (مثال: claude-opus-4-6)",
         "noRebaseOption": "Skip syncing main from remote before creating the feature branch",
         "attachOption": "إرفاق ملف (قابل للتكرار)",
+        "permissionModeOption": "تجاوز وضع الأذونات لهذه الميزة",
         "parentNotFound": "الميزة الأصلية غير موجودة: {{id}}",
         "attachmentNotFound": "المرفق غير موجود: {{path}}",
         "spinnerText": "جارٍ التفكير",

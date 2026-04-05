@@ -259,6 +259,8 @@ export interface FeatureNodeData {
   hasAgentRun?: boolean;
   /** Whether the feature has plan data available */
   hasPlan?: boolean;
+  /** Per-feature permission mode override (overrides agent default from settings) */
+  permissionMode?: string;
   /** Deployment status for features with an active deployment */
   deployment?: {
     status: DeploymentState;

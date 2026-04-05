@@ -43,6 +43,9 @@ const meta: Meta<typeof WorkflowOptionsSection> = {
     computedPush: false,
     computedOpenPr: false,
     isSubmitting: false,
+    agentType: 'claude-code',
+    permissionMode: undefined,
+    onPermissionModeChange: fn(),
   },
 };
 

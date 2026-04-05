@@ -70,6 +70,21 @@
         "success": "Sprache gesetzt auf: {{language}}",
         "cancelled": "Konfiguration abgebrochen.",
         "failed": "Sprache konnte nicht konfiguriert werden"
+      },
+      "permissions": {
+        "description": "Berechtigungsmodus des Agenten konfigurieren",
+        "agentOption": "Agententyp (z.B. claude-code)",
+        "modeOption": "Zu setzender Berechtigungsmodus",
+        "resetOption": "Berechtigungsmodus auf Standard zurücksetzen",
+        "modeRequired": "--mode ist erforderlich bei Verwendung von --agent ohne --reset",
+        "currentAgent": "Aktueller Agent: {{agent}}",
+        "currentMode": "Aktueller Berechtigungsmodus: {{mode}}",
+        "selectMode": "Berechtigungsmodus für {{agent}} auswählen:",
+        "updated": "Berechtigungsmodus aktualisiert auf {{mode}}",
+        "reset": "Berechtigungsmodus auf Standard zurückgesetzt",
+        "invalidMode": "{{mode}} ist kein gültiger Modus für {{agent}}. Gültige Modi: {{validModes}}",
+        "cancelled": "Konfiguration abgebrochen.",
+        "failed": "Berechtigungsmodus konnte nicht konfiguriert werden"
       }
     },
     "version": {
@@ -207,6 +222,7 @@
         "modelOption": "LLM-Modellbezeichnung für diesen Lauf (z.B. claude-opus-4-6)",
         "noRebaseOption": "Skip syncing main from remote before creating the feature branch",
         "attachOption": "Eine Datei anhängen (wiederholbar)",
+        "permissionModeOption": "Berechtigungsmodus-Überschreibung für dieses Feature",
         "parentNotFound": "Übergeordnetes Feature nicht gefunden: {{id}}",
         "attachmentNotFound": "Anhang nicht gefunden: {{path}}",
         "spinnerText": "Denke nach",

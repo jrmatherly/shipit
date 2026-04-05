@@ -1,11 +1,20 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { GitFork, FileText, RefreshCw } from 'lucide-react';
+import { GitFork, FileText, RefreshCw, Shield } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { getAgentPermissionOptions, type PermissionOption } from '@/app/actions/agent-permissions';
 
 const AUTO_APPROVE_OPTION_IDS = ['allowPrd', 'allowPlan', 'allowMerge'] as const;
 
@@ -33,6 +42,12 @@ export interface WorkflowOptionsSectionProps {
   computedPush: boolean;
   computedOpenPr: boolean;
   isSubmitting: boolean;
+  /** Currently selected agent type (for permission mode options) */
+  agentType?: string;
+  /** Selected per-feature permission mode override */
+  permissionMode?: string;
+  /** Callback when permission mode changes */
+  onPermissionModeChange?: (mode: string | undefined) => void;
 }
 
 export function WorkflowOptionsSection({
@@ -59,6 +74,9 @@ export function WorkflowOptionsSection({
   computedPush,
   computedOpenPr,
   isSubmitting,
+  agentType,
+  permissionMode,
+  onPermissionModeChange,
 }: WorkflowOptionsSectionProps) {
   const { t } = useTranslation('web');
 
@@ -356,6 +374,83 @@ export function WorkflowOptionsSection({
             </Tooltip>
           )}
         </div>
+      </div>
+
+      {/* Permission mode row */}
+      {agentType && onPermissionModeChange ? (
+        <PermissionModeRow
+          agentType={agentType}
+          permissionMode={permissionMode}
+          onPermissionModeChange={onPermissionModeChange}
+          isSubmitting={isSubmitting}
+        />
+      ) : null}
+    </div>
+  );
+}
+
+/** Internal sub-component for the permission mode select in the workflow options row. */
+function PermissionModeRow({
+  agentType,
+  permissionMode,
+  onPermissionModeChange,
+  isSubmitting,
+}: {
+  agentType: string;
+  permissionMode: string | undefined;
+  onPermissionModeChange: (mode: string | undefined) => void;
+  isSubmitting: boolean;
+}) {
+  const { t } = useTranslation('web');
+  const [options, setOptions] = useState<PermissionOption[]>([]);
+
+  useEffect(() => {
+    let cancelled = false;
+    getAgentPermissionOptions(agentType).then((opts) => {
+      if (!cancelled) setOptions(opts);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [agentType]);
+
+  if (options.length === 0) return null;
+
+  return (
+    <div className="border-input flex items-center gap-4 rounded-md border px-3 py-2.5">
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="text-muted-foreground flex w-16 shrink-0 cursor-default items-center gap-1 text-xs font-semibold tracking-wider">
+            <Shield className="h-3 w-3" />
+            {t('feature.create.permissionMode')}
+          </span>
+        </TooltipTrigger>
+        <TooltipContent side="bottom">
+          {t('settings.agent.permissions.description', { agent: agentType })}
+        </TooltipContent>
+      </Tooltip>
+      <div className="flex-1">
+        <Select
+          value={permissionMode ?? '__default__'}
+          onValueChange={(v) => onPermissionModeChange(v === '__default__' ? undefined : v)}
+          disabled={isSubmitting}
+        >
+          <SelectTrigger
+            id="permission-mode"
+            data-testid="permission-mode-select"
+            className="h-7 text-xs"
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="__default__">{t('feature.create.permissionModeDefault')}</SelectItem>
+            {options.map((opt) => (
+              <SelectItem key={opt.value} value={opt.value}>
+                {opt.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

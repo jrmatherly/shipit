@@ -15,8 +15,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { updateSettingsAction } from '@/app/actions/update-settings';
+import { setAgentPermissionMode } from '@/app/actions/agent-permissions';
 import { AgentType, AgentAuthMethod } from '@shipit-ai/core/domain/generated/output';
 import { getAgentTypeIcon } from '@/components/common/feature-node/agent-type-icons';
+import { AgentPermissionPicker } from './agent-permission-picker';
 import type { AgentConfig } from '@shipit-ai/core/domain/generated/output';
 
 const AGENT_TYPE_OPTIONS = [
@@ -37,11 +39,30 @@ export interface AgentSettingsSectionProps {
   agent: AgentConfig;
 }
 
+/** Resolve the current permission mode for the active agent from settings. */
+function resolvePermissionMode(agent: AgentConfig): string | undefined {
+  const perms = agent.permissions;
+  if (!perms) return undefined;
+  const keyMap: Record<string, keyof typeof perms> = {
+    [AgentType.ClaudeCode]: 'claudeCode',
+    [AgentType.Cursor]: 'cursor',
+    [AgentType.GeminiCli]: 'geminiCli',
+    [AgentType.CodexCli]: 'codexCli',
+    [AgentType.CopilotCli]: 'copilotCli',
+    [AgentType.RovoDev]: 'rovoDev',
+  };
+  const key = keyMap[agent.type];
+  return key ? (perms[key] as string | undefined) : undefined;
+}
+
 export function AgentSettingsSection({ agent }: AgentSettingsSectionProps) {
   const [agentType, setAgentType] = useState(agent.type);
   const [authMethod, setAuthMethod] = useState(agent.authMethod);
   const [token, setToken] = useState(agent.token ?? '');
   const [showToken, setShowToken] = useState(false);
+  const [permissionMode, setPermissionMode] = useState<string | undefined>(
+    resolvePermissionMode(agent)
+  );
   const [isPending, startTransition] = useTransition();
   const [showSaved, setShowSaved] = useState(false);
   const prevPendingRef = useRef(false);
@@ -75,7 +96,18 @@ export function AgentSettingsSection({ agent }: AgentSettingsSectionProps) {
 
   function handleAgentTypeChange(value: string) {
     setAgentType(value as AgentType);
+    setPermissionMode(undefined); // Reset permission mode when agent changes
     save(buildPayload({ type: value as AgentType }));
+  }
+
+  function handlePermissionModeChange(mode: string) {
+    setPermissionMode(mode);
+    startTransition(async () => {
+      const result = await setAgentPermissionMode(agentType, mode);
+      if (!result.success) {
+        toast.error(result.error ?? 'Failed to save permission mode');
+      }
+    });
   }
 
   function handleAuthMethodChange(value: string) {
@@ -145,6 +177,13 @@ export function AgentSettingsSection({ agent }: AgentSettingsSectionProps) {
             </SelectContent>
           </Select>
         </div>
+
+        <AgentPermissionPicker
+          agentType={agentType}
+          currentMode={permissionMode}
+          onChange={handlePermissionModeChange}
+          disabled={isPending}
+        />
 
         {authMethod === AgentAuthMethod.Token && (
           <div className="space-y-2">

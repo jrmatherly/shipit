@@ -42,6 +42,12 @@
         "agentSystem": "Sistema de agentes",
         "addingAgents": "Agregar agentes",
         "configurationGuide": "Guía de configuración"
+      },
+      "permissions": {
+        "title": "Permisos",
+        "description": "Configurar modo de permisos para {{agent}}",
+        "interactiveOnly": "Solo interactivo",
+        "batchSafe": "Compatible con lotes"
       }
     },
     "environment": {
@@ -604,5 +610,14 @@
     "imageNotes": "Notas de imagen",
     "viewServerLogs": "Ver logs del servidor",
     "toggleSidebar": "Alternar barra lateral"
+  },
+  "feature": {
+    "create": {
+      "permissionMode": "Permisos",
+      "permissionModeDefault": "Usar predeterminado del agente"
+    },
+    "card": {
+      "permissionOverride": "Permiso: {{mode}}"
+    }
   }
 }

@@ -70,6 +70,21 @@
         "success": "Язык установлен: {{language}}",
         "cancelled": "Настройка отменена.",
         "failed": "Не удалось настроить язык"
+      },
+      "permissions": {
+        "description": "Настроить режим разрешений агента",
+        "agentOption": "Тип агента (например, claude-code)",
+        "modeOption": "Устанавливаемый режим разрешений",
+        "resetOption": "Сбросить режим разрешений на значение по умолчанию",
+        "modeRequired": "--mode обязателен при использовании --agent без --reset",
+        "currentAgent": "Текущий агент: {{agent}}",
+        "currentMode": "Текущий режим разрешений: {{mode}}",
+        "selectMode": "Выберите режим разрешений для {{agent}}:",
+        "updated": "Режим разрешений обновлён на {{mode}}",
+        "reset": "Режим разрешений сброшен на значение по умолчанию",
+        "invalidMode": "{{mode}} не является допустимым режимом для {{agent}}. Допустимые режимы: {{validModes}}",
+        "cancelled": "Настройка отменена.",
+        "failed": "Не удалось настроить режим разрешений"
       }
     },
     "version": {
@@ -207,6 +222,7 @@
         "modelOption": "Идентификатор модели LLM для этого запуска (например, claude-opus-4-6)",
         "noRebaseOption": "Skip syncing main from remote before creating the feature branch",
         "attachOption": "Прикрепить файл (можно повторять)",
+        "permissionModeOption": "Переопределение режима разрешений для этой функции",
         "parentNotFound": "Родительская функция не найдена: {{id}}",
         "attachmentNotFound": "Вложение не найдено: {{path}}",
         "spinnerText": "Обработка",

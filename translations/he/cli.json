@@ -70,6 +70,21 @@
         "success": "השפה הוגדרה ל: {{language}}",
         "cancelled": "ההגדרה בוטלה.",
         "failed": "הגדרת השפה נכשלה"
+      },
+      "permissions": {
+        "description": "הגדר מצב הרשאות סוכן",
+        "agentOption": "סוג סוכן (לדוגמה, claude-code)",
+        "modeOption": "מצב הרשאות להגדרה",
+        "resetOption": "אפס מצב הרשאות לברירת מחדל",
+        "modeRequired": "--mode נדרש בעת שימוש ב-agent-- ללא --reset",
+        "currentAgent": "סוכן נוכחי: {{agent}}",
+        "currentMode": "מצב הרשאות נוכחי: {{mode}}",
+        "selectMode": "בחר מצב הרשאות עבור {{agent}}:",
+        "updated": "מצב הרשאות עודכן ל-{{mode}}",
+        "reset": "מצב הרשאות אופס לברירת מחדל",
+        "invalidMode": "{{mode}} אינו מצב תקין עבור {{agent}}. מצבים תקינים: {{validModes}}",
+        "cancelled": "ההגדרה בוטלה.",
+        "failed": "הגדרת מצב הרשאות נכשלה"
       }
     },
     "version": {
@@ -207,6 +222,7 @@
         "modelOption": "מזהה מודל LLM להרצה זו (לדוגמה claude-opus-4-6)",
         "noRebaseOption": "Skip syncing main from remote before creating the feature branch",
         "attachOption": "צרף קובץ (ניתן לחזור)",
+        "permissionModeOption": "דריסת מצב הרשאות עבור פיצ'ר זה",
         "parentNotFound": "פיצ'ר הורה לא נמצא: {{id}}",
         "attachmentNotFound": "קובץ מצורף לא נמצא: {{path}}",
         "spinnerText": "חושב",

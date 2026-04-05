@@ -150,6 +150,7 @@ export function useFeatureCreateForm({
   const [rebaseBeforeBranch, setRebaseBeforeBranch] = useState(true);
   const [overrideAgent, setOverrideAgent] = useState<string | undefined>(undefined);
   const [overrideModel, setOverrideModel] = useState<string | undefined>(undefined);
+  const [permissionMode, setPermissionMode] = useState<string | undefined>(undefined);
   const [selectedRepoPath, setSelectedRepoPath] = useState<string | undefined>(
     validRepoPath || undefined
   );
@@ -235,6 +236,7 @@ export function useFeatureCreateForm({
     setRebaseBeforeBranch(true);
     setOverrideAgent(undefined);
     setOverrideModel(undefined);
+    setPermissionMode(undefined);
     setUploadError(null);
     dragCounterRef.current = 0;
     setIsDragOver(false);
@@ -406,6 +408,7 @@ export function useFeatureCreateForm({
         ...(pending ? { pending } : {}),
         ...(overrideAgent ? { agentType: overrideAgent } : {}),
         ...(overrideModel ? { model: overrideModel } : {}),
+        ...(permissionMode ? { permissionMode } : {}),
         ...(parentId ? { parentId } : {}),
         sessionId: sessionIdRef.current,
       });
@@ -430,6 +433,7 @@ export function useFeatureCreateForm({
       pending,
       overrideAgent,
       overrideModel,
+      permissionMode,
       parentId,
       createSound,
       resetForm,
@@ -539,6 +543,8 @@ export function useFeatureCreateForm({
     setOverrideAgent,
     overrideModel,
     setOverrideModel,
+    permissionMode,
+    setPermissionMode,
     selectedRepoPath,
     setSelectedRepoPath,
     localRepos,

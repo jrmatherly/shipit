@@ -18,6 +18,7 @@ import {
   Archive,
   ArchiveRestore,
   MessageSquare,
+  Shield,
   type LucideIcon,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -340,6 +341,24 @@ export function FeatureNode({
             </Tooltip>
           </TooltipProvider>
           <h3 className="min-w-0 truncate text-sm font-bold">{data.name}</h3>
+          {data.permissionMode ? (
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <span
+                    data-testid="feature-node-permission-badge"
+                    className="flex shrink-0 items-center gap-0.5 rounded-full border px-1.5 py-0.5 text-[9px] font-medium text-violet-600 dark:text-violet-400"
+                  >
+                    <Shield className="h-2.5 w-2.5" />
+                    {data.permissionMode}
+                  </span>
+                </TooltipTrigger>
+                <TooltipContent side="top">
+                  {t('feature.card.permissionOverride', { mode: data.permissionMode })}
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          ) : null}
         </div>
 
         {/* Description */}

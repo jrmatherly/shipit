@@ -42,6 +42,12 @@
         "agentSystem": "Система агентов",
         "addingAgents": "Добавление агентов",
         "configurationGuide": "Руководство по настройке"
+      },
+      "permissions": {
+        "title": "Разрешения",
+        "description": "Настроить режим разрешений для {{agent}}",
+        "interactiveOnly": "Только интерактивный",
+        "batchSafe": "Пакетный режим"
       }
     },
     "environment": {
@@ -604,5 +610,14 @@
     "imageNotes": "Заметки к изображению",
     "viewServerLogs": "Просмотр журналов сервера",
     "toggleSidebar": "Переключить боковую панель"
+  },
+  "feature": {
+    "create": {
+      "permissionMode": "Права",
+      "permissionModeDefault": "Использовать значение агента по умолчанию"
+    },
+    "card": {
+      "permissionOverride": "Разрешение: {{mode}}"
+    }
   }
 }

@@ -42,6 +42,12 @@
         "agentSystem": "نظام الوكيل",
         "addingAgents": "إضافة وكلاء",
         "configurationGuide": "دليل التكوين"
+      },
+      "permissions": {
+        "title": "الأذونات",
+        "description": "تكوين وضع الأذونات لـ {{agent}}",
+        "interactiveOnly": "تفاعلي فقط",
+        "batchSafe": "يعمل في الدفعات"
       }
     },
     "environment": {
@@ -604,5 +610,14 @@
     "imageNotes": "ملاحظات الصورة",
     "viewServerLogs": "عرض سجلات الخادم",
     "toggleSidebar": "تبديل الشريط الجانبي"
+  },
+  "feature": {
+    "create": {
+      "permissionMode": "الأذونات",
+      "permissionModeDefault": "استخدام الافتراضي للوكيل"
+    },
+    "card": {
+      "permissionOverride": "الإذن: {{mode}}"
+    }
   }
 }

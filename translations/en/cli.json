@@ -70,6 +70,21 @@
         "success": "Language set to: {{language}}",
         "cancelled": "Configuration cancelled.",
         "failed": "Failed to configure language"
+      },
+      "permissions": {
+        "description": "Configure agent permission mode",
+        "agentOption": "Agent type (e.g., claude-code)",
+        "modeOption": "Permission mode to set",
+        "resetOption": "Reset permission mode to default",
+        "modeRequired": "--mode is required when using --agent flag without --reset",
+        "currentAgent": "Current agent: {{agent}}",
+        "currentMode": "Current permission mode: {{mode}}",
+        "selectMode": "Select permission mode for {{agent}}:",
+        "updated": "Permission mode updated to {{mode}}",
+        "reset": "Permission mode reset to default",
+        "invalidMode": "{{mode}} is not a valid mode for {{agent}}. Valid modes: {{validModes}}",
+        "cancelled": "Configuration cancelled.",
+        "failed": "Failed to configure permission mode"
       }
     },
     "version": {
@@ -207,6 +222,7 @@
         "modelOption": "LLM model identifier for this run (e.g. claude-opus-4-6)",
         "noRebaseOption": "Skip syncing main from remote before creating the feature branch",
         "attachOption": "Attach a file (repeatable)",
+        "permissionModeOption": "Permission mode override for this feature",
         "parentNotFound": "Parent feature not found: {{id}}",
         "attachmentNotFound": "Attachment not found: {{path}}",
         "spinnerText": "Thinking",

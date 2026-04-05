@@ -54,5 +54,7 @@ export interface FeatureCreatePayload {
   agentType?: string;
   /** Optional model override for this feature run */
   model?: string;
+  /** Optional per-feature permission mode override (overrides agent default from settings) */
+  permissionMode?: string;
   sessionId?: string;
 }

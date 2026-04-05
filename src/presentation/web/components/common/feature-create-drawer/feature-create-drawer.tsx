@@ -242,6 +242,9 @@ export function FeatureCreateDrawer({
               computedPush={form.computedPush}
               computedOpenPr={form.computedOpenPr}
               isSubmitting={isSubmitting}
+              agentType={form.overrideAgent ?? currentAgentType}
+              permissionMode={form.permissionMode}
+              onPermissionModeChange={form.setPermissionMode}
             />
           </form>
         </TooltipProvider>

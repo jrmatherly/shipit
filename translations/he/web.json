@@ -42,6 +42,12 @@
         "agentSystem": "מערכת סוכנים",
         "addingAgents": "הוספת סוכנים",
         "configurationGuide": "מדריך הגדרה"
+      },
+      "permissions": {
+        "title": "הרשאות",
+        "description": "הגדרת מצב הרשאות עבור {{agent}}",
+        "interactiveOnly": "אינטראקטיבי בלבד",
+        "batchSafe": "עובד באצווה"
       }
     },
     "environment": {
@@ -604,5 +610,14 @@
     "imageNotes": "הערות לתמונה",
     "viewServerLogs": "צפייה ביומני שרת",
     "toggleSidebar": "החלפת סרגל צד"
+  },
+  "feature": {
+    "create": {
+      "permissionMode": "הרשאות",
+      "permissionModeDefault": "שימוש בברירת מחדל של הסוכן"
+    },
+    "card": {
+      "permissionOverride": "הרשאה: {{mode}}"
+    }
   }
 }

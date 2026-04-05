@@ -24,6 +24,7 @@ import { getCliI18n } from '../../i18n.js';
 import { getShipitAiHomeDir } from '@/infrastructure/services/filesystem/shipit-ai-directory.service.js';
 import { getSettings, hasSettings } from '@/infrastructure/services/settings.service.js';
 import { CheckOnboardingStatusUseCase } from '@/application/use-cases/settings/check-onboarding-status.use-case.js';
+import { getValidModesForAgent } from '../settings/permission-modes.js';
 import { onboardingWizard } from '../../../tui/wizards/onboarding/onboarding.wizard.js';
 
 interface NewOptions {
@@ -40,6 +41,7 @@ interface NewOptions {
   model?: string;
   attach?: string[];
   rebase?: boolean;
+  permissionMode?: string;
 }
 
 /** Commander collect pattern for repeatable options. */
@@ -105,6 +107,7 @@ export function createNewCommand(): Command {
     .option('--model <model>', t('cli:commands.feat.new.modelOption'))
     .option('--no-rebase', t('cli:commands.feat.new.noRebaseOption'))
     .option('--attach <path>', t('cli:commands.feat.new.attachOption'), collect, [])
+    .option('--permission-mode <mode>', t('cli:commands.feat.new.permissionModeOption'))
     .action(async (description: string, options: NewOptions) => {
       try {
         // First-run onboarding gate — only for interactive terminals
@@ -163,6 +166,24 @@ export function createNewCommand(): Command {
 
         const fast = options.fast ?? defaults.fast;
 
+        // Validate --permission-mode against configured agent's valid modes
+        if (options.permissionMode !== undefined) {
+          const settings = getSettings();
+          const agentType = settings.agent.type;
+          const validModes = getValidModesForAgent(agentType);
+          if (!validModes.includes(options.permissionMode)) {
+            messages.error(
+              t('cli:commands.settings.permissions.invalidMode', {
+                mode: options.permissionMode,
+                agent: agentType,
+                validModes: validModes.join(', '),
+              })
+            );
+            process.exitCode = 1;
+            return;
+          }
+        }
+
         const result = await spinner(t('cli:commands.feat.new.spinnerText'), () =>
           useCase.execute({
             userInput: description,
@@ -175,6 +196,7 @@ export function createNewCommand(): Command {
             ...(fast && { fast: true }),
             ...(options.model !== undefined && { model: options.model }),
             ...(attachmentPaths.length > 0 && { attachmentPaths }),
+            ...(options.permissionMode !== undefined && { permissionMode: options.permissionMode }),
             rebaseBeforeBranch: options.rebase,
           })
         );
