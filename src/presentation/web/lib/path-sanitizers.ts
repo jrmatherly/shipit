@@ -114,7 +114,11 @@ export function realpathWithinAllowedRoots(
  */
 export async function realpathOrNullAsync(p: string): Promise<string | null> {
   try {
-    // codeql[js/path-injection] -- this function IS the sanitizer: callers gate access via isWithinRoot containment checks on the resolved result
+    // SECURITY: this function IS the sanitizer — realpath() is CodeQL's recommended
+    // remediation for path injection. Callers gate access via isWithinRoot
+    // containment checks on the resolved result. Alert js/path-injection #28
+    // dismissed as false positive (CodeQL flagged the sanitizer itself due to
+    // the try/catch null-return path).
     return await realpath(p);
   } catch {
     return null;
