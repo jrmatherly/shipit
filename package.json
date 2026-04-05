@@ -83,7 +83,7 @@
     "spec:validate": "tsx scripts/spec-validate.ts",
     "cli": "tsx src/presentation/cli/index.ts",
     "prepare": "husky",
-    "validate": "pnpm run lint:fix && pnpm run format && pnpm run typecheck && pnpm run tsp:compile"
+    "validate": "pnpm run lint:fix && pnpm run format && pnpm run typecheck && pnpm run tsp:codegen"
   },
   "devDependencies": {
     "@commitlint/cli": "^19.0.0",
