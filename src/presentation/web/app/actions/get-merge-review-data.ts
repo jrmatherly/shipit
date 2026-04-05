@@ -1,9 +1,10 @@
 'use server';
 
 import { createHash } from 'node:crypto';
-import { readFileSync, realpathSync } from 'node:fs';
-import { basename, join, dirname, sep } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { basename, join, dirname } from 'node:path';
 import { resolve } from '@/lib/server-container';
+import { realpathOrNull, isWithinRoot } from '@/lib/path-sanitizers';
 import type { IFeatureRepository } from '@shipit-ai/core/application/ports/output/repositories/feature-repository.interface';
 import type { IGitPrService } from '@shipit-ai/core/application/ports/output/services/git-pr-service.interface';
 import type {
@@ -26,35 +27,6 @@ type GetMergeReviewDataResult = MergeReviewData | { error: string };
 function computeEvidenceDir(repositoryPath: string, featureId: string): string {
   const repoHash = createHash('sha256').update(repositoryPath).digest('hex').slice(0, 16);
   return join(getShipitAiHomeDir(), 'repos', repoHash, 'evidence', featureId).replace(/\\/g, '/');
-}
-
-/**
- * Resolve a path through realpath() and assert it still lives under the
- * provided root directory. Returns the resolved path on success, or null
- * if the path is missing, unreadable, or escapes the root via symlinks.
- * This is the canonical shipit path-containment pattern used across all
- * routes that touch user-influenced filesystem paths.
- */
-function realpathWithinRoot(candidate: string, root: string): string | null {
-  try {
-    const resolvedRoot = realpathSync(root);
-    const resolvedCandidate = realpathSync(candidate);
-    // Normalize both sides to forward slash before prefix check so Windows
-    // (backslash separators from realpath) matches the forward-slash roots
-    // that shipit uses throughout the codebase.
-    const normRoot = resolvedRoot.replace(/\\/g, '/');
-    const normCandidate = resolvedCandidate.replace(/\\/g, '/');
-    if (
-      normCandidate === normRoot ||
-      normCandidate.startsWith(`${normRoot}/`) ||
-      resolvedCandidate.startsWith(`${resolvedRoot}${sep}`)
-    ) {
-      return resolvedCandidate;
-    }
-    return null;
-  } catch {
-    return null;
-  }
 }
 
 /**
@@ -159,23 +131,32 @@ export async function getMergeReviewData(featureId: string): Promise<GetMergeRev
 
     if (evidenceDir) {
       try {
-        // SECURITY: validate that the manifest we're about to read lives
-        // inside the ShipIT home directory. computeEvidenceDir() already
-        // hashes the repositoryPath (so the directory name is deterministic
-        // hex), but we still run realpathWithinRoot so CodeQL's
-        // js/path-injection analysis sees a sanitized-containment pattern.
+        // SECURITY: validate the manifest we're about to read lives inside
+        // SHIPIT_AI_HOME. computeEvidenceDir() already hashes repositoryPath
+        // to a hex directory name, but we still run a realpath containment
+        // check because CodeQL's js/path-injection analysis recognizes the
+        // realpathOrNull + isWithinRoot pair as a sanitizer chain.
         //
-        // IMPORTANT: the realpath-resolved form is used ONLY for the read
-        // itself. The unresolved `evidenceDir` is what we pass to
+        // Resolve-once semantics: realpath the shipit home dir and the
+        // evidence dir exactly once each, then reuse those resolved values
+        // for every subsequent containment check. This avoids both the
+        // extra syscalls and the TOCTOU window that a recursive resolve-
+        // and-check helper would introduce.
+        //
+        // IMPORTANT: the resolved paths are used ONLY for the read-time
+        // security check. The unresolved `evidenceDir` is what we pass to
         // normalizeEvidencePaths so the paths returned to the client match
         // what the /api/evidence route expects — see the comment on
         // normalizeEvidencePaths for the full rationale.
-        const shipitHome = getShipitAiHomeDir();
-        const resolvedEvidenceDir = realpathWithinRoot(evidenceDir, shipitHome);
-        if (resolvedEvidenceDir) {
-          const manifestPath = join(resolvedEvidenceDir, 'manifest.json');
-          const resolvedManifest = realpathWithinRoot(manifestPath, resolvedEvidenceDir);
-          if (resolvedManifest) {
+        const resolvedHome = realpathOrNull(getShipitAiHomeDir());
+        const resolvedEvidenceDir = realpathOrNull(evidenceDir);
+        if (
+          resolvedHome &&
+          resolvedEvidenceDir &&
+          isWithinRoot(resolvedEvidenceDir, resolvedHome)
+        ) {
+          const resolvedManifest = realpathOrNull(join(resolvedEvidenceDir, 'manifest.json'));
+          if (resolvedManifest && isWithinRoot(resolvedManifest, resolvedEvidenceDir)) {
             const raw: MergeReviewEvidence[] = JSON.parse(readFileSync(resolvedManifest, 'utf-8'));
             // Pass the UNRESOLVED evidenceDir so returned paths share the
             // same root form the evidence route's prefix check expects.

@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server';
-import { readFile, realpath } from 'fs/promises';
-import { extname, basename, resolve as resolvePath, sep } from 'path';
+import { readFile } from 'fs/promises';
+import { extname, basename, resolve as resolvePath } from 'path';
 import { homedir } from 'node:os';
 import { resolve } from '@/lib/server-container';
+import { realpathWithinAllowedRootsAsync } from '@/lib/path-sanitizers';
 import type { AttachmentStorageService } from '@shipit-ai/core/infrastructure/services/attachment-storage.service';
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10 MB
@@ -105,26 +106,21 @@ export async function POST(request: Request): Promise<NextResponse> {
       );
     }
 
-    // Path containment: resolve symlinks then verify within allowed roots.
-    // `physicalPath` is the single authoritative value — every subsequent
-    // filesystem call uses it, never the raw `path` input. This eliminates
-    // the TOCTOU window between check and use AND gives CodeQL a clean
+    // Path containment: resolve symlinks and verify within allowed roots
+    // in a single helper call. `physicalPath` is the single authoritative
+    // value — every subsequent filesystem call uses it, never the raw
+    // `path` input. This eliminates the TOCTOU window between the
+    // containment check and the read, and gives CodeQL a clean
     // sanitizer→sink flow for js/path-injection.
-    let physicalPath: string;
-    try {
-      physicalPath = await realpath(resolvePath(path));
-    } catch {
+    const physicalPath = await realpathWithinAllowedRootsAsync(resolvePath(path), [
+      process.cwd(),
+      homedir(),
+    ]);
+    if (!physicalPath) {
+      // Could be a missing file OR a path outside the allowed roots. Return
+      // a single generic 404 either way — leaking the distinction would
+      // let an attacker probe for existence of arbitrary paths on the host.
       return NextResponse.json({ error: 'File not found or unreadable' }, { status: 404 });
-    }
-    const allowedRoots = [
-      await realpath(process.cwd()).catch(() => process.cwd()),
-      await realpath(homedir()).catch(() => homedir()),
-    ];
-    const isAllowed = allowedRoots.some(
-      (root) => physicalPath === root || physicalPath.startsWith(root + sep)
-    );
-    if (!isAllowed) {
-      return NextResponse.json({ error: 'Access denied' }, { status: 403 });
     }
 
     let buffer: Buffer;
