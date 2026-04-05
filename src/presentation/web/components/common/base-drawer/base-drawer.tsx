@@ -103,28 +103,63 @@ export function BaseDrawer({
   }, [open, modal, onClose]);
 
   // Close when clicking outside the drawer panel (no overlay needed — canvas stays draggable).
-  // Uses `click` (not `pointerdown`) so canvas drags don't trigger this.
+  //
+  // Uses `click` (not `pointerdown`) as the trigger so canvas drags don't close the drawer,
+  // but tracks the `pointerdown` target separately. When the user presses the mouse on an
+  // in-drawer control that opens a portaled popover (Radix Select, DropdownMenu, Popover),
+  // Radix calls preventDefault on pointerdown and opens its portal over the trigger. By
+  // the time pointerup fires, the cursor is over the portal overlay, and Chrome computes
+  // the `click` event's target as the common ancestor of pointerdown/pointerup — which is
+  // `<body>` because the portal is detached from the drawer subtree. Without tracking the
+  // pointerdown origin we would misread this as an outside click and close the drawer.
   useEffect(() => {
     if (!open || modal) return;
 
+    // When dismissOnOutsideClick is false (default), also respect data-no-drawer-close guards.
+    const ignoreSelector = dismissOnOutsideClick
+      ? '[role="alertdialog"], [role="dialog"], [role="menu"], [role="listbox"], [data-radix-popper-content-wrapper]'
+      : '[data-no-drawer-close], [role="alertdialog"], [role="dialog"], [role="menu"], [role="listbox"], [data-radix-popper-content-wrapper]';
+
+    /** True when `el` is inside the drawer or an explicitly-ignored overlay. */
+    const isInsideOrIgnored = (el: Element | null | undefined): boolean => {
+      if (!el) return false;
+      if (contentRef.current?.contains(el)) return true;
+      if (el.closest(ignoreSelector)) return true;
+      return false;
+    };
+
+    // Track the most recent pointerdown target so the click handler can check
+    // where the gesture ORIGINATED, not just where it landed.
+    let pointerDownOrigin: Element | null = null;
+    const handlePointerDown = (e: PointerEvent) => {
+      pointerDownOrigin = e.target as Element | null;
+    };
+
     const handleClick = (e: MouseEvent) => {
+      const origin = pointerDownOrigin;
+      // Clear for the next gesture regardless of outcome.
+      pointerDownOrigin = null;
+
       const target = e.target as Element;
       // If the clicked element was unmounted by React before the event reached
       // the document (e.g. a "Next" button removed on the last step), it is no
       // longer in the DOM tree — treat it as an internal click, not an outside one.
       if (!document.body.contains(target)) return;
-      if (contentRef.current?.contains(target)) return;
-      // Don't close when clicking inside Radix overlays.
-      // When dismissOnOutsideClick is false (default), also respect data-no-drawer-close guards.
-      const ignoreSelector = dismissOnOutsideClick
-        ? '[role="alertdialog"], [role="dialog"], [role="menu"], [role="listbox"], [data-radix-popper-content-wrapper]'
-        : '[data-no-drawer-close], [role="alertdialog"], [role="dialog"], [role="menu"], [role="listbox"], [data-radix-popper-content-wrapper]';
-      if (target.closest(ignoreSelector)) return;
+      // Click landed inside the drawer or a protected overlay.
+      if (isInsideOrIgnored(target)) return;
+      // Click landed outside, but the gesture ORIGINATED inside the drawer or a
+      // protected overlay (e.g. a Radix Select trigger whose portal stole the
+      // pointerup target). This is not a real outside click — bail out.
+      if (isInsideOrIgnored(origin)) return;
       onClose();
     };
 
+    document.addEventListener('pointerdown', handlePointerDown, true);
     document.addEventListener('click', handleClick);
-    return () => document.removeEventListener('click', handleClick);
+    return () => {
+      document.removeEventListener('pointerdown', handlePointerDown, true);
+      document.removeEventListener('click', handleClick);
+    };
   }, [open, modal, onClose, dismissOnOutsideClick]);
 
   return (

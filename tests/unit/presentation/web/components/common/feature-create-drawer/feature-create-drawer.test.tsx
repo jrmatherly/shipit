@@ -38,6 +38,17 @@ vi.mock('@/app/actions/get-viewer-permission', () => ({
   getViewerPermission: (repoPath: string) => mockGetViewerPermission(repoPath),
 }));
 
+// Mock getAgentPermissionOptions server action (permission-mode picker)
+const mockGetAgentPermissionOptions =
+  vi.fn<
+    (
+      agentType: string
+    ) => Promise<{ value: string; label: string; description: string; batchSafe: boolean }[]>
+  >();
+vi.mock('@/app/actions/agent-permissions', () => ({
+  getAgentPermissionOptions: (agentType: string) => mockGetAgentPermissionOptions(agentType),
+}));
+
 const mockCreatePlay = vi.fn();
 
 vi.mock('@/hooks/use-sound-action', () => ({
@@ -47,10 +58,13 @@ vi.mock('@/hooks/use-sound-action', () => ({
   }),
 }));
 
-// Vaul drawer uses pointer capture + getComputedStyle().transform in jsdom — stub to avoid exceptions
+// Vaul drawer uses pointer capture + getComputedStyle().transform in jsdom — stub to avoid exceptions.
+// Radix Select's trigger checks hasPointerCapture/scrollIntoView which jsdom does not implement.
 beforeAll(() => {
   Element.prototype.setPointerCapture = vi.fn();
   Element.prototype.releasePointerCapture = vi.fn();
+  Element.prototype.hasPointerCapture = vi.fn().mockReturnValue(false);
+  Element.prototype.scrollIntoView = vi.fn();
 
   const original = window.getComputedStyle;
   vi.spyOn(window, 'getComputedStyle').mockImplementation((el, pseudo) => {
@@ -68,6 +82,26 @@ beforeEach(() => {
   mockPickFolder.mockResolvedValue(null);
   mockAddRepository.mockResolvedValue({ error: 'Not mocked' });
   mockGetViewerPermission.mockResolvedValue({ canPushDirectly: false });
+  mockGetAgentPermissionOptions.mockResolvedValue([
+    {
+      value: 'default',
+      label: 'Default',
+      description: 'Ask for each tool use',
+      batchSafe: false,
+    },
+    {
+      value: 'acceptEdits',
+      label: 'Accept edits',
+      description: 'Auto-approve file edits',
+      batchSafe: true,
+    },
+    {
+      value: 'bypassPermissions',
+      label: 'Bypass permissions',
+      description: 'Skip all permission prompts',
+      batchSafe: true,
+    },
+  ]);
 });
 
 const descriptionPlaceholder =
@@ -1481,6 +1515,36 @@ describe('FeatureCreateDrawer', () => {
 
       expect(onSubmit).toHaveBeenCalledOnce();
       expect(onSubmit.mock.calls[0][0].forkAndPr).toBe(false);
+    });
+  });
+
+  describe('permission mode picker', () => {
+    it('keeps the drawer open and preserves typed description when clicking the Perms selector', async () => {
+      const user = userEvent.setup();
+      const onClose = vi.fn();
+      renderDrawer({ onClose, currentAgentType: 'claude-code' });
+
+      // Wait for async getAgentPermissionOptions to resolve and render the picker.
+      await waitFor(() => {
+        expect(screen.getByTestId('permission-mode-select')).toBeInTheDocument();
+      });
+
+      // Type something into the description so we can assert state is preserved.
+      const textarea = screen.getByPlaceholderText(descriptionPlaceholder);
+      await user.type(textarea, 'Feature that must survive the dropdown click');
+
+      // Click the Perms trigger — this should open the select popup, NOT close the drawer.
+      fireEvent.click(screen.getByTestId('permission-mode-select'));
+
+      // The drawer must still be open: the description textarea should still be mounted
+      // with the typed text intact, and onClose must NOT have been called.
+      // NOTE: jsdom does not fully reproduce the focus/portal interactions that cause
+      // the real-browser bug. Keep this test as a regression guard; the canonical
+      // reproduction lives as a Playwright e2e (see feature-create-drawer.spec.ts).
+      expect(onClose).not.toHaveBeenCalled();
+      expect(screen.getByPlaceholderText(descriptionPlaceholder)).toHaveValue(
+        'Feature that must survive the dropdown click'
+      );
     });
   });
 });

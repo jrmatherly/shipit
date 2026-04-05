@@ -3,6 +3,28 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { BaseDrawer } from '@/components/common/base-drawer';
 
+/**
+ * Dispatches the pointerdown → pointerup → click sequence that Chrome emits
+ * when Radix Select's trigger opens its portaled content. Radix calls
+ * `event.preventDefault()` on pointerdown and opens the SelectContent portal
+ * over the trigger; by the time pointerup fires the cursor is above the
+ * portal overlay, so Chrome computes the click target as the common ancestor
+ * of the pointerdown/pointerup targets — which is `<body>` because the portal
+ * is detached from the drawer's subtree. BaseDrawer's document-level click
+ * handler used to receive `target === document.body` and close the drawer.
+ */
+function simulateRadixSelectTriggerClick(pointerdownTarget: Element, clickTarget: Element) {
+  pointerdownTarget.dispatchEvent(
+    new PointerEvent('pointerdown', { bubbles: true, cancelable: true, button: 0 })
+  );
+  pointerdownTarget.dispatchEvent(
+    new PointerEvent('pointerup', { bubbles: true, cancelable: true, button: 0 })
+  );
+  clickTarget.dispatchEvent(
+    new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 })
+  );
+}
+
 vi.mock('@/hooks/feature-flags-context', () => ({
   useFeatureFlags: () => ({ envDeploy: true, skills: false, debug: false, githubImport: false }),
 }));
@@ -318,6 +340,60 @@ describe('BaseDrawer', () => {
       );
 
       expect(screen.getByTestId('feature-drawer')).toBeInTheDocument();
+    });
+  });
+
+  describe('outside-click detection (non-modal)', () => {
+    it('closes on a true outside click — pointerdown AND click target both outside the drawer', () => {
+      const onClose = vi.fn();
+      render(
+        <BaseDrawer open onClose={onClose} data-testid="drawer">
+          <p>Inside content</p>
+        </BaseDrawer>
+      );
+
+      // Both events land on document.body — a genuine click outside the drawer.
+      simulateRadixSelectTriggerClick(document.body, document.body);
+      expect(onClose).toHaveBeenCalledOnce();
+    });
+
+    it('does NOT close when click fires on body AFTER a pointerdown on an element inside the drawer', () => {
+      // This reproduces the Radix Select bug: pointerdown on an in-drawer
+      // combobox, Radix opens a portal, pointerup lands on the portal, and
+      // Chrome fires `click` on document.body (the common ancestor).
+      // The drawer must NOT close — the user is interacting with an in-drawer
+      // control that happens to route through a portaled popover.
+      const onClose = vi.fn();
+      render(
+        <BaseDrawer open onClose={onClose} data-testid="drawer">
+          <button type="button" role="combobox" data-testid="inside-combobox">
+            Open picker
+          </button>
+        </BaseDrawer>
+      );
+
+      const insideTrigger = screen.getByTestId('inside-combobox');
+      simulateRadixSelectTriggerClick(insideTrigger, document.body);
+      expect(onClose).not.toHaveBeenCalled();
+    });
+
+    it('still closes when a pointerdown outside the drawer is followed by a click outside', () => {
+      // Regression guard: ensure the pointerdown tracking doesn't block
+      // legitimate outside clicks. A click on canvas with its pointerdown
+      // also on canvas must still close the drawer.
+      const onClose = vi.fn();
+      render(
+        <div>
+          <div data-testid="canvas">Canvas</div>
+          <BaseDrawer open onClose={onClose} data-testid="drawer">
+            <p>Inside content</p>
+          </BaseDrawer>
+        </div>
+      );
+
+      const canvas = screen.getByTestId('canvas');
+      simulateRadixSelectTriggerClick(canvas, canvas);
+      expect(onClose).toHaveBeenCalledOnce();
     });
   });
 });
