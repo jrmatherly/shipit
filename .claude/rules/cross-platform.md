@@ -18,6 +18,7 @@ All TypeScript/JavaScript in this repository (under `src/`, `packages/`, `tests/
 - Use `windowsHide: true` on Windows to prevent blank console windows from flashing.
 - Always explicitly set `stdio: ['pipe', 'pipe', 'pipe']` when the parent process may disconnect (detached workers, daemon processes).
 - Native executables (`.exe`) on Windows are found by `spawn()` on PATH without `shell: true`.
+- **`execFile` + `.cmd` shims:** `execFile` / `execFileSync` do NOT auto-resolve `.cmd` / `.bat` extensions on Windows without `shell: true`. For `npx`, pick the binary explicitly: `process.platform === 'win32' ? 'npx.cmd' : 'npx'`. This applies to any Node-hosted CLI that ships as a `.cmd` shim (prettier, eslint, tsx, etc. when invoked via npx). `node` itself is always a native binary and resolves without special handling. See `tests/helpers/cli/runner.ts:resolveRunnerBinary` for the canonical pattern.
 
 ### Line Endings
 

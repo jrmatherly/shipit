@@ -37,6 +37,18 @@ pnpm dev:cli ui
 | WebSocket upgrades | Forwarded (HMR works)                                   | NOT forwarded in `WebServerService`                     |
 | Next.js mode       | Always dev                                              | dev when run from source, prod when installed           |
 
+## Path Containment (Security)
+
+All routes and server actions that touch a user-influenced filesystem path MUST route through `src/presentation/web/lib/path-sanitizers.ts`:
+
+- `realpathOrNull(p)` / `realpathOrNullAsync(p)` — never-throws realpath, returns `null` on any error
+- `isWithinRoot(resolvedCandidate, resolvedRoot)` — pure string containment check; both args must already be realpath'd (no resolution, no syscalls)
+- `realpathWithinAllowedRoots(candidate, roots)` / `realpathWithinAllowedRootsAsync` — resolve + validate in one call, returns resolved candidate or `null`
+
+Never inline `realpath + startsWith` — prior copies caused 8 CodeQL `js/path-injection` alerts and a TOCTOU bug in `api/directory/list/route.ts`. The helpers are CodeQL-recognized sanitizers and follow resolve-once semantics so callers avoid redundant syscalls and TOCTOU windows.
+
+**Display-vs-physical path split:** Routes that RETURN paths to the client AND use realpath internally MUST keep two forms — `displayPath` (user-typed, echoed in the response payload so the UI breadcrumb matches expectation) and `physicalPath` (realpath-sanitized, used for every filesystem sink: `stat`, `readFile`, `readdir`, `spawn`, per-entry joins). Mismatching them causes 404s on macOS where `/tmp` resolves to `/private/tmp` via symlink, and also breaks the evidence route's unresolved-prefix containment check. See `api/directory/list/route.ts` for the canonical implementation of the two-name split.
+
 ## Graph State Architecture (Domain-Model-Driven)
 
 All canvas node/edge state is managed through **domain Maps as the single source of truth**.
