@@ -60,6 +60,23 @@ If you include a body or footer:
   - `Refs: #123`
   - `Co-authored-by: Name <email>`
 
+### Trailer-parser gotcha
+
+`conventional-commits-parser` (used by commitlint) treats body lines containing
+GitHub issue references like `owner/repo#123` as footer trailers. A body
+paragraph mentioning `github/codeql#9298` gets split: everything from that
+line onward becomes the "footer", causing the REAL `Co-Authored-By:` trailer
+to fail `footer-leading-blank` and the now-long body line to fail
+`footer-max-line-length`.
+
+**Workaround:** In commit bodies, write GitHub references as `issue 9298` or
+`codeql issue 9298` — never `owner/repo#N`. Save the `#N` form for actual
+trailer lines (`Refs: #123`).
+
+**Verify before committing:** Pipe the draft message through commitlint
+directly: `cat /tmp/commit-msg.txt | npx --no-install commitlint`. Empty
+output means pass. Cheaper than 3 failed `git commit` cycles.
+
 ## Output constraints
 
 - When asked for a commit message, output ONLY the commit message text.
