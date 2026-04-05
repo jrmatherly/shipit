@@ -166,31 +166,6 @@ describe('ConfigureAgentUseCase', () => {
     });
   });
 
-  describe('dev agent type — no binary validation', () => {
-    it('should NOT call agentValidator.isAvailable for dev type', async () => {
-      // Act
-      await useCase.execute({
-        type: AgentType.Dev,
-        authMethod: AgentAuthMethod.Session,
-      });
-
-      // Assert: validator must not be called for dev type
-      expect(mockValidator.isAvailable).not.toHaveBeenCalled();
-    });
-
-    it('should persist agent.type = "dev" to settings', async () => {
-      // Act
-      const result = await useCase.execute({
-        type: AgentType.Dev,
-        authMethod: AgentAuthMethod.Session,
-      });
-
-      // Assert
-      expect(result.agent.type).toBe(AgentType.Dev);
-      expect(mockRepository.update).toHaveBeenCalledOnce();
-    });
-  });
-
   describe('settings not found', () => {
     it('should throw error when settings not initialized', async () => {
       // Arrange

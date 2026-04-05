@@ -12,6 +12,7 @@ import type { IPhaseTimingRepository } from '../../../application/ports/output/a
 import type { IFeatureAgentProcessService } from '../../../application/ports/output/agents/feature-agent-process.interface.js';
 import type { ISpecInitializerService } from '../../../application/ports/output/services/spec-initializer.interface.js';
 import type { ISettingsRepository } from '../../../application/ports/output/repositories/settings.repository.interface.js';
+import type { ISettingsReader } from '../../../application/ports/output/services/settings-reader.interface.js';
 import { AgentExecutorFactory } from '../../services/agents/common/agent-executor-factory.service.js';
 import { AgentExecutorProvider } from '../../services/agents/common/agent-executor-provider.service.js';
 import { StructuredAgentCallerService } from '../../services/agents/common/structured-agent-caller.service.js';
@@ -84,7 +85,8 @@ export function registerAgentsModule(container: DependencyContainer): void {
     useFactory: (c) => {
       const provider = c.resolve<IAgentExecutorProvider>('IAgentExecutorProvider');
       const factory = c.resolve<IAgentExecutorFactory>('IAgentExecutorFactory');
-      return new StructuredAgentCallerService(provider, factory);
+      const settingsReader = c.resolve<ISettingsReader>('ISettingsReader');
+      return new StructuredAgentCallerService(provider, factory, settingsReader);
     },
   });
 
@@ -97,7 +99,8 @@ export function registerAgentsModule(container: DependencyContainer): void {
       const registry = c.resolve<IAgentRegistry>('IAgentRegistry');
       const executorProvider = c.resolve<IAgentExecutorProvider>('IAgentExecutorProvider');
       const runRepository = c.resolve<IAgentRunRepository>('IAgentRunRepository');
-      return new AgentRunnerService(registry, executorProvider, runRepository);
+      const settingsReader = c.resolve<ISettingsReader>('ISettingsReader');
+      return new AgentRunnerService(registry, executorProvider, runRepository, settingsReader);
     },
   });
 

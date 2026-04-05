@@ -18,7 +18,6 @@ import type {
 import { ClaudeCodeExecutorService } from './executors/claude-code-executor.service.js';
 import { ClaudeCodeInteractiveExecutor } from './executors/claude-code-interactive-executor.service.js';
 import { CursorExecutorService } from './executors/cursor-executor.service.js';
-import { DevAgentExecutorService } from './executors/dev-executor.service.js';
 import { GeminiCliExecutorService } from './executors/gemini-cli-executor.service.js';
 import { CodexCliExecutorService } from './executors/codex-cli-executor.service.js';
 import { CopilotCliExecutorService } from './executors/copilot-cli-executor.service.js';
@@ -60,9 +59,6 @@ export class AgentExecutorFactory implements IAgentExecutorFactory {
       case 'cursor':
         executor = new CursorExecutorService(this.spawn);
         break;
-      case 'dev':
-        executor = new DevAgentExecutorService();
-        break;
       case 'gemini-cli':
         executor = new GeminiCliExecutorService(this.spawn, _authConfig);
         break;
@@ -94,7 +90,6 @@ export class AgentExecutorFactory implements IAgentExecutorFactory {
     return [
       'claude-code' as AgentType,
       'cursor' as AgentType,
-      'dev' as AgentType,
       'gemini-cli' as AgentType,
       'codex-cli' as AgentType,
       'copilot-cli' as AgentType,
@@ -118,7 +113,7 @@ export class AgentExecutorFactory implements IAgentExecutorFactory {
    * Returns synchronously with no I/O — lists are static data embedded here.
    *
    * @param agentType - The agent type to query
-   * @returns Array of model identifier strings, or empty array for unknown/dev agents
+   * @returns Array of model identifier strings, or empty array for unknown agents
    */
   getSupportedModels(agentType: AgentType): string[] {
     switch (agentType as string) {

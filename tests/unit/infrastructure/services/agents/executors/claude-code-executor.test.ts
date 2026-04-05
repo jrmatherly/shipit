@@ -707,6 +707,69 @@ describe('ClaudeCodeExecutorService', () => {
   });
 
   // -------------------------------------------------------------------------
+  // Permission mode handling
+  // -------------------------------------------------------------------------
+
+  describe('permissionMode', () => {
+    it('should include --dangerously-skip-permissions when permissionMode is bypassPermissions', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const resultLine = buildStreamResult({ result: 'Done' });
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'bypassPermissions' as any,
+      });
+      emitStreamData(mockProc, [resultLine], null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      expect(args).toContain('--dangerously-skip-permissions');
+    });
+
+    it('should include --dangerously-skip-permissions when permissionMode is undefined (backward compat)', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const resultLine = buildStreamResult({ result: 'Done' });
+      const executePromise = executor.execute('Test');
+      emitStreamData(mockProc, [resultLine], null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      expect(args).toContain('--dangerously-skip-permissions');
+    });
+
+    it('should throw for interactive-only mode: default', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      await expect(executor.execute('Test', { permissionMode: 'default' as any })).rejects.toThrow(
+        /requires interactive input/
+      );
+    });
+
+    it('should throw for interactive-only mode: acceptEdits', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      await expect(
+        executor.execute('Test', { permissionMode: 'acceptEdits' as any })
+      ).rejects.toThrow(/requires interactive input/);
+    });
+
+    it('should throw for interactive-only mode: plan', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      await expect(executor.execute('Test', { permissionMode: 'plan' as any })).rejects.toThrow(
+        /requires interactive input/
+      );
+    });
+  });
+
+  // -------------------------------------------------------------------------
   // ENOENT error handling (#356 — meaningful error when CLI not found)
   // -------------------------------------------------------------------------
 

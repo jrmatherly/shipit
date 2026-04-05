@@ -2,6 +2,7 @@
  * Agent Select Prompt Config Unit Tests
  *
  * TDD Phase: RED -> GREEN
+ * Verifies that deprecated agents (dev, aider, continue) are excluded from the prompt.
  */
 
 import { describe, it, expect } from 'vitest';
@@ -9,37 +10,38 @@ import { createAgentSelectConfig } from '../../../../../src/presentation/tui/pro
 import { AgentType } from '../../../../../packages/core/src/domain/generated/output.js';
 
 describe('createAgentSelectConfig', () => {
-  it('includes a Dev (Mock) choice with value "dev"', () => {
+  it('does not include a removed agent type', () => {
     const config = createAgentSelectConfig();
-    const devChoice = config.choices.find((c) => c.value === AgentType.Dev);
-    expect(devChoice).toBeDefined();
-    expect(devChoice?.name).toContain('Dev (Mock)');
+    const devChoice = config.choices.find((c) => c.value === ('dev' as any));
+    expect(devChoice).toBeUndefined();
   });
 
-  it('Dev (Mock) choice is not disabled', () => {
+  it('does not include the Aider agent', () => {
     const config = createAgentSelectConfig();
-    const devChoice = config.choices.find((c) => c.value === AgentType.Dev);
-    expect(devChoice).toBeDefined();
-    expect((devChoice as { disabled?: unknown }).disabled).toBeFalsy();
+    const aiderChoice = config.choices.find((c) => c.value === AgentType.Aider);
+    expect(aiderChoice).toBeUndefined();
   });
 
-  it('Dev (Mock) choice has the correct description', () => {
+  it('does not include the Continue agent', () => {
     const config = createAgentSelectConfig();
-    const devChoice = config.choices.find((c) => c.value === AgentType.Dev);
-    expect((devChoice as { description?: string }).description).toBe(
-      'Local development mock — no agent binary required'
-    );
+    const continueChoice = config.choices.find((c) => c.value === AgentType.Continue);
+    expect(continueChoice).toBeUndefined();
   });
 
-  it('Dev (Mock) choice appears before disabled (Coming Soon) entries', () => {
+  it('includes only supported agents', () => {
     const config = createAgentSelectConfig();
-    const devIndex = config.choices.findIndex((c) => c.value === AgentType.Dev);
-    const disabledIndices = config.choices
-      .map((c, i) => ((c as { disabled?: unknown }).disabled ? i : -1))
-      .filter((i) => i !== -1);
-    expect(devIndex).toBeGreaterThanOrEqual(0);
-    disabledIndices.forEach((disabledIndex) => {
-      expect(devIndex).toBeLessThan(disabledIndex);
-    });
+    const supportedValues = config.choices.map((c) => c.value);
+    expect(supportedValues).toContain(AgentType.ClaudeCode);
+    expect(supportedValues).toContain(AgentType.GeminiCli);
+    expect(supportedValues).toContain(AgentType.CodexCli);
+    expect(supportedValues).toContain(AgentType.Cursor);
+    expect(supportedValues).toContain(AgentType.CopilotCli);
+    expect(supportedValues).toContain(AgentType.RovoDev);
+  });
+
+  it('no choices are disabled', () => {
+    const config = createAgentSelectConfig();
+    const disabledChoices = config.choices.filter((c) => (c as { disabled?: unknown }).disabled);
+    expect(disabledChoices).toHaveLength(0);
   });
 });

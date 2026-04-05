@@ -15,6 +15,7 @@ import type {
   AgentType,
   AgentFeature,
   AgentConfig,
+  CodexPermissionMode,
 } from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
@@ -562,10 +563,13 @@ export class CodexCliExecutorService extends ExecutorBase {
     options?: AgentExecutionOptions,
     tempSchemaPath?: string
   ): string[] {
+    const sandbox = (options?.permissionMode as CodexPermissionMode) ?? 'danger-full-access';
     const baseFlags = [
       '--json',
       '--sandbox',
-      'danger-full-access',
+      sandbox,
+      '--ask-for-approval',
+      'never', // BUG FIX: was implicit/missing — required for non-interactive batch runs
       '--skip-git-repo-check',
       '--color',
       'never',

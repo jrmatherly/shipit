@@ -54,10 +54,10 @@ export const CodexCliSelected: Story = {
   },
 };
 
-export const DemoAgent: Story = {
+export const CopilotCli: Story = {
   args: {
-    initialAgentType: 'dev',
-    initialModel: '',
+    initialAgentType: 'copilot-cli',
+    initialModel: 'claude-sonnet-4-5',
     mode: 'settings',
   },
 };

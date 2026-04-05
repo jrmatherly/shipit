@@ -12,6 +12,7 @@ import "./deployment.tsp";
 import "./requirement.tsp";
 import "./agent.tsp";
 import "./agent-config.tsp";
+import "./agent-permissions.tsp";
 import "./editor.tsp";
 import "./language.tsp";
 import "./tool.tsp";

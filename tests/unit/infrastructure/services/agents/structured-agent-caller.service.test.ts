@@ -1,15 +1,11 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-
-vi.mock('@/infrastructure/services/settings.service.js', () => ({
-  getSettings: vi.fn().mockReturnValue({ agent: { type: 'claude-code' } }),
-}));
-
 import { StructuredAgentCallerService } from '@/infrastructure/services/agents/common/structured-agent-caller.service.js';
 import { StructuredCallError } from '@/application/ports/output/agents/structured-call-error.js';
 import type { IAgentExecutor } from '@/application/ports/output/agents/agent-executor.interface.js';
 import type { IAgentExecutorProvider } from '@/application/ports/output/agents/agent-executor-provider.interface.js';
 import type { IAgentExecutorFactory } from '@/application/ports/output/agents/agent-executor-factory.interface.js';
+import type { ISettingsReader } from '@/application/ports/output/services/settings-reader.interface.js';
 import { AgentFeature } from '@/domain/generated/output.js';
 
 describe('StructuredAgentCallerService', () => {
@@ -17,6 +13,7 @@ describe('StructuredAgentCallerService', () => {
   let mockExecutor: IAgentExecutor;
   let mockProvider: IAgentExecutorProvider;
   let mockFactory: IAgentExecutorFactory;
+  let mockSettingsReader: ISettingsReader;
 
   const testSchema = {
     type: 'object',
@@ -47,7 +44,11 @@ describe('StructuredAgentCallerService', () => {
       createInteractiveExecutor: vi.fn(),
       supportsInteractive: vi.fn().mockReturnValue(false),
     };
-    service = new StructuredAgentCallerService(mockProvider, mockFactory);
+    mockSettingsReader = {
+      hasSettings: vi.fn().mockReturnValue(true),
+      getSettings: vi.fn().mockReturnValue({ agent: { type: 'claude-code' } }),
+    };
+    service = new StructuredAgentCallerService(mockProvider, mockFactory, mockSettingsReader);
   });
 
   describe('native path (agent supports structured-output)', () => {

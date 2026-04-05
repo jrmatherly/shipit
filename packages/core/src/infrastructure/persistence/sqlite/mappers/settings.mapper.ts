@@ -127,6 +127,14 @@ export interface SettingsRow {
 
   // FAB layout config (added in migration 050)
   fab_position_swapped: number;
+
+  // Agent permission modes (added in migration 052)
+  agent_perm_claude_code: string | null;
+  agent_perm_cursor: string | null;
+  agent_perm_gemini_cli: string | null;
+  agent_perm_codex_cli: string | null;
+  agent_perm_copilot_cli: string | null;
+  agent_perm_rovo_dev: string | null;
 }
 
 /**
@@ -246,6 +254,14 @@ export function toDatabase(settings: Settings): SettingsRow {
 
     // FAB layout config (default: not swapped)
     fab_position_swapped: (settings.fabLayout?.swapPosition ?? false) ? 1 : 0,
+
+    // Agent permission modes (optional TEXT → NULL when not set)
+    agent_perm_claude_code: settings.agent.permissions?.claudeCode ?? null,
+    agent_perm_cursor: settings.agent.permissions?.cursor ?? null,
+    agent_perm_gemini_cli: settings.agent.permissions?.geminiCli ?? null,
+    agent_perm_codex_cli: settings.agent.permissions?.codexCli ?? null,
+    agent_perm_copilot_cli: settings.agent.permissions?.copilotCli ?? null,
+    agent_perm_rovo_dev: settings.agent.permissions?.rovoDev ?? null,
   };
 }
 
@@ -283,6 +299,26 @@ function buildAnalyzeRepoTimeoutsFromRow(
 ): { analyzeRepoTimeouts: Record<string, number> } | Record<string, never> {
   if (row.analyze_repo_timeout_analyze_ms === null) return {};
   return { analyzeRepoTimeouts: { analyzeMs: row.analyze_repo_timeout_analyze_ms } };
+}
+
+/**
+ * Build the agent permissions spread from DB row columns.
+ * Returns `{ permissions: { ... } }` when at least one column is non-null,
+ * or an empty object `{}` when all are null (so the field stays undefined).
+ */
+function buildPermissionsFromRow(
+  row: SettingsRow
+): { permissions: Record<string, string> } | Record<string, never> {
+  const entries: [string, string][] = [];
+  if (row.agent_perm_claude_code !== null) entries.push(['claudeCode', row.agent_perm_claude_code]);
+  if (row.agent_perm_cursor !== null) entries.push(['cursor', row.agent_perm_cursor]);
+  if (row.agent_perm_gemini_cli !== null) entries.push(['geminiCli', row.agent_perm_gemini_cli]);
+  if (row.agent_perm_codex_cli !== null) entries.push(['codexCli', row.agent_perm_codex_cli]);
+  if (row.agent_perm_copilot_cli !== null) entries.push(['copilotCli', row.agent_perm_copilot_cli]);
+  if (row.agent_perm_rovo_dev !== null) entries.push(['rovoDev', row.agent_perm_rovo_dev]);
+
+  if (entries.length === 0) return {};
+  return { permissions: Object.fromEntries(entries) };
 }
 
 /**
@@ -330,6 +366,7 @@ export function fromDatabase(row: SettingsRow): Settings {
       type: row.agent_type as AgentType,
       authMethod: row.agent_auth_method as AgentAuthMethod,
       ...(row.agent_token !== null && { token: row.agent_token }),
+      ...buildPermissionsFromRow(row),
     },
 
     // NotificationPreferences (INTEGER 0/1 → boolean)

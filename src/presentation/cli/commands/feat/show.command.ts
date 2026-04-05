@@ -28,9 +28,10 @@ import { computeWorktreePath } from '@/infrastructure/services/ide-launchers/com
 const AGENT_LABELS: Record<string, string> = {
   'claude-code': 'Claude Code',
   'codex-cli': 'Codex CLI',
+  'copilot-cli': 'GitHub Copilot CLI',
   cursor: 'Cursor CLI',
   'gemini-cli': 'Gemini CLI',
-  dev: 'Demo',
+  'rovo-dev': 'Rovo Dev CLI',
 };
 
 /** Map graph node names to human-readable phase labels (active). */

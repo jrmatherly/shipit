@@ -10,7 +10,6 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AgentExecutorFactory } from '@/infrastructure/services/agents/common/agent-executor-factory.service.js';
-import { DevAgentExecutorService } from '@/infrastructure/services/agents/common/executors/dev-executor.service.js';
 import { CodexCliExecutorService } from '@/infrastructure/services/agents/common/executors/codex-cli-executor.service.js';
 import type { SpawnFunction } from '@/infrastructure/services/agents/common/types.js';
 import { AgentType, AgentAuthMethod } from '@/domain/generated/output.js';
@@ -61,29 +60,15 @@ describe('AgentExecutorFactory', () => {
       expect(executor1).toBe(executor2);
     });
 
-    it('should create DevAgentExecutorService for dev type', () => {
-      const devConfig: AgentConfig = {
-        type: AgentType.Dev,
+    it('should throw for unsupported agent type', () => {
+      const bogusConfig: AgentConfig = {
+        type: 'nonexistent-agent' as any,
         authMethod: AgentAuthMethod.Session,
       };
 
-      const executor = factory.createExecutor(AgentType.Dev, devConfig);
-
-      expect(executor).toBeDefined();
-      expect(executor).toBeInstanceOf(DevAgentExecutorService);
-      expect(executor.agentType).toBe(AgentType.Dev);
-    });
-
-    it('should cache dev executor instances (singleton per type)', () => {
-      const devConfig: AgentConfig = {
-        type: AgentType.Dev,
-        authMethod: AgentAuthMethod.Session,
-      };
-
-      const executor1 = factory.createExecutor(AgentType.Dev, devConfig);
-      const executor2 = factory.createExecutor(AgentType.Dev, devConfig);
-
-      expect(executor1).toBe(executor2);
+      expect(() => factory.createExecutor('nonexistent-agent' as any, bogusConfig)).toThrow(
+        'Unsupported agent type: nonexistent-agent'
+      );
     });
 
     it('should throw for aider agent type', () => {
@@ -170,8 +155,8 @@ describe('AgentExecutorFactory', () => {
       expect(supported).toContain('codex-cli');
       expect(supported).toContain('copilot-cli');
       expect(supported).toContain('rovo-dev');
-      expect(supported).toContain('dev');
-      expect(supported).toHaveLength(7);
+      expect(supported).not.toContain('dev');
+      expect(supported).toHaveLength(6);
     });
 
     it('should not include unsupported agents', () => {
@@ -246,8 +231,8 @@ describe('AgentExecutorFactory', () => {
       ]);
     });
 
-    it('should return empty array for dev agent', () => {
-      const models = factory.getSupportedModels(AgentType.Dev);
+    it('should return empty array for unsupported agent type', () => {
+      const models = factory.getSupportedModels('nonexistent-agent' as any);
 
       expect(models).toEqual([]);
     });

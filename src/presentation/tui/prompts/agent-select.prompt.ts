@@ -12,8 +12,8 @@ import { shipitAiTheme } from '../themes/shipit-ai.theme.js';
 /**
  * Creates the @inquirer/select configuration for selecting an AI coding agent.
  *
- * Active agents are selectable. Agents not yet implemented are shown
- * as disabled with a "Coming Soon" badge.
+ * Only production-ready agents are listed. Deprecated and experimental
+ * agents (dev, aider, continue) are excluded from the UI.
  */
 export function createAgentSelectConfig() {
   const t = getTuiI18n().t;
@@ -41,19 +41,14 @@ export function createAgentSelectConfig() {
         description: t('tui:prompts.selectAgent.choices.cursor.description'),
       },
       {
-        name: t('tui:prompts.selectAgent.choices.devMock.name'),
-        value: AgentType.Dev,
-        description: t('tui:prompts.selectAgent.choices.devMock.description'),
+        name: t('tui:prompts.selectAgent.choices.copilotCli.name'),
+        value: AgentType.CopilotCli,
+        description: t('tui:prompts.selectAgent.choices.copilotCli.description'),
       },
       {
-        name: t('tui:prompts.selectAgent.choices.aider.name'),
-        value: AgentType.Aider,
-        disabled: t('tui:prompts.selectAgent.choices.aider.disabled'),
-      },
-      {
-        name: t('tui:prompts.selectAgent.choices.continue.name'),
-        value: AgentType.Continue,
-        disabled: t('tui:prompts.selectAgent.choices.continue.disabled'),
+        name: t('tui:prompts.selectAgent.choices.rovoDev.name'),
+        value: AgentType.RovoDev,
+        description: t('tui:prompts.selectAgent.choices.rovoDev.description'),
       },
     ],
     theme: shipitAiTheme,

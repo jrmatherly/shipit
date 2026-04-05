@@ -9,7 +9,11 @@
  * to enable testability without mocking node:child_process directly.
  */
 
-import type { AgentType, AgentFeature } from '../../../../../domain/generated/output.js';
+import type {
+  AgentType,
+  AgentFeature,
+  ClaudeCodePermissionMode,
+} from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
   AgentExecutionResult,
@@ -248,6 +252,19 @@ export class ClaudeCodeExecutorService extends ExecutorBase {
   private buildArgs(_prompt: string, options?: AgentExecutionOptions): string[] {
     // Prompt is piped via stdin — not passed as a CLI argument — to avoid
     // ENAMETOOLONG on Windows when prompts exceed the ~32 KB arg-length limit.
+    const mode = (options?.permissionMode as ClaudeCodePermissionMode) ?? 'bypassPermissions';
+    switch (mode) {
+      case 'bypassPermissions':
+        // OK for batch pipeline
+        break;
+      case 'default':
+      case 'acceptEdits':
+      case 'plan':
+        throw new Error(
+          `Claude Code mode '${mode}' requires interactive input and cannot run in the batch pipeline. ` +
+            `Use 'bypassPermissions' for batch runs, or switch to the Chat tab for interactive modes.`
+        );
+    }
     const args = ['-p', '--output-format', 'json', '--dangerously-skip-permissions'];
     if (options?.resumeSession) args.push('--resume', options.resumeSession);
     if (options?.model) args.push('--model', options.model);

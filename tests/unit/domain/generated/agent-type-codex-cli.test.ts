@@ -17,7 +17,6 @@ describe('AgentType.CodexCli', () => {
     expect(AgentType.ClaudeCode).toBe('claude-code');
     expect(AgentType.GeminiCli).toBe('gemini-cli');
     expect(AgentType.Cursor).toBe('cursor');
-    expect(AgentType.Dev).toBe('dev');
     expect(AgentType.Aider).toBe('aider');
     expect(AgentType.Continue).toBe('continue');
   });

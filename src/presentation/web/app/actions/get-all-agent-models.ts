@@ -25,10 +25,9 @@ const AGENT_LABELS: Record<string, string> = {
   cursor: 'Cursor CLI',
   'gemini-cli': 'Gemini CLI',
   'rovo-dev': 'Rovo Dev CLI',
-  dev: 'Demo',
 };
 
-/** Sort weight — higher = further down. Demo always last. */
+/** Sort weight — lower = further up in the list. */
 const AGENT_ORDER: Record<string, number> = {
   'claude-code': 0,
   'codex-cli': 1,
@@ -36,7 +35,6 @@ const AGENT_ORDER: Record<string, number> = {
   cursor: 3,
   'gemini-cli': 4,
   'rovo-dev': 5,
-  dev: 99,
 };
 
 /**
@@ -65,19 +63,6 @@ export async function getAllAgentModels(): Promise<AgentModelGroup[]> {
           ...getModelMeta(id),
         })),
       }))
-      .map((g) => {
-        // Dev agent gets fun demo models
-        if (g.agentType === 'dev' && g.models.length === 0) {
-          return {
-            ...g,
-            models: [
-              { id: 'gpt-8', ...getModelMeta('gpt-8') },
-              { id: 'opus-7', ...getModelMeta('opus-7') },
-            ],
-          };
-        }
-        return g;
-      })
       .filter((g) => g.models.length > 0);
 
     // Check which agents are actually installed
@@ -85,7 +70,7 @@ export async function getAllAgentModels(): Promise<AgentModelGroup[]> {
     const groupsWithStatus = await Promise.all(
       groups.map(async (group) => {
         const toolId = AGENT_TOOL_IDS[group.agentType];
-        if (!toolId || group.agentType === 'dev') {
+        if (!toolId) {
           return { ...group, installed: true };
         }
         try {

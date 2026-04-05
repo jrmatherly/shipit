@@ -22,6 +22,26 @@
  */
 
 import type { AgentType, AgentFeature } from '../../../../domain/generated/output.js';
+import type {
+  ClaudeCodePermissionMode,
+  CursorPermissionMode,
+  GeminiPermissionMode,
+  CodexPermissionMode,
+  CopilotPermissionMode,
+  RovoDevPermissionMode,
+} from '../../../../domain/generated/output.js';
+
+/**
+ * Union of all per-agent permission mode enum values.
+ * Each executor casts to its own specific enum type at runtime.
+ */
+export type AgentPermissionModeValue =
+  | ClaudeCodePermissionMode
+  | CursorPermissionMode
+  | GeminiPermissionMode
+  | CodexPermissionMode
+  | CopilotPermissionMode
+  | RovoDevPermissionMode;
 
 /**
  * Token usage and execution statistics returned by an agent.
@@ -93,6 +113,8 @@ export interface AgentExecutionOptions {
   disableMcp?: boolean;
   /** Restrict available built-in tools via --tools flag */
   tools?: string[];
+  /** Agent-specific permission/autonomy mode */
+  permissionMode?: AgentPermissionModeValue;
 }
 
 /**

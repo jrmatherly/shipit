@@ -8,7 +8,7 @@ import type {
   StructuredCallOptions,
 } from '../../../../application/ports/output/agents/structured-agent-caller.interface.js';
 import { StructuredCallError } from '../../../../application/ports/output/agents/structured-call-error.js';
-import { getSettings } from '../../settings.service.js';
+import type { ISettingsReader } from '../../../../application/ports/output/services/settings-reader.interface.js';
 
 /**
  * Structured agent caller that abstracts native structured output vs prompt-based JSON extraction.
@@ -22,14 +22,16 @@ export class StructuredAgentCallerService implements IStructuredAgentCaller {
     @inject('IAgentExecutorProvider')
     private readonly executorProvider: IAgentExecutorProvider,
     @inject('IAgentExecutorFactory')
-    private readonly executorFactory: IAgentExecutorFactory
+    private readonly executorFactory: IAgentExecutorFactory,
+    @inject('ISettingsReader')
+    private readonly settingsReader: ISettingsReader
   ) {}
 
   async call<T>(prompt: string, schema: object, options?: StructuredCallOptions): Promise<T> {
     let executor: IAgentExecutor;
     if (options?.agentType) {
-      const settings = getSettings();
-      executor = this.executorFactory.createExecutor(options.agentType, settings.agent);
+      const settings = this.settingsReader.getSettings();
+      executor = this.executorFactory.createExecutor(options.agentType, settings!.agent);
     } else {
       executor = await this.executorProvider.getExecutor();
     }

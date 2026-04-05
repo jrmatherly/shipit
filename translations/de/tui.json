@@ -10,12 +10,14 @@
           "description": "OpenAI Codex CLI Terminal-Agent (GPT-Modelle)"
         },
         "cursor": { "name": "Cursor", "description": "Cursor KI-Coding-Agent" },
-        "devMock": {
-          "name": "Dev (Mock)",
-          "description": "Lokaler Entwicklungs-Mock — kein Agent-Binary erforderlich"
+        "copilotCli": {
+          "name": "GitHub Copilot CLI",
+          "description": "GitHub Copilot im Terminal"
         },
-        "aider": { "name": "Aider", "disabled": "(Demnächst verfügbar)" },
-        "continue": { "name": "Continue", "disabled": "(Demnächst verfügbar)" }
+        "rovoDev": {
+          "name": "Rovo Dev CLI",
+          "description": "Atlassian Rovo Dev CLI Agent"
+        }
       }
     },
     "selectIde": { "message": "Wählen Sie Ihre bevorzugte IDE" },

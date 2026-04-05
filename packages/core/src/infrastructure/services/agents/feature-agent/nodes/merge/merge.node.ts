@@ -39,12 +39,15 @@ import { updateNodeLifecycle } from '../../lifecycle-context.js';
 import { buildCommitPushPrPrompt } from '../prompts/merge-prompts.js';
 import { parseCommitHash, parsePrUrl } from './merge-output-parser.js';
 import { runCiWatchFixLoop } from './ci-watch-fix-loop.js';
+import type { Settings } from '@/domain/generated/output.js';
 import { getSettings } from '@/infrastructure/services/settings.service.js';
 import type { CleanupFeatureWorktreeUseCase } from '@/application/use-cases/features/cleanup-feature-worktree.use-case.js';
 import type { IGitForkService } from '@/application/ports/output/services/git-fork-service.interface.js';
 
 export interface MergeNodeDeps {
   executor: IAgentExecutor;
+  /** Optional settings injection; falls back to global singleton when omitted */
+  settings?: Settings;
   getDiffSummary: (cwd: string, baseBranch: string) => Promise<DiffSummary>;
   hasRemote: (cwd: string) => Promise<boolean>;
   getDefaultBranch: (cwd: string) => Promise<string>;
@@ -216,7 +219,8 @@ export function createMergeNode(deps: MergeNodeDeps) {
         }
 
         // --- CI watch/fix loop (when push or openPr is enabled and CI watch is not disabled) ---
-        const ciWatchEnabled = getSettings().workflow?.ciWatchEnabled !== false;
+        const resolvedSettings = deps.settings ?? getSettings();
+        const ciWatchEnabled = resolvedSettings.workflow?.ciWatchEnabled !== false;
         if (ciWatchEnabled && (effectiveState.push || effectiveState.openPr)) {
           const ciResult = await runCiWatchFixLoop(
             {

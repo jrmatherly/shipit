@@ -15,7 +15,8 @@ import type {
   AgentExecutionOptions,
   AgentExecutionResult,
 } from '@/application/ports/output/agents/agent-executor.interface.js';
-import type { ApprovalGates, Evidence } from '@/domain/generated/output.js';
+import type { ApprovalGates, Evidence, Settings } from '@/domain/generated/output.js';
+import { resolveAgentPermissionMode } from '../../common/agent-permissions.js';
 import { hasSettings, getSettings } from '@/infrastructure/services/settings.service.js';
 import type { FeatureAgentState } from '../state.js';
 import { reportNodeStart } from '../heartbeat.js';
@@ -84,10 +85,14 @@ const STAGE_TIMEOUT_KEY: Record<string, string> = {
  * Resolve the timeout for a specific stage.
  * Reads per-stage timeout from settings (workflow.stageTimeouts.<stage>Ms),
  * falling back to DEFAULT_STAGE_TIMEOUT_MS when not configured.
+ *
+ * @param nodeName - The graph node name to look up
+ * @param settings - Optional settings injection; falls back to global singleton when omitted
  */
-export function getStageTimeoutMs(nodeName: string): number {
-  if (!hasSettings()) return DEFAULT_STAGE_TIMEOUT_MS;
-  const timeouts = getSettings().workflow?.stageTimeouts;
+export function getStageTimeoutMs(nodeName: string, settings?: Settings): number {
+  const s = settings ?? (hasSettings() ? getSettings() : undefined);
+  if (!s) return DEFAULT_STAGE_TIMEOUT_MS;
+  const timeouts = s.workflow?.stageTimeouts;
   if (!timeouts) return DEFAULT_STAGE_TIMEOUT_MS;
   const key = STAGE_TIMEOUT_KEY[nodeName];
   if (!key) return DEFAULT_STAGE_TIMEOUT_MS;
@@ -100,18 +105,26 @@ export function getStageTimeoutMs(nodeName: string): number {
  * with a fallback to DEFAULT_STAGE_TIMEOUT_MS (10 min).
  *
  * When no `nodeName` is provided, the current node from state is used.
+ *
+ * @param state - Current feature agent graph state
+ * @param overrides - Optional timeout overrides
+ * @param nodeName - Override the node name for timeout lookup
+ * @param settings - Optional settings injection; falls back to global singleton when omitted
  */
 export function buildExecutorOptions(
   state: FeatureAgentState,
-  overrides?: Partial<Pick<AgentExecutionOptions, 'timeout'>>,
-  nodeName?: string
+  overrides?: Partial<Pick<AgentExecutionOptions, 'timeout' | 'permissionMode'>>,
+  nodeName?: string,
+  settings?: Settings
 ): AgentExecutionOptions {
   const stage = nodeName ?? state.currentNode ?? '';
-  const stageTimeout = getStageTimeoutMs(stage);
+  const stageTimeout = getStageTimeoutMs(stage, settings);
+  const permissionMode = overrides?.permissionMode ?? resolveAgentPermissionMode(settings);
   return {
     cwd: state.worktreePath || state.repositoryPath,
     maxTurns: 5000,
     timeout: stageTimeout,
+    ...(permissionMode ? { permissionMode } : {}),
     ...(state.model ? { model: state.model } : {}),
     ...overrides,
   };

@@ -19,17 +19,13 @@
           "name": "Cursor",
           "description": "Agente de codificação AI Cursor"
         },
-        "devMock": {
-          "name": "Dev (Mock)",
-          "description": "Mock de desenvolvimento local — nenhum binário de agente necessário"
+        "copilotCli": {
+          "name": "GitHub Copilot CLI",
+          "description": "GitHub Copilot no terminal"
         },
-        "aider": {
-          "name": "Aider",
-          "disabled": "(Em Breve)"
-        },
-        "continue": {
-          "name": "Continue",
-          "disabled": "(Em Breve)"
+        "rovoDev": {
+          "name": "Rovo Dev CLI",
+          "description": "Agente Atlassian Rovo Dev CLI"
         }
       }
     },

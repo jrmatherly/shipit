@@ -8,7 +8,11 @@
  * to enable testability without mocking node:child_process directly.
  */
 
-import type { AgentType, AgentFeature } from '../../../../../domain/generated/output.js';
+import type {
+  AgentType,
+  AgentFeature,
+  CopilotPermissionMode,
+} from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
   AgentExecutionResult,
@@ -181,16 +185,21 @@ export class CopilotCliExecutorService extends ExecutorBase {
    * -p: prompt text
    */
   private buildArgs(prompt: string, options?: AgentExecutionOptions): string[] {
+    const mode = (options?.permissionMode as CopilotPermissionMode) ?? 'yolo';
     const args = ['-s', '-p', prompt];
 
     if (options?.model) args.push('--model', options.model);
 
-    // Enable autonomous mode when all tools are allowed
-    if (
-      options?.allowedTools?.includes('*') ||
-      (options?.allowedTools && options.allowedTools.length > 0)
-    ) {
-      args.push('--yolo');
+    switch (mode) {
+      case 'yolo':
+        args.push('--yolo');
+        break;
+      case 'allow-paths':
+        args.push('--allow-all-paths');
+        break;
+      case 'prompt':
+        // No flag — Copilot prompts for approval
+        break;
     }
 
     return args;

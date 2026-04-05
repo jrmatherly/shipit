@@ -1,0 +1,23 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: AgentPermissionSettings.yaml
+type: object
+properties:
+  claudeCode:
+    $ref: ClaudeCodePermissionMode.yaml
+    description: "Claude Code permission mode (default: bypassPermissions)"
+  cursor:
+    $ref: CursorPermissionMode.yaml
+    description: "Cursor permission mode (default: yolo)"
+  geminiCli:
+    $ref: GeminiPermissionMode.yaml
+    description: "Gemini CLI permission mode (default: yolo)"
+  codexCli:
+    $ref: CodexPermissionMode.yaml
+    description: "Codex CLI sandbox mode (default: danger-full-access)"
+  copilotCli:
+    $ref: CopilotPermissionMode.yaml
+    description: "Copilot CLI permission mode (default: yolo)"
+  rovoDev:
+    $ref: RovoDevPermissionMode.yaml
+    description: "Rovo Dev CLI permission mode (default: yolo)"
+description: Per-agent permission mode overrides

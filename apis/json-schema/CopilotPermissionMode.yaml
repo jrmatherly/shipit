@@ -1,0 +1,8 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: CopilotPermissionMode.yaml
+type: string
+enum:
+  - prompt
+  - allow-paths
+  - yolo
+description: GitHub Copilot CLI permission modes

@@ -21,7 +21,7 @@ vi.mock('@/app/actions/agent-setup-flag', () => ({
 
 vi.mock('@/app/actions/get-all-agent-models', () => ({
   getAllAgentModels: vi.fn(() =>
-    Promise.resolve([{ agentType: 'dev', label: 'Demo', models: [] }])
+    Promise.resolve([{ agentType: 'claude-code', label: 'Claude Code', models: [] }])
   ),
 }));
 
@@ -32,11 +32,11 @@ vi.mock('@/app/actions/update-agent-and-model', () => ({
 vi.mock('@/app/actions/check-agent-auth', () => ({
   checkAgentAuth: vi.fn(() =>
     Promise.resolve({
-      agentType: 'dev',
+      agentType: 'claude-code',
       installed: true,
       authenticated: true,
-      label: 'Demo',
-      binaryName: null,
+      label: 'Claude Code',
+      binaryName: 'claude',
       authCommand: null,
     })
   ),

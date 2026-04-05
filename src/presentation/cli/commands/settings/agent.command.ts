@@ -44,8 +44,8 @@ Examples:
         let input: ConfigureAgentInput;
 
         if (isNonInteractive) {
-          // Non-interactive: require --auth when --agent is provided (dev type defaults to session)
-          if (!options.auth && options.agent !== 'dev') {
+          // Non-interactive: require --auth when --agent is provided
+          if (!options.auth) {
             messages.error(getCliI18n().t('cli:commands.settings.agent.authRequired'));
             process.exitCode = 1;
             return;

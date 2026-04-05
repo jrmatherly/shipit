@@ -86,18 +86,5 @@ export async function getAllAgentModels() {
         { id: 'gpt-5.2-codex', displayName: 'GPT-5.2 Codex', description: 'Code generation' },
       ],
     },
-    {
-      agentType: 'dev',
-      label: 'Demo',
-      installed: true,
-      models: [
-        { id: 'gpt-8', displayName: 'GPT-8', description: 'Writes code before you think it' },
-        {
-          id: 'opus-7',
-          displayName: 'Opus 7',
-          description: 'Achieved consciousness, ships on time',
-        },
-      ],
-    },
   ];
 }

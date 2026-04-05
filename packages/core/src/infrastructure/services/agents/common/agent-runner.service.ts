@@ -19,7 +19,7 @@ import type { IAgentRunRepository } from '@/application/ports/output/agents/agen
 import type { AgentExecutionStreamEvent } from '@/application/ports/output/agents/agent-executor.interface.js';
 import type { AgentRun, AgentRunEvent } from '@/domain/generated/output.js';
 import { AgentRunStatus } from '@/domain/generated/output.js';
-import { getSettings } from '@/infrastructure/services/settings.service.js';
+import type { ISettingsReader } from '@/application/ports/output/services/settings-reader.interface.js';
 import { EventChannel } from '../streaming/event-channel.js';
 import { StreamingExecutorProxy } from '../streaming/streaming-executor-proxy.js';
 
@@ -41,7 +41,8 @@ export class AgentRunnerService implements IAgentRunner {
   constructor(
     private readonly registry: IAgentRegistry,
     private readonly executorProvider: IAgentExecutorProvider,
-    private readonly runRepository: IAgentRunRepository
+    private readonly runRepository: IAgentRunRepository,
+    private readonly settingsReader: ISettingsReader
   ) {}
 
   async runAgent(agentName: string, prompt: string, options?: AgentRunOptions): Promise<AgentRun> {
@@ -119,8 +120,8 @@ export class AgentRunnerService implements IAgentRunner {
       );
     }
 
-    const settings = getSettings();
-    const agentType = settings.agent.type;
+    const settings = this.settingsReader.getSettings();
+    const agentType = settings!.agent.type;
     const executor = await this.executorProvider.getExecutor();
 
     const runId = crypto.randomUUID();

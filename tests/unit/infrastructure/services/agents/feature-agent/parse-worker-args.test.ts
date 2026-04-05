@@ -33,7 +33,7 @@ describe('parseWorkerArgs - agentType', () => {
     const args = parseWorkerArgs([
       ...baseArgs,
       '--agent-type',
-      'dev',
+      'claude-code',
       '--resume',
       '--resume-from-interrupt',
       '--resume-payload',
@@ -41,7 +41,7 @@ describe('parseWorkerArgs - agentType', () => {
       '--thread-id',
       'thread-001',
     ]);
-    expect(args.agentType).toBe(AgentType.Dev);
+    expect(args.agentType).toBe(AgentType.ClaudeCode);
     expect(args.resume).toBe(true);
     expect(args.resumeFromInterrupt).toBe(true);
     expect(args.resumePayload).toBe(payload);

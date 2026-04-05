@@ -83,8 +83,8 @@ export const WithClickHandler: Story = {
   args: {
     name: 'API Gateway',
     status: 'action-needed',
-    agentType: 'dev',
-    modelId: 'gpt-8',
+    agentType: 'gemini-cli',
+    modelId: 'gemini-2.5-pro',
     onClick: () => alert('Clicked!'),
   },
 };

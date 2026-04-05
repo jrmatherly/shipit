@@ -19,17 +19,13 @@
           "name": "Cursor",
           "description": "סוכן קידוד Cursor AI"
         },
-        "devMock": {
-          "name": "Dev (Mock)",
-          "description": "מוק פיתוח מקומי — לא נדרש קובץ סוכן"
+        "copilotCli": {
+          "name": "GitHub Copilot CLI",
+          "description": "GitHub Copilot בטרמינל"
         },
-        "aider": {
-          "name": "Aider",
-          "disabled": "(בקרוב)"
-        },
-        "continue": {
-          "name": "Continue",
-          "disabled": "(בקרוב)"
+        "rovoDev": {
+          "name": "Rovo Dev CLI",
+          "description": "סוכן Atlassian Rovo Dev CLI"
         }
       }
     },

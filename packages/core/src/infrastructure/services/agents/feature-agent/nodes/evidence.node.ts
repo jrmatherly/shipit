@@ -46,6 +46,7 @@ import {
   type TaskForValidation,
   type ValidationError,
 } from './evidence-output-parser.js';
+import type { Settings } from '@/domain/generated/output.js';
 import { hasSettings, getSettings } from '../../../settings.service.js';
 
 const DEFAULT_MAX_RETRIES = 3;
@@ -82,9 +83,10 @@ function parseTasks(specDir: string): TaskForValidation[] {
  * Factory that creates the evidence collection node function.
  *
  * @param executor - Agent executor for running the evidence capture prompt
+ * @param injectedSettings - Optional settings injection; falls back to global singleton when omitted
  * @returns A LangGraph node function
  */
-export function createEvidenceNode(executor: IAgentExecutor) {
+export function createEvidenceNode(executor: IAgentExecutor, injectedSettings?: Settings) {
   const log = createNodeLogger('evidence');
 
   return async (state: FeatureAgentState): Promise<Partial<FeatureAgentState>> => {
@@ -107,7 +109,7 @@ export function createEvidenceNode(executor: IAgentExecutor) {
     // --- Configuration ---
     // Use feature-level state for commitEvidence; fall back to global for retries config
     const commitEvidence = state.commitEvidence;
-    const settings = hasSettings() ? getSettings() : undefined;
+    const settings = injectedSettings ?? (hasSettings() ? getSettings() : undefined);
     const maxRetries = settings?.workflow.evidenceRetries ?? DEFAULT_MAX_RETRIES;
     const options = buildExecutorOptions(state);
     const tasks = parseTasks(state.specDir);

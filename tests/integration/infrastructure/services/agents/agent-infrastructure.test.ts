@@ -29,6 +29,7 @@ import type { IAgentExecutorProvider } from '@/application/ports/output/agents/a
 import type { IAgentRegistry } from '@/application/ports/output/agents/agent-registry.interface.js';
 import type { IAgentRunner } from '@/application/ports/output/agents/agent-runner.interface.js';
 import type { ISettingsRepository } from '@/application/ports/output/repositories/settings.repository.interface.js';
+import type { ISettingsReader } from '@/application/ports/output/services/settings-reader.interface.js';
 import { AgentExecutorProvider } from '@/infrastructure/services/agents/common/agent-executor-provider.service.js';
 
 import { runSQLiteMigrations } from '@/infrastructure/persistence/sqlite/migrations.js';
@@ -76,12 +77,22 @@ describe('Agent Infrastructure Integration', () => {
       },
     });
 
+    container.register<ISettingsReader>('ISettingsReader', {
+      useValue: {
+        hasSettings: () => true,
+        getSettings: () => ({
+          agent: { type: 'claude-code', authMethod: 'session' },
+        }),
+      } as unknown as ISettingsReader,
+    });
+
     container.register<IAgentRunner>('IAgentRunner', {
       useFactory: (c) => {
         const registry = c.resolve<IAgentRegistry>('IAgentRegistry');
         const executorProvider = c.resolve<IAgentExecutorProvider>('IAgentExecutorProvider');
         const runRepository = c.resolve<IAgentRunRepository>('IAgentRunRepository');
-        return new AgentRunnerService(registry, executorProvider, runRepository);
+        const settingsReader = c.resolve<ISettingsReader>('ISettingsReader');
+        return new AgentRunnerService(registry, executorProvider, runRepository, settingsReader);
       },
     });
 

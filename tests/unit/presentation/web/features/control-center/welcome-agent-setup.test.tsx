@@ -12,8 +12,8 @@ const mockGroups = [
     ],
   },
   {
-    agentType: 'dev',
-    label: 'Demo',
+    agentType: 'gemini-cli',
+    label: 'Gemini CLI',
     models: [],
   },
 ];
@@ -74,7 +74,7 @@ describe('WelcomeAgentSetup', () => {
     });
 
     expect(screen.getByTestId('agent-option-claude-code')).toBeInTheDocument();
-    expect(screen.getByTestId('agent-option-dev')).toBeInTheDocument();
+    expect(screen.getByTestId('agent-option-gemini-cli')).toBeInTheDocument();
   });
 
   it('shows model list after selecting an agent with models', async () => {
@@ -97,10 +97,10 @@ describe('WelcomeAgentSetup', () => {
     render(<WelcomeAgentSetup onComplete={onComplete} />);
 
     await waitFor(() => {
-      expect(screen.getByTestId('agent-option-dev')).toBeInTheDocument();
+      expect(screen.getByTestId('agent-option-gemini-cli')).toBeInTheDocument();
     });
 
-    await user.click(screen.getByTestId('agent-option-dev'));
+    await user.click(screen.getByTestId('agent-option-gemini-cli'));
 
     // Saves immediately and calls onComplete (no tool check step)
     await waitFor(() => {

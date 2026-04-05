@@ -11,7 +11,11 @@
  * to enable testability without mocking node:child_process directly.
  */
 
-import type { AgentType, AgentFeature } from '../../../../../domain/generated/output.js';
+import type {
+  AgentType,
+  AgentFeature,
+  RovoDevPermissionMode,
+} from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
   AgentExecutionResult,
@@ -184,14 +188,19 @@ export class RovoDevExecutorService extends ExecutorBase {
    * No --model flag exists for Rovo Dev — model selection is only via config file.
    */
   private buildArgs(prompt: string, options?: AgentExecutionOptions): string[] {
+    const mode = (options?.permissionMode as RovoDevPermissionMode) ?? 'yolo';
     const args = ['rovodev', 'run', prompt];
 
-    // Enable autonomous mode when all tools are allowed
-    if (
-      options?.allowedTools?.includes('*') ||
-      (options?.allowedTools && options.allowedTools.length > 0)
-    ) {
-      args.push('--yolo');
+    switch (mode) {
+      case 'yolo':
+        args.push('--yolo');
+        break;
+      case 'shadow':
+        args.push('--shadow');
+        break;
+      case 'config':
+        // No flag — uses config-file-defined permissions
+        break;
     }
 
     return args;

@@ -4,11 +4,10 @@ import { getAgentTypeIcon, DefaultAgentIcon, type AgentTypeValue } from './agent
 const allAgentTypes: { type: AgentTypeValue; label: string }[] = [
   { type: 'claude-code', label: 'Claude Code' },
   { type: 'codex-cli', label: 'Codex CLI' },
+  { type: 'copilot-cli', label: 'GitHub Copilot CLI' },
   { type: 'cursor', label: 'Cursor' },
   { type: 'gemini-cli', label: 'Gemini CLI' },
-  { type: 'aider', label: 'Aider' },
-  { type: 'continue', label: 'Continue' },
-  { type: 'dev', label: 'Dev (Mock)' },
+  { type: 'rovo-dev', label: 'Rovo Dev CLI' },
 ];
 
 function AgentIconGallery({ size }: { size: number }) {
@@ -61,16 +60,16 @@ export const LargeIcons: Story = {
   render: () => <AgentIconGallery size={16} />,
 };
 
-export const DevAgentIcon: Story = {
+export const FallbackIcon: Story = {
   render: () => {
-    const Icon = getAgentTypeIcon('dev');
+    const Icon = getAgentTypeIcon('unknown-agent');
     return (
       <div className="flex flex-col items-center gap-2">
         <div className="border-border bg-muted/30 rounded-md border p-3">
           <Icon style={{ width: 40, height: 40 }} />
         </div>
-        <span className="text-sm font-medium">Dev (Mock)</span>
-        <code className="text-muted-foreground text-xs">dev</code>
+        <span className="text-sm font-medium">Unknown Agent (Fallback)</span>
+        <code className="text-muted-foreground text-xs">unknown-agent</code>
       </div>
     );
   },

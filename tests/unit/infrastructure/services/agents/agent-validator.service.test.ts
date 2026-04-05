@@ -106,13 +106,12 @@ describe('AgentValidatorService', () => {
     });
   });
 
-  describe('isAvailable - dev type', () => {
-    it('should return available: true with version "dev" without calling execFn', async () => {
-      const result = await service.isAvailable(AgentType.Dev);
+  describe('isAvailable - nonexistent agent type', () => {
+    it('should return not available for unsupported agent (no binary)', async () => {
+      const result = await service.isAvailable('nonexistent-agent' as any);
 
-      expect(result.available).toBe(true);
-      expect(result.version).toBe('dev');
-      expect(result.error).toBeUndefined();
+      expect(result.available).toBe(false);
+      expect(result.error).toContain('not supported yet');
       expect(mockExec).not.toHaveBeenCalled();
     });
   });

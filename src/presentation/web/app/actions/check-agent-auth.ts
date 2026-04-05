@@ -32,9 +32,6 @@ const AGENT_LABELS: Record<string, string> = {
   cursor: 'Cursor CLI',
   'gemini-cli': 'Gemini CLI',
   'rovo-dev': 'Rovo Dev CLI',
-  aider: 'Aider',
-  continue: 'Continue',
-  dev: 'Demo',
 };
 
 const AGENT_TOOL_MAP: Record<string, string> = {
@@ -111,7 +108,7 @@ function tier1AuthCheck(agentType: string): Tier1Result {
       return existsSync(acliDir) ? 'file' : false;
     }
     default:
-      // dev, aider, continue — assume no auth needed
+      // Unknown agents — assume no auth needed
       return 'env-var';
   }
 }
@@ -192,7 +189,7 @@ export async function checkAgentAuth(): Promise<AgentAuthStatus> {
   const toolId = AGENT_TOOL_MAP[agentType] ?? null;
   const binaryName = AGENT_BINARY_MAP[agentType] ?? null;
 
-  // Dev/demo agents — always good
+  // Agents without a tool mapping — always good
   if (!toolId) {
     return {
       agentType,

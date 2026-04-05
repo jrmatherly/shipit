@@ -12,6 +12,7 @@ import type {
   AgentType,
   AgentFeature,
   AgentConfig,
+  GeminiPermissionMode,
 } from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
@@ -319,7 +320,8 @@ export class GeminiCliExecutorService extends ExecutorBase {
   ): string[] {
     // Prompt is piped via stdin — not passed as a CLI argument — to avoid
     // ENAMETOOLONG on Windows when prompts exceed the ~32 KB arg-length limit.
-    const args = ['-p', '--output-format', outputFormat, '-y'];
+    const mode = (options?.permissionMode as GeminiPermissionMode) ?? 'yolo';
+    const args = ['-p', '--output-format', outputFormat, '--approval-mode', mode];
 
     if (options?.resumeSession) args.push('--resume', options.resumeSession);
     if (options?.model) args.push('-m', options.model);

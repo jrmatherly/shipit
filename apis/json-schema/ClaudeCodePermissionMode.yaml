@@ -1,0 +1,9 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: ClaudeCodePermissionMode.yaml
+type: string
+enum:
+  - default
+  - acceptEdits
+  - plan
+  - bypassPermissions
+description: Claude Code native permission modes

@@ -19,17 +19,13 @@
           "name": "Cursor",
           "description": "AI-агент для кодирования Cursor"
         },
-        "devMock": {
-          "name": "Dev (Mock)",
-          "description": "Локальная заглушка для разработки — бинарный файл агента не требуется"
+        "copilotCli": {
+          "name": "GitHub Copilot CLI",
+          "description": "GitHub Copilot в терминале"
         },
-        "aider": {
-          "name": "Aider",
-          "disabled": "(Скоро)"
-        },
-        "continue": {
-          "name": "Continue",
-          "disabled": "(Скоро)"
+        "rovoDev": {
+          "name": "Rovo Dev CLI",
+          "description": "Atlassian Rovo Dev CLI агент"
         }
       }
     },

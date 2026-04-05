@@ -44,6 +44,8 @@ import { ToolMetadataServiceImpl } from '../../services/tool-installer/tool-meta
 import type { IAttachmentStorageService } from '../../../application/ports/output/services/attachment-storage-service.interface.js';
 import type { IEnvironmentDetectorService } from '../../../application/ports/output/services/environment-detector.service.js';
 import { EnvironmentDetectorServiceImpl } from '../../services/environment-detector.service.js';
+import type { ISettingsReader } from '../../../application/ports/output/services/settings-reader.interface.js';
+import { SettingsReaderService } from '../../services/settings-reader.service.js';
 
 /**
  * Register business services (singletons and factories).
@@ -125,4 +127,5 @@ export function registerServicesModule(
     'IToolMetadataService',
     ToolMetadataServiceImpl
   );
+  container.registerSingleton<ISettingsReader>('ISettingsReader', SettingsReaderService);
 }

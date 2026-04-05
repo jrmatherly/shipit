@@ -13,7 +13,11 @@ import { writeFileSync, unlinkSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import type { AgentType, AgentFeature } from '../../../../../domain/generated/output.js';
+import type {
+  AgentType,
+  AgentFeature,
+  CursorPermissionMode,
+} from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
   AgentExecutionResult,
@@ -274,7 +278,17 @@ export class CursorExecutorService extends ExecutorBase {
   }
 
   private buildArgs(prompt: string, options?: AgentExecutionOptions): string[] {
-    const args = ['--yolo', '-p', prompt, '--output-format', 'json'];
+    const mode = (options?.permissionMode as CursorPermissionMode) ?? 'yolo';
+    const args = ['-p', prompt, '--output-format', 'json'];
+    switch (mode) {
+      case 'yolo':
+        args.unshift('--yolo');
+        args.push('--force'); // BUG FIX: was missing — required for file writes in print mode
+        break;
+      case 'propose':
+        // No flags — Cursor proposes changes without applying
+        break;
+    }
     if (options?.resumeSession) args.push('--resume', options.resumeSession);
     if (options?.model) args.push('--model', toCursorModelName(options.model));
     // Unsupported options silently omitted: systemPrompt, allowedTools, maxTurns, outputSchema

@@ -22,6 +22,12 @@ import {
   EditorType,
   Language,
   TerminalType,
+  ClaudeCodePermissionMode,
+  CursorPermissionMode,
+  GeminiPermissionMode,
+  CodexPermissionMode,
+  CopilotPermissionMode,
+  RovoDevPermissionMode,
 } from '@/domain/generated/output.js';
 
 /**
@@ -163,6 +169,12 @@ function createTestRow(overrides: Partial<SettingsRow> = {}): SettingsRow {
     interactive_agent_max_concurrent_sessions: 3,
     auto_archive_delay_minutes: 10,
     fab_position_swapped: 0,
+    agent_perm_claude_code: null,
+    agent_perm_cursor: null,
+    agent_perm_gemini_cli: null,
+    agent_perm_codex_cli: null,
+    agent_perm_copilot_cli: null,
+    agent_perm_rovo_dev: null,
     ...overrides,
   };
 }
@@ -992,6 +1004,145 @@ describe('Settings Mapper', () => {
       const row = toDatabase(original);
       const restored = fromDatabase(row);
       expect(restored.fabLayout?.swapPosition).toBe(false);
+    });
+  });
+
+  describe('toDatabase() - agent permission modes', () => {
+    it('should map agent.permissions fields to agent_perm columns', () => {
+      const settings = createTestSettings({
+        agent: {
+          type: AgentType.ClaudeCode,
+          authMethod: AgentAuthMethod.Session,
+          permissions: {
+            claudeCode: ClaudeCodePermissionMode.AcceptEdits,
+            cursor: CursorPermissionMode.Yolo,
+            geminiCli: GeminiPermissionMode.AutoEdit,
+            codexCli: CodexPermissionMode.WorkspaceWrite,
+            copilotCli: CopilotPermissionMode.AllowPaths,
+            rovoDev: RovoDevPermissionMode.Shadow,
+          },
+        },
+      });
+      const row = toDatabase(settings);
+      expect(row.agent_perm_claude_code).toBe('acceptEdits');
+      expect(row.agent_perm_cursor).toBe('yolo');
+      expect(row.agent_perm_gemini_cli).toBe('auto_edit');
+      expect(row.agent_perm_codex_cli).toBe('workspace-write');
+      expect(row.agent_perm_copilot_cli).toBe('allow-paths');
+      expect(row.agent_perm_rovo_dev).toBe('shadow');
+    });
+
+    it('should map undefined permissions to nulls', () => {
+      const settings = createTestSettings();
+      const row = toDatabase(settings);
+      expect(row.agent_perm_claude_code).toBeNull();
+      expect(row.agent_perm_cursor).toBeNull();
+      expect(row.agent_perm_gemini_cli).toBeNull();
+      expect(row.agent_perm_codex_cli).toBeNull();
+      expect(row.agent_perm_copilot_cli).toBeNull();
+      expect(row.agent_perm_rovo_dev).toBeNull();
+    });
+
+    it('should map partial permissions (only claudeCode set)', () => {
+      const settings = createTestSettings({
+        agent: {
+          type: AgentType.ClaudeCode,
+          authMethod: AgentAuthMethod.Session,
+          permissions: {
+            claudeCode: ClaudeCodePermissionMode.Plan,
+          },
+        },
+      });
+      const row = toDatabase(settings);
+      expect(row.agent_perm_claude_code).toBe('plan');
+      expect(row.agent_perm_cursor).toBeNull();
+      expect(row.agent_perm_gemini_cli).toBeNull();
+    });
+  });
+
+  describe('fromDatabase() - agent permission modes', () => {
+    it('should reconstruct agent.permissions from agent_perm columns', () => {
+      const row = createTestRow({
+        agent_perm_claude_code: 'bypassPermissions',
+        agent_perm_cursor: 'propose',
+        agent_perm_gemini_cli: 'yolo',
+        agent_perm_codex_cli: 'danger-full-access',
+        agent_perm_copilot_cli: 'yolo',
+        agent_perm_rovo_dev: 'config',
+      });
+      const settings = fromDatabase(row);
+      expect(settings.agent.permissions).toEqual({
+        claudeCode: 'bypassPermissions',
+        cursor: 'propose',
+        geminiCli: 'yolo',
+        codexCli: 'danger-full-access',
+        copilotCli: 'yolo',
+        rovoDev: 'config',
+      });
+    });
+
+    it('should omit permissions when all columns are null', () => {
+      const row = createTestRow();
+      const settings = fromDatabase(row);
+      expect(settings.agent.permissions).toBeUndefined();
+    });
+
+    it('should reconstruct partial permissions (only some columns non-null)', () => {
+      const row = createTestRow({
+        agent_perm_claude_code: 'acceptEdits',
+        agent_perm_codex_cli: 'read-only',
+      });
+      const settings = fromDatabase(row);
+      expect(settings.agent.permissions).toEqual({
+        claudeCode: 'acceptEdits',
+        codexCli: 'read-only',
+      });
+    });
+  });
+
+  describe('round-trip - agent permission modes', () => {
+    it('should preserve all permission values through toDatabase → fromDatabase', () => {
+      const original = createTestSettings({
+        agent: {
+          type: AgentType.ClaudeCode,
+          authMethod: AgentAuthMethod.Session,
+          permissions: {
+            claudeCode: ClaudeCodePermissionMode.AcceptEdits,
+            cursor: CursorPermissionMode.Propose,
+            geminiCli: GeminiPermissionMode.Default,
+            codexCli: CodexPermissionMode.ReadOnly,
+            copilotCli: CopilotPermissionMode.Prompt,
+            rovoDev: RovoDevPermissionMode.Yolo,
+          },
+        },
+      });
+      const row = toDatabase(original);
+      const restored = fromDatabase(row);
+      expect(restored.agent.permissions).toEqual(original.agent.permissions);
+    });
+
+    it('should preserve undefined permissions through round-trip', () => {
+      const original = createTestSettings();
+      const row = toDatabase(original);
+      const restored = fromDatabase(row);
+      expect(restored.agent.permissions).toBeUndefined();
+    });
+
+    it('should preserve partial permissions through round-trip', () => {
+      const original = createTestSettings({
+        agent: {
+          type: AgentType.ClaudeCode,
+          authMethod: AgentAuthMethod.Session,
+          permissions: {
+            claudeCode: ClaudeCodePermissionMode.BypassPermissions,
+          },
+        },
+      });
+      const row = toDatabase(original);
+      const restored = fromDatabase(row);
+      expect(restored.agent.permissions).toEqual({
+        claudeCode: 'bypassPermissions',
+      });
     });
   });
 });

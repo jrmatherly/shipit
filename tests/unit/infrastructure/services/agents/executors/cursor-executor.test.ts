@@ -749,6 +749,66 @@ describe('CursorExecutorService', () => {
     });
   });
 
+  // -------------------------------------------------------------------------
+  // Permission mode handling
+  // -------------------------------------------------------------------------
+
+  describe('permissionMode', () => {
+    it('should include --yolo AND --force when permissionMode is yolo', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const assistantLine = buildCursorAssistantEvent('Done');
+      const resultLine = buildCursorResultEvent('sess-1', 100);
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'yolo' as any,
+        silent: true,
+      });
+      emitStreamData(mockProc, [assistantLine, resultLine], null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      expect(args).toContain('--yolo');
+      expect(args).toContain('--force');
+    });
+
+    it('should include --yolo AND --force when permissionMode is undefined (backward compat)', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const assistantLine = buildCursorAssistantEvent('Done');
+      const resultLine = buildCursorResultEvent('sess-1', 100);
+      const executePromise = executor.execute('Test', { silent: true });
+      emitStreamData(mockProc, [assistantLine, resultLine], null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      expect(args).toContain('--yolo');
+      expect(args).toContain('--force');
+    });
+
+    it('should NOT include --yolo or --force when permissionMode is propose', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const assistantLine = buildCursorAssistantEvent('Proposed changes');
+      const resultLine = buildCursorResultEvent('sess-1', 100);
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'propose' as any,
+        silent: true,
+      });
+      emitStreamData(mockProc, [assistantLine, resultLine], null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      expect(args).not.toContain('--yolo');
+      expect(args).not.toContain('--force');
+    });
+  });
+
   describe('edge cases', () => {
     it('should handle partial line buffering (data arriving mid-JSON-line)', async () => {
       const mockProc = createMockChildProcess();

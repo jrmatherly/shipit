@@ -7,9 +7,9 @@
  *
  * ## Supported Agents
  *
- * Claude Code, Codex CLI, and Cursor are fully supported. Other agents
- * (Gemini CLI, Aider, Continue) are listed for future
- * extensibility and appear as "Coming Soon" in the TUI wizard.
+ * Claude Code, Codex CLI, Cursor, Gemini CLI, Copilot CLI, and Rovo Dev are
+ * fully supported. Aider and Continue are listed for future extensibility
+ * and are hidden from UI surfaces.
  */
 /**
  * The AI coding agent tool used by Shipit AI for all LLM-powered operations.
@@ -80,14 +80,6 @@ enum AgentType {
    */
   @doc("Cursor AI coding agent")
   Cursor: "cursor",
-
-  /**
-   * Local development mock executor.
-   * No agent binary required — simulates the full feature SDLC flow
-   * with realistic fixture YAML artifacts for local development and demos.
-   */
-  @doc("Local development mock — no agent binary required")
-  Dev: "dev",
 }
 
 /**

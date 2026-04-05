@@ -1,6 +1,7 @@
 import { Annotation, StateGraph, START, END, type BaseCheckpointSaver } from '@langchain/langgraph';
 import type { IAgentExecutor } from '@/application/ports/output/agents/agent-executor.interface.js';
 import { buildAnalyzePrompt } from './prompts/analyze-repository.prompt.js';
+import type { Settings } from '@/domain/generated/output.js';
 import { hasSettings, getSettings } from '@/infrastructure/services/settings.service.js';
 
 /** Default timeout for analyze-repo agent (10 minutes) — prevents infinite hangs. */
@@ -10,10 +11,13 @@ const DEFAULT_ANALYZE_REPO_TIMEOUT_MS = 600_000;
  * Resolve the timeout for the analyze-repository agent.
  * Reads from settings (workflow.analyzeRepoTimeouts.analyzeMs),
  * falling back to DEFAULT_ANALYZE_REPO_TIMEOUT_MS when not configured.
+ *
+ * @param settings - Optional settings injection; falls back to global singleton when omitted
  */
-function getAnalyzeRepoTimeoutMs(): number {
-  if (!hasSettings()) return DEFAULT_ANALYZE_REPO_TIMEOUT_MS;
-  const timeouts = getSettings().workflow?.analyzeRepoTimeouts;
+function getAnalyzeRepoTimeoutMs(settings?: Settings): number {
+  const s = settings ?? (hasSettings() ? getSettings() : undefined);
+  if (!s) return DEFAULT_ANALYZE_REPO_TIMEOUT_MS;
+  const timeouts = s.workflow?.analyzeRepoTimeouts;
   return timeouts?.analyzeMs ?? DEFAULT_ANALYZE_REPO_TIMEOUT_MS;
 }
 
@@ -37,8 +41,11 @@ export type AnalyzeRepositoryStateType = typeof AnalyzeRepositoryState.State;
  * The node receives the current state, builds a prompt from the repository path,
  * and delegates execution to the injected IAgentExecutor. Each invocation gets
  * a clean agent context (no session resume).
+ *
+ * @param executor - The agent executor to delegate prompt execution to
+ * @param settings - Optional settings injection; falls back to global singleton when omitted
  */
-function createAnalyzeNode(executor: IAgentExecutor) {
+function createAnalyzeNode(executor: IAgentExecutor, settings?: Settings) {
   return async (
     state: typeof AnalyzeRepositoryState.State
   ): Promise<Partial<typeof AnalyzeRepositoryState.State>> => {
@@ -46,7 +53,7 @@ function createAnalyzeNode(executor: IAgentExecutor) {
 
     const result = await executor.execute(prompt, {
       cwd: state.repositoryPath,
-      timeout: getAnalyzeRepoTimeoutMs(),
+      timeout: getAnalyzeRepoTimeoutMs(settings),
     });
 
     return {
@@ -64,14 +71,16 @@ function createAnalyzeNode(executor: IAgentExecutor) {
  *
  * @param executor - The agent executor to delegate prompt execution to
  * @param checkpointer - Optional checkpoint saver for state persistence
+ * @param settings - Optional settings injection; falls back to global singleton when omitted
  * @returns A compiled LangGraph ready to be invoked
  */
 export function createAnalyzeRepositoryGraph(
   executor: IAgentExecutor,
-  checkpointer?: BaseCheckpointSaver
+  checkpointer?: BaseCheckpointSaver,
+  settings?: Settings
 ) {
   const graph = new StateGraph(AnalyzeRepositoryState)
-    .addNode('analyze', createAnalyzeNode(executor))
+    .addNode('analyze', createAnalyzeNode(executor, settings))
     .addEdge(START, 'analyze')
     .addEdge('analyze', END);
 

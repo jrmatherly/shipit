@@ -18,6 +18,7 @@ import type { AgentExecutionOptions } from '@/application/ports/output/agents/ag
 import { buildCiWatchFixPrompt, buildCiWatchPrompt } from '../prompts/merge-prompts.js';
 import { parseCiWatchResult } from './merge-output-parser.js';
 import { extractRunId, handleCiTerminalFailure, buildCiExhaustedError } from './ci-helpers.js';
+import type { Settings } from '@/domain/generated/output.js';
 import { getSettings } from '@/infrastructure/services/settings.service.js';
 import { recordPhaseStart, recordPhaseEnd } from '../../phase-timing-context.js';
 
@@ -25,6 +26,8 @@ export interface CiWatchFixDeps {
   executor: IAgentExecutor;
   gitPrService: IGitPrService;
   featureRepository: Pick<IFeatureRepository, 'findById' | 'update'>;
+  /** Optional settings injection; falls back to global singleton when omitted */
+  settings?: Settings;
 }
 
 export interface CiWatchFixParams {
@@ -132,7 +135,7 @@ export async function runCiWatchFixLoop(
   const { executor, gitPrService } = deps;
   const { cwd, branch, options, feature, prUrl, prNumber, messages, log } = params;
 
-  const settings = getSettings();
+  const settings = deps.settings ?? getSettings();
   const maxAttempts = settings.workflow?.ciMaxFixAttempts ?? 3;
   const timeoutMs = settings.workflow?.ciWatchTimeoutMs ?? 600_000;
   const logMaxChars = settings.workflow?.ciLogMaxChars ?? 50_000;

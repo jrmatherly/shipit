@@ -23,16 +23,7 @@ import type {
 import { AgentRunStatus, AgentType } from '@/domain/generated/output.js';
 import type { AgentRun, AgentRunEvent } from '@/domain/generated/output.js';
 import { StreamingExecutorProxy } from '@/infrastructure/services/agents/streaming/streaming-executor-proxy.js';
-
-// Mock the settings singleton — no top-level variable references inside factory
-vi.mock('@/infrastructure/services/settings.service.js', () => ({
-  getSettings: vi.fn().mockReturnValue({
-    agent: {
-      type: 'claude-code',
-      authMethod: 'session',
-    },
-  }),
-}));
+import type { ISettingsReader } from '@/application/ports/output/services/settings-reader.interface.js';
 
 // Mock the checkpointer module (lazy-loaded by agent-runner)
 const mockCheckpointer = {};
@@ -48,6 +39,7 @@ describe('AgentRunnerService', () => {
   let mockRegistry: IAgentRegistry;
   let mockExecutorProvider: IAgentExecutorProvider;
   let mockRunRepository: IAgentRunRepository;
+  let mockSettingsReader: ISettingsReader;
   let mockExecutor: IAgentExecutor;
   let mockCompiledGraph: any;
   let mockDefinition: AgentDefinitionWithFactory;
@@ -109,7 +101,22 @@ describe('AgentRunnerService', () => {
       delete: vi.fn().mockResolvedValue(undefined),
     };
 
-    runner = new AgentRunnerService(mockRegistry, mockExecutorProvider, mockRunRepository);
+    mockSettingsReader = {
+      hasSettings: vi.fn().mockReturnValue(true),
+      getSettings: vi.fn().mockReturnValue({
+        agent: {
+          type: 'claude-code',
+          authMethod: 'session',
+        },
+      }),
+    };
+
+    runner = new AgentRunnerService(
+      mockRegistry,
+      mockExecutorProvider,
+      mockRunRepository,
+      mockSettingsReader
+    );
   });
 
   describe('runAgent', () => {

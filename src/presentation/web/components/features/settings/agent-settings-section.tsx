@@ -22,11 +22,10 @@ import type { AgentConfig } from '@shipit-ai/core/domain/generated/output';
 const AGENT_TYPE_OPTIONS = [
   { value: AgentType.ClaudeCode, label: 'Claude Code' },
   { value: AgentType.CodexCli, label: 'Codex CLI' },
+  { value: AgentType.CopilotCli, label: 'GitHub Copilot CLI' },
   { value: AgentType.Cursor, label: 'Cursor' },
   { value: AgentType.GeminiCli, label: 'Gemini CLI' },
-  { value: AgentType.Aider, label: 'Aider' },
-  { value: AgentType.Continue, label: 'Continue' },
-  { value: AgentType.Dev, label: 'Dev' },
+  { value: AgentType.RovoDev, label: 'Rovo Dev CLI' },
 ];
 
 const AUTH_METHOD_OPTIONS = [

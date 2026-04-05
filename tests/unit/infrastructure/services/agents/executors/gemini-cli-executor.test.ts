@@ -120,7 +120,7 @@ describe('GeminiCliExecutorService', () => {
       // Prompt is piped via stdin, not passed as a CLI argument
       expect(mockSpawn).toHaveBeenCalledWith(
         'gemini',
-        expect.arrayContaining(['-p', '--output-format', 'json', '-y']),
+        expect.arrayContaining(['-p', '--output-format', 'json', '--approval-mode', 'yolo']),
         expect.any(Object)
       );
       const spawnArgs = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
@@ -289,7 +289,8 @@ describe('GeminiCliExecutorService', () => {
       expect(spawnArgs).not.toContain('My prompt');
       expect(spawnArgs).toContain('--output-format');
       expect(spawnArgs).toContain('json');
-      expect(spawnArgs).toContain('-y');
+      expect(spawnArgs).toContain('--approval-mode');
+      expect(spawnArgs).toContain('yolo');
     });
 
     it('should include --resume when resumeSession is provided', async () => {
@@ -476,6 +477,86 @@ describe('GeminiCliExecutorService', () => {
       await expect(executePromise).rejects.toThrow(/timed out/i);
       expect(mockProc.kill).toHaveBeenCalled();
       vi.useRealTimers();
+    });
+  });
+
+  // -------------------------------------------------------------------------
+  // Permission mode handling
+  // -------------------------------------------------------------------------
+
+  describe('permissionMode', () => {
+    it('should use --approval-mode yolo when permissionMode is yolo', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const jsonOutput = buildGeminiJsonResponse('Done');
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'yolo' as any,
+        silent: true,
+      });
+      emitStreamData(mockProc, jsonOutput, null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      expect(args).toContain('--approval-mode');
+      const approvalIdx = args.indexOf('--approval-mode');
+      expect(args[approvalIdx + 1]).toBe('yolo');
+      // Legacy -y flag should NOT be present
+      expect(args).not.toContain('-y');
+    });
+
+    it('should use --approval-mode auto_edit when permissionMode is auto_edit', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const jsonOutput = buildGeminiJsonResponse('Done');
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'auto_edit' as any,
+        silent: true,
+      });
+      emitStreamData(mockProc, jsonOutput, null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      const approvalIdx = args.indexOf('--approval-mode');
+      expect(args[approvalIdx + 1]).toBe('auto_edit');
+    });
+
+    it('should use --approval-mode default when permissionMode is default', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const jsonOutput = buildGeminiJsonResponse('Done');
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'default' as any,
+        silent: true,
+      });
+      emitStreamData(mockProc, jsonOutput, null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      const approvalIdx = args.indexOf('--approval-mode');
+      expect(args[approvalIdx + 1]).toBe('default');
+    });
+
+    it('should default to --approval-mode yolo when permissionMode is undefined', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const jsonOutput = buildGeminiJsonResponse('Done');
+      const executePromise = executor.execute('Test', { silent: true });
+      emitStreamData(mockProc, jsonOutput, null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      expect(args).toContain('--approval-mode');
+      const approvalIdx = args.indexOf('--approval-mode');
+      expect(args[approvalIdx + 1]).toBe('yolo');
+      expect(args).not.toContain('-y');
     });
   });
 

@@ -11,6 +11,8 @@
  * - No SDK types leak through this boundary
  */
 
+import type { AgentPermissionModeValue } from './agent-executor.interface.js';
+
 /** Options for creating/resuming an interactive agent session. */
 export interface InteractiveAgentOptions {
   /** Absolute worktree path (CWD for agent) */
@@ -19,6 +21,8 @@ export interface InteractiveAgentOptions {
   model?: string;
   /** Feature context string to append to system prompt */
   systemPrompt?: string;
+  /** Agent-specific permission/autonomy mode */
+  permissionMode?: AgentPermissionModeValue;
 }
 
 /** Event emitted by an interactive agent session stream. */

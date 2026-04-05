@@ -109,7 +109,12 @@ export class ClaudeCodeInteractiveExecutor implements IInteractiveAgentExecutor 
     const { CLAUDECODE: _, ...cleanEnv } = process.env;
     return {
       model: options.model ?? DEFAULT_MODEL,
-      permissionMode: 'bypassPermissions' as const,
+      permissionMode:
+        (options.permissionMode as string as
+          | 'bypassPermissions'
+          | 'default'
+          | 'acceptEdits'
+          | 'plan') ?? 'bypassPermissions',
       env: cleanEnv,
       // Forward system prompt using preset+append pattern
       ...(options.systemPrompt && {

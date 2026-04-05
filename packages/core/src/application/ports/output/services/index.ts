@@ -65,3 +65,4 @@ export type {
   AvailableEditorEntry,
   AvailableShellEntry,
 } from './environment-detector.service.js';
+export type { ISettingsReader } from './settings-reader.interface.js';

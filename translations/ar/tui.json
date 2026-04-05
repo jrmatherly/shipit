@@ -19,17 +19,13 @@
           "name": "Cursor",
           "description": "وكيل البرمجة بالذكاء الاصطناعي Cursor"
         },
-        "devMock": {
-          "name": "Dev (Mock)",
-          "description": "محاكاة تطوير محلية — لا يتطلب ملف وكيل ثنائي"
+        "copilotCli": {
+          "name": "GitHub Copilot CLI",
+          "description": "GitHub Copilot في الطرفية"
         },
-        "aider": {
-          "name": "Aider",
-          "disabled": "(قريبًا)"
-        },
-        "continue": {
-          "name": "Continue",
-          "disabled": "(قريبًا)"
+        "rovoDev": {
+          "name": "Rovo Dev CLI",
+          "description": "وكيل Atlassian Rovo Dev CLI"
         }
       }
     },

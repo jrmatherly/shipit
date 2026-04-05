@@ -721,6 +721,106 @@ describe('CodexCliExecutorService', () => {
     });
   });
 
+  // -------------------------------------------------------------------------
+  // Permission mode handling
+  // -------------------------------------------------------------------------
+
+  describe('permissionMode', () => {
+    it('should use --sandbox danger-full-access AND --ask-for-approval never when mode is danger-full-access', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const lines = [
+        threadStarted('t-1'),
+        agentMessageCompleted('Done'),
+        turnCompleted({ input_tokens: 10, output_tokens: 20 }),
+      ];
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'danger-full-access' as any,
+        silent: true,
+      });
+      emitJsonlLines(mockProc, lines, null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      expect(args).toContain('--sandbox');
+      const sandboxIdx = args.indexOf('--sandbox');
+      expect(args[sandboxIdx + 1]).toBe('danger-full-access');
+      expect(args).toContain('--ask-for-approval');
+      const approvalIdx = args.indexOf('--ask-for-approval');
+      expect(args[approvalIdx + 1]).toBe('never');
+    });
+
+    it('should use --sandbox workspace-write when mode is workspace-write', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const lines = [
+        threadStarted('t-1'),
+        agentMessageCompleted('Done'),
+        turnCompleted({ input_tokens: 10, output_tokens: 20 }),
+      ];
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'workspace-write' as any,
+        silent: true,
+      });
+      emitJsonlLines(mockProc, lines, null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      const sandboxIdx = args.indexOf('--sandbox');
+      expect(args[sandboxIdx + 1]).toBe('workspace-write');
+      expect(args).toContain('--ask-for-approval');
+    });
+
+    it('should use --sandbox read-only when mode is read-only', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const lines = [
+        threadStarted('t-1'),
+        agentMessageCompleted('Done'),
+        turnCompleted({ input_tokens: 10, output_tokens: 20 }),
+      ];
+      const executePromise = executor.execute('Test', {
+        permissionMode: 'read-only' as any,
+        silent: true,
+      });
+      emitJsonlLines(mockProc, lines, null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      const sandboxIdx = args.indexOf('--sandbox');
+      expect(args[sandboxIdx + 1]).toBe('read-only');
+      expect(args).toContain('--ask-for-approval');
+    });
+
+    it('should default to danger-full-access when permissionMode is undefined', async () => {
+      const mockProc = createMockChildProcess();
+      vi.mocked(mockSpawn).mockReturnValue(mockProc as any);
+
+      const lines = [
+        threadStarted('t-1'),
+        agentMessageCompleted('Done'),
+        turnCompleted({ input_tokens: 10, output_tokens: 20 }),
+      ];
+      const executePromise = executor.execute('Test', { silent: true });
+      emitJsonlLines(mockProc, lines, null, 0);
+
+      await executePromise;
+
+      const args = vi.mocked(mockSpawn).mock.calls[0][1] as string[];
+      const sandboxIdx = args.indexOf('--sandbox');
+      expect(args[sandboxIdx + 1]).toBe('danger-full-access');
+      expect(args).toContain('--ask-for-approval');
+      const approvalIdx = args.indexOf('--ask-for-approval');
+      expect(args[approvalIdx + 1]).toBe('never');
+    });
+  });
+
   // --- Task 8: executeStream ---
 
   describe('executeStream', () => {

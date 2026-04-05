@@ -34,6 +34,7 @@
  */
 import "../../common/base.tsp";
 import "../../common/enums/agent-config.tsp";
+import "../../common/enums/agent-permissions.tsp";
 import "../../common/enums/editor.tsp";
 import "../../common/enums/language.tsp";
 import "../../common/enums/notification.tsp";
@@ -366,6 +367,27 @@ model WorkflowConfig {
   autoArchiveDelayMinutes?: int32;
 }
 
+@doc("Per-agent permission mode overrides")
+model AgentPermissionSettings {
+  @doc("Claude Code permission mode (default: bypassPermissions)")
+  claudeCode?: ClaudeCodePermissionMode;
+
+  @doc("Cursor permission mode (default: yolo)")
+  cursor?: CursorPermissionMode;
+
+  @doc("Gemini CLI permission mode (default: yolo)")
+  geminiCli?: GeminiPermissionMode;
+
+  @doc("Codex CLI sandbox mode (default: danger-full-access)")
+  codexCli?: CodexPermissionMode;
+
+  @doc("Copilot CLI permission mode (default: yolo)")
+  copilotCli?: CopilotPermissionMode;
+
+  @doc("Rovo Dev CLI permission mode (default: yolo)")
+  rovoDev?: RovoDevPermissionMode;
+}
+
 @doc("AI coding agent configuration")
 model AgentConfig {
   /**
@@ -390,6 +412,9 @@ model AgentConfig {
    */
   @doc("API token for token-based auth (optional)")
   token?: string;
+
+  @doc("Per-agent permission mode overrides")
+  permissions?: AgentPermissionSettings;
 }
 
 /**

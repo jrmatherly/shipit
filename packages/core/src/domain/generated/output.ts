@@ -459,6 +459,66 @@ export type WorkflowConfig = {
    */
   autoArchiveDelayMinutes?: number;
 };
+export enum ClaudeCodePermissionMode {
+  Default = 'default',
+  AcceptEdits = 'acceptEdits',
+  Plan = 'plan',
+  BypassPermissions = 'bypassPermissions',
+}
+export enum CursorPermissionMode {
+  Propose = 'propose',
+  Yolo = 'yolo',
+}
+export enum GeminiPermissionMode {
+  Default = 'default',
+  AutoEdit = 'auto_edit',
+  Yolo = 'yolo',
+}
+export enum CodexPermissionMode {
+  ReadOnly = 'read-only',
+  WorkspaceWrite = 'workspace-write',
+  DangerFullAccess = 'danger-full-access',
+}
+export enum CopilotPermissionMode {
+  Prompt = 'prompt',
+  AllowPaths = 'allow-paths',
+  Yolo = 'yolo',
+}
+export enum RovoDevPermissionMode {
+  Config = 'config',
+  Shadow = 'shadow',
+  Yolo = 'yolo',
+}
+
+/**
+ * Per-agent permission mode overrides
+ */
+export type AgentPermissionSettings = {
+  /**
+   * Claude Code permission mode (default: bypassPermissions)
+   */
+  claudeCode?: ClaudeCodePermissionMode;
+  /**
+   * Cursor permission mode (default: yolo)
+   */
+  cursor?: CursorPermissionMode;
+  /**
+   * Gemini CLI permission mode (default: yolo)
+   */
+  geminiCli?: GeminiPermissionMode;
+  /**
+   * Codex CLI sandbox mode (default: danger-full-access)
+   */
+  codexCli?: CodexPermissionMode;
+  /**
+   * Copilot CLI permission mode (default: yolo)
+   */
+  copilotCli?: CopilotPermissionMode;
+  /**
+   * Rovo Dev CLI permission mode (default: yolo)
+   */
+  rovoDev?: RovoDevPermissionMode;
+};
 export enum AgentType {
   ClaudeCode = 'claude-code',
   CodexCli = 'codex-cli',
@@ -468,7 +528,6 @@ export enum AgentType {
   CopilotCli = 'copilot-cli',
   RovoDev = 'rovo-dev',
   Cursor = 'cursor',
-  Dev = 'dev',
 }
 export enum AgentAuthMethod {
   Session = 'session',
@@ -491,6 +550,10 @@ export type AgentConfig = {
    * API token for token-based auth (optional)
    */
   token?: string;
+  /**
+   * Per-agent permission mode overrides
+   */
+  permissions?: AgentPermissionSettings;
 };
 
 /**

@@ -38,7 +38,7 @@ export async function checkAgentTool(agentType: string): Promise<AgentToolStatus
   const toolId = AGENT_TOOL_MAP[agentType] ?? null;
   const binaryName = AGENT_BINARY_MAP[agentType] ?? null;
 
-  // Dev agent and unknown agents don't need a tool
+  // Agents without a tool mapping don't need a tool check
   if (!toolId) {
     return { agentType, toolId: null, tool: null, installed: true, binaryName: null };
   }
