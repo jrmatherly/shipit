@@ -165,7 +165,9 @@
       "sharp"
     ],
     "overrides": {
-      "minimatch": "^7.x"
+      "minimatch": "^7.x",
+      "@rushstack/node-core-library>ajv": "^8.18.0",
+      "@anthropic-ai/sdk": "^0.81.0"
     },
     "patchedDependencies": {
       "@typespec-tools/emitter-typescript@0.3.0": "patches/@typespec-tools__emitter-typescript@0.3.0.patch"
