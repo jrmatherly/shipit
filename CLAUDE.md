@@ -107,6 +107,8 @@ Adding a new CLI agent requires changes across 8+ integration points:
 ## Tooling
 
 - **DI:** tsyringe (constructor injection with decorators)
+- **Workspace root devDeps:** Use `pnpm add -Dw <pkg>` (with `-w` flag) when adding to the root `package.json`. Without `-w`, pnpm errors out in the monorepo. Use `pnpm --filter @shipit-ai/<workspace> add <pkg>` for workspace-scoped deps.
+- **Next.js stale dev state:** If `pnpm dev:cli ui` fails with "Another next dev server is already running" referencing a dead PID, delete `src/presentation/web/.next` to clear Next's cached process state.
 - **pnpm patches:** Use `pnpm patch <pkg> → edit file → pnpm patch-commit <dir>` to create patches. Never hand-write patch files or edit node_modules directly — the lockfile won't match and CI fails with `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`. Always commit `pnpm-lock.yaml` alongside patch changes.
 - **Serena MCP:** Onboarded — use for semantic symbol navigation, find references, code overview
 - **Code Review Graph:** Built — use for impact analysis, flow tracing, PR review context
@@ -146,7 +148,7 @@ CLAUDE.md is the canonical reference. When updating commands, paths, scopes, or 
 ## Mandatory Rules
 
 - **MANDATORY — TDD**: Write failing tests FIRST (RED → GREEN → REFACTOR). Every plan phase must define explicit TDD cycles. See [tdd-guide](./docs/development/tdd-guide.md).
-- **MANDATORY — TypeSpec-first**: Domain models defined in `tsp/`. Run `pnpm tsp:codegen` to generate `packages/core/src/domain/generated/output.ts`. Never edit generated files. Emitter patched via `patches/@typespec-tools__emitter-typescript@0.3.0.patch` to map `utcDateTime` → `Date`. See [typespec-guide](./docs/development/typespec-guide.md).
+- **MANDATORY — TypeSpec-first**: Domain models defined in `tsp/`. Run `pnpm tsp:codegen` to generate `packages/core/src/domain/generated/output.ts`. Never edit generated files. Emitter (`@typespec-tools/emitter-typescript@0.3.0`) is abandoned and patched via `patches/@typespec-tools__emitter-typescript@0.3.0.patch` to (1) map `utcDateTime`/`offsetDateTime`/`plainDate`/`plainTime` → `Date` and `duration` → `string`, (2) swap imports from `@typespec/compiler/emitter-framework` (removed in TypeSpec 1.0) to `@typespec/asset-emitter@0.79.0`, and (3) update peerDep to `@typespec/compiler ^1.0.0`. **Gotcha:** `tsp/main.tsp` declares `namespace ShipitAI.Domain;` at file-bottom AFTER imports, so all imported models live in the empty-string global namespace — any emitter that requires a named root namespace (e.g. crowbait's `typespec-typescript-emitter`) will fail to find our types. See [typespec-guide](./docs/development/typespec-guide.md).
 - **MANDATORY — Agent resolution**: No component may hardcode an agent type. All resolution flows through `IAgentExecutorProvider`. See [AGENTS.md](./AGENTS.md).
 - **MANDATORY — Storybook stories**: Every web UI component MUST have a colocated `.stories.tsx` file. Not yet enforced by pre-commit hooks — self-enforce.
 - **MANDATORY — Spec-driven**: All features start with `/shipit-kit:new-feature`. No implementation without a spec.
