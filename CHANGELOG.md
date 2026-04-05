@@ -1,3 +1,10 @@
+## [1.167.1](https://github.com/jrmatherly/shipit/compare/v1.167.0...v1.167.1) (2026-04-05)
+
+
+### Bug Fixes
+
+* **web:** keep drawer open when clicking portaled popover triggers ([bc611fd](https://github.com/jrmatherly/shipit/commit/bc611fd30d77f630e018e8b24ad23d0f20440817))
+
 # [1.167.0](https://github.com/jrmatherly/shipit/compare/v1.166.2...v1.167.0) (2026-04-05)
 
 
