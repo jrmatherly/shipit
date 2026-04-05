@@ -143,6 +143,7 @@ export class ResumeFeatureUseCase {
         agentType: lastRun.agentType,
         ...(feature.fast ? { fast: true } : {}),
         ...(lastRun.modelId ? { model: lastRun.modelId } : {}),
+        ...(feature.permissionMode ? { permissionMode: feature.permissionMode } : {}),
         resumeReason: lastRun.status,
       }
     );

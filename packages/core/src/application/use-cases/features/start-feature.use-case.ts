@@ -132,6 +132,7 @@ export class StartFeatureUseCase {
           agentType: agentRun.agentType,
           ...(resolved.fast ? { fast: true } : {}),
           ...(agentRun.modelId ? { model: agentRun.modelId } : {}),
+          ...(resolved.permissionMode ? { permissionMode: resolved.permissionMode } : {}),
         }
       );
     }

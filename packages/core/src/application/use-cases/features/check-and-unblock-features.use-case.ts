@@ -73,6 +73,7 @@ export class CheckAndUnblockFeaturesUseCase {
             enableEvidence: child.enableEvidence,
             commitEvidence: child.commitEvidence,
             ...(child.fast ? { fast: true } : {}),
+            ...(child.permissionMode ? { permissionMode: child.permissionMode } : {}),
           }
         );
       }

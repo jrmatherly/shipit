@@ -90,6 +90,7 @@ function createTestRow(overrides: Partial<FeatureRow> = {}): FeatureRow {
     previous_lifecycle: null,
     fast: 0,
     attachments: '[]',
+    permission_mode: null,
     deleted_at: null,
     created_at: new Date('2026-03-08T10:00:00Z').getTime(),
     updated_at: new Date('2026-03-08T10:00:00Z').getTime(),
@@ -213,6 +214,50 @@ describe('Feature Mapper — previous lifecycle', () => {
       const row = createTestRow({ previous_lifecycle: null });
       const feature = fromDatabase(row);
       expect(feature.previousLifecycle).toBeUndefined();
+    });
+  });
+});
+
+describe('Feature Mapper — permission mode', () => {
+  describe('toDatabase()', () => {
+    it('maps permissionMode string to permission_mode column', () => {
+      const feature = createTestFeature({ permissionMode: 'bypassPermissions' });
+      const row = toDatabase(feature);
+      expect(row.permission_mode).toBe('bypassPermissions');
+    });
+
+    it('maps undefined permissionMode to null', () => {
+      const feature = createTestFeature();
+      const row = toDatabase(feature);
+      expect(row.permission_mode).toBeNull();
+    });
+  });
+
+  describe('fromDatabase()', () => {
+    it('maps non-null permission_mode to permissionMode', () => {
+      const row = createTestRow({ permission_mode: 'bypassPermissions' });
+      const feature = fromDatabase(row);
+      expect(feature.permissionMode).toBe('bypassPermissions');
+    });
+
+    it('omits permissionMode when permission_mode is null', () => {
+      const row = createTestRow({ permission_mode: null });
+      const feature = fromDatabase(row);
+      expect(feature.permissionMode).toBeUndefined();
+    });
+
+    it('round-trips a permission mode value through toDatabase/fromDatabase', () => {
+      const original = createTestFeature({ permissionMode: 'yolo' });
+      const row = toDatabase(original);
+      const restored = fromDatabase(row);
+      expect(restored.permissionMode).toBe('yolo');
+    });
+
+    it('round-trips undefined permission mode (no override)', () => {
+      const original = createTestFeature();
+      const row = toDatabase(original);
+      const restored = fromDatabase(row);
+      expect(restored.permissionMode).toBeUndefined();
     });
   });
 });

@@ -13,6 +13,9 @@ properties:
   token:
     type: string
     description: API token for token-based auth (optional)
+  permissions:
+    $ref: AgentPermissionSettings.yaml
+    description: Per-agent permission mode overrides
 required:
   - type
   - authMethod

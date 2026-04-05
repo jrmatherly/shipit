@@ -148,6 +148,52 @@ describe('analyzeRepositoryGraph', () => {
 
     resetSettings();
   });
+
+  it('should pass permissionMode from injected settings', async () => {
+    const settings = createDefaultSettings();
+    settings.agent.type = AgentType.ClaudeCode;
+    const compiled = createAnalyzeRepositoryGraph(mockExecutor, checkpointer, settings);
+
+    await compiled.invoke(
+      { repositoryPath: '/test/repo' },
+      { configurable: { thread_id: 'test-thread-perm-mode' } }
+    );
+
+    const [, options] = (mockExecutor.execute as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(options.permissionMode).toBe('bypassPermissions');
+  });
+
+  it('should pass permissionMode from global settings singleton', async () => {
+    const settings = createDefaultSettings();
+    settings.agent.type = AgentType.ClaudeCode;
+    initializeSettings(settings);
+
+    const compiled = createAnalyzeRepositoryGraph(mockExecutor, checkpointer);
+
+    await compiled.invoke(
+      { repositoryPath: '/test/repo' },
+      { configurable: { thread_id: 'test-thread-perm-mode-global' } }
+    );
+
+    const [, options] = (mockExecutor.execute as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(options.permissionMode).toBe('bypassPermissions');
+
+    resetSettings();
+  });
+
+  it('should omit permissionMode when no settings available', async () => {
+    // Ensure no global singleton is active
+    resetSettings();
+    const compiled = createAnalyzeRepositoryGraph(mockExecutor, checkpointer);
+
+    await compiled.invoke(
+      { repositoryPath: '/test/repo' },
+      { configurable: { thread_id: 'test-thread-no-perm-mode' } }
+    );
+
+    const [, options] = (mockExecutor.execute as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(options.permissionMode).toBeUndefined();
+  });
 });
 
 describe('buildAnalyzePrompt', () => {

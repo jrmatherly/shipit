@@ -8,6 +8,9 @@ import {
   GitPrError,
   GitPrErrorCode,
 } from '@/application/ports/output/services/git-pr-service.interface.js';
+import type { ISettingsReader } from '@/application/ports/output/services/settings-reader.interface.js';
+import { createDefaultSettings } from '@/domain/factories/settings-defaults.factory.js';
+import { AgentType } from '@/domain/generated/output.js';
 
 // Mock fs module
 vi.mock('node:fs', () => ({
@@ -29,6 +32,17 @@ function createMockExecutor(): IAgentExecutor {
 function createMockProvider(executor: IAgentExecutor): IAgentExecutorProvider {
   return {
     getExecutor: vi.fn().mockResolvedValue(executor),
+  };
+}
+
+function createMockSettingsReader(agentType?: AgentType): ISettingsReader {
+  const settings = createDefaultSettings();
+  if (agentType) {
+    settings.agent.type = agentType;
+  }
+  return {
+    hasSettings: vi.fn().mockReturnValue(true),
+    getSettings: vi.fn().mockReturnValue(settings),
   };
 }
 
@@ -69,13 +83,15 @@ describe('ConflictResolutionService', () => {
   let mockExecutor: IAgentExecutor;
   let mockProvider: IAgentExecutorProvider;
   let mockGitPrService: IGitPrService;
+  let mockSettingsReader: ISettingsReader;
 
   beforeEach(() => {
     vi.clearAllMocks();
     mockExecutor = createMockExecutor();
     mockProvider = createMockProvider(mockExecutor);
     mockGitPrService = createMockGitPrService();
-    service = new ConflictResolutionService(mockProvider, mockGitPrService);
+    mockSettingsReader = createMockSettingsReader(AgentType.ClaudeCode);
+    service = new ConflictResolutionService(mockProvider, mockGitPrService, mockSettingsReader);
   });
 
   it('should resolve conflicts on first attempt — stages and continues', async () => {
@@ -199,5 +215,39 @@ describe('ConflictResolutionService', () => {
       expect.any(String),
       expect.objectContaining({ cwd: '/my/worktree' })
     );
+  });
+
+  it('should pass permissionMode from settings to executor options', async () => {
+    vi.mocked(mockGitPrService.getConflictedFiles).mockResolvedValue(['src/index.ts']);
+
+    mockedReadFileSync
+      .mockReturnValueOnce('<<<<<<< HEAD\na\n=======\nb\n>>>>>>> feat/x' as never)
+      .mockReturnValueOnce('clean' as never);
+
+    await service.resolve('/repo', 'feat/x', 'main');
+
+    expect(mockExecutor.execute).toHaveBeenCalledWith(
+      expect.any(String),
+      expect.objectContaining({ permissionMode: 'bypassPermissions' })
+    );
+  });
+
+  it('should omit permissionMode when settings are unavailable', async () => {
+    const noSettingsReader = createMockSettingsReader();
+    vi.mocked(noSettingsReader.getSettings).mockReturnValue(undefined);
+    vi.mocked(noSettingsReader.hasSettings).mockReturnValue(false);
+
+    const svc = new ConflictResolutionService(mockProvider, mockGitPrService, noSettingsReader);
+
+    vi.mocked(mockGitPrService.getConflictedFiles).mockResolvedValue(['src/index.ts']);
+
+    mockedReadFileSync
+      .mockReturnValueOnce('<<<<<<< HEAD\na\n=======\nb\n>>>>>>> feat/x' as never)
+      .mockReturnValueOnce('clean' as never);
+
+    await svc.resolve('/repo', 'feat/x', 'main');
+
+    const [, options] = (mockExecutor.execute as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(options.permissionMode).toBeUndefined();
   });
 });

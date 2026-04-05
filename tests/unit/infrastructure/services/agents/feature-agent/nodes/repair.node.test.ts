@@ -22,6 +22,9 @@ import {
 } from '@/infrastructure/services/agents/feature-agent/nodes/repair.node.js';
 import type { FeatureAgentState } from '@/infrastructure/services/agents/feature-agent/state.js';
 import type { IAgentExecutor } from '@/application/ports/output/agents/agent-executor.interface.js';
+import { initializeSettings, resetSettings } from '@/infrastructure/services/settings.service.js';
+import { createDefaultSettings } from '@/domain/factories/settings-defaults.factory.js';
+import { AgentType } from '@/domain/generated/output.js';
 
 function createMockExecutor(): IAgentExecutor {
   return {
@@ -60,6 +63,7 @@ function baseState(_overrides: Partial<FeatureAgentState> = {}): FeatureAgentSta
     evidence: [],
     evidenceRetries: 0,
     model: undefined,
+    permissionMode: undefined,
     resumeReason: undefined,
     forkAndPr: false,
     commitSpecs: true,
@@ -155,5 +159,32 @@ describe('createRepairNode', () => {
     expect(result.messages).toBeDefined();
     expect(result.messages![0]).toContain('Repair failed');
     expect(result.messages![0]).toContain('Agent crashed');
+  });
+
+  it('passes permissionMode from global settings to executor', async () => {
+    const settings = createDefaultSettings();
+    settings.agent.type = AgentType.ClaudeCode;
+    initializeSettings(settings);
+
+    const node = createRepairNode('spec.yaml', executor);
+    const state = baseState();
+    await node(state);
+
+    const [, options] = (executor.execute as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(options.permissionMode).toBe('bypassPermissions');
+
+    resetSettings();
+  });
+
+  it('omits permissionMode when no settings are available', async () => {
+    // Ensure no global settings are initialized
+    resetSettings();
+
+    const node = createRepairNode('spec.yaml', executor);
+    const state = baseState();
+    await node(state);
+
+    const [, options] = (executor.execute as ReturnType<typeof vi.fn>).mock.calls[0];
+    expect(options.permissionMode).toBeUndefined();
   });
 });

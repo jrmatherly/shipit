@@ -15,6 +15,8 @@ import {
   GitPrError,
   GitPrErrorCode,
 } from '@/application/ports/output/services/git-pr-service.interface.js';
+import type { ISettingsReader } from '@/application/ports/output/services/settings-reader.interface.js';
+import { resolveAgentPermissionMode } from '../common/agent-permissions.js';
 import {
   buildConflictResolutionPrompt,
   type ConflictedFile,
@@ -31,7 +33,9 @@ export class ConflictResolutionService {
     @inject('IAgentExecutorProvider')
     private readonly agentProvider: IAgentExecutorProvider,
     @inject('IGitPrService')
-    private readonly gitPrService: IGitPrService
+    private readonly gitPrService: IGitPrService,
+    @inject('ISettingsReader')
+    private readonly settingsReader: ISettingsReader
   ) {}
 
   /**
@@ -76,7 +80,12 @@ export class ConflictResolutionService {
           previousFeedback,
         });
 
-        await executor.execute(prompt, { cwd });
+        const settings = this.settingsReader.getSettings();
+        const permissionMode = settings ? resolveAgentPermissionMode(settings) : undefined;
+        await executor.execute(prompt, {
+          cwd,
+          ...(permissionMode ? { permissionMode } : {}),
+        });
 
         // Validate: check no conflict markers remain
         if (this.validateResolution(cwd, conflictedFiles)) {

@@ -428,4 +428,9 @@ model Feature extends SoftDeletableEntity {
 
   @doc("Files attached by the user when creating or messaging this feature")
   attachments?: Attachment[];
+
+  // ── Permission Mode Override ─────────────────────────────────
+
+  @doc("Per-feature permission mode override (overrides agent default from settings)")
+  permissionMode?: string;
 }

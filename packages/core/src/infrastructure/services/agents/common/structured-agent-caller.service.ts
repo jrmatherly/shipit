@@ -9,6 +9,7 @@ import type {
 } from '../../../../application/ports/output/agents/structured-agent-caller.interface.js';
 import { StructuredCallError } from '../../../../application/ports/output/agents/structured-call-error.js';
 import type { ISettingsReader } from '../../../../application/ports/output/services/settings-reader.interface.js';
+import { resolveAgentPermissionMode } from './agent-permissions.js';
 
 /**
  * Structured agent caller that abstracts native structured output vs prompt-based JSON extraction.
@@ -29,17 +30,23 @@ export class StructuredAgentCallerService implements IStructuredAgentCaller {
 
   async call<T>(prompt: string, schema: object, options?: StructuredCallOptions): Promise<T> {
     let executor: IAgentExecutor;
+    const settings = this.settingsReader.getSettings();
     if (options?.agentType) {
-      const settings = this.settingsReader.getSettings();
       executor = this.executorFactory.createExecutor(options.agentType, settings!.agent);
     } else {
       executor = await this.executorProvider.getExecutor();
     }
 
+    // Inject permissionMode from settings when not explicitly provided
+    const resolvedOptions: StructuredCallOptions | undefined =
+      options?.permissionMode || !settings
+        ? options
+        : { ...options, permissionMode: resolveAgentPermissionMode(settings) };
+
     if (executor.supportsFeature(AgentFeature.structuredOutput)) {
-      return this.callWithNativeSchema<T>(executor, prompt, schema, options);
+      return this.callWithNativeSchema<T>(executor, prompt, schema, resolvedOptions);
     }
-    return this.callWithPromptFallback<T>(executor, prompt, schema, options);
+    return this.callWithPromptFallback<T>(executor, prompt, schema, resolvedOptions);
   }
 
   // Native structured output path

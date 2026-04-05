@@ -304,6 +304,7 @@ export function makeState(overrides: Partial<FeatureAgentState>): FeatureAgentSt
     evidence: [],
     evidenceRetries: 0,
     model: undefined,
+    permissionMode: undefined,
     resumeReason: undefined,
     forkAndPr: false,
     commitSpecs: true,

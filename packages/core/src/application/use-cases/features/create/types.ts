@@ -30,6 +30,8 @@ export interface CreateFeatureInput {
   agentType?: string;
   /** Optional model identifier forwarded to the agent executor for this invocation. */
   model?: string;
+  /** Per-feature permission mode override (overrides agent default from settings). */
+  permissionMode?: string;
   /** Attachment records to persist with the feature. */
   attachments?: Attachment[];
   /** Session ID for committing pending uploads (web UI flow). */

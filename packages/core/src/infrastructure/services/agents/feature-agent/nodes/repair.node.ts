@@ -8,8 +8,13 @@
 
 import { join } from 'node:path';
 import type { FeatureAgentState } from '../state.js';
-import type { IAgentExecutor } from '@/application/ports/output/agents/agent-executor.interface.js';
+import type {
+  IAgentExecutor,
+  AgentPermissionModeValue,
+} from '@/application/ports/output/agents/agent-executor.interface.js';
 import { readSpecFile, createNodeLogger } from './node-helpers.js';
+import { hasSettings, getSettings } from '@/infrastructure/services/settings.service.js';
+import { resolveAgentPermissionMode } from '../../common/agent-permissions.js';
 
 /**
  * Build a repair prompt containing the broken YAML, validation errors,
@@ -101,11 +106,16 @@ export function createRepairNode(
       state.specDir
     );
 
+    const s = hasSettings() ? getSettings() : undefined;
+    const permissionMode =
+      (state.permissionMode as AgentPermissionModeValue | undefined) ??
+      resolveAgentPermissionMode(s);
     const options = {
       cwd: state.worktreePath || state.repositoryPath,
       maxTurns: 5,
       disableMcp: true,
       allowedTools: ['write'] as string[],
+      ...(permissionMode ? { permissionMode } : {}),
     };
 
     try {

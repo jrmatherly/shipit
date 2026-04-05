@@ -60,6 +60,7 @@ export interface WorkerArgs {
   fast?: boolean;
   model?: string;
   resumeReason?: string;
+  permissionMode?: string;
 }
 
 /**
@@ -125,6 +126,12 @@ export function parseWorkerArgs(args: string[]): WorkerArgs {
       ? args[resumeReasonIdx + 1]
       : undefined;
 
+  const permissionModeIdx = args.indexOf('--permission-mode');
+  const permissionMode =
+    permissionModeIdx !== -1 && permissionModeIdx + 1 < args.length
+      ? args[permissionModeIdx + 1]
+      : undefined;
+
   return {
     featureId: getArg('feature-id'),
     runId: getArg('run-id'),
@@ -147,6 +154,7 @@ export function parseWorkerArgs(args: string[]): WorkerArgs {
     fast,
     model,
     resumeReason,
+    permissionMode,
   };
 }
 
@@ -213,6 +221,7 @@ export async function runWorker(args: WorkerArgs): Promise<void> {
     ...(args.agentType ? ['--agent-type', args.agentType] : []),
     ...(args.fast ? ['--fast'] : []),
     ...(args.model ? ['--model', args.model] : []),
+    ...(args.permissionMode ? ['--permission-mode', args.permissionMode] : []),
   ];
   log(`Starting worker — full command:`);
   log(`  ${cmdParts.join(' ')}`);
@@ -373,6 +382,7 @@ export async function runWorker(args: WorkerArgs): Promise<void> {
           error: undefined, // Clear previous error state
           ...(args.approvalGates ? { approvalGates: args.approvalGates } : {}),
           ...(args.model ? { model: args.model } : {}),
+          ...(args.permissionMode ? { permissionMode: args.permissionMode } : {}),
           ...(args.resumeReason ? { resumeReason: args.resumeReason } : {}),
           push: args.push ?? false,
           openPr: args.openPr ?? false,
@@ -394,6 +404,7 @@ export async function runWorker(args: WorkerArgs): Promise<void> {
           specDir: args.specDir,
           ...(args.approvalGates ? { approvalGates: args.approvalGates } : {}),
           ...(args.model ? { model: args.model } : {}),
+          ...(args.permissionMode ? { permissionMode: args.permissionMode } : {}),
           push: args.push ?? false,
           openPr: args.openPr ?? false,
           forkAndPr: args.forkAndPr ?? false,

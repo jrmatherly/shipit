@@ -14,6 +14,7 @@ import type {
   IAgentExecutor,
   AgentExecutionOptions,
   AgentExecutionResult,
+  AgentPermissionModeValue,
 } from '@/application/ports/output/agents/agent-executor.interface.js';
 import type { ApprovalGates, Evidence, Settings } from '@/domain/generated/output.js';
 import { resolveAgentPermissionMode } from '../../common/agent-permissions.js';
@@ -119,7 +120,11 @@ export function buildExecutorOptions(
 ): AgentExecutionOptions {
   const stage = nodeName ?? state.currentNode ?? '';
   const stageTimeout = getStageTimeoutMs(stage, settings);
-  const permissionMode = overrides?.permissionMode ?? resolveAgentPermissionMode(settings);
+  const s = settings ?? (hasSettings() ? getSettings() : undefined);
+  const permissionMode =
+    overrides?.permissionMode ??
+    (state.permissionMode as AgentPermissionModeValue | undefined) ??
+    resolveAgentPermissionMode(s);
   return {
     cwd: state.worktreePath || state.repositoryPath,
     maxTurns: 5000,

@@ -1148,6 +1148,10 @@ export type Feature = SoftDeletableEntity & {
    * Files attached by the user when creating or messaging this feature
    */
   attachments?: Attachment[];
+  /**
+   * Per-feature permission mode override (overrides agent default from settings)
+   */
+  permissionMode?: string;
 };
 
 /**

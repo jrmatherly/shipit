@@ -274,4 +274,68 @@ describe('StructuredAgentCallerService', () => {
       expect(mockExecutor.supportsFeature).toHaveBeenCalledWith(AgentFeature.structuredOutput);
     });
   });
+
+  describe('permissionMode injection', () => {
+    it('injects permissionMode from settings when not in options (native path)', async () => {
+      vi.mocked(mockExecutor.supportsFeature).mockReturnValue(true);
+      vi.mocked(mockExecutor.execute).mockResolvedValue({
+        result: '',
+        metadata: { structured_output: { name: 'x', count: 0 } },
+      });
+
+      await service.call('test', testSchema);
+
+      expect(mockExecutor.execute).toHaveBeenCalledWith(
+        'test',
+        expect.objectContaining({ permissionMode: 'bypassPermissions' })
+      );
+    });
+
+    it('injects permissionMode from settings when not in options (fallback path)', async () => {
+      vi.mocked(mockExecutor.supportsFeature).mockReturnValue(false);
+      vi.mocked(mockExecutor.execute).mockResolvedValue({
+        result: '{"name":"test","count":1}',
+      });
+
+      await service.call('test', testSchema);
+
+      const calledOptions = vi.mocked(mockExecutor.execute).mock.calls[0][1];
+      expect(calledOptions?.permissionMode).toBe('bypassPermissions');
+    });
+
+    it('preserves explicit permissionMode from caller options', async () => {
+      vi.mocked(mockExecutor.supportsFeature).mockReturnValue(true);
+      vi.mocked(mockExecutor.execute).mockResolvedValue({
+        result: '',
+        metadata: { structured_output: { name: 'x', count: 0 } },
+      });
+
+      await service.call('test', testSchema, {
+        permissionMode: 'default' as any,
+      });
+
+      expect(mockExecutor.execute).toHaveBeenCalledWith(
+        'test',
+        expect.objectContaining({ permissionMode: 'default' })
+      );
+    });
+
+    it('omits permissionMode when settings are unavailable', async () => {
+      const noSettingsReader: ISettingsReader = {
+        hasSettings: vi.fn().mockReturnValue(false),
+        getSettings: vi.fn().mockReturnValue(undefined),
+      };
+      const svc = new StructuredAgentCallerService(mockProvider, mockFactory, noSettingsReader);
+
+      vi.mocked(mockExecutor.supportsFeature).mockReturnValue(false);
+      vi.mocked(mockExecutor.execute).mockResolvedValue({
+        result: '{"name":"test","count":1}',
+      });
+
+      await svc.call('test', testSchema);
+
+      const calledOptions = vi.mocked(mockExecutor.execute).mock.calls[0][1];
+      expect(calledOptions?.permissionMode).toBeUndefined();
+    });
+  });
 });

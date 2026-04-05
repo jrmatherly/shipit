@@ -54,6 +54,7 @@ export class FeatureAgentProcessService implements IFeatureAgentProcessService {
       fast?: boolean;
       model?: string;
       resumeReason?: string;
+      permissionMode?: string;
     }
   ): number {
     const workerPath = join(__dirname, 'feature-agent-worker.js');
@@ -118,6 +119,9 @@ export class FeatureAgentProcessService implements IFeatureAgentProcessService {
     }
     if (options?.resumeReason) {
       args.push('--resume-reason', options.resumeReason);
+    }
+    if (options?.permissionMode) {
+      args.push('--permission-mode', options.permissionMode);
     }
     // Create log file for worker output (for debugging)
     const logsDir = join(homedir(), '.shipit-ai', 'logs');

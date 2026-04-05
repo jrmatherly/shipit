@@ -48,6 +48,7 @@ export interface IFeatureAgentProcessService {
       fast?: boolean;
       model?: string;
       resumeReason?: string;
+      permissionMode?: string;
     }
   ): number;
 

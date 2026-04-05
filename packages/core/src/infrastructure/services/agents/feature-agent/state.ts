@@ -26,6 +26,10 @@ export const FeatureAgentAnnotation = Annotation.Root({
     reducer: (_prev, next) => next ?? _prev,
     default: () => undefined,
   }),
+  permissionMode: Annotation<string | undefined>({
+    reducer: (_prev, next) => next ?? _prev,
+    default: () => undefined,
+  }),
   messages: Annotation<string[]>({
     reducer: (prev, next) => [...prev, ...next],
     default: () => [],

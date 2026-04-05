@@ -3,6 +3,7 @@ import type { IAgentExecutor } from '@/application/ports/output/agents/agent-exe
 import { buildAnalyzePrompt } from './prompts/analyze-repository.prompt.js';
 import type { Settings } from '@/domain/generated/output.js';
 import { hasSettings, getSettings } from '@/infrastructure/services/settings.service.js';
+import { resolveAgentPermissionMode } from '../common/agent-permissions.js';
 
 /** Default timeout for analyze-repo agent (10 minutes) — prevents infinite hangs. */
 const DEFAULT_ANALYZE_REPO_TIMEOUT_MS = 600_000;
@@ -51,9 +52,12 @@ function createAnalyzeNode(executor: IAgentExecutor, settings?: Settings) {
   ): Promise<Partial<typeof AnalyzeRepositoryState.State>> => {
     const prompt = buildAnalyzePrompt(state.repositoryPath);
 
+    const s = settings ?? (hasSettings() ? getSettings() : undefined);
+    const permissionMode = resolveAgentPermissionMode(s);
     const result = await executor.execute(prompt, {
       cwd: state.repositoryPath,
       timeout: getAnalyzeRepoTimeoutMs(settings),
+      ...(permissionMode ? { permissionMode } : {}),
     });
 
     return {

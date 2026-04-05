@@ -203,6 +203,7 @@ export class CreateFeatureUseCase {
       specPath: '',
       repositoryId: repository.id,
       ...(input.parentId ? { parentId: input.parentId } : {}),
+      ...(input.permissionMode ? { permissionMode: input.permissionMode } : {}),
       createdAt: now,
       updatedAt: now,
     };
@@ -385,6 +386,7 @@ export class CreateFeatureUseCase {
           ...(input.fast ? { fast: true } : {}),
           ...(input.agentType ? { agentType: input.agentType as AgentType } : {}),
           ...(input.model ? { model: input.model } : {}),
+          ...(input.permissionMode ? { permissionMode: input.permissionMode } : {}),
         }
       );
     }

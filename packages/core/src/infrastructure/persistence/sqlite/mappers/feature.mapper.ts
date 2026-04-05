@@ -70,6 +70,8 @@ export interface FeatureRow {
   previous_lifecycle: string | null;
   // User attachments (JSON array)
   attachments: string;
+  // Permission mode override
+  permission_mode: string | null;
   // Soft delete
   deleted_at: number | null;
   created_at: number;
@@ -135,6 +137,8 @@ export function toDatabase(feature: Feature): FeatureRow {
     attachments: JSON.stringify(
       (feature.attachments ?? []).map((a) => ({ ...a, size: Number(a.size) }))
     ),
+    // Permission mode override
+    permission_mode: feature.permissionMode ?? null,
     // Soft delete
     deleted_at:
       feature.deletedAt instanceof Date ? feature.deletedAt.getTime() : (feature.deletedAt ?? null),
@@ -211,6 +215,8 @@ export function fromDatabase(row: FeatureRow): Feature {
     }),
     // User attachments
     attachments: JSON.parse(row.attachments ?? '[]'),
+    // Permission mode override
+    ...(row.permission_mode != null && { permissionMode: row.permission_mode }),
     // Soft delete
     ...(row.deleted_at != null && { deletedAt: new Date(row.deleted_at) }),
   };

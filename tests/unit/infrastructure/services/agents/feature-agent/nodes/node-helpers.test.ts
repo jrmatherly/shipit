@@ -396,6 +396,32 @@ describe('buildExecutorOptions', () => {
     const options = buildExecutorOptions(baseState as any);
     expect(options.cwd).toBe('/tmp/repo');
   });
+
+  it('uses state.permissionMode when set (feature-level override)', () => {
+    const state = { ...baseState, permissionMode: 'yolo' };
+    const options = buildExecutorOptions(state as any);
+    expect(options.permissionMode).toBe('yolo');
+  });
+
+  it('overrides.permissionMode takes precedence over state.permissionMode', () => {
+    const state = { ...baseState, permissionMode: 'yolo' };
+    const options = buildExecutorOptions(state as any, {
+      permissionMode: 'bypassPermissions' as any,
+    });
+    expect(options.permissionMode).toBe('bypassPermissions');
+  });
+
+  it('falls back to settings when state.permissionMode is undefined', () => {
+    const settings = createDefaultSettings();
+    // Claude Code default is 'bypassPermissions' from agent-permissions.ts
+    initializeSettings(settings);
+    settings.agent.type = 'claude-code' as any;
+
+    const state = { ...baseState, permissionMode: undefined };
+    const options = buildExecutorOptions(state as any);
+    // Should get the agent default, not undefined
+    expect(options.permissionMode).toBeDefined();
+  });
 });
 
 describe('removeSpecCommitsIfNeeded', () => {
