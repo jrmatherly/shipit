@@ -62,6 +62,7 @@ Several former god classes are now **facades** delegating to focused sub-service
 - **Use cases:** `container.registerSingleton(UseCaseClass)` in `use-cases.module.ts` — resolved by class constructor token (no string token)
 - **New ports:** Must add barrel export to `packages/core/src/application/ports/output/services/index.ts`
 - **Server actions:** Use `resolve<T>('StringToken')` from `@/lib/server-container` — never import services directly
+- **ISettingsReader pattern:** For converting global accessor calls (`getSettings()`/`hasSettings()`) to DI: class-based consumers get `@inject('ISettingsReader')` constructor injection; free-function consumers accept optional `Settings` parameter with callers injecting. Registered as `container.registerSingleton<ISettingsReader>('ISettingsReader', SettingsReaderService)`.
 
 ### Tool Metadata System
 
@@ -74,7 +75,7 @@ Several former god classes are now **facades** delegating to focused sub-service
 
 Adding a new CLI agent requires changes across 8+ integration points:
 
-1. `tsp/common/enums/agent-config.tsp` — Add to `AgentType` enum, run `pnpm tsp:codegen`
+1. `tsp/common/enums/agent-config.tsp` — Add to `AgentType` enum; add a new permission enum in `tsp/common/enums/agent-permissions.tsp`, run `pnpm tsp:codegen`
 2. `packages/core/.../tool-installer/tools/<id>.json` — Tool metadata (auto-discovered by filename)
 3. `packages/core/.../executors/<name>-executor.service.ts` — Extend `ExecutorBase`
 4. `packages/core/.../agent-executor-factory.service.ts` — Update `createExecutor`, `getSupportedAgents`, `getCliInfo`, `getSupportedModels`, `supportsInteractive`
@@ -89,7 +90,17 @@ Adding a new CLI agent requires changes across 8+ integration points:
 
 **Gotcha — `tier2AuthVerify` mixed pattern:** Cases that set `cmd`/`args` use `break` (falling through to shared `execFile`). Cases that resolve directly MUST use `return` (not `break`) or `cmd`/`args` will be uninitialized.
 
-**Gotcha — `dev` agent special handling:** The `dev` mock agent is intentionally in `AGENT_LABELS` and `AGENT_ORDER` (for display) but NOT in `AGENT_TOOL_IDS` (no tool JSON exists). Line 88 of `get-all-agent-models.ts` explicitly handles this.
+**Gotcha — `dev` agent removed (spec 082):** `AgentType.Dev` was removed from the TypeSpec enum and all call sites. The mock executor (`SHIPIT_AI_MOCK_EXECUTOR=1`) is a separate system and still works. Do not re-add dev-specific branches.
+
+### Per-Agent Permission Mode Resolution
+
+`resolveAgentPermissionMode(settings?, agentType?)` in `packages/core/src/infrastructure/services/agents/common/agent-permissions.ts`. Precedence: CLI override > feature row > per-agent setting > `DEFAULT_MODE_BY_AGENT`. When adding a new agent, add a default to this map.
+
+**Agent CLI flag semantics (non-obvious):**
+- **Cursor CLI:** `--force` is required for file writes in `-p` print mode. `--yolo` alone only auto-approves shell commands. Both `--yolo` AND `--force` needed for full batch autonomy.
+- **Copilot CLI:** `--yolo` decomposes to `--allow-all-tools + --allow-all-paths + --allow-all-urls` (three sub-flags combined).
+- **Gemini CLI:** 3 open upstream bugs (#13561, #19774, #16012 on `google-gemini/gemini-cli`) cause hangs in `-p` mode even with `--approval-mode yolo`. ShipIT cannot work around these — document as known limitation.
+- **Rovo Dev:** `--shadow` flag is referenced in plans but NOT in upstream docs at `support.atlassian.com`. Verify via `acli rovodev run --help` before relying on it.
 
 ### Presentation Layer Boundaries
 
@@ -116,6 +127,7 @@ Adding a new CLI agent requires changes across 8+ integration points:
 - **Lint-staged is parallel-session safe:** When committing a subset of modified files via `git add <path>` while other files are unstaged, the pre-commit hook's lint-staged creates a backup stash, runs formatters ONLY on staged files, then restores the stash. Unstaged work in other files is preserved untouched. Safe to commit your slice without coordinating with parallel agents.
 - **Security alert APIs split by tool:** Dependabot uses GraphQL `repository.vulnerabilityAlerts` (works with `repo` scope); code scanning (CodeQL) uses REST `gh api 'repos/OWNER/REPO/code-scanning/alerts?state=open'` (also `repo` scope). The REST `/dependabot/alerts` endpoint requires `admin:repo_hook` — avoid it. Admin ops may require switching to `jrmatherly` via `gh auth switch --user jrmatherly`.
 - **CodeQL taint boundary:** `js/path-injection` and similar queries stop taint propagation at DB reads (e.g. `featureRepo.findById()`). A file with a structurally identical sink to a flagged file may be missed because its taint source flows through a DB lookup. When auditing alert coverage, trace the source manually — don't assume "not flagged = safe".
+- **cursor.com behind Vercel bot challenge:** WebFetch and curl both get challenged by Vercel's bot protection on `cursor.com`. Use WebSearch instead to retrieve cached/indexed content from the Cursor docs.
 - **Serena MCP:** Onboarded — use for semantic symbol navigation, find references, code overview
 - **Code Review Graph:** Built — use for impact analysis, flow tracing, PR review context
 - **IDE workflow linter:** `secrets.*` and dynamic `env.*` (set via `$GITHUB_ENV`) references in GitHub Actions workflows show "context access might be invalid" — these are false positives from static analysis.
@@ -214,6 +226,7 @@ Active remediation plan: [`.scratchpad/plans/technical-debt-remediation-plan.md`
 - **TypeSpec dates:** All 31 date/timestamp fields are `Date` objects (not strings). Use `new Date('...')` in test mocks, not ISO strings.
 - **Storybook server action mocks:** New server actions MUST have corresponding mocks in `.storybook/mocks/app/actions/` — Storybook aliases `@/app/actions` to this directory. Missing mocks break `pnpm build:storybook`.
 - **TypeSpec toolchain bump verification:** Before any `@typespec/*`, `@typespec-tools/*`, or emitter dependency bump, capture `shasum -a 256 packages/core/src/domain/generated/output.ts`, run `pnpm tsp:codegen`, compare. Byte-identical = safe. Any diff = investigate emitter behavior change before committing.
+- **State channel count assertion:** `tests/unit/infrastructure/services/agents/feature-agent/state.test.ts` has a hardcoded channel count assertion that must be bumped when adding new fields to `FeatureAgentAnnotation`. Forgetting this causes a cryptic test failure unrelated to your actual change.
 
 ### i18n Key Parity
 
