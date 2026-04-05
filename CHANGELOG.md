@@ -1,3 +1,11 @@
+## [1.166.2](https://github.com/jrmatherly/shipit/compare/v1.166.1...v1.166.2) (2026-04-05)
+
+
+### Bug Fixes
+
+* **web:** close 26 codeql alerts across web actions and api routes ([e5467f1](https://github.com/jrmatherly/shipit/commit/e5467f11217f0b8fea1376a1aa1d08efdd3b4682))
+* **web:** extract path sanitizers and close directory-list toctou ([a6ac80b](https://github.com/jrmatherly/shipit/commit/a6ac80bea7e99ea36c44785debd8104f2064be9a))
+
 ## [1.166.1](https://github.com/jrmatherly/shipit/compare/v1.166.0...v1.166.1) (2026-04-05)
 
 
