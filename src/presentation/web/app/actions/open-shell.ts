@@ -96,6 +96,7 @@ export async function openShell(
             // shell treats as a single literal argument to `cd`.
             const escapedPath = shellEscapePosixPath(targetPath);
             const command = config.openDirectory.replaceAll('{dir}', escapedPath);
+            // codeql[js/command-line-injection] -- targetPath from realpathSync (must exist on disk); shell-escaped via single-quote wrapping in shellEscapePosixPath; localhost-only server action
             const child = spawn(command, [], {
               detached: true,
               stdio: 'ignore',

@@ -157,6 +157,7 @@ export async function getMergeReviewData(featureId: string): Promise<GetMergeRev
         ) {
           const resolvedManifest = realpathOrNull(join(resolvedEvidenceDir, 'manifest.json'));
           if (resolvedManifest && isWithinRoot(resolvedManifest, resolvedEvidenceDir)) {
+            // codeql[js/path-injection] -- resolvedManifest validated by realpathOrNull + isWithinRoot(resolvedManifest, resolvedEvidenceDir) on line 159; featureId flows through SHA-256 hash in computeEvidenceDir
             const raw: MergeReviewEvidence[] = JSON.parse(readFileSync(resolvedManifest, 'utf-8'));
             // Pass the UNRESOLVED evidenceDir so returned paths share the
             // same root form the evidence route's prefix check expects.
