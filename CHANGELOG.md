@@ -1,3 +1,18 @@
+# [1.167.0](https://github.com/jrmatherly/shipit/compare/v1.166.2...v1.167.0) (2026-04-05)
+
+
+### Bug Fixes
+
+* **web:** add codeql inline suppression for 3 false-positive alerts ([ff914e6](https://github.com/jrmatherly/shipit/commit/ff914e6b9f64e3af2e5f35c7870354a39a34ceb6))
+
+
+### Features
+
+* **agents:** add onboarding wizard permission step and update docs ([c6376ae](https://github.com/jrmatherly/shipit/commit/c6376ae9e647b875eeaf94ac938230a401822084))
+* **agents:** add per-agent permission modes and fix 4 latent executor bugs ([c2a098a](https://github.com/jrmatherly/shipit/commit/c2a098aa767e06c16ab9d892aecc61507cb828ba))
+* **agents:** add per-feature permission override and propagate mode to all call sites ([d3a7c2c](https://github.com/jrmatherly/shipit/commit/d3a7c2c463a1ca762443027995af33ce3bf039a3))
+* **web:** add permission picker ui and cli settings permissions command ([72f64fb](https://github.com/jrmatherly/shipit/commit/72f64fbd3045d303d9afb8da9930cf4ed1d33826))
+
 ## [1.166.2](https://github.com/jrmatherly/shipit/compare/v1.166.1...v1.166.2) (2026-04-05)
 
 
