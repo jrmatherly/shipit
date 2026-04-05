@@ -15,7 +15,7 @@ pnpm format
 
 ## 3. Run Tests
 ```bash
-pnpm test:unit      # Always run unit tests (5,719 tests)
+pnpm test:unit      # Always run unit tests (5,755 tests)
 pnpm test:int       # Run if infrastructure/integration changes (578 tests)
 pnpm test:e2e       # Run if CLI/web behavior changed
 ```

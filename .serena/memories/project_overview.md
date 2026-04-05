@@ -1,6 +1,6 @@
 # Project Overview
 
-**Name:** `@shipit-ai/cli` (forked from shep-ai/shep, current: v1.165.0)
+**Name:** `@shipit-ai/cli` (forked from shep-ai/shep, current: v1.166.1 on npm; 1.166.2 queued as 5 unpushed commits on main)
 **Display Name:** ShipIT AI (uppercase IT)
 **Purpose:** Autonomous AI Native SDLC Platform. Users run `shipit-ai` in a repo to gather requirements via AI, generate plans, and execute implementation autonomously.
 **License:** MIT
@@ -35,8 +35,10 @@
 - Husky + commitlint (conventional commits)
 - semantic-release (automated releases, OIDC trusted publishing)
 
-## Toolchain State (2026-04-04)
+## Toolchain State (2026-04-05)
 - Phase C complete: TS 5.9 → 6.0, Storybook 8.6 → 10.3, Vite 7 → 8.0, jsdom 28 → 29
 - Phase D complete: TypeSpec 0.60 → 1.10 with patched emitter (asset-emitter import swap + Date mapping)
-- All 5,719 unit tests + 578 integration tests passing
+- Two security-alert remediation passes complete: Dependabot (ajv ReDoS, @anthropic-ai/sdk sandbox escape) via scoped `pnpm.overrides`; CodeQL (26 alerts across 7 clusters — command injection, path injection, polynomial ReDoS, incomplete sanitization, stack-trace exposure, missing workflow permissions, shell-command-from-env) via commits `e5467f11` + `a6ac80be`
+- Canonical path-containment helper extracted to `src/presentation/web/lib/path-sanitizers.ts` (`realpathOrNull`, `isWithinRoot`, `realpathWithinAllowedRoots` + async variants); TOCTOU gap closed in `api/directory/list/route.ts`
+- All 5,755 unit tests + 578 integration tests passing (+36 net-new tests this session: 23 path-sanitizers, 11 parseArgs, 2 security regression tests)
 - Dev UI (`pnpm dev:cli ui`) verified working

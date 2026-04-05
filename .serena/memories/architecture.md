@@ -45,8 +45,11 @@ Former god classes are now **facades** delegating to focused sub-services:
 - Storybook mocks: new server actions MUST have mocks in `.storybook/mocks/app/actions/`
 - i18n parity: adding keys to `en/web.json` requires all 7 other locale files or tests fail
 - TypeSpec dates: all 31 fields are `Date` objects (emitter patched)
-- 5719+ tests across 397+ files
+- 5,755+ tests across 399+ files
 
 ## Security
 - Localhost-only proxy at `src/presentation/web/proxy.ts` (renamed from middleware.ts in Next.js 16)
 - Web API routes string-token DI via `web-tokens.module.ts` (Turbopack can't resolve .js→.ts imports)
+- Canonical path-containment helper at `src/presentation/web/lib/path-sanitizers.ts` — `realpathOrNull`, `isWithinRoot`, `realpathWithinAllowedRoots` (+ async variants). Every route/server action that touches a user-influenced filesystem path MUST route through these helpers. Inline `realpath + startsWith` is banned — prior copies caused 8 CodeQL `js/path-injection` alerts and a TOCTOU bug in `api/directory/list/route.ts`.
+- Display-vs-physical path split: routes that RETURN paths to the client keep `displayPath` (user-typed, echoed in response) and `physicalPath` (realpath-sanitized, used for every filesystem sink). Mismatching them causes 404s on macOS where `/tmp` resolves to `/private/tmp` via symlink. See `api/directory/list/route.ts` for the canonical implementation.
+- 26 CodeQL alerts (2 critical command-injection, 10 high path-injection/ReDoS/incomplete-sanitization, 14 medium) closed in commits `e5467f11` + `a6ac80be`. `.github/workflows/ci.yml` and `pr-check.yml` use top-level `permissions: {}` deny-all with per-job least-privilege overrides.

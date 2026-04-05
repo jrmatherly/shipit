@@ -51,7 +51,7 @@ Several former god classes are now **facades** delegating to focused sub-service
 ## Security
 
 - All web API routes go through localhost-only proxy (`src/presentation/web/proxy.ts`) — rejects non-localhost requests
-- File-serving routes use `realpath()` before path containment checks to prevent symlink traversal
+- Path containment via `src/presentation/web/lib/path-sanitizers.ts` — every route/server action touching a user-influenced filesystem path MUST use `realpathOrNull` / `isWithinRoot` / `realpathWithinAllowedRoots` (+ async variants). Never inline `realpath + startsWith`. Routes that return paths to clients keep `displayPath` (user-typed) vs `physicalPath` (realpath-sanitized) separate.
 - Upload routes block `.env` files and extensionless files
 - 500 errors use `apiError()` from `@/lib/api-helpers` — never expose raw `error.message` to clients
 

@@ -24,7 +24,7 @@
 | Command | Purpose |
 |---------|---------|
 | `pnpm test` | Run all tests (unit + integration + e2e) |
-| `pnpm test:unit` | Unit tests only (vitest, ~5,719 tests) |
+| `pnpm test:unit` | Unit tests only (vitest, ~5,755 tests across 399 files) |
 | `pnpm test:int` | Integration tests only (vitest, ~578 tests) |
 | `pnpm test:e2e` | E2E tests (builds CLI first, then runs vitest e2e + playwright) |
 | `pnpm test:e2e:cli` | CLI E2E tests only |
