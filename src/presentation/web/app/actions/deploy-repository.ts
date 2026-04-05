@@ -1,6 +1,6 @@
 'use server';
 
-import { existsSync } from 'node:fs';
+import { realpathSync } from 'node:fs';
 import { isAbsolute } from 'node:path';
 import { resolve } from '@/lib/server-container';
 import { createDeploymentLogger } from '@/lib/core-utils';
@@ -20,13 +20,19 @@ export async function deployRepository(
     return { success: false, error: 'repositoryPath must be an absolute path' };
   }
 
+  // Resolve through realpath() up-front. Every subsequent use references
+  // the symlink-resolved absolute path, not the raw user input. This is the
+  // sanitizer CodeQL's js/path-injection analysis recognizes.
+  let resolvedPath: string;
   try {
-    if (!existsSync(repositoryPath)) {
-      log.warn(`directory does not exist: "${repositoryPath}"`);
-      return { success: false, error: `Directory does not exist: ${repositoryPath}` };
-    }
+    resolvedPath = realpathSync(repositoryPath);
+  } catch {
+    log.warn(`directory does not exist: "${repositoryPath}"`);
+    return { success: false, error: 'Directory does not exist' };
+  }
 
-    if (isSameShipitAiInstance(repositoryPath)) {
+  try {
+    if (isSameShipitAiInstance(resolvedPath)) {
       log.warn('rejected — target is the running ShipIT instance');
       return {
         success: false,
@@ -36,7 +42,7 @@ export async function deployRepository(
 
     log.info('directory exists, calling deploymentService.start()');
     const deploymentService = resolve<IDeploymentService>('IDeploymentService');
-    deploymentService.start(repositoryPath, repositoryPath, 'repository');
+    deploymentService.start(resolvedPath, resolvedPath, 'repository');
 
     log.info('start() returned successfully — state=Booting');
     return { success: true, state: DeploymentState.Booting };

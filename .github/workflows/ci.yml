@@ -36,6 +36,11 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Deny-all default — every job MUST opt into the permissions it needs.
+# Newly-added jobs without an explicit `permissions:` block fail-secure
+# (no token access at all) rather than inheriting the repo default.
+permissions: {}
+
 env:
   NODE_VERSION: '22'
 
@@ -46,6 +51,8 @@ jobs:
   lint:
     name: 🔍 Lint & Format
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v5
@@ -61,6 +68,8 @@ jobs:
   typecheck:
     name: 📝 Type Check
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v5
@@ -78,6 +87,8 @@ jobs:
   test-unit:
     name: 🧪 Unit Tests (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -97,6 +108,8 @@ jobs:
   test-e2e-cli:
     name: 🧪 E2E CLI (${{ matrix.os }})
     runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -115,6 +128,8 @@ jobs:
   test-e2e-tui:
     name: 🧪 E2E (TUI)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v5
@@ -129,6 +144,8 @@ jobs:
   test-e2e-web:
     name: 🧪 E2E (Web)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v5
@@ -147,6 +164,8 @@ jobs:
   storybook-build:
     name: 📚 Storybook Build
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v6
       - uses: pnpm/action-setup@v5

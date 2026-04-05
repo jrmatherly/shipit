@@ -8,7 +8,14 @@ const mockGetDefaultBranch = vi.fn<(cwd: string) => Promise<string>>().mockResol
 const mockComputeWorktreePath = vi.fn(
   (_repoPath: string, branch: string) => `/computed/wt/${branch.replace(/\//g, '-')}`
 );
-const mockExistsSync = vi.fn<(path: string) => boolean>(() => false);
+// The server action now uses realpathSync for both containment and
+// existence checks (instead of existsSync). The default mock treats every
+// path as existing by returning it unchanged — tests that want to simulate
+// a missing manifest make mockRealpathSync throw ENOENT (for the manifest
+// path probe), which causes realpathWithinRoot to return null.
+const mockRealpathSync = vi.fn<(path: string) => string>(() => {
+  throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+});
 const mockReadFileSync = vi.fn<(path: string, encoding: string) => string>(() => '[]');
 
 vi.mock('@/lib/server-container', () => ({
@@ -46,7 +53,7 @@ vi.mock('@shipit-ai/core/infrastructure/services/filesystem/shipit-ai-directory.
 
 vi.mock('node:fs', () => {
   const mock = {
-    existsSync: (...args: unknown[]) => mockExistsSync(...(args as [string])),
+    realpathSync: (...args: unknown[]) => mockRealpathSync(...(args as [string])),
     readFileSync: (...args: unknown[]) => mockReadFileSync(...(args as [string, string])),
   };
   return { ...mock, default: mock };
@@ -321,7 +328,7 @@ describe('getMergeReviewData server action', () => {
     it('loads evidence from shipit-ai evidence dir using repositoryPath', async () => {
       mockFindById.mockResolvedValue(baseFeature);
       mockGetPrDiffSummary.mockResolvedValue(baseDiffSummary);
-      mockExistsSync.mockReturnValue(true);
+      mockRealpathSync.mockImplementation((p: string) => p);
       mockReadFileSync.mockReturnValue(JSON.stringify(evidenceManifest));
 
       const result = await getMergeReviewData('feat-123');
@@ -336,7 +343,7 @@ describe('getMergeReviewData server action', () => {
         worktreePath: undefined, // worktreePath not stored
       });
       mockGetPrDiffSummary.mockResolvedValue(baseDiffSummary);
-      mockExistsSync.mockReturnValue(true);
+      mockRealpathSync.mockImplementation((p: string) => p);
       mockReadFileSync.mockReturnValue(JSON.stringify(evidenceManifest));
 
       const result = await getMergeReviewData('feat-123');
@@ -357,7 +364,7 @@ describe('getMergeReviewData server action', () => {
       ];
       mockFindById.mockResolvedValue(baseFeature);
       mockGetPrDiffSummary.mockResolvedValue(baseDiffSummary);
-      mockExistsSync.mockReturnValue(true);
+      mockRealpathSync.mockImplementation((p: string) => p);
       mockReadFileSync.mockReturnValue(JSON.stringify(relativeManifest));
 
       const result = await getMergeReviewData('feat-123');
@@ -372,7 +379,9 @@ describe('getMergeReviewData server action', () => {
     it('returns no evidence when manifest does not exist', async () => {
       mockFindById.mockResolvedValue(baseFeature);
       mockGetPrDiffSummary.mockResolvedValue(baseDiffSummary);
-      mockExistsSync.mockReturnValue(false);
+      mockRealpathSync.mockImplementation(() => {
+        throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+      });
 
       const result = await getMergeReviewData('feat-123');
 
@@ -406,7 +415,7 @@ describe('getMergeReviewData server action', () => {
       ];
       mockFindById.mockResolvedValue(baseFeature);
       mockGetPrDiffSummary.mockResolvedValue(baseDiffSummary);
-      mockExistsSync.mockReturnValue(true);
+      mockRealpathSync.mockImplementation((p: string) => p);
       mockReadFileSync.mockReturnValue(JSON.stringify(duplicateManifest));
 
       const result = await getMergeReviewData('feat-123');

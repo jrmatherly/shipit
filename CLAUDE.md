@@ -110,6 +110,10 @@ Adding a new CLI agent requires changes across 8+ integration points:
 - **Workspace root devDeps:** Use `pnpm add -Dw <pkg>` (with `-w` flag) when adding to the root `package.json`. Without `-w`, pnpm errors out in the monorepo. Use `pnpm --filter @shipit-ai/<workspace> add <pkg>` for workspace-scoped deps.
 - **Next.js stale dev state:** If `pnpm dev:cli ui` fails with "Another next dev server is already running" referencing a dead PID, delete `src/presentation/web/.next` to clear Next's cached process state.
 - **pnpm patches:** Use `pnpm patch <pkg> → edit file → pnpm patch-commit <dir>` to create patches. Never hand-write patch files or edit node_modules directly — the lockfile won't match and CI fails with `ERR_PNPM_LOCKFILE_CONFIG_MISMATCH`. Always commit `pnpm-lock.yaml` alongside patch changes.
+- **pnpm outdated blind spot:** Only shows ROOT-declared deps. Transitive security pins via `pnpm.overrides` (e.g. `"@rushstack/node-core-library>ajv": "^8.18.0"`, `"@anthropic-ai/sdk": "^0.81.0"`) are invisible — always cross-check `pnpm-lock.yaml` and `git log --oneline --grep='fix(deps)'` before assuming a dep is un-patched.
+- **Security overrides are scoped, not blanket:** Use `"parent>child": "^x.y.z"` syntax to patch only the vulnerable subtree. A blanket `"ajv": "^8.18.0"` breaks `@eslint/eslintrc` which needs ajv 6.x (different API). Preserve the scope when widening.
+- **TypeSpec patch peer warning is benign:** `pnpm add` always shows `unmet peer @typespec/compiler@^0.59.1: found 1.10.0` from `@typespec-tools/emitter-typescript@0.3.0` — pnpm reads the pre-patch manifest. The patch updates the peerDep to `^1.0.0`. Ignore this specific warning.
+- **Lint-staged is parallel-session safe:** When committing a subset of modified files via `git add <path>` while other files are unstaged, the pre-commit hook's lint-staged creates a backup stash, runs formatters ONLY on staged files, then restores the stash. Unstaged work in other files is preserved untouched. Safe to commit your slice without coordinating with parallel agents.
 - **Serena MCP:** Onboarded — use for semantic symbol navigation, find references, code overview
 - **Code Review Graph:** Built — use for impact analysis, flow tracing, PR review context
 - **IDE workflow linter:** `secrets.*` and dynamic `env.*` (set via `$GITHUB_ENV`) references in GitHub Actions workflows show "context access might be invalid" — these are false positives from static analysis.
@@ -133,7 +137,7 @@ Adding a new CLI agent requires changes across 8+ integration points:
 
 ## Rules
 
-Additional rules auto-loaded from `.claude/rules/`: [cicd.md](.claude/rules/cicd.md), [code-quality.md](.claude/rules/code-quality.md), [commit-conventions.md](.claude/rules/commit-conventions.md), [integrity.md](.claude/rules/integrity.md), [operational-discipline.md](.claude/rules/operational-discipline.md).
+Additional rules auto-loaded from `.claude/rules/`: [cicd.md](.claude/rules/cicd.md), [code-quality.md](.claude/rules/code-quality.md), [commit-conventions.md](.claude/rules/commit-conventions.md), [cross-platform.md](.claude/rules/cross-platform.md), [integrity.md](.claude/rules/integrity.md), [operational-discipline.md](.claude/rules/operational-discipline.md).
 
 ## Cross-Document Consistency
 
@@ -207,6 +211,7 @@ Active remediation plan: [`.scratchpad/plans/technical-debt-remediation-plan.md`
 - **DI mocking:** Mock `@/lib/server-container` with `vi.mock('@/lib/server-container', () => ({ resolve: ... }))` for server action tests
 - **TypeSpec dates:** All 31 date/timestamp fields are `Date` objects (not strings). Use `new Date('...')` in test mocks, not ISO strings.
 - **Storybook server action mocks:** New server actions MUST have corresponding mocks in `.storybook/mocks/app/actions/` — Storybook aliases `@/app/actions` to this directory. Missing mocks break `pnpm build:storybook`.
+- **TypeSpec toolchain bump verification:** Before any `@typespec/*`, `@typespec-tools/*`, or emitter dependency bump, capture `shasum -a 256 packages/core/src/domain/generated/output.ts`, run `pnpm tsp:codegen`, compare. Byte-identical = safe. Any diff = investigate emitter behavior change before committing.
 
 ### i18n Key Parity
 

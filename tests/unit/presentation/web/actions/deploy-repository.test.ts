@@ -8,9 +8,12 @@ vi.mock('@/lib/server-container', () => ({
   resolve: (token: string) => mockResolve(token),
 }));
 
-const mockExistsSync = vi.fn<(path: string) => boolean>();
+// deployRepository now uses realpathSync to sanitize the user-supplied path
+// up front. Mock returns the input unchanged by default (no symlinks).
+// Tests that want to simulate a missing directory throw from the mock.
+const mockRealpathSync = vi.fn<(path: string) => string>();
 vi.mock('node:fs', () => ({
-  existsSync: (path: string) => mockExistsSync(path),
+  realpathSync: (path: string) => mockRealpathSync(path),
 }));
 
 const mockIsAbsolute = vi.fn<(p: string) => boolean>();
@@ -25,7 +28,7 @@ const { deployRepository } =
 describe('deployRepository server action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockExistsSync.mockReturnValue(true);
+    mockRealpathSync.mockImplementation((p: string) => p);
     mockIsAbsolute.mockImplementation((p: string) => /^\//.test(p));
     mockResolve.mockImplementation((token: string) => {
       if (token === 'IDeploymentService') {
@@ -60,7 +63,7 @@ describe('deployRepository server action', () => {
 
     const result = await deployRepository('C:\\Projects\\repo');
 
-    expect(mockExistsSync).toHaveBeenCalledWith('C:\\Projects\\repo');
+    expect(mockRealpathSync).toHaveBeenCalledWith('C:\\Projects\\repo');
     expect(mockStart).toHaveBeenCalledWith(
       'C:\\Projects\\repo',
       'C:\\Projects\\repo',
@@ -70,7 +73,9 @@ describe('deployRepository server action', () => {
   });
 
   it('returns error when directory does not exist', async () => {
-    mockExistsSync.mockReturnValue(false);
+    mockRealpathSync.mockImplementation(() => {
+      throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+    });
 
     const result = await deployRepository('/nonexistent/path');
 
@@ -83,7 +88,7 @@ describe('deployRepository server action', () => {
     const result = await deployRepository('/home/user/project');
 
     expect(mockResolve).toHaveBeenCalledWith('IDeploymentService');
-    expect(mockExistsSync).toHaveBeenCalledWith('/home/user/project');
+    expect(mockRealpathSync).toHaveBeenCalledWith('/home/user/project');
     expect(mockStart).toHaveBeenCalledWith(
       '/home/user/project',
       '/home/user/project',

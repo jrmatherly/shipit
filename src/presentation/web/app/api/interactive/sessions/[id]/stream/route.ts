@@ -10,6 +10,7 @@
 
 import type { NextRequest } from 'next/server';
 import { resolve } from '@/lib/server-container';
+import { apiError } from '@/lib/api-helpers';
 import type { IInteractiveSessionService } from '@shipit-ai/core/application/ports/output/services/interactive-session-service.interface';
 
 export const dynamic = 'force-dynamic';
@@ -95,11 +96,6 @@ export async function GET(request: NextRequest, { params }: RouteParams): Promis
       },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('[GET /api/interactive/sessions/:id/stream]', error);
-    return new Response(JSON.stringify({ error: String(error) }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return apiError(500, 'Failed to open interactive session stream', error);
   }
 }

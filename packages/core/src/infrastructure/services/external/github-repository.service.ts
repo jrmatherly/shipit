@@ -84,9 +84,20 @@ export class GitHubRepositoryService implements IGitHubRepositoryService {
     ];
 
     if (options?.search) {
-      // gh repo list does not have a --match flag; use jq to filter by name
-      const escaped = options.search.replace(/"/g, '\\"');
-      args.push('-q', `[.[] | select(.name | test("${escaped}"; "i"))]`);
+      // gh repo list does not have a --match flag; use jq to filter by name.
+      //
+      // Use a literal case-insensitive substring match via ascii_downcase +
+      // contains() instead of test() (which would treat the input as a
+      // regex). This eliminates both regex-injection and ReDoS risk from
+      // user-supplied metacharacters.
+      //
+      // The search string is JSON-encoded before embedding so that quotes,
+      // backslashes, newlines, and any other special character are fully
+      // escaped by the language runtime (not a hand-rolled single-char
+      // replace). JSON.stringify produces a string literal that is
+      // simultaneously valid JSON and a valid jq string literal.
+      const jqLiteral = JSON.stringify(options.search.toLowerCase());
+      args.push('-q', `[.[] | select((.name | ascii_downcase) | contains(${jqLiteral}))]`);
     }
 
     try {

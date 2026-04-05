@@ -26,16 +26,23 @@
  * cleanup(); // removes temp dir
  */
 
-import { execSync, exec, type ExecSyncOptionsWithStringEncoding } from 'node:child_process';
+import {
+  execFileSync,
+  execFile,
+  type ExecFileSyncOptionsWithStringEncoding,
+} from 'node:child_process';
 import { promisify } from 'node:util';
 import { resolve } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-// exec is used here intentionally for test infrastructure only.
-// All command arguments come from test code, not user input.
-const execAsync = promisify(exec);
+// execFile is used instead of exec so that arguments are passed as an argv
+// array rather than concatenated into a shell command string. This avoids
+// shell-injection risk (tests only, but still follows CLAUDE.md's ban on
+// shell:true spawning) and keeps CodeQL's js/shell-command-injection-from-
+// environment analysis satisfied.
+const execFileAsync = promisify(execFile);
 
 /**
  * Result of a CLI command execution
@@ -139,10 +146,91 @@ function getModuleShipitAiHome(): string {
 }
 
 /**
- * Execute CLI command and capture result
+ * Split a test-friendly args string into an argv array for execFile-style
+ * spawn. Supports the minimal shell-like quoting the existing test suite
+ * relies on:
  *
- * Security: All command arguments come from test code, not user input.
- * execSync is used intentionally for test simplicity.
+ *   - Whitespace separates argv elements.
+ *   - Double- or single-quoted groups become a single argv element with
+ *     the surrounding quotes stripped. Quotes are not re-interpreted after
+ *     stripping (no nested quoting, no backslash escapes, no $var expansion).
+ *   - Mixed tokens like `--name="Add feature"` are supported.
+ *
+ * This is NOT a full shell tokenizer — it only covers what existing tests
+ * need. If you want richer semantics, pass the argv directly via
+ * `createCliRunner` and call `execFile` yourself. The parser exists only
+ * so legacy tests that built up command strings (e.g.
+ * `` `feat new "Add user authentication" --repo ${tempRepo}` ``) keep
+ * working after the switch from execSync to execFileSync.
+ */
+// Exported for unit testing. Not part of the public test-runner API.
+export function parseArgs(args: string): string[] {
+  const tokens: string[] = [];
+  let current = '';
+  let quoteChar: "'" | '"' | null = null;
+  let hasContent = false;
+
+  for (const ch of args) {
+    if (quoteChar) {
+      if (ch === quoteChar) {
+        quoteChar = null;
+        // Keep accumulating — the closing quote itself is discarded but
+        // any trailing non-whitespace chars (e.g. in --name="foo"bar)
+        // continue the current token.
+      } else {
+        current += ch;
+        hasContent = true;
+      }
+      continue;
+    }
+    if (ch === '"' || ch === "'") {
+      quoteChar = ch;
+      hasContent = true; // empty quoted string `""` is still a token
+      continue;
+    }
+    if (/\s/.test(ch)) {
+      if (hasContent) {
+        tokens.push(current);
+        current = '';
+        hasContent = false;
+      }
+      continue;
+    }
+    current += ch;
+    hasContent = true;
+  }
+
+  if (quoteChar) {
+    throw new Error(`parseArgs: unterminated ${quoteChar} in args: ${args}`);
+  }
+  if (hasContent) tokens.push(current);
+  return tokens;
+}
+
+/**
+ * Resolve the runner binary name for the current platform. On Windows,
+ * `npx` ships as `npx.cmd` and Node's execFile does NOT auto-resolve the
+ * `.cmd` extension without `shell: true` (which would reintroduce the
+ * injection surface we removed). Passing the explicit `.cmd` name lets
+ * Node find the shim via the standard PATHEXT lookup.
+ *
+ * `node` is always a native binary (`node.exe` on Windows) and is resolved
+ * without any special handling.
+ */
+function resolveRunnerBinary(useDist: boolean): string {
+  if (useDist) return 'node';
+  return process.platform === 'win32' ? 'npx.cmd' : 'npx';
+}
+
+/**
+ * Execute CLI command and capture result.
+ *
+ * Uses execFileSync with an argv array rather than execSync with a joined
+ * shell command string so that: (1) no shell is spawned (matches the
+ * cross-platform rule banning shell:true), (2) arguments cannot be
+ * reinterpreted as shell syntax, and (3) CodeQL's
+ * js/shell-command-injection-from-environment analysis sees a sanitized
+ * flow (argv form is a recognized sanitizer).
  */
 function executeCommand(
   args: string,
@@ -150,10 +238,10 @@ function executeCommand(
   useDist = USE_DIST_BY_DEFAULT
 ): CliResult {
   const cliPath = useDist ? CLI_PATH_DIST : CLI_PATH_DEV;
-  const runner = useDist ? 'node' : 'npx tsx';
-  const command = `${runner} ${cliPath} ${args}`;
+  const runner = resolveRunnerBinary(useDist);
+  const runnerArgs = useDist ? [cliPath, ...parseArgs(args)] : ['tsx', cliPath, ...parseArgs(args)];
 
-  const execOptions: ExecSyncOptionsWithStringEncoding = {
+  const execOptions: ExecFileSyncOptionsWithStringEncoding = {
     cwd: options.cwd,
     encoding: 'utf-8',
     timeout: options.timeout,
@@ -168,7 +256,7 @@ function executeCommand(
   };
 
   try {
-    const stdout = execSync(command, execOptions);
+    const stdout = execFileSync(runner, runnerArgs, execOptions);
     return {
       stdout: stdout.trim(),
       stderr: '',
@@ -288,14 +376,17 @@ export function runCli(args: string): CliResult {
 /**
  * Run a CLI command asynchronously (non-blocking, auto-isolated)
  *
- * Security: exec is used intentionally here for test infrastructure.
- * All command arguments come from test code, not user input.
+ * Uses execFile with an argv array for the same reasons as executeCommand()
+ * above: no shell, no injection risk, satisfies CodeQL's shell-command-
+ * injection analysis.
  */
 export async function runCliAsync(args: string): Promise<CliResult> {
   const shipitAiHome = getModuleShipitAiHome();
   const cliPath = USE_DIST_BY_DEFAULT ? CLI_PATH_DIST : CLI_PATH_DEV;
-  const runner = USE_DIST_BY_DEFAULT ? 'node' : 'npx tsx';
-  const command = `${runner} ${cliPath} ${args}`;
+  const runner = resolveRunnerBinary(USE_DIST_BY_DEFAULT);
+  const runnerArgs = USE_DIST_BY_DEFAULT
+    ? [cliPath, ...parseArgs(args)]
+    : ['tsx', cliPath, ...parseArgs(args)];
 
   const execOptions = {
     cwd: DEFAULT_OPTIONS.cwd,
@@ -311,7 +402,7 @@ export async function runCliAsync(args: string): Promise<CliResult> {
   };
 
   try {
-    const { stdout, stderr } = await execAsync(command, execOptions);
+    const { stdout, stderr } = await execFileAsync(runner, runnerArgs, execOptions);
     return {
       stdout: stdout.trim(),
       stderr: stderr.trim(),

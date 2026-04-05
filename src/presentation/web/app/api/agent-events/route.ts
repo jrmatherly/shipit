@@ -17,6 +17,7 @@
  */
 
 import { resolve } from '@/lib/server-container';
+import { apiError } from '@/lib/api-helpers';
 import type {
   PollAgentEventsUseCase,
   AgentEventsSnapshot,
@@ -124,11 +125,6 @@ export function GET(request: Request): Response {
       },
     });
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error('[SSE route] GET handler error:', error);
-    return new Response(JSON.stringify({ error: String(error) }), {
-      status: 500,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return apiError(500, 'Failed to open agent events stream', error);
   }
 }

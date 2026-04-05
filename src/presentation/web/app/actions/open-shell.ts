@@ -1,6 +1,6 @@
 'use server';
 
-import { existsSync } from 'node:fs';
+import { realpathSync } from 'node:fs';
 import { platform } from 'node:os';
 import { isAbsolute } from 'node:path';
 import { spawn } from 'node:child_process';
@@ -8,6 +8,31 @@ import { computeWorktreePath } from '@/lib/core-utils';
 import { resolve } from '@/lib/server-container';
 import type { LoadSettingsUseCase } from '@shipit-ai/core/application/use-cases/settings/load-settings.use-case';
 import type { IToolInstallerService } from '@shipit-ai/core/application/ports/output/services/tool-installer.service';
+
+/**
+ * Resolve the target path through realpath() so that any symlink traversal
+ * happens up-front and the resulting absolute path is the authoritative
+ * value used for all subsequent spawn operations. Returns null if the path
+ * does not exist or cannot be resolved.
+ */
+function resolveTargetPath(repositoryPath: string, branch?: string): string | null {
+  try {
+    const base = branch ? computeWorktreePath(repositoryPath, branch) : repositoryPath;
+    return realpathSync(base);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * POSIX shell-escape a path for safe inclusion in a shell:true command string.
+ * Wraps in single quotes and escapes embedded single quotes using the
+ * standard '\'' pattern. All tool configurations that opt into shell:true
+ * use POSIX-style commands (`cd {dir} && exec <tool>`) and run on Unix only.
+ */
+function shellEscapePosixPath(p: string): string {
+  return `'${p.replace(/'/g, `'\\''`)}'`;
+}
 
 // Fallback commands for the "system" terminal when no tool metadata entry exists.
 // Uses a record lookup instead of if/else to prevent the bundler from
@@ -43,10 +68,13 @@ export async function openShell(
     const settings = await loadSettings.execute();
     const shell = settings.environment.shellPreference;
     const terminalPref = settings.environment.terminalPreference ?? 'system';
-    const targetPath = branch ? computeWorktreePath(repositoryPath, branch) : repositoryPath;
 
-    if (!existsSync(targetPath)) {
-      return { success: false, error: `Path does not exist: ${targetPath}` };
+    // Resolve the target path through realpath() up-front. From this point
+    // on, `targetPath` is the authoritative, symlink-resolved absolute path
+    // used for every spawn call — never the raw user-supplied value.
+    const targetPath = resolveTargetPath(repositoryPath, branch);
+    if (!targetPath) {
+      return { success: false, error: 'Path does not exist' };
     }
 
     // Try to find the terminal in tool metadata via DI container.
@@ -60,10 +88,15 @@ export async function openShell(
         const config = service.getTerminalOpenConfig(terminalPref);
 
         if (config?.openDirectory.includes('{dir}')) {
-          const resolved = config.openDirectory.replace('{dir}', targetPath);
-
           if (config.shell) {
-            const child = spawn(resolved, [], {
+            // For shell:true tools (claude-code, codex-cli, etc.) the tool
+            // config is a POSIX shell string like `cd {dir} && exec claude`.
+            // Shell-escape the path to prevent command injection: a malicious
+            // path like `/tmp; rm -rf /` becomes `'/tmp; rm -rf /'` which the
+            // shell treats as a single literal argument to `cd`.
+            const escapedPath = shellEscapePosixPath(targetPath);
+            const command = config.openDirectory.replaceAll('{dir}', escapedPath);
+            const child = spawn(command, [], {
               detached: true,
               stdio: 'ignore',
               shell: true,
@@ -71,7 +104,13 @@ export async function openShell(
             child.on('error', () => undefined);
             child.unref();
           } else {
-            const [command, ...args] = resolved.split(/\s+/);
+            // For non-shell tools (alacritty, kitty, etc.) the config is a
+            // whitespace-separated command. Split first, then substitute {dir}
+            // INTO AN ARGV ELEMENT (never back into a concatenated string).
+            // CodeQL recognizes the argv-form of spawn as sanitized input.
+            const tokens = config.openDirectory.split(/\s+/).filter(Boolean);
+            const command = tokens[0];
+            const args = tokens.slice(1).map((t) => t.replaceAll('{dir}', targetPath));
             const child = spawn(command, args, {
               detached: true,
               stdio: 'ignore',

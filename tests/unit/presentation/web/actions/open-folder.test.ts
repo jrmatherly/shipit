@@ -2,9 +2,13 @@
 
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
-const mockExistsSync = vi.fn<(path: string) => boolean>();
+// openFolder now uses realpathSync to sanitize the user-supplied path up
+// front. The mock default treats every path as existing and returns it
+// unchanged (no symlink resolution). Tests that want to simulate a missing
+// directory use mockRealpathSync.mockImplementation to throw ENOENT.
+const mockRealpathSync = vi.fn<(path: string) => string>();
 vi.mock('node:fs', () => ({
-  existsSync: (path: string) => mockExistsSync(path),
+  realpathSync: (path: string) => mockRealpathSync(path),
 }));
 
 const mockUnref = vi.fn();
@@ -36,7 +40,7 @@ const { openFolder } =
 describe('openFolder server action', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    mockExistsSync.mockReturnValue(true);
+    mockRealpathSync.mockImplementation((p: string) => p);
     mockSpawn.mockReturnValue({ unref: mockUnref, on: mockOn });
     mockPlatform.mockReturnValue('darwin');
     mockIsAbsolute.mockImplementation((p: string) => /^\//.test(p));
@@ -71,7 +75,11 @@ describe('openFolder server action', () => {
   });
 
   it('returns error when directory does not exist', async () => {
-    mockExistsSync.mockReturnValue(false);
+    // realpathSync throws ENOENT when the path is missing; simulate that
+    // to exercise the "Directory not found" error branch.
+    mockRealpathSync.mockImplementation(() => {
+      throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+    });
 
     const result = await openFolder('/nonexistent');
 

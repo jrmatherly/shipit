@@ -14,9 +14,12 @@ vi.mock('@shipit-ai/core/infrastructure/services/ide-launchers/compute-worktree-
   computeWorktreePath: () => MOCK_WORKTREE_PATH,
 }));
 
-const mockExistsSync = vi.fn<(path: string) => boolean>();
+// openShell now uses realpathSync to sanitize paths up front. The mock
+// default treats every path as existing (returns it unchanged). Tests that
+// want to simulate a missing directory make mockRealpathSync throw.
+const mockRealpathSync = vi.fn<(path: string) => string>();
 vi.mock('node:fs', () => ({
-  existsSync: (path: string) => mockExistsSync(path),
+  realpathSync: (path: string) => mockRealpathSync(path),
 }));
 
 const mockUnref = vi.fn();
@@ -47,7 +50,7 @@ describe('openShell server action', () => {
     mockLoadSettingsExecute.mockResolvedValue({
       environment: { shellPreference: 'zsh' },
     });
-    mockExistsSync.mockReturnValue(true);
+    mockRealpathSync.mockImplementation((p: string) => p);
     mockSpawn.mockReturnValue({ unref: mockUnref, on: mockOn });
     mockPlatform.mockReturnValue('darwin');
     mockIsAbsolute.mockImplementation((p: string) => /^\//.test(p));
@@ -88,7 +91,11 @@ describe('openShell server action', () => {
   });
 
   it('returns error when worktree path does not exist', async () => {
-    mockExistsSync.mockReturnValue(false);
+    // realpathSync throws ENOENT when the target is missing. The server
+    // action catches that and returns a generic "Path does not exist" error.
+    mockRealpathSync.mockImplementation(() => {
+      throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+    });
 
     const result = await openShell({ repositoryPath: '/home/user/project', branch: 'main' });
 
@@ -225,7 +232,7 @@ describe('openShell server action', () => {
     });
   });
 
-  it('uses DI container with shell: true for terminals requiring shell spawn', async () => {
+  it('uses DI container with shell: true and POSIX-escapes {dir} to prevent command injection', async () => {
     mockPlatform.mockReturnValue('darwin');
     mockLoadSettingsExecute.mockResolvedValue({
       environment: { shellPreference: 'zsh', terminalPreference: 'tmux' },
@@ -238,11 +245,37 @@ describe('openShell server action', () => {
     const result = await openShell({ repositoryPath: '/home/user/project' });
 
     expect(result.success).toBe(true);
-    expect(mockSpawn).toHaveBeenCalledWith('tmux new-session -c /home/user/project', [], {
+    // Path is wrapped in POSIX single quotes so that shell metacharacters
+    // in a malicious path (; $() &&) would be treated as literal text.
+    expect(mockSpawn).toHaveBeenCalledWith("tmux new-session -c '/home/user/project'", [], {
       detached: true,
       stdio: 'ignore',
       shell: true,
     });
+  });
+
+  it('escapes embedded single quotes in the target path when using shell: true', async () => {
+    mockPlatform.mockReturnValue('darwin');
+    // Simulate realpath returning a path that contains a single quote.
+    mockRealpathSync.mockImplementation(() => "/home/user/it's/project");
+    mockLoadSettingsExecute.mockResolvedValue({
+      environment: { shellPreference: 'zsh', terminalPreference: 'tmux' },
+    });
+    mockGetTerminalOpenConfig.mockReturnValue({
+      openDirectory: 'tmux new-session -c {dir}',
+      shell: true,
+    });
+
+    const result = await openShell({ repositoryPath: '/home/user/project' });
+
+    expect(result.success).toBe(true);
+    // Single quotes inside the path are escaped using the standard POSIX
+    // '\'' sequence: close-quote, escaped-quote, reopen-quote.
+    expect(mockSpawn).toHaveBeenCalledWith(
+      "tmux new-session -c '/home/user/it'\\''s/project'",
+      [],
+      expect.objectContaining({ shell: true })
+    );
   });
 
   it('falls back to system terminal when DI resolve fails', async () => {
@@ -267,7 +300,9 @@ describe('openShell server action', () => {
 
   it('returns error when repositoryPath does not exist and no branch provided', async () => {
     mockPlatform.mockReturnValue('darwin');
-    mockExistsSync.mockReturnValue(false);
+    mockRealpathSync.mockImplementation(() => {
+      throw Object.assign(new Error('ENOENT'), { code: 'ENOENT' });
+    });
 
     const result = await openShell({ repositoryPath: '/nonexistent' });
 

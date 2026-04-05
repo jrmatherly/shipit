@@ -131,10 +131,35 @@ describe('GitHubRepositoryService', () => {
 
       await service.listUserRepositories({ search: 'my-proj' });
 
+      // Uses ascii_downcase + contains() for a literal substring match
+      // instead of regex test(). JSON.stringify produces the jq string
+      // literal, so attacker-supplied metacharacters are fully escaped and
+      // cannot inject jq syntax.
       expect(mockExecFile).toHaveBeenCalledWith(
         'gh',
-        expect.arrayContaining(['-q', '[.[] | select(.name | test("my-proj"; "i"))]'])
+        expect.arrayContaining([
+          '-q',
+          '[.[] | select((.name | ascii_downcase) | contains("my-proj"))]',
+        ])
       );
+    });
+
+    it('should JSON-escape special characters in the jq search literal', async () => {
+      mockExecFile.mockResolvedValue({ stdout: '[]', stderr: '' });
+
+      // Search strings with regex metacharacters, quotes, and backslashes
+      // must be safely embedded as a jq literal and matched case-insensitively.
+      await service.listUserRepositories({ search: 'A"B\\C(D' });
+
+      const call = mockExecFile.mock.calls[0];
+      const args = call[1] as string[];
+      const qIndex = args.indexOf('-q');
+      expect(qIndex).toBeGreaterThanOrEqual(0);
+      const jqProgram = args[qIndex + 1];
+      // toLowerCase applied before embedding, then JSON.stringify produces
+      // a fully escaped string literal that is simultaneously valid JSON
+      // and valid jq.
+      expect(jqProgram).toBe('[.[] | select((.name | ascii_downcase) | contains("a\\"b\\\\c(d"))]');
     });
 
     it('should throw GitHubRepoListError on failure', async () => {

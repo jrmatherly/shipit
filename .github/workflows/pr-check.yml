@@ -13,6 +13,9 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
+# Deny-all default — every job MUST opt into the permissions it needs.
+permissions: {}
+
 jobs:
   # ===========================================================================
   # Commit Message Validation
@@ -20,6 +23,8 @@ jobs:
   commitlint:
     name: ✅ Validate Commits
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - name: 📥 Checkout repository
         uses: actions/checkout@v6

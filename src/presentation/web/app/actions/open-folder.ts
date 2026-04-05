@@ -1,6 +1,6 @@
 'use server';
 
-import { existsSync } from 'node:fs';
+import { realpathSync } from 'node:fs';
 import { platform } from 'node:os';
 import { isAbsolute, normalize } from 'node:path';
 import { spawn } from 'node:child_process';
@@ -23,7 +23,14 @@ export async function openFolder(
   }
 
   try {
-    if (!existsSync(repositoryPath)) {
+    // Resolve through realpath() up-front. All subsequent uses of the path
+    // reference this symlink-resolved absolute value, not the raw user input.
+    // This eliminates path-injection via symlinks and is the sanitizer that
+    // CodeQL's js/path-injection analysis recognizes.
+    let resolvedPath: string;
+    try {
+      resolvedPath = realpathSync(repositoryPath);
+    } catch {
       return { success: false, error: 'Directory not found' };
     }
 
@@ -37,7 +44,7 @@ export async function openFolder(
 
     // Normalize to platform-native separators — explorer.exe on Windows
     // does not understand forward-slash paths and falls back to Documents.
-    const nativePath = normalize(repositoryPath);
+    const nativePath = normalize(resolvedPath);
 
     const child = spawn(entry.cmd, entry.args(nativePath), {
       detached: true,
@@ -46,7 +53,7 @@ export async function openFolder(
     child.on('error', () => undefined); // Prevent uncaught exception on spawn failure
     child.unref();
 
-    return { success: true, path: repositoryPath };
+    return { success: true, path: resolvedPath };
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Failed to open folder';
     return { success: false, error: message };
