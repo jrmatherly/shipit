@@ -21,7 +21,5 @@ import "./agents/index.tsp";
 import "./deployment/index.tsp";
 import "./ui/index.tsp";
 
-@service({
-  title: "Shipit AI Domain Models",
-})
+@service(#{ title: "Shipit AI Domain Models" })
 namespace ShipitAI.Domain;
