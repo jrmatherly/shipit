@@ -646,7 +646,8 @@
     "allCategories": "All Categories",
     "version": "Version",
     "source": "Source",
-    "category": "Category"
+    "category": "Category",
+    "clearFilters": "Clear filters"
   },
   "feature": {
     "create": {

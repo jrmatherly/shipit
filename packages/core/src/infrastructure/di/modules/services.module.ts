@@ -140,9 +140,14 @@ export function registerServicesModule(
         args: string[],
         callback: (error: Error | null, stdout: string, stderr: string) => void
       ) => {
-        execFile(cmd, args, { timeout: 30_000 }, (error, stdout, stderr) => {
-          callback(error, stdout ?? '', stderr ?? '');
-        });
+        execFile(
+          cmd,
+          args,
+          { timeout: 30_000, ...(process.platform === 'win32' ? { windowsHide: true } : {}) },
+          (error, stdout, stderr) => {
+            callback(error, stdout ?? '', stderr ?? '');
+          }
+        );
       };
       return new PluginMarketplaceService(spawnCb);
     },

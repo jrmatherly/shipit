@@ -12,11 +12,20 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     proxyConfigured: true,
+    isClaudeCode: true,
   },
 };
 
 export const NoProxy: Story = {
   args: {
     proxyConfigured: false,
+    isClaudeCode: true,
+  },
+};
+
+export const WrongAgent: Story = {
+  args: {
+    proxyConfigured: true,
+    isClaudeCode: false,
   },
 };

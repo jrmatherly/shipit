@@ -24,6 +24,7 @@ import {
 } from './plugin-marketplace.schema.js';
 import {
   validatePluginId,
+  validateMarketplaceName,
   validateMarketplaceUrl,
   validateScope,
 } from './plugin-marketplace.validators.js';
@@ -119,8 +120,9 @@ export class PluginMarketplaceService implements IPluginMarketplaceService {
   ): Promise<PluginOperationResult> {
     try {
       const validId = validatePluginId(pluginId);
+      const validMp = validateMarketplaceName(marketplace);
       const validScope = scope ? validateScope(scope) : 'user';
-      const args = ['plugin', 'install', `${validId}@${marketplace}`, '--scope', validScope];
+      const args = ['plugin', 'install', `${validId}@${validMp}`, '--scope', validScope];
       return await this.execClaude(args);
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : 'Validation failed' };
@@ -130,7 +132,8 @@ export class PluginMarketplaceService implements IPluginMarketplaceService {
   async uninstallPlugin(pluginId: string, marketplace: string): Promise<PluginOperationResult> {
     try {
       const validId = validatePluginId(pluginId);
-      const args = ['plugin', 'uninstall', `${validId}@${marketplace}`];
+      const validMp = validateMarketplaceName(marketplace);
+      const args = ['plugin', 'uninstall', `${validId}@${validMp}`];
       return await this.execClaude(args);
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : 'Validation failed' };
@@ -144,8 +147,9 @@ export class PluginMarketplaceService implements IPluginMarketplaceService {
   ): Promise<PluginOperationResult> {
     try {
       const validId = validatePluginId(pluginId);
+      const validMp = validateMarketplaceName(marketplace);
       const action = enabled ? 'enable' : 'disable';
-      const args = ['plugin', action, `${validId}@${marketplace}`];
+      const args = ['plugin', action, `${validId}@${validMp}`];
       return await this.execClaude(args);
     } catch (err) {
       return { success: false, error: err instanceof Error ? err.message : 'Validation failed' };
@@ -164,9 +168,11 @@ export class PluginMarketplaceService implements IPluginMarketplaceService {
 
   private execClaude(args: string[]): Promise<PluginOperationResult> {
     return new Promise((resolve) => {
-      this.spawn(CLAUDE_BINARY, args, (error, _stdout, stderr) => {
+      this.spawn(CLAUDE_BINARY, args, (error) => {
         if (error) {
-          resolve({ success: false, error: stderr || error.message });
+          // Never expose raw subprocess stderr/error to the client.
+          // Generic message only — details are logged server-side.
+          resolve({ success: false, error: 'Plugin operation failed' });
         } else {
           resolve({ success: true });
         }

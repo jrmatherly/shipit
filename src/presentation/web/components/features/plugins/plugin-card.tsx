@@ -68,7 +68,7 @@ export function PluginCard({ plugin, installed, onSelect, onToggle }: PluginCard
             data-testid={`plugin-toggle-${plugin.name}`}
           />
           <span className="text-muted-foreground text-xs">
-            {installed.enabled ? t('plugins.enable') : t('plugins.disable')}
+            {installed.enabled ? t('plugins.disable') : t('plugins.enable')}
           </span>
         </div>
       ) : null}

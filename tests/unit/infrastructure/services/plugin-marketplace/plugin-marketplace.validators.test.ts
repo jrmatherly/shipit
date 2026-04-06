@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import {
   validatePluginId,
+  validateMarketplaceName,
   validateMarketplaceUrl,
   validateScope,
 } from '@/infrastructure/services/plugin-marketplace/plugin-marketplace.validators.js';
@@ -32,6 +33,24 @@ describe('Plugin Marketplace Validators', () => {
 
     it('should reject names exceeding max length', () => {
       expect(() => validatePluginId('a'.repeat(101))).toThrow();
+    });
+  });
+
+  describe('validateMarketplaceName', () => {
+    it('should accept valid marketplace names', () => {
+      expect(validateMarketplaceName('default')).toBe('default');
+      expect(validateMarketplaceName('claude-plugins-official')).toBe('claude-plugins-official');
+      expect(validateMarketplaceName('my_org/marketplace')).toBe('my_org/marketplace');
+    });
+
+    it('should reject empty string', () => {
+      expect(() => validateMarketplaceName('')).toThrow();
+    });
+
+    it('should reject names with spaces or shell characters', () => {
+      expect(() => validateMarketplaceName('my marketplace')).toThrow();
+      expect(() => validateMarketplaceName('mp;rm -rf /')).toThrow();
+      expect(() => validateMarketplaceName('mp$(cmd)')).toThrow();
     });
   });
 

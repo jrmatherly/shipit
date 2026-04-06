@@ -39,6 +39,18 @@ export function validateMarketplaceUrl(urlString: string): URL {
   return url;
 }
 
+const MARKETPLACE_NAME_REGEX = /^[a-zA-Z0-9_\-.:/@]+$/;
+const MAX_MARKETPLACE_NAME_LENGTH = 200;
+
+export function validateMarketplaceName(name: string): string {
+  if (!name || name.length > MAX_MARKETPLACE_NAME_LENGTH || !MARKETPLACE_NAME_REGEX.test(name)) {
+    throw new Error(
+      `Invalid marketplace name: must be 1-${MAX_MARKETPLACE_NAME_LENGTH} characters matching [a-zA-Z0-9_-./:@]`
+    );
+  }
+  return name;
+}
+
 export function validateScope(scope: string): 'user' | 'project' | 'local' {
   if (!(VALID_SCOPES as readonly string[]).includes(scope)) {
     throw new Error(`Invalid scope: ${scope} (must be one of: ${VALID_SCOPES.join(', ')})`);

@@ -53,18 +53,23 @@ describe('PluginsPageClient', () => {
     vi.clearAllMocks();
   });
 
+  it('should show wrong agent message when not Claude Code', () => {
+    render(<PluginsPageClient proxyConfigured={true} isClaudeCode={false} />);
+    expect(screen.getByText('plugins.wrongAgent')).toBeDefined();
+  });
+
   it('should show no proxy message when proxy not configured', () => {
-    render(<PluginsPageClient proxyConfigured={false} />);
+    render(<PluginsPageClient proxyConfigured={false} isClaudeCode={true} />);
     expect(screen.getByText('plugins.noProxy')).toBeDefined();
   });
 
   it('should render page header', () => {
-    render(<PluginsPageClient proxyConfigured={true} />);
+    render(<PluginsPageClient proxyConfigured={true} isClaudeCode={true} />);
     expect(screen.getByText('plugins.title')).toBeDefined();
   });
 
   it('should render search input when proxy configured', async () => {
-    render(<PluginsPageClient proxyConfigured={true} />);
+    render(<PluginsPageClient proxyConfigured={true} isClaudeCode={true} />);
     // Wait for loading state to resolve
     await vi.waitFor(() => {
       expect(screen.getByTestId('plugin-search')).toBeDefined();

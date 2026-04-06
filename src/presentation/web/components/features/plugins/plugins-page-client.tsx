@@ -21,9 +21,10 @@ import type {
 
 export interface PluginsPageClientProps {
   proxyConfigured: boolean;
+  isClaudeCode: boolean;
 }
 
-export function PluginsPageClient({ proxyConfigured }: PluginsPageClientProps) {
+export function PluginsPageClient({ proxyConfigured, isClaudeCode }: PluginsPageClientProps) {
   const { t } = useTranslation('web');
   const [, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState('');
@@ -108,6 +109,15 @@ export function PluginsPageClient({ proxyConfigured }: PluginsPageClientProps) {
     });
   };
 
+  if (!isClaudeCode) {
+    return (
+      <div className="flex flex-col gap-8 p-8">
+        <PageHeader eyebrow="Developer Portal" title={t('plugins.title')} />
+        <EmptyState icon={<AlertCircle className="size-10" />} title={t('plugins.wrongAgent')} />
+      </div>
+    );
+  }
+
   if (!proxyConfigured) {
     return (
       <div className="flex flex-col gap-8 p-8">
@@ -121,7 +131,9 @@ export function PluginsPageClient({ proxyConfigured }: PluginsPageClientProps) {
     return (
       <div className="flex flex-col gap-8 p-8">
         <PageHeader eyebrow="Developer Portal" title={t('plugins.title')} />
-        <div className="text-muted-foreground text-center text-sm">Loading...</div>
+        <div className="text-muted-foreground text-center text-sm">
+          {t('accessibility.loading')}...
+        </div>
       </div>
     );
   }
@@ -197,7 +209,7 @@ export function PluginsPageClient({ proxyConfigured }: PluginsPageClientProps) {
                 setActiveCategory(null);
               }}
             >
-              Clear filters
+              {t('plugins.clearFilters')}
             </Button>
           }
         />
