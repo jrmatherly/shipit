@@ -1,0 +1,202 @@
+# Feature Specification (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: litellm-mcp-server-management
+number: 086
+branch: feat/086-litellm-mcp-server-management
+oneLiner: Browse and inspect MCP servers deployed on a LiteLLM proxy from the ShipIT web UI
+summary: >
+  Add an MCP Servers page to ShipIT that fetches the list of configured MCP servers
+  from a user-configured LiteLLM proxy (GET /public/mcp_hub), displays them in a
+  visual card grid with search and filter, and shows server details including transport
+  type, authentication method, access groups, and available tools (fetched on-demand
+  via /mcp-rest/tools/list). Read-only — no CRUD operations. Gated behind a new
+  featureFlags.mcpServers feature flag. Reuses existing LiteLLM proxy settings
+  (baseUrl + apiKey) from spec 083.
+phase: planning
+sizeEstimate: L
+
+# Relationships
+relatedFeatures:
+  - "005-global-settings-service"
+  - "083-claude-code-plugin-marketplace"
+  - "084-litellm-proxy-agent-integration"
+  - "085-litellm-multi-agent-proxy"
+
+technologies:
+  - TypeScript
+  - TypeSpec
+  - React
+  - Next.js
+  - Zod
+  - SQLite
+  - Vitest
+
+relatedLinks:
+  - title: "LiteLLM: MCP Overview"
+    url: https://docs.litellm.ai/docs/mcp
+  - title: "LiteLLM: MCP Permission Management"
+    url: https://docs.litellm.ai/docs/mcp_control
+  - title: "LiteLLM: Using MCP (REST API)"
+    url: https://docs.litellm.ai/docs/mcp_usage
+  - title: "LiteLLM: AI Hub (Public MCP)"
+    url: https://docs.litellm.ai/docs/proxy/ai_hub
+  - title: "GitHub Issue: /v1/mcp/server virtual key access"
+    url: https://github.com/BerriAI/litellm/issues/20325
+  - title: "Spec 083 (Plugin Marketplace pattern)"
+    url: specs/083-claude-code-plugin-marketplace/spec.yaml
+
+# Open questions (all resolved)
+openQuestions: []
+# Resolved:
+# 1. Tools per-server: Yes, show tools grouped by server name prefix in detail drawer.
+#    Tool names from /mcp-rest/tools/list use "{server_name}-{tool_name}" format.
+# 2. API key scope: User virtual key (not admin/master key). Use GET /public/mcp_hub
+#    endpoint which returns servers accessible to the user's key. The stored API key
+#    from spec 083 is a user-specific virtual key, not the master key.
+
+# Markdown content (the actual spec)
+content: |
+  ## Problem Statement
+
+  LiteLLM proxy supports deploying MCP servers (Model Context Protocol tools for LLMs)
+  via config.yaml or the LiteLLM admin UI. Organizations using LiteLLM for cost tracking,
+  model routing, and policy enforcement configure MCP servers for code search, documentation
+  lookup, database access, and other capabilities. These servers are then available to
+  LLM requests routed through the proxy.
+
+  There is currently no way to view which MCP servers are available, their configuration,
+  access groups, or tool listings from within ShipIT. Users must navigate to the LiteLLM
+  admin UI separately to see what MCP infrastructure is deployed.
+
+  This feature adds an **MCP Servers page** to the ShipIT web UI that fetches the list
+  of configured MCP servers from the LiteLLM proxy (`GET /public/mcp_hub`), displays them
+  in a visual card grid with search/filter, and shows server details including transport
+  type, authentication method, access groups, and available tools. This is **read-only** —
+  no CRUD operations (create/update/delete remain admin-only via LiteLLM UI/config).
+
+  ## Success Criteria
+
+  - [ ] Users can browse MCP servers fetched from their LiteLLM proxy via `GET /public/mcp_hub`
+  - [ ] Users can search servers by name/description
+  - [ ] Users can filter servers by transport type (HTTP, SSE, STDIO)
+  - [ ] Server card shows: name, transport type badge, description, auth type indicator
+  - [ ] Server detail drawer shows: name, URL, transport, auth type, access groups, description
+  - [ ] Server detail drawer shows available tools fetched on-demand via `GET /mcp-rest/tools/list`
+  - [ ] Tools are grouped by server using the `{server_name}-{tool_name}` naming convention
+  - [ ] Feature gated behind `featureFlags.mcpServers` (off by default)
+  - [ ] MCP Servers nav item only visible when feature flag is enabled
+  - [ ] Page shows "no proxy configured" empty state when `litellmProxy.baseUrl` is not set
+  - [ ] All proxy-supplied data validated with Zod schemas before rendering
+  - [ ] All 8 locale files have complete i18n key parity for new strings
+  - [ ] Every UI component has a colocated Storybook story
+  - [ ] TDD workflow followed: failing tests first in every phase
+
+  ## Affected Areas
+
+  | Area | Impact | Reasoning |
+  | --- | --- | --- |
+  | tsp/domain/entities/settings.tsp | Low | Add `mcpServers: boolean` to FeatureFlags model |
+  | packages/core/src/domain/generated/output.ts | Low | Generated from TypeSpec (mcpServers flag only) |
+  | packages/core/src/domain/factories/settings-defaults.factory.ts | Low | Add `mcpServers: false` default |
+  | packages/core/src/infrastructure/persistence/sqlite/migrations/ | Low | Migration for `feature_flag_mcp_servers` column |
+  | packages/core/src/infrastructure/persistence/sqlite/mappers/settings.mapper.ts | Medium | SettingsRow + toDatabase + toDomain for new flag |
+  | sqlite-settings.repository.ts | Medium | INSERT + UPDATE column lists for new flag |
+  | packages/core/src/application/ports/output/services/ | High | New IMcpServerBrowserService port interface |
+  | packages/core/src/infrastructure/services/ | High | New McpServerBrowserService (HTTP client) |
+  | packages/core/src/application/use-cases/ | High | New FetchMcpServers + FetchMcpServerTools use cases |
+  | packages/core/src/infrastructure/di/modules/ | Medium | DI registration for service + 2 use cases |
+  | src/presentation/web/app/mcp-servers/ | High | New MCP Servers page route |
+  | src/presentation/web/components/features/mcp-servers/ | High | McpServersPageClient, McpServerCard, McpServerDetailDrawer |
+  | src/presentation/web/components/features/settings/ | Low | Add mcpServers toggle to feature flags section |
+  | src/presentation/web/components/layouts/app-sidebar/ | Low | Add MCP Servers nav item (conditional) |
+  | src/presentation/web/app/actions/ | Medium | 2 new server actions + Storybook mocks |
+  | src/presentation/web/lib/feature-flags.ts | Low | Add mcpServers to FeatureFlagsState chain |
+  | translations/*/web.json | Medium | New i18n keys across all 8 locales |
+  | tests/ | High | Unit + component tests across all layers |
+
+  ## Architecture
+
+  **Thin read-only proxy approach:** ShipIT fetches the MCP server list from LiteLLM's
+  public hub endpoint and displays it. No write operations, no subprocess calls.
+
+  ```
+  LiteLLM Proxy                    ShipIT                         Web UI
+  +------------------+  HTTP GET  +-------------------+          +-----------------+
+  | GET /public/     |<-----------| McpServerBrowser  |          |                 |
+  |   mcp_hub        | server    | Service            |--------->| MCP Servers     |
+  |                  | list      |                    |          | Page (card grid |
+  +------------------+           +-------------------+          | + detail drawer)|
+                                        |                       +-----------------+
+  +------------------+  HTTP GET        |
+  | GET /mcp-rest/   |<----------------+
+  |   tools/list     | tools
+  |                  | (on-demand)
+  +------------------+
+  ```
+
+  **API Endpoints Used:**
+
+  | Endpoint | Method | Auth | Returns | When Called |
+  | --- | --- | --- | --- | --- |
+  | `/public/mcp_hub` | GET | User API key (Bearer) | MCP servers accessible to user's key | Page load |
+  | `/mcp-rest/tools/list` | GET | User API key (Bearer) | Available tools across MCP servers | Detail drawer open |
+
+  **User API key (not admin key):** The stored API key from spec 083 is a user-specific
+  virtual key. The `/public/mcp_hub` endpoint respects LiteLLM's access control, returning
+  only servers the user's key has permission to access (via `allow_all_keys`, team, or
+  org assignments). This is the correct behavior — users see only what they're authorized for.
+
+  **Tool-to-server grouping:** LiteLLM's `/mcp-rest/tools/list` returns tools with names
+  prefixed by server name (e.g., `github_mcp-list_issues`). The service parses this
+  `{server_name}-{tool_name}` convention to group tools by their parent server for display
+  in the detail drawer. If parsing fails (no prefix match), tools are shown ungrouped.
+
+  **MCP Server response schema (expected from /public/mcp_hub):**
+  ```typescript
+  interface McpServerInfo {
+    server_id: string;
+    name: string;
+    server_name: string;     // alias used in URL namespacing
+    url?: string;            // endpoint URL (HTTP/SSE transports)
+    transport: 'sse' | 'http' | 'stdio';
+    auth_type?: string;      // api_key, bearer_token, basic, oauth2, aws_sigv4
+    description?: string;
+    allow_all_keys?: boolean;
+    access_groups?: string[];
+    mcp_info?: Record<string, unknown>;  // additional metadata
+  }
+  ```
+
+  **Reuses existing infrastructure:** No new settings fields beyond the feature flag.
+  The LiteLLM proxy baseUrl and apiKey from spec 083 are used as-is. The HTTP client
+  pattern (fetch + AbortController + Zod) mirrors PluginMarketplaceService.
+
+  ## Security Requirements
+
+  - All data from `/public/mcp_hub` and `/mcp-rest/tools/list` is untrusted input
+  - Zod runtime schema validation for all proxy responses before rendering
+  - URL scheme validation on server URLs before display (http/https only)
+  - String truncation for server names, descriptions, and tool names in UI
+  - No secrets exposed: API key used only in Authorization header, never rendered
+  - Read-only: no write endpoints, no subprocess calls, no command injection surface
+  - API routes go through existing localhost-only proxy
+
+  ## Dependencies
+
+  - Spec 083 (Plugin Marketplace) — reuses LiteLLMProxyConfig settings (baseUrl, apiKey)
+  - Spec 005 (Global Settings Service) — extends FeatureFlags with mcpServers flag
+
+  ## Size Estimate
+
+  **L** — ~25 new/modified files, ~1500 lines. Moderate complexity because most
+  infrastructure already exists from spec 083. Core new work: feature flag chain
+  (TypeSpec + migration + mapper + repository + defaults + UI toggle), service layer
+  (HTTP client for 2 endpoints with Zod validation), 2 use cases, 2 server actions,
+  new page route with card grid + detail drawer + tool listing, i18n across 8 locales,
+  Storybook stories, and comprehensive tests. No subprocess calls, no new settings
+  fields beyond the flag. Simpler than spec 083 (no install/uninstall/toggle operations).
+
+  ---
+
+  _Generated by `/shipit-kit:new-feature` — proceed with `/shipit-kit:research`_
