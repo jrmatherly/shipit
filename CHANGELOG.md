@@ -1,3 +1,10 @@
+# [1.169.0](https://github.com/jrmatherly/shipit/compare/v1.168.0...v1.169.0) (2026-04-06)
+
+
+### Features
+
+* **web:** migrate section hints to inline tooltips with editorial glass styling ([597428d](https://github.com/jrmatherly/shipit/commit/597428d90d2b867efb932f0bb2343834877ef646))
+
 # [1.168.0](https://github.com/jrmatherly/shipit/compare/v1.167.1...v1.168.0) (2026-04-06)
 
 
