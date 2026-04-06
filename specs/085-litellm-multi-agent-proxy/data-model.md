@@ -9,55 +9,39 @@
 
 ## Overview
 
-{{DATA_MODEL_OVERVIEW}}
+Adds two minimal per-agent proxy config models (GeminiCliProxyConfig, CodexCliProxyConfig) as siblings to the existing ClaudeCodeProxyConfig under LiteLLMProxyConfig. Reuses the existing LiteLLMProxyRoutingMode enum.
 
 ## New Entities
 
-### {{ENTITY_NAME}}
+### GeminiCliProxyConfig
 
-**Location:** `tsp/domain/entities/{{entity-name}}.tsp`
+**Location:** `tsp/domain/entities/settings.tsp`
 
-| Property      | Type          | Required     | Description   |
-| ------------- | ------------- | ------------ | ------------- |
-| {{PROP_NAME}} | {{PROP_TYPE}} | {{REQUIRED}} | {{PROP_DESC}} |
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| routingMode | LiteLLMProxyRoutingMode | No | How Gemini CLI routes API traffic: direct or proxy |
 
-**Relationships:**
+### CodexCliProxyConfig
 
-- {{RELATIONSHIP_1}}
+**Location:** `tsp/domain/entities/settings.tsp`
+
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| routingMode | LiteLLMProxyRoutingMode | No | How Codex CLI routes API traffic: direct or proxy |
 
 ## Modified Entities
 
-### {{EXISTING_ENTITY}}
+### LiteLLMProxyConfig
 
-**Changes:**
+- Add: `geminiCli?: GeminiCliProxyConfig`
+- Add: `codexCli?: CodexCliProxyConfig`
 
-- Add: {{NEW_PROPERTY}}
-- Modify: {{MODIFIED_PROPERTY}}
+## Database Columns (Migration 056)
 
-## Value Objects
-
-### {{VALUE_OBJECT_NAME}}
-
-**Location:** `tsp/domain/value-objects/{{value-object}}.tsp`
-
-| Property    | Type        | Description |
-| ----------- | ----------- | ----------- |
-| {{VO_PROP}} | {{VO_TYPE}} | {{VO_DESC}} |
-
-## Enums
-
-### {{ENUM_NAME}}
-
-**Location:** `tsp/common/enums/{{enum-name}}.tsp`
-
-| Value          | Description   |
-| -------------- | ------------- |
-| {{ENUM_VALUE}} | {{ENUM_DESC}} |
-
-<!-- If no data model changes, replace all with:
-## Overview
-No domain model changes required for this feature.
--->
+| Column | Type | Default | Maps To |
+| --- | --- | --- | --- |
+| `litellm_proxy_gc_routing_mode` | TEXT | NULL | `litellmProxy.geminiCli.routingMode` |
+| `litellm_proxy_cx_routing_mode` | TEXT | NULL | `litellmProxy.codexCli.routingMode` |
 
 ---
 

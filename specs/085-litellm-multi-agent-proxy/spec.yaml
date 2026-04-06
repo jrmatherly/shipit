@@ -13,7 +13,7 @@ summary: >
   ShipIT cannot inject via env vars. Adds per-agent proxy config models in TypeSpec,
   extends the settings UI routing section to show agent-specific fields, and adds
   migration + persistence for the new columns.
-phase: research
+phase: planning
 sizeEstimate: L
 
 # Relationships
