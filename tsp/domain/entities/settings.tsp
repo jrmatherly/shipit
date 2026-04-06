@@ -512,15 +512,61 @@ model NotificationPreferences {
 }
 
 /**
+ * LiteLLM Proxy Routing Mode
+ *
+ * Controls how agent API traffic is routed through a LiteLLM proxy.
+ * - direct: No proxy routing, agent uses its own auth (default)
+ * - proxy: Full proxy routing with proxy API key as auth token
+ * - passthrough: Proxy routing but user authenticates to provider (Max/BYOK)
+ */
+@doc("How agent API traffic is routed through LiteLLM proxy")
+enum LiteLLMProxyRoutingMode {
+  @doc("No proxy routing — agent uses its own auth (default)")
+  direct: "direct",
+
+  @doc("Full proxy routing — ANTHROPIC_BASE_URL + ANTHROPIC_AUTH_TOKEN")
+  proxy: "proxy",
+
+  @doc("Proxy with forwarded user auth — ANTHROPIC_BASE_URL + ANTHROPIC_CUSTOM_HEADERS")
+  passthrough: "passthrough",
+}
+
+/**
+ * Claude Code Proxy Configuration
+ *
+ * Per-agent proxy routing settings for Claude Code.
+ * Controls how Claude Code CLI's API traffic is routed through LiteLLM.
+ * Includes model overrides for routing to non-default models and
+ * custom headers for cost attribution and tracking.
+ */
+@doc("Per-agent proxy routing config for Claude Code")
+model ClaudeCodeProxyConfig {
+  @doc("How Claude Code routes API traffic through the proxy")
+  routingMode?: LiteLLMProxyRoutingMode;
+
+  @doc("Newline-separated key: value headers for ANTHROPIC_CUSTOM_HEADERS")
+  customHeaders?: string;
+
+  @doc("Model name override for ANTHROPIC_DEFAULT_SONNET_MODEL")
+  sonnetModel?: string;
+
+  @doc("Model name override for ANTHROPIC_DEFAULT_HAIKU_MODEL")
+  haikuModel?: string;
+
+  @doc("Model name override for ANTHROPIC_DEFAULT_OPUS_MODEL")
+  opusModel?: string;
+}
+
+/**
  * LiteLLM Proxy Configuration
  *
  * Configuration for connecting to a LiteLLM proxy instance.
- * Used for the plugin marketplace (fetching catalog from the proxy's
- * /claude-code/marketplace.json endpoint) and potentially for model routing.
- * All fields optional — when not configured, marketplace features are disabled.
+ * Used for the plugin marketplace, agent API routing, cost tracking,
+ * and model routing. All fields optional — when not configured,
+ * marketplace and proxy routing features are disabled.
  * API key stored in plaintext in SQLite, consistent with agent.token pattern.
  */
-@doc("LiteLLM proxy configuration for plugin marketplace and model routing")
+@doc("LiteLLM proxy configuration for plugin marketplace and agent routing")
 model LiteLLMProxyConfig {
   @doc("LiteLLM proxy base URL (e.g., http://localhost:4000)")
   baseUrl?: string;
@@ -530,6 +576,9 @@ model LiteLLMProxyConfig {
 
   @doc("Whether to use this proxy for the plugin marketplace")
   marketplaceEnabled?: boolean;
+
+  @doc("Per-agent proxy routing config for Claude Code")
+  claudeCode?: ClaudeCodeProxyConfig;
 }
 
 /**

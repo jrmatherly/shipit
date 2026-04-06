@@ -637,9 +637,40 @@ export type NotificationPreferences = {
    */
   events: NotificationEventConfig;
 };
+export enum LiteLLMProxyRoutingMode {
+  direct = 'direct',
+  proxy = 'proxy',
+  passthrough = 'passthrough',
+}
 
 /**
- * LiteLLM proxy configuration for plugin marketplace and model routing
+ * Per-agent proxy routing config for Claude Code
+ */
+export type ClaudeCodeProxyConfig = {
+  /**
+   * How Claude Code routes API traffic through the proxy
+   */
+  routingMode?: LiteLLMProxyRoutingMode;
+  /**
+   * Newline-separated key: value headers for ANTHROPIC_CUSTOM_HEADERS
+   */
+  customHeaders?: string;
+  /**
+   * Model name override for ANTHROPIC_DEFAULT_SONNET_MODEL
+   */
+  sonnetModel?: string;
+  /**
+   * Model name override for ANTHROPIC_DEFAULT_HAIKU_MODEL
+   */
+  haikuModel?: string;
+  /**
+   * Model name override for ANTHROPIC_DEFAULT_OPUS_MODEL
+   */
+  opusModel?: string;
+};
+
+/**
+ * LiteLLM proxy configuration for plugin marketplace and agent routing
  */
 export type LiteLLMProxyConfig = {
   /**
@@ -654,6 +685,10 @@ export type LiteLLMProxyConfig = {
    * Whether to use this proxy for the plugin marketplace
    */
   marketplaceEnabled?: boolean;
+  /**
+   * Per-agent proxy routing config for Claude Code
+   */
+  claudeCode?: ClaudeCodeProxyConfig;
 };
 
 /**

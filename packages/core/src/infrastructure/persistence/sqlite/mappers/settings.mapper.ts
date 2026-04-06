@@ -17,6 +17,7 @@ import {
   type AgentAuthMethod,
   type EditorType,
   type Language,
+  type LiteLLMProxyRoutingMode,
   type TerminalType,
 } from '../../../../domain/generated/output.js';
 
@@ -122,6 +123,12 @@ export interface SettingsRow {
   litellm_proxy_base_url: string | null;
   litellm_proxy_api_key: string | null;
   litellm_proxy_marketplace_enabled: number;
+  // LiteLLM Proxy per-agent config for Claude Code (added in migration 055)
+  litellm_proxy_cc_routing_mode: string | null;
+  litellm_proxy_cc_custom_headers: string | null;
+  litellm_proxy_cc_sonnet_model: string | null;
+  litellm_proxy_cc_haiku_model: string | null;
+  litellm_proxy_cc_opus_model: string | null;
   // Interactive agent config (added in migration 046)
   interactive_agent_enabled: number;
   interactive_agent_auto_timeout_minutes: number;
@@ -253,6 +260,12 @@ export function toDatabase(settings: Settings): SettingsRow {
     litellm_proxy_base_url: settings.litellmProxy?.baseUrl ?? null,
     litellm_proxy_api_key: settings.litellmProxy?.apiKey ?? null,
     litellm_proxy_marketplace_enabled: settings.litellmProxy?.marketplaceEnabled ? 1 : 0,
+    // ClaudeCodeProxyConfig (all TEXT nullable)
+    litellm_proxy_cc_routing_mode: settings.litellmProxy?.claudeCode?.routingMode ?? null,
+    litellm_proxy_cc_custom_headers: settings.litellmProxy?.claudeCode?.customHeaders ?? null,
+    litellm_proxy_cc_sonnet_model: settings.litellmProxy?.claudeCode?.sonnetModel ?? null,
+    litellm_proxy_cc_haiku_model: settings.litellmProxy?.claudeCode?.haikuModel ?? null,
+    litellm_proxy_cc_opus_model: settings.litellmProxy?.claudeCode?.opusModel ?? null,
 
     // InteractiveAgentConfig (boolean → 0/1, integer fields; defaults applied here)
     interactive_agent_enabled: (settings.interactiveAgent?.enabled ?? true) ? 1 : 0,
@@ -437,12 +450,31 @@ export function fromDatabase(row: SettingsRow): Settings {
     // LiteLLMProxyConfig (TEXT → string, INTEGER 0/1 → boolean)
     ...(row.litellm_proxy_base_url != null ||
     row.litellm_proxy_api_key != null ||
-    row.litellm_proxy_marketplace_enabled
+    row.litellm_proxy_marketplace_enabled ||
+    row.litellm_proxy_cc_routing_mode != null
       ? {
           litellmProxy: {
             baseUrl: row.litellm_proxy_base_url ?? undefined,
             apiKey: row.litellm_proxy_api_key ?? undefined,
             marketplaceEnabled: row.litellm_proxy_marketplace_enabled === 1,
+            // ClaudeCodeProxyConfig (only include if any cc field is set)
+            ...(row.litellm_proxy_cc_routing_mode != null ||
+            row.litellm_proxy_cc_custom_headers != null ||
+            row.litellm_proxy_cc_sonnet_model != null ||
+            row.litellm_proxy_cc_haiku_model != null ||
+            row.litellm_proxy_cc_opus_model != null
+              ? {
+                  claudeCode: {
+                    routingMode: (row.litellm_proxy_cc_routing_mode ?? undefined) as
+                      | LiteLLMProxyRoutingMode
+                      | undefined,
+                    customHeaders: row.litellm_proxy_cc_custom_headers ?? undefined,
+                    sonnetModel: row.litellm_proxy_cc_sonnet_model ?? undefined,
+                    haikuModel: row.litellm_proxy_cc_haiku_model ?? undefined,
+                    opusModel: row.litellm_proxy_cc_opus_model ?? undefined,
+                  },
+                }
+              : {}),
           },
         }
       : {}),
