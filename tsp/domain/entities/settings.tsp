@@ -558,6 +558,33 @@ model ClaudeCodeProxyConfig {
 }
 
 /**
+ * Gemini CLI Proxy Configuration
+ *
+ * Per-agent proxy routing settings for Gemini CLI.
+ * Controls how Gemini CLI's API traffic is routed through LiteLLM.
+ * Only supports direct and proxy modes (no passthrough — no BYOK equivalent).
+ */
+@doc("Per-agent proxy routing config for Gemini CLI")
+model GeminiCliProxyConfig {
+  @doc("How Gemini CLI routes API traffic through the proxy (direct or proxy)")
+  routingMode?: LiteLLMProxyRoutingMode;
+}
+
+/**
+ * Codex CLI Proxy Configuration
+ *
+ * Per-agent proxy routing settings for Codex CLI.
+ * Controls how Codex CLI's API traffic is routed through LiteLLM.
+ * Uses OPENAI_BASE_URL + OPENAI_API_KEY (not CODEX_API_KEY) for proxy routing.
+ * Only supports direct and proxy modes (no passthrough — no BYOK equivalent).
+ */
+@doc("Per-agent proxy routing config for Codex CLI")
+model CodexCliProxyConfig {
+  @doc("How Codex CLI routes API traffic through the proxy (direct or proxy)")
+  routingMode?: LiteLLMProxyRoutingMode;
+}
+
+/**
  * LiteLLM Proxy Configuration
  *
  * Configuration for connecting to a LiteLLM proxy instance.
@@ -579,6 +606,12 @@ model LiteLLMProxyConfig {
 
   @doc("Per-agent proxy routing config for Claude Code")
   claudeCode?: ClaudeCodeProxyConfig;
+
+  @doc("Per-agent proxy routing config for Gemini CLI")
+  geminiCli?: GeminiCliProxyConfig;
+
+  @doc("Per-agent proxy routing config for Codex CLI")
+  codexCli?: CodexCliProxyConfig;
 }
 
 /**

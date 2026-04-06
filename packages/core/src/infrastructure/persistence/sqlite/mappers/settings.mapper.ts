@@ -137,6 +137,9 @@ export interface SettingsRow {
   litellm_proxy_cc_sonnet_model: string | null;
   litellm_proxy_cc_haiku_model: string | null;
   litellm_proxy_cc_opus_model: string | null;
+  // LiteLLM Proxy per-agent config for Gemini CLI + Codex CLI (added in migration 056)
+  litellm_proxy_gc_routing_mode: string | null;
+  litellm_proxy_cx_routing_mode: string | null;
   // Interactive agent config (added in migration 046)
   interactive_agent_enabled: number;
   interactive_agent_auto_timeout_minutes: number;
@@ -274,6 +277,9 @@ export function toDatabase(settings: Settings): SettingsRow {
     litellm_proxy_cc_sonnet_model: textOrNull(settings.litellmProxy?.claudeCode?.sonnetModel),
     litellm_proxy_cc_haiku_model: textOrNull(settings.litellmProxy?.claudeCode?.haikuModel),
     litellm_proxy_cc_opus_model: textOrNull(settings.litellmProxy?.claudeCode?.opusModel),
+    // GeminiCliProxyConfig + CodexCliProxyConfig (routing mode only)
+    litellm_proxy_gc_routing_mode: settings.litellmProxy?.geminiCli?.routingMode ?? null,
+    litellm_proxy_cx_routing_mode: settings.litellmProxy?.codexCli?.routingMode ?? null,
 
     // InteractiveAgentConfig (boolean → 0/1, integer fields; defaults applied here)
     interactive_agent_enabled: (settings.interactiveAgent?.enabled ?? true) ? 1 : 0,
@@ -463,7 +469,9 @@ export function fromDatabase(row: SettingsRow): Settings {
     row.litellm_proxy_cc_custom_headers != null ||
     row.litellm_proxy_cc_sonnet_model != null ||
     row.litellm_proxy_cc_haiku_model != null ||
-    row.litellm_proxy_cc_opus_model != null
+    row.litellm_proxy_cc_opus_model != null ||
+    row.litellm_proxy_gc_routing_mode != null ||
+    row.litellm_proxy_cx_routing_mode != null
       ? {
           litellmProxy: {
             baseUrl: row.litellm_proxy_base_url ?? undefined,
@@ -484,6 +492,26 @@ export function fromDatabase(row: SettingsRow): Settings {
                     sonnetModel: row.litellm_proxy_cc_sonnet_model ?? undefined,
                     haikuModel: row.litellm_proxy_cc_haiku_model ?? undefined,
                     opusModel: row.litellm_proxy_cc_opus_model ?? undefined,
+                  },
+                }
+              : {}),
+            // GeminiCliProxyConfig
+            ...(row.litellm_proxy_gc_routing_mode != null
+              ? {
+                  geminiCli: {
+                    routingMode: validRoutingModes.has(row.litellm_proxy_gc_routing_mode ?? '')
+                      ? (row.litellm_proxy_gc_routing_mode as LiteLLMProxyRoutingMode)
+                      : undefined,
+                  },
+                }
+              : {}),
+            // CodexCliProxyConfig
+            ...(row.litellm_proxy_cx_routing_mode != null
+              ? {
+                  codexCli: {
+                    routingMode: validRoutingModes.has(row.litellm_proxy_cx_routing_mode ?? '')
+                      ? (row.litellm_proxy_cx_routing_mode as LiteLLMProxyRoutingMode)
+                      : undefined,
                   },
                 }
               : {}),

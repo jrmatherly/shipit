@@ -670,6 +670,26 @@ export type ClaudeCodeProxyConfig = {
 };
 
 /**
+ * Per-agent proxy routing config for Gemini CLI
+ */
+export type GeminiCliProxyConfig = {
+  /**
+   * How Gemini CLI routes API traffic through the proxy (direct or proxy)
+   */
+  routingMode?: LiteLLMProxyRoutingMode;
+};
+
+/**
+ * Per-agent proxy routing config for Codex CLI
+ */
+export type CodexCliProxyConfig = {
+  /**
+   * How Codex CLI routes API traffic through the proxy (direct or proxy)
+   */
+  routingMode?: LiteLLMProxyRoutingMode;
+};
+
+/**
  * LiteLLM proxy configuration for plugin marketplace and agent routing
  */
 export type LiteLLMProxyConfig = {
@@ -689,6 +709,14 @@ export type LiteLLMProxyConfig = {
    * Per-agent proxy routing config for Claude Code
    */
   claudeCode?: ClaudeCodeProxyConfig;
+  /**
+   * Per-agent proxy routing config for Gemini CLI
+   */
+  geminiCli?: GeminiCliProxyConfig;
+  /**
+   * Per-agent proxy routing config for Codex CLI
+   */
+  codexCli?: CodexCliProxyConfig;
 };
 
 /**
