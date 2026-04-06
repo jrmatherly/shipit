@@ -195,7 +195,23 @@
       "gitRebaseSyncDescription": "Git Rebase-on-Main- und Sync-Main-Operationen aktivieren",
       "reactFileManager": "React-Dateimanager",
       "reactFileManagerDescription": "Den integrierten React-Dateimanager anstelle der nativen Betriebssystem-Ordnerauswahl verwenden",
+      "plugins": "Plugins Marketplace",
+      "pluginsDescription": "Enable the Claude Code plugins marketplace browser",
       "hint": "Experimentelle Features, die noch in Entwicklung sind. Aktivierung auf eigene Gefahr — sie können sich in zukünftigen Versionen ändern oder entfernt werden. Der Debug-Modus fügt ausführliche Protokollierung hinzu, die bei der Fehlerbehebung nützlich ist."
+    },
+    "litellmProxy": {
+      "title": "LiteLLM Proxy",
+      "description": "Configure connection to a LiteLLM proxy for plugin marketplace access",
+      "baseUrl": "Proxy URL",
+      "baseUrlDescription": "Base URL of your LiteLLM proxy (e.g., http://localhost:4000)",
+      "apiKey": "API Key",
+      "apiKeyDescription": "Virtual API key for LiteLLM proxy authentication",
+      "marketplaceEnabled": "Enable Marketplace",
+      "marketplaceEnabledDescription": "Use this proxy for the plugin marketplace catalog",
+      "hint": "Connect to a LiteLLM proxy to browse and install Claude Code plugins from your organization's curated marketplace.",
+      "testConnection": "Test Connection",
+      "testSuccess": "Connection successful",
+      "testFailed": "Connection failed"
     },
     "interactiveAgent": {
       "title": "Interaktiver Agent",
@@ -237,7 +253,8 @@
     "settings": "Einstellungen",
     "sessions": "Sitzungen",
     "tools": "Tools",
-    "skills": "Skills"
+    "skills": "Skills",
+    "plugins": "Plugins"
   },
   "sidebar": {
     "features": "Features",
@@ -597,6 +614,24 @@
     "imageNotes": "Bildnotizen",
     "viewServerLogs": "Server-Logs anzeigen",
     "toggleSidebar": "Seitenleiste umschalten"
+  },
+  "plugins": {
+    "title": "Plugins",
+    "search": "Search",
+    "searchPlaceholder": "Search plugins...",
+    "emptyState": "No plugins found",
+    "noProxy": "No LiteLLM proxy configured. Go to Settings to set up your proxy URL.",
+    "wrongAgent": "Plugin marketplace is only available for Claude Code agent type.",
+    "install": "Install",
+    "uninstall": "Uninstall",
+    "enable": "Enable",
+    "disable": "Disable",
+    "installed": "Installed",
+    "notInstalled": "Not Installed",
+    "allCategories": "All Categories",
+    "version": "Version",
+    "source": "Source",
+    "category": "Category"
   },
   "feature": {
     "create": {

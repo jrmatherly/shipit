@@ -66,3 +66,10 @@ export type {
   AvailableShellEntry,
 } from './environment-detector.service.js';
 export type { ISettingsReader } from './settings-reader.interface.js';
+export type {
+  IPluginMarketplaceService,
+  PluginMarketplaceEntry,
+  InstalledPlugin,
+  PluginSource,
+  PluginOperationResult,
+} from './plugin-marketplace.interface.js';

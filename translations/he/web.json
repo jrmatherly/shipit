@@ -209,7 +209,23 @@
       "gitRebaseSyncDescription": "הפעל פעולות rebase-on-main וסנכרון main ב-Git",
       "reactFileManager": "מנהל קבצים React",
       "reactFileManagerDescription": "השתמש במנהל הקבצים המובנה של React במקום בוחר התיקיות של מערכת ההפעלה",
+      "plugins": "Plugins Marketplace",
+      "pluginsDescription": "Enable the Claude Code plugins marketplace browser",
       "hint": "תכונות ניסיוניות שעדיין בפיתוח. הפעל על אחריותך — הן עשויות להשתנות או להיות מוסרות בגרסאות עתידיות. מצב ניפוי שגיאות מוסיף רישום מפורט שימושי לפתרון בעיות."
+    },
+    "litellmProxy": {
+      "title": "LiteLLM Proxy",
+      "description": "Configure connection to a LiteLLM proxy for plugin marketplace access",
+      "baseUrl": "Proxy URL",
+      "baseUrlDescription": "Base URL of your LiteLLM proxy (e.g., http://localhost:4000)",
+      "apiKey": "API Key",
+      "apiKeyDescription": "Virtual API key for LiteLLM proxy authentication",
+      "marketplaceEnabled": "Enable Marketplace",
+      "marketplaceEnabledDescription": "Use this proxy for the plugin marketplace catalog",
+      "hint": "Connect to a LiteLLM proxy to browse and install Claude Code plugins from your organization's curated marketplace.",
+      "testConnection": "Test Connection",
+      "testSuccess": "Connection successful",
+      "testFailed": "Connection failed"
     },
     "interactiveAgent": {
       "title": "סוכן אינטראקטיבי",
@@ -251,7 +267,8 @@
     "settings": "הגדרות",
     "sessions": "סשנים",
     "tools": "כלים",
-    "skills": "כישורים"
+    "skills": "כישורים",
+    "plugins": "Plugins"
   },
   "sidebar": {
     "features": "פיצ'רים",
@@ -611,6 +628,24 @@
     "imageNotes": "הערות לתמונה",
     "viewServerLogs": "צפייה ביומני שרת",
     "toggleSidebar": "החלפת סרגל צד"
+  },
+  "plugins": {
+    "title": "Plugins",
+    "search": "Search",
+    "searchPlaceholder": "Search plugins...",
+    "emptyState": "No plugins found",
+    "noProxy": "No LiteLLM proxy configured. Go to Settings to set up your proxy URL.",
+    "wrongAgent": "Plugin marketplace is only available for Claude Code agent type.",
+    "install": "Install",
+    "uninstall": "Uninstall",
+    "enable": "Enable",
+    "disable": "Disable",
+    "installed": "Installed",
+    "notInstalled": "Not Installed",
+    "allCategories": "All Categories",
+    "version": "Version",
+    "source": "Source",
+    "category": "Category"
   },
   "feature": {
     "create": {

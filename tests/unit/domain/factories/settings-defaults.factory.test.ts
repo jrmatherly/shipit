@@ -352,6 +352,7 @@ describe('createDefaultSettings', () => {
         adoptBranch: false,
         gitRebaseSync: false,
         reactFileManager: false,
+        plugins: false,
       });
     });
   });

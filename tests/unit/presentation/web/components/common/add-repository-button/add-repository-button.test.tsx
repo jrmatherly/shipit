@@ -55,6 +55,8 @@ vi.mock('@/hooks/feature-flags-context', () => ({
     githubImport: true,
     adoptBranch: false,
     reactFileManager: false,
+    gitRebaseSync: false,
+    plugins: false,
   })),
 }));
 
@@ -76,6 +78,7 @@ describe('AddRepositoryButton', () => {
       adoptBranch: false,
       reactFileManager: false,
       gitRebaseSync: false,
+      plugins: false,
     });
   });
 
@@ -172,6 +175,7 @@ describe('AddRepositoryButton', () => {
         adoptBranch: false,
         reactFileManager: false,
         gitRebaseSync: false,
+        plugins: false,
       });
     });
 
@@ -301,6 +305,7 @@ describe('AddRepositoryButton', () => {
         adoptBranch: false,
         reactFileManager: true,
         gitRebaseSync: false,
+        plugins: false,
       });
     });
 
@@ -372,6 +377,7 @@ describe('AddRepositoryButton', () => {
         adoptBranch: false,
         reactFileManager: true,
         gitRebaseSync: false,
+        plugins: false,
       });
       const user = userEvent.setup();
       render(<AddRepositoryButton />);
