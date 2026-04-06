@@ -5,25 +5,108 @@ name: litellm-mcp-server-management
 summary: Technical analysis for 086-litellm-mcp-server-management
 
 # Relationships
-relatedFeatures: []
-technologies: []
-relatedLinks: []
+relatedFeatures:
+  - "083-claude-code-plugin-marketplace"
+  - "084-litellm-proxy-agent-integration"
+  - "085-litellm-multi-agent-proxy"
+
+technologies:
+  - TypeScript
+  - TypeSpec
+  - Zod
+  - React
+  - Next.js
+  - SQLite
+  - Vitest
+
+relatedLinks:
+  - title: "LiteLLM: MCP Overview"
+    url: https://docs.litellm.ai/docs/mcp
+  - title: "LiteLLM: AI Hub (Public MCP)"
+    url: https://docs.litellm.ai/docs/proxy/ai_hub
+  - title: "LiteLLM: MCP Permission Management"
+    url: https://docs.litellm.ai/docs/mcp_control
+  - title: "MCP Protocol: Tools Spec"
+    url: https://modelcontextprotocol.io/specification/2025-11-25/server/tools
+  - title: "GitHub Issue: /v1/mcp/server virtual key access"
+    url: https://github.com/BerriAI/litellm/issues/20325
 
 # Structured technology decisions
 decisions:
-  - title: { { DECISION_TITLE } }
-    chosen: { { CHOSEN_OPTION } }
+  - title: "MCP server list endpoint"
+    chosen: "GET /public/mcp_hub with user virtual key"
     rejected:
-      - { { OPTION_1 } }
-      - { { OPTION_2 } }
-    rationale: { { RATIONALE } }
+      - "GET /v1/mcp/server (admin-only, requires master key)"
+      - "POST /mcp with tools/list and infer servers from tool name prefixes"
+      - "GET /v1/mcp/registry.json (requires enable_mcp_registry server config)"
+    rationale: >
+      The stored API key from spec 083 is a user-specific virtual key, not the
+      admin/master key. The /public/mcp_hub endpoint works with virtual keys and
+      respects LiteLLM access control (returns only servers the key has permission
+      to access). The admin endpoint returns 403 for virtual keys. The tools/list
+      workaround is fragile (noted in GitHub issue 20325). The registry endpoint
+      requires server-side config we cannot guarantee.
 
-# Open questions (should be resolved by end of research)
-openQuestions:
-  []
-  # - question: "Which library should we use?"
-  #   resolved: true
-  #   answer: "Library X because of Y"
+  - title: "MCP tools listing endpoint"
+    chosen: "GET /mcp-rest/tools/list with Bearer auth"
+    rejected:
+      - "POST /mcp with JSON-RPC tools/list method"
+      - "Don't show tools at all"
+    rationale: >
+      The REST wrapper is simpler to call from a standard HTTP client (no JSON-RPC
+      framing). Returns tools in MCP protocol format with name, description, and
+      inputSchema. Tool names use {server_name}-{tool_name} convention which allows
+      grouping by server. On-demand fetch in detail drawer avoids loading all tools
+      on page load.
+
+  - title: "Service architecture pattern"
+    chosen: "New McpServerBrowserService mirroring PluginMarketplaceService HTTP-only pattern"
+    rejected:
+      - "Extend PluginMarketplaceService with MCP methods"
+      - "Shared generic LiteLLM HTTP client base class"
+    rationale: >
+      Single Responsibility: the existing service manages plugin lifecycle (fetch +
+      install/uninstall/toggle via CLI subprocess). MCP browsing is read-only
+      HTTP. Different concerns = different services. A shared base class is premature
+      abstraction for 2 services. Separate service follows the established
+      one-service-per-domain pattern and keeps the port interface focused.
+
+  - title: "Feature flag approach"
+    chosen: "New featureFlags.mcpServers flag, same chain as plugins"
+    rejected:
+      - "Reuse featureFlags.plugins flag"
+      - "No feature flag (always visible when proxy configured)"
+    rationale: >
+      MCP servers and plugins are distinct features. Independent flags let users enable
+      MCP visibility without the plugin marketplace (and vice versa). The feature flag
+      chain is well-established with 8 existing flags. Adding one more is minimal overhead.
+
+  - title: "Tool-to-server grouping strategy"
+    chosen: "Parse {server_name}-{tool_name} prefix from /mcp-rest/tools/list response"
+    rejected:
+      - "Call per-server MCP endpoint {server_alias}/mcp with tools/list"
+      - "Don't group tools by server"
+    rationale: >
+      The /mcp-rest/tools/list endpoint returns all accessible tools with server-prefixed
+      names (e.g., github_mcp-list_issues). Parsing the prefix against known server names
+      from the hub response is pragmatic and avoids N+1 per-server requests. Fallback:
+      tools with unmatched prefixes shown in an Other group. This approach is documented
+      in LiteLLM's permission management docs.
+
+  - title: "UI component architecture"
+    chosen: "Mirror plugins page pattern: server component -> client page -> card grid -> detail drawer"
+    rejected:
+      - "Inline MCP servers in settings page"
+      - "Table layout instead of card grid"
+    rationale: >
+      Card grid with detail drawer is the established pattern from spec 083 (plugins).
+      Users benefit from visual consistency across LiteLLM features. The card layout
+      provides better information density for server metadata (name, transport badge,
+      description, auth indicator) than a table. Detail drawer follows BaseDrawer
+      pattern with on-demand tool loading.
+
+# Open questions (all resolved)
+openQuestions: []
 
 # Markdown content (the full research document)
 content: |
@@ -34,35 +117,189 @@ content: |
 
   ## Technology Decisions
 
-  ### {{DECISION_TITLE}}
+  ### 1. MCP Server List Endpoint
 
   **Options considered:**
 
-  1. {{OPTION_1}}
-  2. {{OPTION_2}}
-  3. {{OPTION_3}}
+  1. `GET /v1/mcp/server` — Admin-only endpoint, returns all servers, requires master key
+  2. `GET /public/mcp_hub` — User endpoint, returns accessible servers, works with virtual key
+  3. `POST /mcp` with `tools/list` — Infer servers from tool name prefixes (fragile)
+  4. `GET /v1/mcp/registry.json` — Registry endpoint, requires server-side `enable_mcp_registry`
 
-  **Decision:** {{CHOSEN_OPTION}}
+  **Decision:** Option 2 — `GET /public/mcp_hub` with user virtual key
 
-  **Rationale:** {{RATIONALE}}
+  **Rationale:** The stored API key from spec 083 is a user virtual key, not the master
+  key. The admin endpoint (`/v1/mcp/server`) returns HTTP 403 for virtual keys (see
+  GitHub issue BerriAI/litellm issue 20325). The public hub endpoint respects LiteLLM's
+  access control, returning only servers the key has permission to access. This is the
+  correct UX — users see only what they're authorized for.
+
+  **Response schema (from /public/mcp_hub):**
+  ```json
+  [
+    {
+      "server_id": "e856f9a3-abc6-45b1-9d06-62fa49ac293d",
+      "name": "deepwiki-mcp",
+      "alias": null,
+      "server_name": "deepwiki-mcp",
+      "url": "https://mcp.deepwiki.com/mcp",
+      "transport": "http",
+      "spec_path": null,
+      "auth_type": "none",
+      "mcp_info": {
+        "server_name": "deepwiki-mcp",
+        "description": "free mcp server"
+      }
+    }
+  ]
+  ```
+
+  ### 2. MCP Tools Listing Endpoint
+
+  **Options considered:**
+
+  1. `GET /mcp-rest/tools/list` — REST wrapper, returns MCP tools directly
+  2. `POST /mcp` with JSON-RPC `tools/list` — Native MCP protocol, requires JSON-RPC framing
+  3. Don't show tools — Simpler but less useful
+
+  **Decision:** Option 1 — `GET /mcp-rest/tools/list` with Bearer auth
+
+  **Rationale:** REST wrapper is simpler to call from standard HTTP client (no JSON-RPC
+  envelope). Returns tools in MCP protocol format. Tool names use `{server_name}-{tool_name}`
+  convention enabling per-server grouping. Fetched on-demand when user opens server
+  detail drawer (not on page load).
+
+  **Tool response schema (MCP protocol):**
+  ```json
+  {
+    "tools": [
+      {
+        "name": "github_mcp-list_issues",
+        "title": "List Issues",
+        "description": "List issues in a repository",
+        "inputSchema": { "type": "object", "properties": {} }
+      }
+    ]
+  }
+  ```
+
+  ### 3. Service Architecture
+
+  **Options considered:**
+
+  1. New `McpServerBrowserService` — dedicated read-only HTTP service
+  2. Extend `PluginMarketplaceService` — add MCP methods to existing service
+  3. Shared `LiteLLMHttpClient` base class — extract common HTTP patterns
+
+  **Decision:** Option 1 — New dedicated `McpServerBrowserService`
+
+  **Rationale:** Single Responsibility Principle. The existing marketplace service handles
+  plugin lifecycle (fetch catalog + install/uninstall/toggle via CLI subprocess). MCP
+  browsing is purely read-only HTTP. Different concerns, different services. The HTTP
+  client pattern (fetch + AbortController + Zod) is small enough to replicate without
+  a shared abstraction.
+
+  **Service interface:**
+  ```typescript
+  interface IMcpServerBrowserService {
+    fetchServers(proxyBaseUrl: string, apiKey?: string): Promise<McpServerInfo[]>;
+    fetchTools(proxyBaseUrl: string, apiKey?: string): Promise<McpToolInfo[]>;
+  }
+  ```
+
+  ### 4. Feature Flag Approach
+
+  **Options considered:**
+
+  1. New `featureFlags.mcpServers` — independent flag, same chain as `plugins`
+  2. Reuse `featureFlags.plugins` — couple MCP servers to plugin marketplace
+  3. No flag — always visible when proxy is configured
+
+  **Decision:** Option 1 — New independent `featureFlags.mcpServers`
+
+  **Chain (9 files to touch):**
+  1. `tsp/domain/entities/settings.tsp` — add `mcpServers: boolean = false`
+  2. `packages/core/src/domain/generated/output.ts` — `pnpm tsp:codegen`
+  3. `packages/core/src/domain/factories/settings-defaults.factory.ts` — add default
+  4. Migration `057-add-mcp-servers-flag.ts` — `feature_flag_mcp_servers INTEGER DEFAULT 0`
+  5. `settings.mapper.ts` — SettingsRow + toDatabase + toDomain
+  6. `sqlite-settings.repository.ts` — INSERT + UPDATE column lists
+  7. `src/presentation/web/lib/feature-flags.ts` — FeatureFlagsState + ENV fallback
+  8. `feature-flags-settings-section.tsx` — toggle row
+  9. `translations/*/web.json` — label + description (all 8 locales)
+
+  ### 5. Tool-to-Server Grouping
+
+  **Decision:** Parse `{server_name}-{tool_name}` prefix from global tools list
+
+  **Algorithm:**
+  1. Fetch server list to extract all `server_name` values
+  2. Fetch tools list; for each tool, check if `tool.name` starts with `{server_name}-`
+  3. If match: group tool under that server (strip prefix for display name)
+  4. If no match: place in "Other" group (show full tool name)
+  5. Sort servers alphabetically, tools alphabetically within each server
+
+  ### 6. UI Component Architecture
+
+  **Decision:** Mirror the plugins page pattern from spec 083.
+
+  **Component tree:**
+  ```
+  app/mcp-servers/page.tsx          (server: feature flag gate + settings load)
+    McpServersPageClient            (client: state, fetch, search, filter, grid)
+      McpServerCard                 (card: name, transport badge, auth indicator)
+      McpServerDetailDrawer         (drawer: full details + on-demand tool list)
+        McpToolList                 (tools: grouped by server, expandable)
+  ```
 
   ## Library Analysis
 
-  | Library     | Version     | Purpose     | Pros     | Cons     |
-  | ----------- | ----------- | ----------- | -------- | -------- |
-  | {{LIBRARY}} | {{VERSION}} | {{PURPOSE}} | {{PROS}} | {{CONS}} |
+  | Library | Version | Purpose | Pros | Cons |
+  | --- | --- | --- | --- | --- |
+  | Zod | existing | Validate proxy responses | Runtime type safety, established pattern | Manual schema maintenance |
+  | native fetch | Node 22+ | HTTP client for proxy | No new dep, AbortController, established | - |
+  | lucide-react | existing | Server card icons | Consistent icon set (Server, Wifi, Terminal) | - |
+
+  **No new dependencies required.** All libraries already in project from spec 083.
 
   ## Security Considerations
 
-  No security implications identified.
+  **Reduced attack surface vs spec 083:** Read-only feature with no subprocess calls.
+
+  1. **Untrusted proxy data:** Zod schema validation on all responses before rendering
+  2. **URL display:** Server URLs validated for http/https scheme, display-only (no links)
+  3. **XSS prevention:** React default escaping handles untrusted strings; no raw HTML injection
+  4. **API key exposure:** Key in Authorization header only, never rendered in UI
+  5. **Localhost proxy:** All routes through existing localhost-only proxy
 
   ## Performance Implications
 
-  No performance implications identified.
+  1. **Page load:** Single request to `/public/mcp_hub` (5-20 servers typical)
+  2. **Drawer open:** Single request to `/mcp-rest/tools/list`, cached in component state
+  3. **No polling:** Static config data, manual refresh button for re-fetch
+  4. **Timeout:** 10-second AbortController timeout, silent failure to empty state
+
+  ## Patterns to Replicate from Spec 083
+
+  | Pattern | Source File | What to Replicate |
+  | --- | --- | --- |
+  | Feature flag chain | 9 files (see Decision 4) | Add `mcpServers` alongside `plugins` |
+  | Port interface | `application/ports/output/services/plugin-marketplace.interface.ts` | New `IMcpServerBrowserService` |
+  | HTTP service | `infrastructure/services/plugin-marketplace/plugin-marketplace.service.ts` | fetch + AbortController + Zod |
+  | Use case | `application/use-cases/plugins/fetch-plugin-catalog.use-case.ts` | Injectable, reads settings |
+  | Server action | `app/actions/fetch-plugin-catalog.ts` | Thin wrapper, resolve + execute |
+  | Storybook mock | `.storybook/mocks/app/actions/fetch-plugin-catalog.ts` | Mock data for stories |
+  | Page server component | `app/plugins/page.tsx` | Feature flag gate + settings check |
+  | Page client | `components/features/plugins/plugins-page-client.tsx` | State, fetch, search, filter |
+  | Card component | `components/features/plugins/plugin-card.tsx` | Card layout, badges |
+  | Detail drawer | `components/features/plugins/plugin-detail-drawer.tsx` | BaseDrawer, content layout |
+  | Sidebar nav | `components/layouts/app-sidebar/app-sidebar.tsx` | Conditional flag render |
+  | DI registration | `di/modules/services.module.ts` + `use-cases.module.ts` | Singleton registration |
+  | Barrel export | `application/ports/output/services/index.ts` | Add interface export |
 
   ## Open Questions
 
-  All questions resolved.
+  All questions resolved during spec phase.
 
   ---
 

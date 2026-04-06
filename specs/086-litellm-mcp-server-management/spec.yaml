@@ -13,7 +13,7 @@ summary: >
   via /mcp-rest/tools/list). Read-only — no CRUD operations. Gated behind a new
   featureFlags.mcpServers feature flag. Reuses existing LiteLLM proxy settings
   (baseUrl + apiKey) from spec 083.
-phase: planning
+phase: research
 sizeEstimate: L
 
 # Relationships
