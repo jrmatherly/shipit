@@ -28,6 +28,7 @@ import { InteractiveAgentSettingsSection } from './interactive-agent-settings-se
 import { FabLayoutSettingsSection } from './fab-layout-settings-section';
 import { DatabaseSettingsSection } from './database-settings-section';
 import { LiteLLMProxySettingsSection } from './litellm-proxy-settings-section';
+import { LiteLLMProxyRoutingSection } from './litellm-proxy-routing-section';
 import type { Settings } from '@shipit-ai/core/domain/generated/output';
 import type { AvailableTerminal } from '@/app/actions/get-available-terminals';
 import type { AvailableEditor } from '@/app/actions/get-available-editors';
@@ -216,6 +217,9 @@ export function SettingsPageClient({
         {(activeTab === 'all' || activeTab === 'litellm-proxy') && (
           <div id="section-litellm-proxy" className="scroll-mt-18 rounded-lg">
             <LiteLLMProxySettingsSection settings={settings} />
+            {settings.litellmProxy?.baseUrl ? (
+              <LiteLLMProxyRoutingSection settings={settings} />
+            ) : null}
           </div>
         )}
       </div>
