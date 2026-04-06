@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { SkillsPageClient } from '@/components/features/skills/skills-page-client';
 import type { SkillData } from '@/lib/skills';
 
@@ -52,12 +53,20 @@ const sampleSkills: SkillData[] = [
 
 describe('SkillsPageClient', () => {
   it('renders page header with "Skills" title', () => {
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
     expect(screen.getByRole('heading', { level: 1, name: /Skills/ })).toBeInTheDocument();
   });
 
   it('renders all skills when no filters applied', () => {
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
     expect(screen.getByTestId('skill-card-shipit-kit:plan')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-shipit-kit:implement')).toBeInTheDocument();
     expect(screen.getByTestId('skill-card-shipit-ai:ui-component')).toBeInTheDocument();
@@ -66,13 +75,21 @@ describe('SkillsPageClient', () => {
   });
 
   it('renders search input', () => {
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
     expect(screen.getByPlaceholderText(/search skills/i)).toBeInTheDocument();
   });
 
   it('search input filters skills by name', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     const searchInput = screen.getByPlaceholderText(/search skills/i);
     await user.type(searchInput, 'plan');
@@ -84,7 +101,11 @@ describe('SkillsPageClient', () => {
 
   it('search input filters skills by description', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     const searchInput = screen.getByPlaceholderText(/search skills/i);
     await user.type(searchInput, 'architecture');
@@ -95,7 +116,11 @@ describe('SkillsPageClient', () => {
 
   it('search is case-insensitive', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     const searchInput = screen.getByPlaceholderText(/search skills/i);
     await user.type(searchInput, 'PLAN');
@@ -105,7 +130,11 @@ describe('SkillsPageClient', () => {
 
   it('category filter shows only skills in selected category', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     await user.click(screen.getByRole('button', { name: /^Analysis/ }));
 
@@ -116,7 +145,11 @@ describe('SkillsPageClient', () => {
 
   it('search and category filter combine', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     // Filter to Workflow category
     await user.click(screen.getByRole('button', { name: /^Workflow/ }));
@@ -130,7 +163,11 @@ describe('SkillsPageClient', () => {
 
   it('clicking "All" category button shows all categories', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     // First filter to Workflow
     await user.click(screen.getByRole('button', { name: /^Workflow/ }));
@@ -142,13 +179,21 @@ describe('SkillsPageClient', () => {
   });
 
   it('shows "No skills found" empty state when skills prop is empty', () => {
-    render(<SkillsPageClient skills={[]} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={[]} />
+      </TooltipProvider>
+    );
     expect(screen.getByText('No skills found')).toBeInTheDocument();
   });
 
   it('shows "No matching skills" when filters yield no results', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     const searchInput = screen.getByPlaceholderText(/search skills/i);
     await user.type(searchInput, 'zzzznonexistent');
@@ -158,7 +203,11 @@ describe('SkillsPageClient', () => {
 
   it('clears filters when "Clear filters" action is clicked', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     // Apply a search that yields no results
     const searchInput = screen.getByPlaceholderText(/search skills/i);
@@ -175,7 +224,11 @@ describe('SkillsPageClient', () => {
 
   it('opens drawer when a skill card is clicked', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     await user.click(screen.getByTestId('skill-card-shipit-kit:plan'));
 
@@ -189,7 +242,11 @@ describe('SkillsPageClient', () => {
 
   it('closes drawer when dismissed', async () => {
     const user = userEvent.setup();
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     // Open drawer
     await user.click(screen.getByTestId('skill-card-shipit-kit:plan'));
@@ -203,7 +260,11 @@ describe('SkillsPageClient', () => {
   });
 
   it('renders category filter with skill counts from full unfiltered list', () => {
-    render(<SkillsPageClient skills={sampleSkills} />);
+    render(
+      <TooltipProvider>
+        <SkillsPageClient skills={sampleSkills} />
+      </TooltipProvider>
+    );
 
     // Workflow has 2, Code Generation has 1, Analysis has 1, Reference has 1
     const filterGroup = screen.getByRole('group', { name: /filter by category/i });

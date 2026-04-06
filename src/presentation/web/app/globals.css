@@ -63,8 +63,8 @@
    * System fallbacks cover SSR before Inter loads and cases where next/font is stripped.
    */
   --font-sans:
-    var(--font-inter), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
-    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    var(--font-inter), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+    'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
@@ -171,11 +171,11 @@
  * Applied to ported Stitch components (ToolCard, Sidebar, EditorialDropdown, UserMenu).
  */
 .editorial-shadow {
-  @apply shadow-sm ring-1 ring-slate-200/50 dark:ring-slate-700/50 shadow-slate-200/20 dark:shadow-none;
+  @apply shadow-sm ring-1 shadow-slate-200/20 ring-slate-200/50 dark:shadow-none dark:ring-slate-700/50;
 }
 
 .glass-blur {
-  @apply backdrop-blur-[20px] bg-white/80 dark:bg-[#111827]/80;
+  @apply bg-white/80 backdrop-blur-[20px] dark:bg-[#111827]/80;
 }
 
 /*
@@ -188,7 +188,7 @@
  * hydration, so attribute-selector-based styling is hydration-safe.
  */
 [data-sidebar='menu-button'][data-active='true'] {
-  @apply bg-card text-primary font-semibold ring-1 ring-slate-200/70 shadow-sm dark:ring-slate-700/50;
+  @apply bg-card text-primary font-semibold shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700/50;
 }
 
 /* Inactive sidebar items: muted text with subtle hover tint */
@@ -209,7 +209,7 @@
  * client renders.
  */
 [data-editorial='true'] > [role='tab'][data-state='active'] {
-  @apply bg-muted text-primary ring-1 ring-slate-200/70 shadow-sm dark:ring-slate-700/50;
+  @apply bg-muted text-primary shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700/50;
 }
 [data-editorial='true'] > [role='tab']:not([data-state='active']) {
   @apply text-muted-foreground;

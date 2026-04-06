@@ -1,6 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { SkillDetailDrawer } from '@/components/features/skills/skill-detail-drawer';
 import type { SkillData } from '@/lib/skills';
 
@@ -19,54 +20,88 @@ function makeSkill(overrides: Partial<SkillData> = {}): SkillData {
 
 describe('SkillDetailDrawer', () => {
   it('renders skill display name as sheet title when open', () => {
-    render(<SkillDetailDrawer skill={makeSkill()} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill()} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.getByText('implement')).toBeInTheDocument();
   });
 
   it('renders full skill name as sheet description', () => {
-    render(<SkillDetailDrawer skill={makeSkill()} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill()} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.getByText('shipit-kit:implement')).toBeInTheDocument();
   });
 
   it('renders skill description', () => {
-    render(<SkillDetailDrawer skill={makeSkill()} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill()} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(
       screen.getByText('Validate specs and autonomously execute implementation tasks')
     ).toBeInTheDocument();
   });
 
   it('renders source badge for project skills', () => {
-    render(<SkillDetailDrawer skill={makeSkill({ source: 'project' })} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill({ source: 'project' })} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.getByText('Project')).toBeInTheDocument();
   });
 
   it('renders source badge for global skills', () => {
-    render(<SkillDetailDrawer skill={makeSkill({ source: 'global' })} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill({ source: 'global' })} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.getByText('Global')).toBeInTheDocument();
   });
 
   it('renders context badge when context is provided', () => {
-    render(<SkillDetailDrawer skill={makeSkill({ context: 'fork' })} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill({ context: 'fork' })} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.getByText('fork')).toBeInTheDocument();
   });
 
   it('does not render context badge when context is undefined', () => {
-    render(<SkillDetailDrawer skill={makeSkill({ context: undefined })} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill({ context: undefined })} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.queryByText('fork')).not.toBeInTheDocument();
   });
 
   it('renders allowed-tools badge when allowedTools is provided', () => {
     render(
-      <SkillDetailDrawer
-        skill={makeSkill({ allowedTools: 'Read, Write, Bash' })}
-        onClose={vi.fn()}
-      />
+      <TooltipProvider>
+        <SkillDetailDrawer
+          skill={makeSkill({ allowedTools: 'Read, Write, Bash' })}
+          onClose={vi.fn()}
+        />
+      </TooltipProvider>
     );
     expect(screen.getByText('Read, Write, Bash')).toBeInTheDocument();
   });
 
   it('does not render allowed-tools section when allowedTools is undefined', () => {
-    render(<SkillDetailDrawer skill={makeSkill({ allowedTools: undefined })} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill({ allowedTools: undefined })} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.queryByText('Allowed Tools')).not.toBeInTheDocument();
   });
 
@@ -77,7 +112,11 @@ describe('SkillDetailDrawer', () => {
         { name: 'templates', fileCount: 3 },
       ],
     });
-    render(<SkillDetailDrawer skill={skill} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={skill} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
 
     expect(screen.getByText('Resources')).toBeInTheDocument();
     expect(screen.getByText(/references\//)).toBeInTheDocument();
@@ -90,36 +129,54 @@ describe('SkillDetailDrawer', () => {
     const skill = makeSkill({
       resources: [{ name: 'scripts', fileCount: 1 }],
     });
-    render(<SkillDetailDrawer skill={skill} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={skill} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.getByText(/1 file$/)).toBeInTheDocument();
   });
 
   it('hides resource section when resources array is empty', () => {
-    render(<SkillDetailDrawer skill={makeSkill({ resources: [] })} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill({ resources: [] })} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.queryByText('Resources')).not.toBeInTheDocument();
   });
 
-  it('renders skill body text in a whitespace-preserving container', () => {
+  it('renders skill body text via markdown', () => {
     render(
-      <SkillDetailDrawer
-        skill={makeSkill({ body: 'Line one\n  Line two\n    Line three' })}
-        onClose={vi.fn()}
-      />
+      <TooltipProvider>
+        <SkillDetailDrawer
+          skill={makeSkill({ body: 'Line one\n  Line two\n    Line three' })}
+          onClose={vi.fn()}
+        />
+      </TooltipProvider>
     );
     const bodyElement = screen.getByText(/Line one/);
     expect(bodyElement).toBeInTheDocument();
-    expect(bodyElement.tagName).toBe('PRE');
+    expect(bodyElement.tagName).toBe('P');
   });
 
   it('renders nothing when skill is null', () => {
-    const { container } = render(<SkillDetailDrawer skill={null} onClose={vi.fn()} />);
+    const { container } = render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={null} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(container.querySelector('[data-slot="sheet-content"]')).not.toBeInTheDocument();
   });
 
   it('calls onClose when sheet is dismissed', async () => {
     const user = userEvent.setup();
     const onClose = vi.fn();
-    render(<SkillDetailDrawer skill={makeSkill()} onClose={onClose} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill()} onClose={onClose} />
+      </TooltipProvider>
+    );
 
     const closeButton = screen.getByRole('button', { name: /close/i });
     await user.click(closeButton);
@@ -127,7 +184,11 @@ describe('SkillDetailDrawer', () => {
   });
 
   it('renders category badge', () => {
-    render(<SkillDetailDrawer skill={makeSkill({ category: 'Workflow' })} onClose={vi.fn()} />);
+    render(
+      <TooltipProvider>
+        <SkillDetailDrawer skill={makeSkill({ category: 'Workflow' })} onClose={vi.fn()} />
+      </TooltipProvider>
+    );
     expect(screen.getByText('Workflow')).toBeInTheDocument();
   });
 });

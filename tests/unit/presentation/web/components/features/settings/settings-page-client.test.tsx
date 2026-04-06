@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { SettingsPageClient } from '@/components/features/settings/settings-page-client';
 import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
 
@@ -26,22 +27,26 @@ describe('SettingsPageClient', () => {
 
   it('renders heading text "Settings"', () => {
     render(
-      <SettingsPageClient
-        settings={settings}
-        shipitAiHome="/home/user/.shipit-ai"
-        dbFileSize="2.4 MB"
-      />
+      <TooltipProvider>
+        <SettingsPageClient
+          settings={settings}
+          shipitAiHome="/home/user/.shipit-ai"
+          dbFileSize="2.4 MB"
+        />
+      </TooltipProvider>
     );
     expect(screen.getByText('Settings')).toBeDefined();
   });
 
   it('renders all six section components', () => {
     render(
-      <SettingsPageClient
-        settings={settings}
-        shipitAiHome="/home/user/.shipit-ai"
-        dbFileSize="2.4 MB"
-      />
+      <TooltipProvider>
+        <SettingsPageClient
+          settings={settings}
+          shipitAiHome="/home/user/.shipit-ai"
+          dbFileSize="2.4 MB"
+        />
+      </TooltipProvider>
     );
     expect(screen.getByTestId('agent-settings-section')).toBeDefined();
     expect(screen.getByTestId('environment-settings-section')).toBeDefined();
@@ -53,7 +58,13 @@ describe('SettingsPageClient', () => {
 
   it('passes shipitAiHome and dbFileSize to database section', () => {
     render(
-      <SettingsPageClient settings={settings} shipitAiHome="/opt/shipit-ai" dbFileSize="10.5 MB" />
+      <TooltipProvider>
+        <SettingsPageClient
+          settings={settings}
+          shipitAiHome="/opt/shipit-ai"
+          dbFileSize="10.5 MB"
+        />
+      </TooltipProvider>
     );
     expect(screen.getByTestId('shipit-ai-home-path').textContent).toBe('/opt/shipit-ai');
     expect(screen.getByTestId('db-file-size').textContent).toBe('10.5 MB');
@@ -62,48 +73,56 @@ describe('SettingsPageClient', () => {
   it('handles missing featureFlags gracefully', () => {
     const settingsWithoutFlags = { ...settings, featureFlags: undefined };
     render(
-      <SettingsPageClient
-        settings={settingsWithoutFlags}
-        shipitAiHome="/home/user/.shipit-ai"
-        dbFileSize="2.4 MB"
-      />
+      <TooltipProvider>
+        <SettingsPageClient
+          settings={settingsWithoutFlags}
+          shipitAiHome="/home/user/.shipit-ai"
+          dbFileSize="2.4 MB"
+        />
+      </TooltipProvider>
     );
     expect(screen.getByTestId('feature-flags-settings-section')).toBeDefined();
   });
 
   it('renders terminal select in environment section', () => {
     render(
-      <SettingsPageClient
-        settings={settings}
-        shipitAiHome="/home/user/.shipit-ai"
-        dbFileSize="2.4 MB"
-        availableTerminals={[
-          { id: 'system', name: 'System Terminal', available: true },
-          { id: 'warp', name: 'Warp', available: true },
-        ]}
-      />
+      <TooltipProvider>
+        <SettingsPageClient
+          settings={settings}
+          shipitAiHome="/home/user/.shipit-ai"
+          dbFileSize="2.4 MB"
+          availableTerminals={[
+            { id: 'system', name: 'System Terminal', available: true },
+            { id: 'warp', name: 'Warp', available: true },
+          ]}
+        />
+      </TooltipProvider>
     );
     expect(screen.getByTestId('terminal-select')).toBeDefined();
   });
 
   it('renders shell select in environment section', () => {
     render(
-      <SettingsPageClient
-        settings={settings}
-        shipitAiHome="/home/user/.shipit-ai"
-        dbFileSize="2.4 MB"
-      />
+      <TooltipProvider>
+        <SettingsPageClient
+          settings={settings}
+          shipitAiHome="/home/user/.shipit-ai"
+          dbFileSize="2.4 MB"
+        />
+      </TooltipProvider>
     );
     expect(screen.getByTestId('shell-select')).toBeDefined();
   });
 
   it('renders PR blocked notification toggle', () => {
     render(
-      <SettingsPageClient
-        settings={settings}
-        shipitAiHome="/home/user/.shipit-ai"
-        dbFileSize="2.4 MB"
-      />
+      <TooltipProvider>
+        <SettingsPageClient
+          settings={settings}
+          shipitAiHome="/home/user/.shipit-ai"
+          dbFileSize="2.4 MB"
+        />
+      </TooltipProvider>
     );
     expect(screen.getByTestId('switch-event-prBlocked')).toBeDefined();
     expect(screen.getByText('PR blocked')).toBeDefined();
@@ -111,11 +130,13 @@ describe('SettingsPageClient', () => {
 
   it('renders Merge review ready notification toggle', () => {
     render(
-      <SettingsPageClient
-        settings={settings}
-        shipitAiHome="/home/user/.shipit-ai"
-        dbFileSize="2.4 MB"
-      />
+      <TooltipProvider>
+        <SettingsPageClient
+          settings={settings}
+          shipitAiHome="/home/user/.shipit-ai"
+          dbFileSize="2.4 MB"
+        />
+      </TooltipProvider>
     );
     expect(screen.getByTestId('switch-event-mergeReviewReady')).toBeDefined();
     expect(screen.getByText('Merge review ready')).toBeDefined();
