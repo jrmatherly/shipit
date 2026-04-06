@@ -63,6 +63,20 @@ Several former god classes are now **facades** delegating to focused sub-service
 - **New ports:** Must add barrel export to `packages/core/src/application/ports/output/services/index.ts`
 - **Server actions:** Use `resolve<T>('StringToken')` from `@/lib/server-container` — never import services directly
 - **ISettingsReader pattern:** For converting global accessor calls (`getSettings()`/`hasSettings()`) to DI: class-based consumers get `@inject('ISettingsReader')` constructor injection; free-function consumers accept optional `Settings` parameter with callers injecting. Registered as `container.registerSingleton<ISettingsReader>('ISettingsReader', SettingsReaderService)`.
+- **Services with non-injectable constructor deps:** When a service takes a function (e.g., `SpawnFunction`) instead of an interface, register with `useFactory` in `services.module.ts`. See `IPluginMarketplaceService` registration for the `execFile` wrapper pattern. Include `windowsHide: true` for Windows subprocess calls.
+
+### Adding Feature Flags
+
+Adding a field to `FeatureFlags` in TypeSpec generates a **required** (not optional) field, cascading to ~18 files:
+1. `tsp/domain/entities/settings.tsp` — add field with default
+2. `packages/core/src/domain/generated/output.ts` — `pnpm tsp:codegen`
+3. `packages/core/src/domain/factories/settings-defaults.factory.ts` — add default value
+4. SQLite migration — add `feature_flag_<name> INTEGER DEFAULT 0` column
+5. `settings.mapper.ts` — SettingsRow + toDatabase + toDomain
+6. `src/presentation/web/lib/feature-flags.ts` — FeatureFlagsState + ENV_FALLBACK_FLAGS + getFeatureFlags() + deprecated getter
+7. `feature-flags-settings-section.tsx` — toggle row + fallback object
+8. All 8 `translations/*/web.json` — label + description keys
+9. Stories and tests constructing FeatureFlags objects (grep for `reactFileManager:` to find all)
 
 ### Tool Metadata System
 
@@ -112,6 +126,7 @@ Adding a new CLI agent requires changes across 8+ integration points:
 
 - **Editorial design system (Stitch refresh):** Design tokens in `globals.css` use Stitch's editorial palette (midnight/sky/surface). Utility classes `.editorial-shadow` and `.glass-blur` in `globals.css`. Sidebar active state via `[data-sidebar='menu-button'][data-active='true']` CSS selector. Tab active state via `[data-editorial='true'] > [role='tab'][data-state='active']`. Chat FAB open state via `[data-chat-fab='true'][data-chat-open='true']`. All state-dependent styling uses CSS attribute selectors (not conditional classNames) to prevent hydration mismatches.
 - **BaseDrawer overrides DrawerContent:** `BaseDrawer` component passes its own `className` to `DrawerContent`. Any default styling set in `DrawerContent` (e.g., glass-blur) is overridden by BaseDrawer's explicit className. When changing drawer appearance, update BOTH files.
+- **BaseDrawer API:** Accepts `open: boolean` and `onClose: () => void` (NOT `onOpenChange`). Differs from Radix's `Drawer` API. Uses `i18n.dir()` for RTL support — mock `useTranslation` must return `{ t, i18n: { dir: () => 'ltr' } }` in tests.
 - **`@cubone/react-file-manager` dark mode:** Requires nuclear `& * { color: var(--color-foreground) !important; }` override in `.shipit-ai-file-manager` scope. The library's CSS uses hardcoded `#fff` backgrounds and `#000` text with specificity that beats wrapper-scoped selectors. Key missing selector in previous attempts: `.folders-preview` (the main file list pane).
 
 ## Security
@@ -244,6 +259,9 @@ Active remediation plan: [`.scratchpad/plans/technical-debt-remediation-plan.md`
 - **TypeSpec toolchain bump verification:** Before any `@typespec/*`, `@typespec-tools/*`, or emitter dependency bump, capture `shasum -a 256 packages/core/src/domain/generated/output.ts`, run `pnpm tsp:codegen`, compare. Byte-identical = safe. Any diff = investigate emitter behavior change before committing.
 - **State channel count assertion:** `tests/unit/infrastructure/services/agents/feature-agent/state.test.ts` has a hardcoded channel count assertion that must be bumped when adding new fields to `FeatureAgentAnnotation`. Forgetting this causes a cryptic test failure unrelated to your actual change.
 - **Radix Tooltip content is portal-rendered:** Test for tooltip presence via `aria-label` on the trigger button, NOT via `screen.getByText()` on the tooltip content (which is only mounted when the tooltip is open). Example: `screen.getByRole('button', { name: /shipit ai chat/i })`.
+- **reflect-metadata in use case tests:** Test files importing use cases with `@injectable()`/`@inject()` decorators must add `import 'reflect-metadata';` as the FIRST import line. The vitest node setup does not include this polyfill.
+- **Storybook imports:** Use `import type { Meta, StoryObj } from '@storybook/react-vite'` — NOT `@storybook/react`. The project uses the Vite-specific Storybook package.
+- **Storybook story args:** Empty callback functions in story `args` must use `() => undefined` not `() => {}` — ESLint's `@typescript-eslint/no-empty-function` rejects the latter.
 
 ### i18n Key Parity
 
