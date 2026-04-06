@@ -36,6 +36,9 @@ properties:
   fabLayout:
     $ref: FabLayoutConfig.yaml
     description: FAB layout configuration (optional, defaults applied at runtime)
+  litellmProxy:
+    $ref: LiteLLMProxyConfig.yaml
+    description: LiteLLM proxy configuration (optional, marketplace disabled when absent)
 required:
   - models
   - user

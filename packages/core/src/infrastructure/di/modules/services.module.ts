@@ -46,6 +46,9 @@ import type { IEnvironmentDetectorService } from '../../../application/ports/out
 import { EnvironmentDetectorServiceImpl } from '../../services/environment-detector.service.js';
 import type { ISettingsReader } from '../../../application/ports/output/services/settings-reader.interface.js';
 import { SettingsReaderService } from '../../services/settings-reader.service.js';
+import { execFile } from 'node:child_process';
+import type { IPluginMarketplaceService } from '../../../application/ports/output/services/plugin-marketplace.interface.js';
+import { PluginMarketplaceService } from '../../services/plugin-marketplace/plugin-marketplace.service.js';
 
 /**
  * Register business services (singletons and factories).
@@ -128,4 +131,20 @@ export function registerServicesModule(
     ToolMetadataServiceImpl
   );
   container.registerSingleton<ISettingsReader>('ISettingsReader', SettingsReaderService);
+
+  // PluginMarketplaceService — uses execFile for subprocess calls
+  container.register<IPluginMarketplaceService>('IPluginMarketplaceService', {
+    useFactory: () => {
+      const spawnCb = (
+        cmd: string,
+        args: string[],
+        callback: (error: Error | null, stdout: string, stderr: string) => void
+      ) => {
+        execFile(cmd, args, { timeout: 30_000 }, (error, stdout, stderr) => {
+          callback(error, stdout ?? '', stderr ?? '');
+        });
+      };
+      return new PluginMarketplaceService(spawnCb);
+    },
+  });
 }
