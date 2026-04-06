@@ -136,7 +136,7 @@ export function ToolDetailDrawer({
       <div className="flex items-center gap-2">
         {tool.iconUrl ? (
           /* eslint-disable-next-line @next/next/no-img-element */
-          <img src={tool.iconUrl} alt="" width={24} height={24} className="shrink-0 dark:invert" />
+          <img src={tool.iconUrl} alt="" width={24} height={24} className="shrink-0" />
         ) : (
           <Package className="text-muted-foreground h-6 w-6 shrink-0" />
         )}

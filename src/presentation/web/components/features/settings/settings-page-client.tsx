@@ -10,8 +10,6 @@ import {
   Bell,
   Flag,
   Database,
-  Globe,
-  Settings2,
   Timer,
   MessageSquare,
   LayoutGrid,
@@ -31,12 +29,10 @@ import { updateSettingsAction } from '@/app/actions/update-settings';
 import {
   type AgentType,
   type EditorType,
-  Language,
   TerminalType,
 } from '@shipit-ai/core/domain/generated/output';
 import { getEditorTypeIcon } from '@/components/common/editor-type-icons';
 import { AgentModelPicker } from '@/components/features/settings/AgentModelPicker';
-import { LanguageSettingsSection } from '@/components/features/settings/language-settings-section';
 import { CiSettingsSection } from '@/components/features/settings/ci-settings-section';
 import { StageTimeoutsSettingsSection } from '@/components/features/settings/stage-timeouts-settings-section';
 import { InteractiveAgentSettingsSection } from '@/components/features/settings/interactive-agent-settings-section';
@@ -73,7 +69,6 @@ const DEFAULT_SHELL_OPTIONS: AvailableShell[] = [
 ];
 
 const SECTIONS = [
-  { id: 'language', labelKey: 'settings.sections.language', icon: Globe },
   { id: 'agent', labelKey: 'settings.sections.agent', icon: Bot },
   { id: 'environment', labelKey: 'settings.sections.environment', icon: Terminal },
   { id: 'workflow', labelKey: 'settings.sections.workflow', icon: GitBranch },
@@ -306,66 +301,66 @@ export function SettingsPageClient({
   }, []);
 
   return (
-    <div data-testid="settings-page-client" className="max-w-5xl">
-      {/* Sticky header — title + save indicator + TOC in one row */}
-      <div className="bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-0 z-10 grid grid-cols-1 gap-x-5 pt-6 pb-4 backdrop-blur lg:grid-cols-[1fr_280px]">
-        <div className="flex items-center gap-2">
-          <Settings2 className="text-muted-foreground h-4 w-4" />
-          <h1 className="text-sm font-bold tracking-tight">{t('settings.title')}</h1>
-          <span className="relative h-4 w-16">
-            <span
-              className={cn(
-                'text-muted-foreground absolute inset-0 flex items-center text-xs transition-opacity duration-300',
-                showSaving ? 'opacity-100' : 'opacity-0'
-              )}
-            >
-              {t('settings.saving')}
-            </span>
-            <span
-              className={cn(
-                'absolute inset-0 flex items-center gap-1 text-xs text-green-600 transition-opacity duration-300',
-                showSaved && !showSaving ? 'opacity-100' : 'opacity-0'
-              )}
-            >
-              <Check className="h-3 w-3" />
-              {t('settings.saved')}
-            </span>
+    <div data-testid="settings-page-client" className="max-w-5xl px-8 pt-8">
+      {/* Sticky header — editorial title + save indicator + section nav */}
+      <div className="bg-background/95 supports-backdrop-filter:bg-background/80 sticky top-0 z-10 pb-4 backdrop-blur">
+        {/* Title row with editorial treatment */}
+        <div className="mb-4 space-y-1.5">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">
+            Developer Portal
           </span>
-          <nav className="ml-auto flex items-center gap-0.5">
-            {SECTIONS.map((s) => {
-              const SectionIcon = s.icon;
-              const isActive = activeSection === s.id;
-              return (
-                <button
-                  key={s.id}
-                  type="button"
-                  onClick={() => scrollToSection(s.id)}
-                  className={cn(
-                    'flex cursor-pointer items-center gap-1 rounded-md px-1.5 py-1 text-[11px] transition-all',
-                    isActive
-                      ? 'bg-accent text-foreground font-medium'
-                      : 'text-muted-foreground/60 hover:text-foreground hover:bg-accent/50'
-                  )}
-                >
-                  <SectionIcon className="h-3 w-3" />
-                  <span className="hidden sm:inline">{t(s.labelKey)}</span>
-                </button>
-              );
-            })}
-          </nav>
+          <div className="flex items-baseline gap-3">
+            <h1 className="text-foreground text-3xl font-black tracking-tight">
+              {t('settings.title')}
+            </h1>
+            <span className="relative h-4 w-16">
+              <span
+                className={cn(
+                  'text-muted-foreground absolute inset-0 flex items-center text-xs transition-opacity duration-300',
+                  showSaving ? 'opacity-100' : 'opacity-0'
+                )}
+              >
+                {t('settings.saving')}
+              </span>
+              <span
+                className={cn(
+                  'absolute inset-0 flex items-center gap-1 text-xs text-green-600 transition-opacity duration-300',
+                  showSaved && !showSaving ? 'opacity-100' : 'opacity-0'
+                )}
+              >
+                <Check className="h-3 w-3" />
+                {t('settings.saved')}
+              </span>
+            </span>
+          </div>
         </div>
+        {/* Section navigation — editorial tab treatment */}
+        <nav className="bg-card editorial-shadow flex flex-wrap items-center gap-0.5 rounded-lg p-1">
+          {SECTIONS.map((s) => {
+            const SectionIcon = s.icon;
+            const isActive = activeSection === s.id;
+            return (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => scrollToSection(s.id)}
+                className={cn(
+                  'flex cursor-pointer items-center gap-1 rounded-md px-2 py-1.5 text-[11px] font-bold transition-all',
+                  isActive
+                    ? 'bg-muted text-primary shadow-sm ring-1 ring-slate-200/70 dark:ring-slate-700/50'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-accent/50'
+                )}
+              >
+                <SectionIcon className="h-3 w-3" />
+                <span className="hidden sm:inline">{t(s.labelKey)}</span>
+              </button>
+            );
+          })}
+        </nav>
       </div>
 
       <div className="flex flex-col gap-3">
-        {/* ── Language ── */}
-        <div
-          id="section-language"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
-          <LanguageSettingsSection
-            language={settings.user?.preferredLanguage ?? Language.English}
-          />
-        </div>
+        {/* ── Language — hidden from UI per product decision ── */}
 
         {/* ── Agent ── */}
         <div
@@ -381,6 +376,7 @@ export function SettingsPageClient({
             <SettingsRow
               label={t('settings.agent.agentAndModel')}
               description={t('settings.agent.agentAndModelDescription')}
+              tooltip="Changing the agent switches which AI CLI tool runs your features. Each agent has different capabilities, speed, and cost tradeoffs."
               htmlFor="agent-model-picker"
             >
               <AgentModelPicker
@@ -426,6 +422,7 @@ export function SettingsPageClient({
             <SettingsRow
               label={t('settings.environment.defaultEditor')}
               description={t('settings.environment.defaultEditorDescription')}
+              tooltip="The editor that opens when you click 'Launch' on a tool card or when ShipIT needs to open a file for review."
               htmlFor="default-editor"
             >
               <Select
@@ -477,6 +474,7 @@ export function SettingsPageClient({
             <SettingsRow
               label={t('settings.environment.shell')}
               description={t('settings.environment.shellDescription')}
+              tooltip="Controls which shell runs generated scripts like install commands and git operations. Match this to your daily driver shell."
               htmlFor="shell-preference"
             >
               <Select
@@ -524,6 +522,7 @@ export function SettingsPageClient({
             <SettingsRow
               label={t('settings.environment.terminal')}
               description={t('settings.environment.terminalDescription')}
+              tooltip="The terminal emulator launched when opening shell sessions from the web UI. Only affects web-launched terminals, not CLI usage."
               htmlFor="terminal-preference"
             >
               <Select
@@ -595,6 +594,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.defaultFastMode')}
               description={t('settings.workflow.defaultFastModeDescription')}
+              tooltip="When enabled, new features skip the PRD and Plan phases and go straight to implementation. Useful for quick fixes, risky for complex features."
               id="default-fast-mode"
               testId="switch-default-fast-mode"
               checked={defaultFastMode}
@@ -607,6 +607,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.autoApprovePrd')}
               description={t('settings.workflow.autoApprovePrdDescription')}
+              tooltip="Automatically approves the requirements document without pausing for your review. Saves time but you lose the chance to refine requirements before planning."
               id="allow-prd"
               testId="switch-allow-prd"
               checked={allowPrd}
@@ -618,6 +619,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.autoApprovePlan')}
               description={t('settings.workflow.autoApprovePlanDescription')}
+              tooltip="Automatically approves the implementation plan. The agent proceeds to coding without waiting for your plan review."
               id="allow-plan"
               testId="switch-allow-plan"
               checked={allowPlan}
@@ -629,6 +631,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.autoApproveMerge')}
               description={t('settings.workflow.autoApproveMergeDescription')}
+              tooltip="Automatically merges the PR after implementation without requiring your final review. Use with caution on production branches."
               id="allow-merge"
               testId="switch-allow-merge"
               checked={allowMerge}
@@ -641,6 +644,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.collectEvidence')}
               description={t('settings.workflow.collectEvidenceDescription')}
+              tooltip="Captures screenshots and test outputs during implementation as proof of work. Useful for audit trails and PR documentation."
               id="enable-evidence"
               testId="switch-enable-evidence"
               checked={enableEvidence}
@@ -657,6 +661,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.addEvidenceToPr')}
               description={t('settings.workflow.addEvidenceToPrDescription')}
+              tooltip="Attaches collected evidence artifacts (screenshots, logs) directly to the pull request description."
               id="commit-evidence"
               testId="switch-commit-evidence"
               checked={commitEvidence}
@@ -670,6 +675,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.pushOnComplete')}
               description={t('settings.workflow.pushOnCompleteDescription')}
+              tooltip="Automatically pushes the implementation branch to the remote repository when the agent finishes coding."
               id="push-on-complete"
               testId="switch-push-on-complete"
               checked={pushOnComplete}
@@ -681,6 +687,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.openPrOnComplete')}
               description={t('settings.workflow.openPrOnCompleteDescription')}
+              tooltip="Creates a pull request automatically after pushing. Combined with push-on-complete, this fully automates the delivery pipeline."
               id="open-pr"
               testId="switch-open-pr"
               checked={openPr}
@@ -697,6 +704,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.workflow.watchCiAfterPush')}
               description={t('settings.workflow.watchCiAfterPushDescription')}
+              tooltip="Monitors CI/CD pipeline status after pushing and can attempt fixes if tests fail. Disable if you prefer to handle CI failures manually."
               id="ci-watch-enabled"
               testId="switch-ci-watch-enabled"
               checked={ciWatchEnabled}
@@ -709,6 +717,7 @@ export function SettingsPageClient({
             <SwitchRow
               label="Auto-archive completed"
               description="Automatically archive features after they reach the completed state"
+              tooltip="Automatically archives features from the control center canvas after they reach the completed state, keeping the board clean."
               id="auto-archive-enabled"
               testId="switch-auto-archive-enabled"
               checked={autoArchiveEnabled}
@@ -720,6 +729,7 @@ export function SettingsPageClient({
             <SettingsRow
               label="Archive delay"
               description="Minutes to wait after completion before archiving (1–1440)"
+              tooltip="How long to wait after a feature completes before archiving it. Gives you time to review results before the feature moves off the board."
               htmlFor="auto-archive-delay"
             >
               <NumberStepper
@@ -805,6 +815,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.notifications.inAppLabel')}
               description={t('settings.notifications.inAppDescription')}
+              tooltip="Master toggle for in-app toast notifications. When disabled, no event toasts will appear regardless of individual event settings below."
               id="notif-in-app"
               testId="switch-in-app"
               checked={inApp}
@@ -817,6 +828,7 @@ export function SettingsPageClient({
             <SubsectionLabel>{t('settings.notifications.subsections.agentEvents')}</SubsectionLabel>
             <SwitchRow
               label={t('settings.notifications.events.agentStarted')}
+              tooltip="Controls whether you receive an in-app toast notification when an agent begins working on a feature."
               id="notif-event-agentStarted"
               testId="switch-event-agentStarted"
               checked={events.agentStarted}
@@ -828,6 +840,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.phaseCompleted')}
+              tooltip="Controls whether you receive an in-app toast notification when an agent completes a workflow phase (e.g., requirements, planning, implementation)."
               id="notif-event-phaseCompleted"
               testId="switch-event-phaseCompleted"
               checked={events.phaseCompleted}
@@ -839,6 +852,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.waitingApproval')}
+              tooltip="Controls whether you receive an in-app toast notification when a feature is paused and waiting for your approval to continue."
               id="notif-event-waitingApproval"
               testId="switch-event-waitingApproval"
               checked={events.waitingApproval}
@@ -850,6 +864,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.agentCompleted')}
+              tooltip="Controls whether you receive an in-app toast notification when an agent finishes all work on a feature successfully."
               id="notif-event-agentCompleted"
               testId="switch-event-agentCompleted"
               checked={events.agentCompleted}
@@ -861,6 +876,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.agentFailed')}
+              tooltip="Controls whether you receive an in-app toast notification when an agent encounters an error and stops working on a feature."
               id="notif-event-agentFailed"
               testId="switch-event-agentFailed"
               checked={events.agentFailed}
@@ -876,6 +892,7 @@ export function SettingsPageClient({
             </SubsectionLabel>
             <SwitchRow
               label={t('settings.notifications.events.prMerged')}
+              tooltip="Controls whether you receive an in-app toast notification when a feature's pull request is merged into the target branch."
               id="notif-event-prMerged"
               testId="switch-event-prMerged"
               checked={events.prMerged}
@@ -887,6 +904,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.prClosed')}
+              tooltip="Controls whether you receive an in-app toast notification when a feature's pull request is closed without merging."
               id="notif-event-prClosed"
               testId="switch-event-prClosed"
               checked={events.prClosed}
@@ -898,6 +916,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.prChecksPassed')}
+              tooltip="Controls whether you receive an in-app toast notification when all CI checks pass on a feature's pull request."
               id="notif-event-prChecksPassed"
               testId="switch-event-prChecksPassed"
               checked={events.prChecksPassed}
@@ -909,6 +928,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.prChecksFailed')}
+              tooltip="Controls whether you receive an in-app toast notification when CI checks fail on a feature's pull request."
               id="notif-event-prChecksFailed"
               testId="switch-event-prChecksFailed"
               checked={events.prChecksFailed}
@@ -920,6 +940,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.prBlocked')}
+              tooltip="Controls whether you receive an in-app toast notification when a pull request is blocked by merge conflicts or branch protection rules."
               id="notif-event-prBlocked"
               testId="switch-event-prBlocked"
               checked={events.prBlocked}
@@ -931,6 +952,7 @@ export function SettingsPageClient({
             />
             <SwitchRow
               label={t('settings.notifications.events.mergeReviewReady')}
+              tooltip="Controls whether you receive an in-app toast notification when a feature's PR passes all checks and is ready for your merge review."
               id="notif-event-mergeReviewReady"
               testId="switch-event-mergeReviewReady"
               checked={events.mergeReviewReady}
@@ -968,6 +990,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.featureFlags.skills')}
               description={t('settings.featureFlags.skillsDescription')}
+              tooltip="Enables the Skills page in the sidebar for browsing and managing Claude Code skills."
               id="flag-skills"
               testId="switch-flag-skills"
               checked={flags.skills}
@@ -980,6 +1003,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.featureFlags.deployments')}
               description={t('settings.featureFlags.deploymentsDescription')}
+              tooltip="Enables experimental deployment features for environment management."
               id="flag-envDeploy"
               testId="switch-flag-envDeploy"
               checked={flags.envDeploy}
@@ -992,6 +1016,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.featureFlags.debug')}
               description={t('settings.featureFlags.debugDescription')}
+              tooltip="Shows additional debugging information in the UI for troubleshooting."
               id="flag-debug"
               testId="switch-flag-debug"
               checked={flags.debug}
@@ -1004,6 +1029,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.featureFlags.githubImport')}
               description={t('settings.featureFlags.githubImportDescription')}
+              tooltip="Enables importing repositories directly from GitHub."
               id="flag-githubImport"
               testId="switch-flag-githubImport"
               checked={flags.githubImport}
@@ -1016,6 +1042,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.featureFlags.adoptBranch')}
               description={t('settings.featureFlags.adoptBranchDescription')}
+              tooltip="Enables adopting existing git branches as ShipIT features."
               id="flag-adoptBranch"
               testId="switch-flag-adoptBranch"
               checked={flags.adoptBranch}
@@ -1028,6 +1055,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.featureFlags.gitRebaseSync')}
               description={t('settings.featureFlags.gitRebaseSyncDescription')}
+              tooltip="Uses git rebase instead of merge when syncing feature branches with the upstream branch."
               id="flag-gitRebaseSync"
               testId="switch-flag-gitRebaseSync"
               checked={flags.gitRebaseSync}
@@ -1040,6 +1068,7 @@ export function SettingsPageClient({
             <SwitchRow
               label={t('settings.featureFlags.reactFileManager')}
               description={t('settings.featureFlags.reactFileManagerDescription')}
+              tooltip="Replaces the native file picker dialog with a React-based file browser for selecting project folders."
               id="flag-reactFileManager"
               testId="switch-flag-reactFileManager"
               checked={flags.reactFileManager}
@@ -1085,6 +1114,7 @@ export function SettingsPageClient({
             <SettingsRow
               label={t('settings.database.location')}
               description={t('settings.database.locationDescription')}
+              tooltip="The directory where ShipIT stores its SQLite database, logs, and configuration files. Change this via the SHIPIT_AI_HOME environment variable."
             >
               <span
                 className="text-muted-foreground max-w-50 truncate font-mono text-xs"
@@ -1093,7 +1123,10 @@ export function SettingsPageClient({
                 {shipitAiHome}
               </span>
             </SettingsRow>
-            <SettingsRow label={t('settings.database.size')}>
+            <SettingsRow
+              label={t('settings.database.size')}
+              tooltip="Current size of the SQLite database file on disk. Large databases may slow down startup; consider archiving old features if this grows significantly."
+            >
               <span className="text-muted-foreground text-xs" data-testid="db-file-size">
                 {dbFileSize}
               </span>

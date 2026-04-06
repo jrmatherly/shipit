@@ -131,8 +131,12 @@ describe('AppShell', () => {
   describe('global chat popup', () => {
     it('renders the chat toggle button', () => {
       renderShell(<div>Content</div>);
-      // GlobalChatPopup renders a "ShipIT AI Chat" tooltip label
-      expect(screen.getByText('ShipIT AI Chat')).toBeInTheDocument();
+      // The Chat FAB exposes its purpose via aria-label on the Button so
+      // it's discoverable whether or not the Radix Tooltip is open. The
+      // tooltip CONTENT is portal-rendered by Radix and only mounted while
+      // the tooltip is open, so asserting on the aria-label (always present)
+      // is the correct accessibility invariant to test.
+      expect(screen.getByRole('button', { name: /shipit ai chat/i })).toBeInTheDocument();
     });
   });
 });

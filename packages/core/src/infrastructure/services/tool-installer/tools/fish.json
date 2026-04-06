@@ -3,6 +3,7 @@
   "summary": "Friendly Interactive Shell with smart features",
   "description": "Fish is a smart and user-friendly command line shell with features like autosuggestions, syntax highlighting, and web-based configuration.",
   "tags": ["shell"],
+  "iconUrl": "/icons/tools/fish.svg",
   "author": "Fish Shell Contributors",
   "website": "https://fishshell.com/",
   "platforms": ["linux", "darwin"],

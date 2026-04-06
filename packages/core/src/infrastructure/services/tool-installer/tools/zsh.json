@@ -3,6 +3,7 @@
   "summary": "Z shell - default shell on macOS since Catalina",
   "description": "Zsh is a powerful shell with advanced features like improved tab completion, globbing, and plugin support via frameworks like Oh My Zsh.",
   "tags": ["shell"],
+  "iconUrl": "/icons/tools/zsh.svg",
   "author": "Paul Falstad",
   "website": "https://www.zsh.org/",
   "platforms": ["linux", "darwin"],

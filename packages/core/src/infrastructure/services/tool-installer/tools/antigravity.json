@@ -6,7 +6,7 @@
   "author": "Google",
   "website": "https://antigravity.google",
   "platforms": ["linux", "darwin"],
-  "iconUrl": "https://cdn.simpleicons.org/google",
+  "iconUrl": "/icons/tools/antigravity.svg",
   "binary": {
     "linux": "antigravity",
     "darwin": "agy"

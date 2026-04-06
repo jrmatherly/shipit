@@ -143,7 +143,10 @@ export function FeaturesCanvas({
     <div
       data-testid={isEmpty ? 'features-canvas-empty' : 'features-canvas'}
       data-no-drawer-close
-      className="dark:bg-background pointer-events-auto relative h-full w-full bg-[#f6f7f8]"
+      // Canvas background uses --color-background in both modes so it inherits
+      // the editorial surface (#f8fafc light / #0b0f19 dark). Previously
+      // hardcoded #f6f7f8 in light mode only.
+      className="bg-background pointer-events-auto relative h-full w-full"
     >
       <ReactFlow
         nodes={enrichedNodes}

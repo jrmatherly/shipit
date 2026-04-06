@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { MessageSquare, X, Bot, GripVertical, Maximize2, Minimize2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ChatTab } from './ChatTab';
 import { ChatDotIndicator } from './ChatDotIndicator';
 import { useTurnStatus } from '@/hooks/turn-statuses-provider';
@@ -408,44 +409,75 @@ export function GlobalChatPopup() {
         sidebarState={sidebarState}
         isMaximized={isMaximized}
       >
-        <Button
-          size="icon"
-          onClick={toggle}
-          className={cn(
-            'relative h-14 w-14 rounded-full shadow-lg',
-            'transition-all duration-200 hover:scale-105 hover:shadow-xl active:scale-95',
-            isOpen
-              ? 'bg-violet-600 text-white hover:bg-violet-500'
-              : 'bg-violet-500 text-white hover:bg-violet-400 dark:bg-violet-500 dark:hover:bg-violet-400'
-          )}
-        >
-          <MessageSquare
-            className={cn(
-              'absolute h-7 w-7 stroke-[2.5] transition-all duration-200',
-              isOpen ? 'scale-0 rotate-90 opacity-0' : 'scale-100 rotate-0 opacity-100'
-            )}
-          />
-          <X
-            className={cn(
-              'absolute h-6 w-6 stroke-[2.5] transition-all duration-200',
-              isOpen ? 'scale-100 rotate-0 opacity-100' : 'scale-0 -rotate-90 opacity-0'
-            )}
-          />
-          {!isOpen && <ChatDotIndicator status={globalChatTurnStatus} className="end-0 top-0" />}
-        </Button>
-        {/* Tooltip — slides up on hover */}
-        <div className="pointer-events-none absolute bottom-[calc(100%+8px)] left-1/2 -translate-x-1/2 translate-y-1 opacity-0 transition-all duration-200 group-hover/fab:translate-y-0 group-hover/fab:opacity-100">
-          <div className="bg-foreground rounded-lg px-3 py-1.5 text-center shadow-lg">
-            <p className="text-background text-xs font-medium whitespace-nowrap">
-              {t('chat.shipitAiChat')}
-            </p>
-            <p className="text-background/50 mt-0.5 flex items-center justify-center gap-1 text-[10px]">
+        {/*
+         * Tooltip uses the shadcn/Radix primitive. It inherits the TooltipProvider
+         * from the surrounding sidebar primitive (SidebarProvider wraps the whole
+         * inset in `<TooltipProvider delayDuration={0}>` — see components/ui/sidebar.tsx:150),
+         * so adding a nested provider here would be redundant and could create
+         * two competing providers.
+         *
+         * The `open` prop force-closes the tooltip when the sheet is open so it
+         * doesn't linger behind the chat panel. `open={undefined}` when closed
+         * returns control to Radix's hover-driven default behavior.
+         *
+         * NOTE on hover: the Button class list deliberately omits
+         * `hover:-translate-y-0.5` (previously used). The translate moved the
+         * button under the cursor on mouseenter, which caused pointer leave/enter
+         * flapping that cancelled the tooltip's hover timer. Stitch's editorial
+         * hover pattern for circular FABs uses scale + brightness instead, which
+         * keeps the button centered under the cursor.
+         */}
+        <Tooltip {...(isOpen ? { open: false } : {})}>
+          <TooltipTrigger asChild>
+            <Button
+              size="icon"
+              onClick={toggle}
+              data-chat-fab="true"
+              data-chat-open={isOpen ? 'true' : 'false'}
+              aria-label={t('chat.shipitAiChat')}
+              className={cn(
+                // Stitch editorial refresh: use the primary sky token instead of the legacy
+                // violet accent so the Chat FAB matches the rest of the editorial palette.
+                // (bg-primary is #2563eb light / #3b82f6 dark)
+                //
+                // className here is a STATIC string literal — NO conditional branches.
+                // The open-state visual lift (ring-2) is applied via a CSS attribute
+                // selector on [data-chat-fab="true"][data-chat-open="true"] in globals.css.
+                // Keeping the className pure and static prevents hydration-mismatch
+                // drift between SSR and client HMR bundles during dev.
+                //
+                // Hover uses scale + brightness (NOT translate) so the button stays
+                // centered under the cursor and does not break Radix tooltip hover
+                // tracking via flapping pointer events.
+                'bg-primary text-primary-foreground editorial-shadow relative h-14 w-14 rounded-full shadow-lg transition-all duration-200 hover:scale-[1.05] hover:shadow-xl hover:brightness-110 active:scale-95'
+              )}
+            >
+              <MessageSquare
+                className={cn(
+                  'absolute h-7 w-7 stroke-[2.5] transition-all duration-200',
+                  isOpen ? 'scale-0 rotate-90 opacity-0' : 'scale-100 rotate-0 opacity-100'
+                )}
+              />
+              <X
+                className={cn(
+                  'absolute h-6 w-6 stroke-[2.5] transition-all duration-200',
+                  isOpen ? 'scale-100 rotate-0 opacity-100' : 'scale-0 -rotate-90 opacity-0'
+                )}
+              />
+              {!isOpen && (
+                <ChatDotIndicator status={globalChatTurnStatus} className="end-0 top-0" />
+              )}
+            </Button>
+          </TooltipTrigger>
+          <TooltipContent side="top" sideOffset={12} className="text-center">
+            <p className="text-xs font-medium whitespace-nowrap">{t('chat.shipitAiChat')}</p>
+            <p className="mt-0.5 flex items-center justify-center gap-1 text-[10px] opacity-60">
               <kbd className="bg-background/15 rounded px-1 py-px font-mono">⌘</kbd>
               <kbd className="bg-background/15 rounded px-1 py-px font-mono">⇧</kbd>
               <kbd className="bg-background/15 rounded px-1 py-px font-mono">K</kbd>
             </p>
-          </div>
-        </div>
+          </TooltipContent>
+        </Tooltip>
       </ChatFabWrapper>
     </>
   );
@@ -468,9 +500,7 @@ function ChatFabWrapper({
 
   if (!swapPosition) {
     return (
-      <div className={cn('group/fab fixed end-8 bottom-6 z-30', isMaximized && 'hidden')}>
-        {children}
-      </div>
+      <div className={cn('fixed end-8 bottom-6 z-30', isMaximized && 'hidden')}>{children}</div>
     );
   }
 
@@ -485,10 +515,7 @@ function ChatFabWrapper({
     : { left: sidebarOffset, transition: 'left 200ms ease-in-out' };
 
   return (
-    <div
-      className={cn('group/fab fixed bottom-6 z-30', isMaximized && 'hidden')}
-      style={positionStyle}
-    >
+    <div className={cn('fixed bottom-6 z-30', isMaximized && 'hidden')} style={positionStyle}>
       {children}
     </div>
   );

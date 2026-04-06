@@ -1,10 +1,11 @@
 'use client';
 
-import { Minus, Plus, ExternalLink } from 'lucide-react';
+import { Minus, Plus, ExternalLink, Info } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 
 /* ── Reusable row components ── */
 
@@ -12,19 +13,37 @@ export function SettingsRow({
   label,
   description,
   htmlFor,
+  tooltip,
   children,
 }: {
   label: string;
   description?: string;
   htmlFor?: string;
+  /** Explicit tooltip text. Falls back to `description` if not provided. */
+  tooltip?: string;
   children: React.ReactNode;
 }) {
+  // Show the Info icon when there's either an explicit tooltip or a description to surface
+  const tooltipText = tooltip ?? description;
+
   return (
     <div className="flex items-center justify-between gap-4 border-b py-2.5 last:border-b-0">
       <div className="min-w-0">
-        <Label htmlFor={htmlFor} className="cursor-pointer text-sm font-normal whitespace-nowrap">
-          {label}
-        </Label>
+        <span className="flex items-center gap-1.5">
+          <Label htmlFor={htmlFor} className="cursor-pointer text-sm font-normal whitespace-nowrap">
+            {label}
+          </Label>
+          {tooltipText ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="text-muted-foreground/40 hover:text-muted-foreground h-3.5 w-3.5 shrink-0 cursor-help transition-colors" />
+              </TooltipTrigger>
+              <TooltipContent side="top" className="max-w-72 text-xs leading-relaxed">
+                {tooltipText}
+              </TooltipContent>
+            </Tooltip>
+          ) : null}
+        </span>
         {description ? (
           <p className="text-muted-foreground text-[11px] leading-tight">{description}</p>
         ) : null}
@@ -42,6 +61,7 @@ export function SwitchRow({
   checked,
   onChange,
   disabled,
+  tooltip,
 }: {
   label: string;
   description?: string;
@@ -50,9 +70,10 @@ export function SwitchRow({
   checked: boolean;
   onChange: (value: boolean) => void;
   disabled?: boolean;
+  tooltip?: string;
 }) {
   return (
-    <SettingsRow label={label} description={description} htmlFor={id}>
+    <SettingsRow label={label} description={description} htmlFor={id} tooltip={tooltip}>
       <Switch
         id={id}
         data-testid={testId}

@@ -22,20 +22,20 @@ export function SkillList({ skills, onSkillSelect }: SkillListProps) {
   const groups = groupByCategory(skills);
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-12">
       {CATEGORY_ORDER.map((category) => {
         const categorySkills = groups.get(category);
         if (!categorySkills || categorySkills.length === 0) return null;
 
         return (
           <section key={category}>
-            <h2 className="mb-4 text-lg font-semibold">
+            <h2 className="text-foreground mb-6 text-xl font-bold tracking-tight">
               {category}{' '}
               <span className="text-muted-foreground text-sm font-normal">
                 ({categorySkills.length})
               </span>
             </h2>
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
               {categorySkills.map((skill) => (
                 <SkillCard key={skill.name} skill={skill} onSelect={onSkillSelect} />
               ))}

@@ -179,7 +179,9 @@ export function BaseDrawer({
         showCloseButton={false}
         className={cn(
           drawerVariants({ size }),
-          'bg-white/85 backdrop-blur-xl dark:bg-neutral-800/85',
+          // Editorial glass treatment: semi-transparent with backdrop blur in BOTH modes
+          // for polished depth. Light mode uses white/80, dark mode uses card surface/85.
+          'bg-white/80 backdrop-blur-xl dark:bg-[#1e293bd9]',
           className
         )}
         data-testid={testId}

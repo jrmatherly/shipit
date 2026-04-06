@@ -56,8 +56,12 @@ export function SkillsPageClient({ skills }: SkillsPageClientProps) {
   // No skills installed at all
   if (skills.length === 0) {
     return (
-      <div className="flex flex-col gap-6 p-6">
-        <PageHeader title="Skills" description="Claude Code skills installed in this project" />
+      <div className="flex flex-col gap-8 p-8">
+        <PageHeader
+          eyebrow="Developer Portal"
+          title="Skills"
+          description="Claude Code skills installed in this project"
+        />
         <EmptyState
           icon={<Puzzle className="size-10" />}
           title="No skills found"
@@ -68,8 +72,12 @@ export function SkillsPageClient({ skills }: SkillsPageClientProps) {
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6">
-      <PageHeader title="Skills" description="Claude Code skills installed in this project" />
+    <div className="flex flex-col gap-8 p-8">
+      <PageHeader
+        eyebrow="Developer Portal"
+        title="Skills"
+        description="Claude Code skills installed in this project"
+      />
 
       {/* Search */}
       <div className="relative">

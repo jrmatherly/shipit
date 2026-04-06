@@ -2,11 +2,19 @@ import * as React from 'react';
 
 import { cn } from '@/lib/utils';
 
+/*
+ * Card — shadcn primitive extended with Stitch's editorial-shadow utility.
+ * The `editorial-shadow` class (globals.css) replaces the old `shadow` class
+ * with a subtle shadow + ring combination that gives cards a "lifted" look
+ * and renders consistently against the editorial surface palette in both
+ * light and dark modes. The `border` class stays for explicit border visibility
+ * in dense grids; editorial-shadow's ring provides the soft lift on top.
+ */
 const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('bg-card text-card-foreground rounded-xl border shadow', className)}
+      className={cn('bg-card text-card-foreground editorial-shadow rounded-xl border', className)}
       {...props}
     />
   )

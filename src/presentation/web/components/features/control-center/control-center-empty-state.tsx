@@ -116,12 +116,16 @@ export function ControlCenterEmptyState({
         /* Agent setup wizard — owns its own hero */
         <WelcomeAgentSetup onComplete={handleAgentSetupComplete} />
       ) : (
-        /* Repository step — fade in to match wizard transitions */
-        <div className="animate-in fade-in flex w-full max-w-md flex-col items-center duration-300">
-          <h1 className="text-foreground/90 text-center text-5xl font-extralight tracking-tight">
+        // Repository step — editorial card treatment for visual polish.
+        // In light mode, the card surface (bg-card) lifts the content above
+        // the page background (#f8fafc) via editorial-shadow, matching the
+        // dark mode's natural depth. The rounded-2xl + generous padding
+        // give the form a contained, polished-panel feel.
+        <div className="animate-in fade-in bg-card editorial-shadow flex w-full max-w-lg flex-col items-center rounded-2xl border border-slate-200/50 p-10 duration-300 dark:border-slate-700/50">
+          <h1 className="text-foreground text-center text-4xl font-bold tracking-tight">
             {t('emptyState.addProject')}
           </h1>
-          <p className="text-muted-foreground mt-3 text-center text-lg leading-relaxed font-light">
+          <p className="text-muted-foreground mt-3 text-center text-base leading-relaxed">
             {t('emptyState.addProjectDescription')}
             <br />
             {t('emptyState.addProjectDescriptionLine2')}
@@ -141,13 +145,13 @@ export function ControlCenterEmptyState({
               missingHint={t('emptyState.githubCliRequired')}
             />
           </div>
-          {/* Primary CTA */}
+          {/* Primary CTA — uses bg-primary for editorial consistency */}
           <button
             type="button"
             data-testid="empty-state-add-repository"
             onClick={handlePickerClick}
             disabled={loading}
-            className="bg-foreground text-background hover:bg-foreground/90 mt-10 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl px-6 py-4 text-base font-medium shadow-lg transition-all duration-200 hover:shadow-xl active:scale-[0.98] disabled:cursor-wait disabled:opacity-50"
+            className="bg-primary text-primary-foreground hover:bg-primary/90 mt-10 flex w-full cursor-pointer items-center justify-center gap-2.5 rounded-xl px-6 py-4 text-base font-bold tracking-wide shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl active:scale-[0.98] disabled:cursor-wait disabled:opacity-50"
           >
             {loading ? (
               <LoaderCircle className="h-5 w-5 animate-spin" />
@@ -158,7 +162,7 @@ export function ControlCenterEmptyState({
           </button>
 
           {/* Subtitle under CTA */}
-          <p className="text-muted-foreground/60 mt-3 text-center text-sm">
+          <p className="text-muted-foreground mt-3 text-center text-sm">
             {t('emptyState.folderHint')}
           </p>
         </div>

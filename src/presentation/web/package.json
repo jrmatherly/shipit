@@ -8,8 +8,8 @@
     "dev:e2e": "next dev -p 3001",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint . --max-warnings 0",
-    "lint:fix": "eslint . --fix --max-warnings 0",
+    "lint": "cd ../../.. && eslint src/presentation/web --max-warnings 0",
+    "lint:fix": "cd ../../.. && eslint src/presentation/web --fix --max-warnings 0",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "typecheck": "tsc --noEmit"

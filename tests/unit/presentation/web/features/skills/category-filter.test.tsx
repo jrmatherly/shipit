@@ -13,24 +13,25 @@ describe('CategoryFilter', () => {
     expect(screen.getByRole('button', { name: /Reference/ })).toBeInTheDocument();
   });
 
-  it('All button has default variant when activeCategory is null', () => {
+  it('All button has active styling when activeCategory is null', () => {
     render(<CategoryFilter activeCategory={null} onCategoryChange={vi.fn()} />);
     const allButton = screen.getByRole('button', { name: /All/ });
-    expect(allButton).toHaveAttribute('data-variant', 'default');
+    // Active buttons use text-primary class in the editorial tab treatment
+    expect(allButton.className).toContain('text-primary');
   });
 
-  it('Workflow button has default variant when activeCategory is Workflow', () => {
+  it('Workflow button has active styling when activeCategory is Workflow', () => {
     render(<CategoryFilter activeCategory="Workflow" onCategoryChange={vi.fn()} />);
     const workflowButton = screen.getByRole('button', { name: /Workflow/ });
-    expect(workflowButton).toHaveAttribute('data-variant', 'default');
+    expect(workflowButton.className).toContain('text-primary');
   });
 
-  it('non-active buttons have outline variant', () => {
+  it('non-active buttons have muted styling', () => {
     render(<CategoryFilter activeCategory="Workflow" onCategoryChange={vi.fn()} />);
     const allButton = screen.getByRole('button', { name: /All/ });
-    expect(allButton).toHaveAttribute('data-variant', 'outline');
+    expect(allButton.className).toContain('text-muted-foreground');
     const analysisButton = screen.getByRole('button', { name: /Analysis/ });
-    expect(analysisButton).toHaveAttribute('data-variant', 'outline');
+    expect(analysisButton.className).toContain('text-muted-foreground');
   });
 
   it('clicking a category button calls onCategoryChange with correct value', async () => {

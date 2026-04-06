@@ -27,17 +27,22 @@ export function SidebarCollapseToggle({ className }: SidebarCollapseToggleProps)
   };
 
   return (
-    <div className={cn('flex', className)}>
-      <Button
-        data-testid="sidebar-collapse-toggle"
-        variant="ghost"
-        size="icon"
-        className="size-7 cursor-pointer group-data-[collapsible=icon]:size-8!"
-        onClick={handleClick}
-        aria-label={label}
-      >
-        <PanelLeft className="size-4" />
-      </Button>
-    </div>
+    <Button
+      data-testid="sidebar-collapse-toggle"
+      variant="ghost"
+      size="icon"
+      className={cn(
+        // Generous hit area: full sidebar-menu-button size in both expanded
+        // and collapsed modes so the toggle is easy to click regardless of
+        // sidebar state. The icon stays centered via flex.
+        'flex cursor-pointer items-center justify-center',
+        'size-8 group-data-[collapsible=icon]:size-8!',
+        className
+      )}
+      onClick={handleClick}
+      aria-label={label}
+    >
+      <PanelLeft className="size-4" />
+    </Button>
   );
 }

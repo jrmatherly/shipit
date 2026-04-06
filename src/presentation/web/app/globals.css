@@ -11,20 +11,27 @@
  */
 
 @theme {
-  /* Colors - Light Mode */
-  --color-background: #ffffff;
-  --color-foreground: #0a0a0a;
+  /*
+   * Colors - Light Mode
+   * Values source: Stitch developer-portal editorial palette
+   * (midnight #0f172a, sky #2563eb, surface #f8fafc / f1f5f9 / e2e8f0).
+   * Names preserved so 126 consumer files / 787+ usages of bg-background,
+   * text-foreground, text-muted-foreground, etc., keep working unchanged.
+   * See .scratchpad/plans/stitch-developer-portal-adaptation.md §2.1.
+   */
+  --color-background: #f8fafc;
+  --color-foreground: #0f172a;
 
-  --color-primary: #3b82f6;
+  --color-primary: #2563eb;
   --color-primary-foreground: #ffffff;
 
   --color-secondary: #f1f5f9;
   --color-secondary-foreground: #0f172a;
 
   --color-muted: #f1f5f9;
-  --color-muted-foreground: #64748b;
+  --color-muted-foreground: #334155;
 
-  --color-accent: #f1f5f9;
+  --color-accent: #e2e8f0;
   --color-accent-foreground: #0f172a;
 
   --color-destructive: #ef4444;
@@ -32,16 +39,16 @@
 
   --color-border: #e2e8f0;
   --color-input: #e2e8f0;
-  --color-ring: #3b82f6;
+  --color-ring: #2563eb;
 
   --color-card: #ffffff;
-  --color-card-foreground: #0a0a0a;
+  --color-card-foreground: #0f172a;
 
   --attention-wave-tint: #fffceb;
   --attention-wave-base: #ffffff;
 
   --color-popover: #ffffff;
-  --color-popover-foreground: #0a0a0a;
+  --color-popover-foreground: #0f172a;
 
   /*
    * NOTE: Do not define --spacing-* tokens here as they conflict with
@@ -49,10 +56,15 @@
    * Use Tailwind's standard spacing scale instead (p-4, m-6, gap-2, etc.)
    */
 
-  /* Typography */
+  /*
+   * Typography
+   * Inter is loaded via next/font/google in app/layout.tsx and exposed as --font-inter.
+   * It's the primary brand font for the editorial palette adoption (Stitch alignment).
+   * System fallbacks cover SSR before Inter loads and cases where next/font is stripped.
+   */
   --font-sans:
-    ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
-    'Noto Color Emoji';
+    var(--font-inter), ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+    'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   --font-mono:
     ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
 
@@ -79,40 +91,142 @@
   --animate-pulse-cta: pulse-cta 2s ease-in-out infinite;
   --animate-shimmer: shimmer 3s ease-in-out infinite;
   --animate-attention-wave: attention-wave 2.5s ease-in-out infinite;
+
+  /*
+   * Stitch editorial alias tokens
+   * These expose the Stitch palette under Stitch's own semantic names so
+   * components ported from .scratchpad/stitch/shipit-developer-portal/ can
+   * use their original class lists (bg-surface-card, text-midnight, bg-sky,
+   * rounded-default, etc.) without translation.
+   *
+   * Values intentionally mirror --color-background / --color-foreground /
+   * --color-primary / --color-card so both naming conventions render the
+   * same pixels. Kept in sync by convention — change both if you change one.
+   */
+  --color-midnight: #0f172a;
+  --color-midnight-light: #334155;
+  --color-sky: #2563eb;
+  --color-surface: #f8fafc;
+  --color-surface-nav: #f1f5f9;
+  --color-surface-card: #ffffff;
+  --color-surface-container: #e2e8f0;
+  --radius-default: 0.625rem; /* 10px — Stitch's signature radius, between --radius-lg (8px) and --radius-xl (12px) */
 }
 
-/* Dark Mode Theme Overrides */
+/*
+ * Dark Mode Theme Overrides
+ * Values source: Stitch developer-portal dark palette
+ * (surface #0b0f19, surface-nav #111827, surface-card #1e293b, surface-container #334155,
+ * midnight #f8fafc, midnight-light #cbd5e1, sky #3b82f6).
+ * Biggest change from previous: --color-card is now #1e293b (elevated surface)
+ * instead of #0a0a0a (flat-on-background), which creates visible card separation
+ * against the new #0b0f19 background.
+ */
 .dark {
-  --color-background: #0a0a0a;
-  --color-foreground: #fafafa;
+  --color-background: #0b0f19;
+  --color-foreground: #f8fafc;
 
   --color-primary: #3b82f6;
   --color-primary-foreground: #ffffff;
 
-  --color-secondary: #262626;
-  --color-secondary-foreground: #fafafa;
+  --color-secondary: #111827;
+  --color-secondary-foreground: #f8fafc;
 
-  --color-muted: #262626;
-  --color-muted-foreground: #a3a3a3;
+  --color-muted: #111827;
+  --color-muted-foreground: #cbd5e1;
 
-  --color-accent: #262626;
-  --color-accent-foreground: #fafafa;
+  --color-accent: #334155;
+  --color-accent-foreground: #f8fafc;
 
   --color-destructive: #dc2626;
   --color-destructive-foreground: #ffffff;
 
-  --color-border: #333333;
-  --color-input: #3a3a3a;
+  --color-border: #334155;
+  --color-input: #334155;
   --color-ring: #3b82f6;
 
-  --color-card: #0a0a0a;
-  --color-card-foreground: #fafafa;
+  --color-card: #1e293b;
+  --color-card-foreground: #f8fafc;
 
   --attention-wave-tint: #2a2a20;
   --attention-wave-base: #262626cc;
 
-  --color-popover: #0a0a0a;
-  --color-popover-foreground: #fafafa;
+  --color-popover: #1e293b;
+  --color-popover-foreground: #f8fafc;
+
+  /* Stitch editorial alias tokens — dark mode (mirrors shadcn token values above) */
+  --color-midnight: #f8fafc;
+  --color-midnight-light: #cbd5e1;
+  --color-sky: #3b82f6;
+  --color-surface: #0b0f19;
+  --color-surface-nav: #111827;
+  --color-surface-card: #1e293b;
+  --color-surface-container: #334155;
+}
+
+/*
+ * Editorial utility classes — ported verbatim from Stitch's src/index.css:44-50
+ * .editorial-shadow: subtle lifted feel for cards, dropdowns, menus
+ * .glass-blur: frosted-glass backdrop for popovers and dropdowns on editorial surfaces
+ * Applied to ported Stitch components (ToolCard, Sidebar, EditorialDropdown, UserMenu).
+ */
+.editorial-shadow {
+  @apply shadow-sm ring-1 ring-slate-200/50 dark:ring-slate-700/50 shadow-slate-200/20 dark:shadow-none;
+}
+
+.glass-blur {
+  @apply backdrop-blur-[20px] bg-white/80 dark:bg-[#111827]/80;
+}
+
+/*
+ * Editorial sidebar active state.
+ * Applied via attribute selector (NOT a conditional className in JSX) so the
+ * styling stays pure CSS. This matters because the active flag in SidebarNavItem
+ * derives from usePathname(), which can differ between SSR and first client
+ * render — any conditional className based on that flag would cause a hydration
+ * mismatch. data-active is written by the shadcn primitive and reconciled after
+ * hydration, so attribute-selector-based styling is hydration-safe.
+ */
+[data-sidebar='menu-button'][data-active='true'] {
+  @apply bg-card text-primary font-semibold ring-1 ring-slate-200/70 shadow-sm dark:ring-slate-700/50;
+}
+
+/* Inactive sidebar items: muted text with subtle hover tint */
+[data-sidebar='menu-button']:not([data-active='true']) {
+  @apply text-slate-500 transition-colors;
+}
+[data-sidebar='menu-button']:not([data-active='true']):hover {
+  @apply text-foreground bg-accent/50;
+}
+
+/*
+ * Editorial tabs active state.
+ * Scoped to TabsList elements that opt in via data-editorial="true" so we don't
+ * affect tabs elsewhere in the app. Same rationale as the sidebar active-state
+ * above: static classNames in JSX + active styling in CSS = hydration-safe.
+ * The data-state attribute is written by Radix Tabs primitive during and after
+ * hydration, so attribute-selector-based styling is stable across SSR and
+ * client renders.
+ */
+[data-editorial='true'] > [role='tab'][data-state='active'] {
+  @apply bg-muted text-primary ring-1 ring-slate-200/70 shadow-sm dark:ring-slate-700/50;
+}
+[data-editorial='true'] > [role='tab']:not([data-state='active']) {
+  @apply text-muted-foreground;
+}
+[data-editorial='true'] > [role='tab']:hover:not([data-state='active']) {
+  @apply text-foreground;
+}
+
+/*
+ * Chat FAB open-state ring lift.
+ * Same hydration-safe pattern: keep the button className a static literal
+ * in JSX and derive the visual state from data attributes in CSS. The
+ * data-chat-open attribute is set by React state but only read by CSS,
+ * so any SSR/client drift in isOpen does not affect the className string.
+ */
+[data-chat-fab='true'][data-chat-open='true'] {
+  @apply ring-primary/40 ring-2;
 }
 
 /* Keyframes for animations */
@@ -224,20 +338,42 @@
   }
 }
 
-/* Sidebar Theme Variables */
+/*
+ * Sidebar Theme Variables — Stitch editorial sidebar styling.
+ *
+ * Key design choices from Stitch (see .scratchpad/stitch/.../Sidebar.tsx:50-56):
+ *  - Inactive items are text-slate-500 (muted) — NOT full foreground color
+ *  - Active item uses bg-card + ring + text-primary (sky blue) as a lifted pill
+ *  - Sidebar background matches the editorial surface-nav
+ *  - Hover on inactive items uses a subtle surface-container/50 tint
+ *
+ * --sidebar-foreground is set to slate-500 so ALL inactive items render muted.
+ * The active-state override in the attribute selector below re-colors the active
+ * item to text-primary (sky blue) — this takes precedence over the base foreground.
+ */
 :root {
-  --sidebar: var(--color-background);
-  --sidebar-foreground: var(--color-foreground);
+  --sidebar: var(--color-secondary);
+  --sidebar-foreground: #64748b;
   --sidebar-primary: var(--color-primary);
   --sidebar-primary-foreground: var(--color-primary-foreground);
-  --sidebar-accent: var(--color-accent);
-  --sidebar-accent-foreground: var(--color-accent-foreground);
+  --sidebar-accent: var(--color-card);
+  --sidebar-accent-foreground: var(--color-foreground);
   --sidebar-border: var(--color-border);
   --sidebar-ring: var(--color-ring);
 }
 
 .dark {
-  --sidebar: #1a1a1a;
+  /*
+   * Dark sidebar surface — uses Stitch's surface-nav (#111827) so the sidebar
+   * reads slightly darker than --color-background (#0b0f19) and slightly
+   * lighter than the old flat #1a1a1a. This gives the sidebar a distinct
+   * elevation in the editorial dark palette.
+   *
+   * Inactive items use slate-500 (#64748b) in both modes per Stitch.
+   * Active accent background is the card surface (#1e293b) for the lifted pill.
+   */
+  --sidebar: #111827;
+  --sidebar-accent: #1e293b;
 }
 
 @theme inline {
@@ -430,10 +566,114 @@
   }
 
   /* ── Dark mode overrides ─────────────────────────────────────── */
-  &:is(.dark *) .file-explorer,
-  .dark & .file-explorer {
-    background: var(--color-background);
-    color: var(--color-foreground);
+  /* The library's own CSS uses hardcoded light-mode colors (black text,
+   * white backgrounds) that can't be overridden by CSS variables without
+   * !important because the library's specificity matches or exceeds ours.
+   * These overrides force dark-mode colors on ALL child elements to ensure
+   * text remains readable against the editorial dark palette. */
+  /*
+   * Dark mode overrides — nuclear approach.
+   * The library uses hardcoded `background-color: #fff`, `color: #000`,
+   * `background-color: #f5f5f5` etc. with specificity that matches or
+   * exceeds our wrapper. The only reliable fix is a wildcard color/bg
+   * override on ALL descendants, then targeted fixes for specific elements
+   * that need different treatment (headers, hovers, selections).
+   */
+  &:is(.dark *),
+  .dark & {
+    /* Catch-all: force ALL text and backgrounds inside the file manager */
+    & * {
+      color: var(--color-foreground) !important;
+      border-color: var(--color-border) !important;
+    }
+
+    & .file-explorer {
+      background: var(--color-card) !important;
+    }
+
+    /* The main file listing pane — this is what was staying white */
+    & .folders-preview {
+      background: var(--color-card) !important;
+    }
+
+    & .toolbar {
+      background: var(--color-card) !important;
+    }
+
+    & .item-action {
+      background: transparent !important;
+    }
+
+    & .files-header {
+      background: var(--color-muted) !important;
+      color: var(--color-muted-foreground) !important;
+    }
+
+    & .file-item:hover {
+      background: var(--color-accent) !important;
+    }
+
+    /* Icons should be muted, not full foreground */
+    & .file-icon,
+    & .file-icon *,
+    & .folder-icon-default,
+    & .folder-icon-default *,
+    & .folder-open-icon,
+    & .folder-close-icon {
+      color: var(--color-muted-foreground) !important;
+    }
+
+    /* Date/size metadata — muted */
+    & .modified-date,
+    & .file-date,
+    & .size,
+    & .file-size {
+      color: var(--color-muted-foreground) !important;
+    }
+
+    & .bread-crumb-container {
+      background: var(--color-card) !important;
+    }
+
+    & .bread-crumb-container a {
+      color: var(--color-primary) !important;
+    }
+
+    & .toggle-view {
+      background: var(--color-card) !important;
+    }
+
+    & .toggle-view ul li:hover {
+      background-color: var(--color-accent) !important;
+    }
+
+    & .sort-indicator {
+      color: var(--color-primary) !important;
+    }
+
+    /* Selected file should keep white text on primary bg */
+    & .file-selected,
+    & .file-selected * {
+      color: #fff !important;
+    }
+
+    & input,
+    & .search-box,
+    & .search-box input {
+      background: var(--color-muted) !important;
+      color: var(--color-foreground) !important;
+    }
+
+    /* Context menu */
+    & .fm-context-menu,
+    & .sub-menu {
+      background: var(--color-card) !important;
+    }
+
+    & .fm-button-secondary {
+      background: var(--color-muted) !important;
+      color: var(--color-foreground) !important;
+    }
   }
 }
 

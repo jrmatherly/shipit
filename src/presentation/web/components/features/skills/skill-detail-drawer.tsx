@@ -1,11 +1,70 @@
 'use client';
 
+import Markdown, { type Components } from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 import { BaseDrawer } from '@/components/common/base-drawer';
 import { DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { FolderOpen } from 'lucide-react';
 import type { SkillData } from '@/lib/skills';
+
+/*
+ * Markdown component overrides for skill body rendering.
+ * Styled to match the editorial palette and fit within the drawer's
+ * constrained width. Uses the same pattern as tech-decisions-review.
+ */
+const mdComponents: Components = {
+  h1: ({ children }) => (
+    <h1 className="text-foreground mt-6 mb-3 text-lg font-bold tracking-tight first:mt-0">
+      {children}
+    </h1>
+  ),
+  h2: ({ children }) => (
+    <h2 className="text-foreground mt-5 mb-2 text-base font-bold tracking-tight">{children}</h2>
+  ),
+  h3: ({ children }) => <h3 className="text-foreground mt-4 mb-2 text-sm font-bold">{children}</h3>,
+  p: ({ children }) => (
+    <p className="text-muted-foreground mb-3 text-sm leading-relaxed last:mb-0">{children}</p>
+  ),
+  strong: ({ children }) => <strong className="text-foreground font-semibold">{children}</strong>,
+  em: ({ children }) => <em className="italic">{children}</em>,
+  code: ({ children, className }) =>
+    className ? (
+      <code className={`${className} text-xs`}>{children}</code>
+    ) : (
+      <code className="bg-muted text-foreground rounded-md px-1.5 py-0.5 font-mono text-xs">
+        {children}
+      </code>
+    ),
+  pre: ({ children }) => (
+    <pre className="bg-muted my-3 overflow-x-auto rounded-lg border p-3 text-xs">{children}</pre>
+  ),
+  ul: ({ children }) => (
+    <ul className="text-muted-foreground mb-3 list-disc space-y-1 ps-5 text-sm">{children}</ul>
+  ),
+  ol: ({ children }) => (
+    <ol className="text-muted-foreground mb-3 list-decimal space-y-1 ps-5 text-sm">{children}</ol>
+  ),
+  li: ({ children }) => <li className="leading-relaxed">{children}</li>,
+  hr: () => <Separator className="my-4" />,
+  a: ({ href, children }) => (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="text-primary hover:text-primary/80 underline underline-offset-2"
+    >
+      {children}
+    </a>
+  ),
+  blockquote: ({ children }) => (
+    <blockquote className="border-primary/30 text-muted-foreground my-3 border-l-2 pl-4 italic">
+      {children}
+    </blockquote>
+  ),
+};
 
 export interface SkillDetailDrawerProps {
   skill: SkillData | null;
@@ -30,17 +89,49 @@ export function SkillDetailDrawer({ skill, onClose }: SkillDetailDrawerProps) {
       }
     >
       {skill ? (
-        <div className="px-4 pb-4">
+        <div className="min-h-0 flex-1 overflow-y-auto px-4 pb-4">
           {/* Description */}
           <p className="text-muted-foreground text-sm">{skill.description}</p>
 
-          {/* Badges */}
+          {/* Badges with explanatory tooltips */}
           <div className="mt-4 flex flex-wrap items-center gap-1.5">
-            <Badge variant={skill.source === 'project' ? 'secondary' : 'outline'}>
-              {skill.source === 'project' ? 'Project' : 'Global'}
-            </Badge>
-            <Badge variant="outline">{skill.category}</Badge>
-            {skill.context ? <Badge variant="outline">{skill.context}</Badge> : null}
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge
+                  variant={skill.source === 'project' ? 'secondary' : 'outline'}
+                  className="cursor-default"
+                >
+                  {skill.source === 'project' ? 'Project' : 'Global'}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                {skill.source === 'project'
+                  ? 'Installed in this project\u2019s .claude/skills/ directory'
+                  : 'Installed globally in your user profile'}
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Badge variant="outline" className="cursor-default">
+                  {skill.category}
+                </Badge>
+              </TooltipTrigger>
+              <TooltipContent side="bottom">
+                Skill category \u2014 used for filtering on the Skills page
+              </TooltipContent>
+            </Tooltip>
+            {skill.context ? (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Badge variant="outline" className="cursor-default">
+                    {skill.context}
+                  </Badge>
+                </TooltipTrigger>
+                <TooltipContent side="bottom">
+                  Context restriction \u2014 this skill only activates in this context
+                </TooltipContent>
+              </Tooltip>
+            ) : null}
           </div>
 
           {/* Allowed Tools */}
@@ -78,13 +169,15 @@ export function SkillDetailDrawer({ skill, onClose }: SkillDetailDrawerProps) {
             </>
           ) : null}
 
-          {/* Body */}
+          {/* Body — rendered as markdown for proper heading/list/code formatting */}
           {skill.body ? (
             <>
               <Separator className="my-4" />
-              <pre className="text-muted-foreground text-sm leading-relaxed whitespace-pre-wrap">
-                {skill.body}
-              </pre>
+              <div className="prose-sm">
+                <Markdown remarkPlugins={[remarkGfm]} components={mdComponents}>
+                  {skill.body}
+                </Markdown>
+              </div>
             </>
           ) : null}
         </div>

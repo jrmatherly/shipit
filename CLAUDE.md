@@ -108,6 +108,12 @@ Adding a new CLI agent requires changes across 8+ integration points:
 - Settings reads use `resolve<LoadSettingsUseCase>('LoadSettingsUseCase')` via DI — never import `getSettings()` directly
 - `dev-server.ts` is bootstrap code — direct infrastructure access is correct there
 
+### Web UI Design System
+
+- **Editorial design system (Stitch refresh):** Design tokens in `globals.css` use Stitch's editorial palette (midnight/sky/surface). Utility classes `.editorial-shadow` and `.glass-blur` in `globals.css`. Sidebar active state via `[data-sidebar='menu-button'][data-active='true']` CSS selector. Tab active state via `[data-editorial='true'] > [role='tab'][data-state='active']`. Chat FAB open state via `[data-chat-fab='true'][data-chat-open='true']`. All state-dependent styling uses CSS attribute selectors (not conditional classNames) to prevent hydration mismatches.
+- **BaseDrawer overrides DrawerContent:** `BaseDrawer` component passes its own `className` to `DrawerContent`. Any default styling set in `DrawerContent` (e.g., glass-blur) is overridden by BaseDrawer's explicit className. When changing drawer appearance, update BOTH files.
+- **`@cubone/react-file-manager` dark mode:** Requires nuclear `& * { color: var(--color-foreground) !important; }` override in `.shipit-ai-file-manager` scope. The library's CSS uses hardcoded `#fff` backgrounds and `#000` text with specificity that beats wrapper-scoped selectors. Key missing selector in previous attempts: `.folders-preview` (the main file list pane).
+
 ## Security
 
 - All web API routes go through localhost-only proxy (`src/presentation/web/proxy.ts`) — rejects non-localhost requests
@@ -137,6 +143,11 @@ Adding a new CLI agent requires changes across 8+ integration points:
 - **Code Review Graph:** Built — use for impact analysis, flow tracing, PR review context
 - **IDE workflow linter:** `secrets.*` and dynamic `env.*` (set via `$GITHUB_ENV`) references in GitHub Actions workflows show "context access might be invalid" — these are false positives from static analysis.
 - **Bulk rename:** For project-wide text replacements, use `git grep -l 'old' -- ':!node_modules/' | while read f; do perl -pi -e 's/old/new/g' "$f"; done` — faster and safer than `sed` on macOS.
+- **Radix Tooltip controlled mode gotcha:** Passing `open={undefined}` puts Radix Tooltip in controlled mode because `'open' in props` is `true`. To conditionally control: use spread `{...(isOpen ? { open: false } : {})}` so the prop key is absent when uncontrolled.
+- **`hover:-translate` breaks Radix Tooltip:** CSS `hover:-translate-y-*` physically moves the element, causing pointer leave/enter flapping that cancels Radix's hover timer. Use `hover:scale-[1.05]` instead for FABs and floating buttons.
+- **Tailwind v4 opacity modifier on CSS-variable colors:** `bg-card/85` may not resolve when `--color-card` is a raw hex. Use 8-digit hex instead: `bg-[#1e293bd9]` (where `d9` = 85% opacity).
+- **`dark:invert` destroys brand-colored SVG icons:** simpleicons CDN serves pre-colored SVGs. Never apply `dark:invert` to `<img>` elements loading branded tool icons — they should render identically in both modes.
+- **CSS attribute selectors for hydration-safe state styling:** Pattern: `[data-sidebar='menu-button'][data-active='true'] { @apply text-primary ... }` in globals.css. Conditional classNames derived from `usePathname()` cause hydration mismatches; move state-dependent styling to CSS targeting data attributes instead.
 
 ## CI Patterns
 
@@ -232,6 +243,7 @@ Active remediation plan: [`.scratchpad/plans/technical-debt-remediation-plan.md`
 - **Storybook server action mocks:** New server actions MUST have corresponding mocks in `.storybook/mocks/app/actions/` — Storybook aliases `@/app/actions` to this directory. Missing mocks break `pnpm build:storybook`.
 - **TypeSpec toolchain bump verification:** Before any `@typespec/*`, `@typespec-tools/*`, or emitter dependency bump, capture `shasum -a 256 packages/core/src/domain/generated/output.ts`, run `pnpm tsp:codegen`, compare. Byte-identical = safe. Any diff = investigate emitter behavior change before committing.
 - **State channel count assertion:** `tests/unit/infrastructure/services/agents/feature-agent/state.test.ts` has a hardcoded channel count assertion that must be bumped when adding new fields to `FeatureAgentAnnotation`. Forgetting this causes a cryptic test failure unrelated to your actual change.
+- **Radix Tooltip content is portal-rendered:** Test for tooltip presence via `aria-label` on the trigger button, NOT via `screen.getByText()` on the tooltip content (which is only mounted when the tooltip is open). Example: `screen.getByRole('button', { name: /shipit ai chat/i })`.
 
 ### i18n Key Parity
 

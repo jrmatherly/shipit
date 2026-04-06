@@ -313,7 +313,11 @@ export function RepositoryNode({
                         data.onAdd?.();
                       }}
                       className={cn(
-                        'flex h-6 shrink-0 cursor-pointer items-center gap-0.5 rounded bg-blue-500 px-1.5 text-[11px] font-bold text-white transition-colors hover:bg-blue-600 dark:bg-amber-500 dark:hover:bg-amber-400',
+                        // Editorial palette: primary sky blue in both light and dark
+                        // (was previously dark:bg-amber-500 which clashes with the
+                        // Stitch editorial dark palette). Uses --color-primary via
+                        // bg-primary so any future primary shifts propagate here.
+                        'bg-primary hover:bg-primary/90 flex h-6 shrink-0 cursor-pointer items-center gap-0.5 rounded px-1.5 text-[11px] font-bold text-white transition-colors',
                         data.pulseAdd && 'animate-pulse-cta'
                       )}
                     >

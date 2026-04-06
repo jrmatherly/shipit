@@ -23,7 +23,6 @@ import {
   SidebarMenu,
   SidebarMenuItem,
   SidebarMenuButton,
-  SidebarRail,
   useSidebar,
 } from '@/components/ui/sidebar';
 
@@ -121,34 +120,31 @@ export function AppSidebar({
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <div className="flex h-8 items-center group-data-[collapsible=icon]:justify-center">
-              {showExpanded ? (
-                <div
-                  className={[
-                    'flex min-w-0 flex-1 items-center gap-2 overflow-hidden px-2',
-                    'transition-opacity duration-200 ease-out',
-                    expandedVisible ? 'opacity-100' : 'opacity-0',
-                  ].join(' ')}
-                  aria-hidden={!expandedVisible}
-                >
-                  <ShipitAiLogo
-                    className="shrink-0 drop-shadow-[0_0_4px_rgba(34,211,238,0.4)]"
-                    size={28}
-                    variant={versionData.isDev ? 'dev' : 'default'}
-                  />
-                  <span className="truncate text-sm font-semibold tracking-tight">ShipIT</span>
-                  <VersionBadge
-                    version={versionData.version}
-                    branch={versionData.branch || undefined}
-                    commitHash={versionData.commitHash || undefined}
-                    isDev={versionData.isDev}
-                    packageName={versionData.packageName}
-                    description={versionData.description}
-                    instancePath={versionData.instancePath || undefined}
-                  />
-                </div>
+            {/*
+             * Logo area — always renders the icon (visible in both expanded
+             * and collapsed states). The text brandmark + version badge only
+             * render when the sidebar is expanded (showExpanded=true).
+             * Matches Stitch's sidebar Logo component pattern where the icon
+             * is always visible and the text toggles with isOpen.
+             */}
+            <div className="flex h-10 items-center px-2 group-data-[collapsible=icon]:justify-center">
+              <ShipitAiLogo
+                className="drop-shadow-[0_0_4px_rgba(34,211,238,0.4)]"
+                size={32}
+                variant={versionData.isDev ? 'dev' : 'default'}
+                isOpen={Boolean(showExpanded && expandedVisible)}
+              />
+              {showExpanded && expandedVisible ? (
+                <VersionBadge
+                  version={versionData.version}
+                  branch={versionData.branch || undefined}
+                  commitHash={versionData.commitHash || undefined}
+                  isDev={versionData.isDev}
+                  packageName={versionData.packageName}
+                  description={versionData.description}
+                  instancePath={versionData.instancePath || undefined}
+                />
               ) : null}
-              <SidebarCollapseToggle className="shrink-0 transition-all duration-200" />
             </div>
           </SidebarMenuItem>
 
@@ -223,8 +219,12 @@ export function AppSidebar({
         ) : null}
       </SidebarContent>
 
-      <SidebarFooter className="border-t p-2">
+      <SidebarFooter className="border-t border-slate-200/50 p-2 dark:border-slate-800/50">
         <SidebarMenu>
+          {/*
+           * Row 1 (always visible): Theme toggle + Sidebar collapse toggle.
+           * These two buttons fit comfortably in the collapsed sidebar width.
+           */}
           <SidebarMenuItem>
             <div className="flex items-center gap-1">
               <TooltipProvider>
@@ -279,7 +279,18 @@ export function AppSidebar({
                       : t('sidebar.switchToDark')}
                   </TooltipContent>
                 </Tooltip>
-                {!collapsed && (
+              </TooltipProvider>
+              <SidebarCollapseToggle className="flex-none transition-all duration-200" />
+            </div>
+          </SidebarMenuItem>
+          {/*
+           * Row 2 (expanded only): Sound + Animation toggles.
+           * Hidden when collapsed to keep the narrow sidebar clean.
+           */}
+          {!collapsed && (
+            <SidebarMenuItem>
+              <div className="flex items-center gap-1">
+                <TooltipProvider>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <SidebarMenuButton
@@ -303,8 +314,6 @@ export function AppSidebar({
                       {soundEnabled ? t('sidebar.muteSounds') : t('sidebar.unmuteSounds')}
                     </TooltipContent>
                   </Tooltip>
-                )}
-                {!collapsed && (
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <SidebarMenuButton
@@ -326,14 +335,17 @@ export function AppSidebar({
                       {animationsEnabled ? 'Disable animations' : 'Enable animations'}
                     </TooltipContent>
                   </Tooltip>
-                )}
-              </TooltipProvider>
-            </div>
-          </SidebarMenuItem>
+                </TooltipProvider>
+              </div>
+            </SidebarMenuItem>
+          )}
         </SidebarMenu>
       </SidebarFooter>
 
-      <SidebarRail />
+      {/* SidebarRail removed — the drag-to-resize rail showed a confusing
+       * resize cursor near the collapse toggle. Our sidebar uses
+       * collapsible="icon" (click-to-toggle via SidebarCollapseToggle),
+       * not drag-to-resize, so the rail is unnecessary. */}
     </Sidebar>
   );
 }

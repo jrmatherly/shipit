@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
+import { Inter } from 'next/font/google';
 import '@xyflow/react/dist/base.css';
 import '@cubone/react-file-manager/dist/style.css';
 import './globals.css';
@@ -14,6 +15,19 @@ import { I18nProvider } from '@/components/providers/i18n-provider';
 import { getLanguagePreference } from '@/lib/language';
 import { RouteAnnouncer } from '@/components/common/route-announcer/route-announcer';
 
+/*
+ * Inter as the primary brand font for editorial palette adoption.
+ * Loaded via next/font/google so it's self-hosted at build time
+ * (no runtime CDN fetch, aligns with ShipIT's offline-capable ethos).
+ * Exposed as --font-inter; globals.css wires it into --font-sans.
+ * See .scratchpad/plans/stitch-developer-portal-adaptation.md §2.1.
+ */
+const inter = Inter({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-inter',
+});
+
 /** Force dynamic rendering for all pages since they depend on client-side context. */
 export const dynamic = 'force-dynamic';
 
@@ -22,7 +36,7 @@ export const metadata: Metadata = {
   description:
     'Autonomous AI Native SDLC Platform - Automate the development cycle from idea to deploy',
   icons: [
-    { rel: 'icon', url: '/shipit-icon.svg', type: 'image/svg+xml' },
+    { rel: 'icon', url: '/favicon.svg', type: 'image/svg+xml' },
     { rel: 'icon', url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
     { rel: 'apple-touch-icon', url: '/apple-touch-icon.png', sizes: '180x180' },
   ],
@@ -42,7 +56,7 @@ export default async function RootLayout({
   ]);
 
   return (
-    <html lang={language} dir={dir} suppressHydrationWarning>
+    <html lang={language} dir={dir} className={inter.variable} suppressHydrationWarning>
       <head>
         {/* Theme init script — uses only hardcoded string literals, no user input */}
         <script

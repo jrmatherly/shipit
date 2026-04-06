@@ -6,7 +6,7 @@
   "author": "Anysphere",
   "website": "https://cursor.com",
   "platforms": ["linux", "darwin", "win32"],
-  "iconUrl": "https://cdn.simpleicons.org/cursor",
+  "iconUrl": "/icons/tools/cursor-cli.svg",
   "binary": "cursor-agent",
   "packageManager": "curl",
   "commands": {
