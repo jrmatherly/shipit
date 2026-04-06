@@ -25,6 +25,7 @@ export function FeatureFlagsSettingsSection({ settings }: FeatureFlagsSettingsSe
     gitRebaseSync: false,
     reactFileManager: false,
     plugins: false,
+    mcpServers: false,
   };
 
   const [flags, setFlags] = useState<FeatureFlags>({ ...featureFlags });

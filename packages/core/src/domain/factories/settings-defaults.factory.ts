@@ -194,6 +194,7 @@ export function createDefaultSettings(overrides?: {
     gitRebaseSync: false,
     reactFileManager: false,
     plugins: false,
+    mcpServers: false,
   };
 
   return {

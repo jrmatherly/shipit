@@ -165,6 +165,7 @@ function createTestRow(overrides: Partial<SettingsRow> = {}): SettingsRow {
     feature_flag_git_rebase_sync: 0,
     feature_flag_react_file_manager: 0,
     feature_flag_plugins: 0,
+    feature_flag_mcp_servers: 0,
     litellm_proxy_base_url: null,
     litellm_proxy_api_key: null,
     litellm_proxy_marketplace_enabled: 0,

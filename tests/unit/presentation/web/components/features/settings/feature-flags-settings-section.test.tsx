@@ -23,6 +23,7 @@ const defaultFlags = {
   gitRebaseSync: false,
   reactFileManager: false,
   plugins: false,
+  mcpServers: false,
 };
 
 const baseSettings = createDefaultSettings();

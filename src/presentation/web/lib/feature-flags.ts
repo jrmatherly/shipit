@@ -25,6 +25,7 @@ const ENV_FALLBACK_FLAGS = {
   gitRebaseSync: () => false,
   reactFileManager: () => isEnabled(process.env.NEXT_PUBLIC_FLAG_REACT_FILE_MANAGER),
   plugins: () => false,
+  mcpServers: () => false,
 };
 
 export interface FeatureFlagsState {
@@ -36,6 +37,7 @@ export interface FeatureFlagsState {
   gitRebaseSync: boolean;
   reactFileManager: boolean;
   plugins: boolean;
+  mcpServers: boolean;
 }
 
 export async function getFeatureFlags(): Promise<FeatureFlagsState> {
@@ -53,6 +55,7 @@ export async function getFeatureFlags(): Promise<FeatureFlagsState> {
         gitRebaseSync: flags.gitRebaseSync,
         reactFileManager: flags.reactFileManager,
         plugins: flags.plugins,
+        mcpServers: flags.mcpServers,
       };
     }
   } catch {
@@ -68,6 +71,7 @@ export async function getFeatureFlags(): Promise<FeatureFlagsState> {
     gitRebaseSync: ENV_FALLBACK_FLAGS.gitRebaseSync(),
     reactFileManager: ENV_FALLBACK_FLAGS.reactFileManager(),
     plugins: ENV_FALLBACK_FLAGS.plugins(),
+    mcpServers: ENV_FALLBACK_FLAGS.mcpServers(),
   };
 }
 
@@ -99,5 +103,8 @@ export const featureFlags = {
   },
   get plugins() {
     return ENV_FALLBACK_FLAGS.plugins();
+  },
+  get mcpServers() {
+    return ENV_FALLBACK_FLAGS.mcpServers();
   },
 } as const;

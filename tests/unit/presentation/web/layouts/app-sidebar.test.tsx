@@ -47,6 +47,7 @@ const defaultFlags = {
   gitRebaseSync: false,
   reactFileManager: false,
   plugins: false,
+  mcpServers: false,
 };
 
 function renderWithSidebar(ui: React.ReactElement) {

@@ -34,6 +34,10 @@ properties:
     type: boolean
     default: false
     description: Enable the Claude Code plugins marketplace browser
+  mcpServers:
+    type: boolean
+    default: false
+    description: Enable the MCP servers browser for viewing LiteLLM proxy MCP servers
 required:
   - skills
   - envDeploy
@@ -43,4 +47,5 @@ required:
   - gitRebaseSync
   - reactFileManager
   - plugins
+  - mcpServers
 description: Feature flag toggles for runtime feature control

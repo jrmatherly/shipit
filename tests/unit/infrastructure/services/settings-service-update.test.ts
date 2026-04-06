@@ -77,6 +77,7 @@ describe('updateSettings', () => {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       },
     };
     updateSettings(updated);
