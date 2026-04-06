@@ -17,9 +17,17 @@ import {
   type AgentAuthMethod,
   type EditorType,
   type Language,
-  type LiteLLMProxyRoutingMode,
+  LiteLLMProxyRoutingMode,
   type TerminalType,
 } from '../../../../domain/generated/output.js';
+
+const validRoutingModes = new Set<string>(Object.values(LiteLLMProxyRoutingMode));
+
+/** Convert empty/undefined/null strings to null for SQLite TEXT columns (enables field clearing). */
+function textOrNull(value: string | undefined | null): string | null {
+  if (value === undefined || value === null || value === '') return null;
+  return value;
+}
 
 /**
  * Database row type matching the settings table schema.
@@ -260,12 +268,12 @@ export function toDatabase(settings: Settings): SettingsRow {
     litellm_proxy_base_url: settings.litellmProxy?.baseUrl ?? null,
     litellm_proxy_api_key: settings.litellmProxy?.apiKey ?? null,
     litellm_proxy_marketplace_enabled: settings.litellmProxy?.marketplaceEnabled ? 1 : 0,
-    // ClaudeCodeProxyConfig (all TEXT nullable)
+    // ClaudeCodeProxyConfig (all TEXT nullable, empty string → null for clearability)
     litellm_proxy_cc_routing_mode: settings.litellmProxy?.claudeCode?.routingMode ?? null,
-    litellm_proxy_cc_custom_headers: settings.litellmProxy?.claudeCode?.customHeaders ?? null,
-    litellm_proxy_cc_sonnet_model: settings.litellmProxy?.claudeCode?.sonnetModel ?? null,
-    litellm_proxy_cc_haiku_model: settings.litellmProxy?.claudeCode?.haikuModel ?? null,
-    litellm_proxy_cc_opus_model: settings.litellmProxy?.claudeCode?.opusModel ?? null,
+    litellm_proxy_cc_custom_headers: textOrNull(settings.litellmProxy?.claudeCode?.customHeaders),
+    litellm_proxy_cc_sonnet_model: textOrNull(settings.litellmProxy?.claudeCode?.sonnetModel),
+    litellm_proxy_cc_haiku_model: textOrNull(settings.litellmProxy?.claudeCode?.haikuModel),
+    litellm_proxy_cc_opus_model: textOrNull(settings.litellmProxy?.claudeCode?.opusModel),
 
     // InteractiveAgentConfig (boolean → 0/1, integer fields; defaults applied here)
     interactive_agent_enabled: (settings.interactiveAgent?.enabled ?? true) ? 1 : 0,
@@ -451,7 +459,11 @@ export function fromDatabase(row: SettingsRow): Settings {
     ...(row.litellm_proxy_base_url != null ||
     row.litellm_proxy_api_key != null ||
     row.litellm_proxy_marketplace_enabled ||
-    row.litellm_proxy_cc_routing_mode != null
+    row.litellm_proxy_cc_routing_mode != null ||
+    row.litellm_proxy_cc_custom_headers != null ||
+    row.litellm_proxy_cc_sonnet_model != null ||
+    row.litellm_proxy_cc_haiku_model != null ||
+    row.litellm_proxy_cc_opus_model != null
       ? {
           litellmProxy: {
             baseUrl: row.litellm_proxy_base_url ?? undefined,
@@ -465,9 +477,9 @@ export function fromDatabase(row: SettingsRow): Settings {
             row.litellm_proxy_cc_opus_model != null
               ? {
                   claudeCode: {
-                    routingMode: (row.litellm_proxy_cc_routing_mode ?? undefined) as
-                      | LiteLLMProxyRoutingMode
-                      | undefined,
+                    routingMode: validRoutingModes.has(row.litellm_proxy_cc_routing_mode ?? '')
+                      ? (row.litellm_proxy_cc_routing_mode as LiteLLMProxyRoutingMode)
+                      : undefined,
                     customHeaders: row.litellm_proxy_cc_custom_headers ?? undefined,
                     sonnetModel: row.litellm_proxy_cc_sonnet_model ?? undefined,
                     haikuModel: row.litellm_proxy_cc_haiku_model ?? undefined,

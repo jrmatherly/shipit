@@ -58,6 +58,12 @@ export class ClaudeCodeExecutorService extends ExecutorBase {
     const mode = cc.routingMode ?? LiteLLMProxyRoutingMode.direct;
     if (mode === LiteLLMProxyRoutingMode.direct) return env;
 
+    // Guard against unrecognized routing modes (DB corruption, future enum additions)
+    if (mode !== LiteLLMProxyRoutingMode.proxy && mode !== LiteLLMProxyRoutingMode.passthrough) {
+      this.log(`WARNING: Unknown LiteLLM routing mode "${mode}", falling back to direct mode`);
+      return env;
+    }
+
     // Both proxy and passthrough set BASE_URL
     env.ANTHROPIC_BASE_URL = this.proxyConfig.baseUrl;
 
@@ -68,10 +74,15 @@ export class ClaudeCodeExecutorService extends ExecutorBase {
       if (cc.customHeaders) {
         env.ANTHROPIC_CUSTOM_HEADERS = cc.customHeaders;
       }
-    } else if (mode === LiteLLMProxyRoutingMode.passthrough) {
+    } else {
+      // passthrough mode
       const headers: string[] = [];
       if (this.proxyConfig.apiKey) {
         headers.push(`x-litellm-api-key: Bearer ${this.proxyConfig.apiKey}`);
+      } else {
+        this.log(
+          'WARNING: Passthrough mode active but no proxy API key configured — proxy may reject requests'
+        );
       }
       if (cc.customHeaders) {
         headers.push(cc.customHeaders);

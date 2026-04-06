@@ -62,15 +62,12 @@ export function LiteLLMProxyRoutingSection({ settings }: LiteLLMProxyRoutingSect
   ) {
     return {
       litellmProxy: {
-        baseUrl: settings.litellmProxy?.baseUrl,
-        apiKey: settings.litellmProxy?.apiKey,
-        marketplaceEnabled: !!settings.litellmProxy?.baseUrl,
         claudeCode: {
           routingMode: overrides?.routingMode ?? routingMode,
-          customHeaders: (overrides?.customHeaders ?? customHeaders) || undefined,
-          sonnetModel: (overrides?.sonnetModel ?? sonnetModel) || undefined,
-          haikuModel: (overrides?.haikuModel ?? haikuModel) || undefined,
-          opusModel: (overrides?.opusModel ?? opusModel) || undefined,
+          customHeaders: overrides?.customHeaders ?? customHeaders,
+          sonnetModel: overrides?.sonnetModel ?? sonnetModel,
+          haikuModel: overrides?.haikuModel ?? haikuModel,
+          opusModel: overrides?.opusModel ?? opusModel,
         },
       },
     };
