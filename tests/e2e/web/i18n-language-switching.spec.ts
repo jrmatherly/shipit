@@ -8,6 +8,11 @@
 import { test, expect } from '@playwright/test';
 
 test.describe('i18n: language switching', () => {
+  // LanguageSettingsSection is deliberately hidden from the settings page UI.
+  // The component exists but is not rendered. Skip these tests until the feature
+  // is re-enabled. See memory: project_language_section_hidden.md
+  test.skip();
+
   test('switching to Russian updates UI text immediately', async ({ page }) => {
     // Navigate to settings page
     await page.goto('/settings');
