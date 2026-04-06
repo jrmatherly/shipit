@@ -2,6 +2,8 @@ import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AgentExecutorProvider } from '@/infrastructure/services/agents/common/agent-executor-provider.service.js';
 import { ClaudeCodeExecutorService } from '@/infrastructure/services/agents/common/executors/claude-code-executor.service.js';
+import { GeminiCliExecutorService } from '@/infrastructure/services/agents/common/executors/gemini-cli-executor.service.js';
+import { CodexCliExecutorService } from '@/infrastructure/services/agents/common/executors/codex-cli-executor.service.js';
 import type { IAgentExecutorFactory } from '@/application/ports/output/agents/agent-executor-factory.interface.js';
 import type { IAgentExecutor } from '@/application/ports/output/agents/agent-executor.interface.js';
 import type { ISettingsRepository } from '@/application/ports/output/repositories/settings.repository.interface.js';
@@ -126,8 +128,8 @@ describe('AgentExecutorProvider', () => {
       expect(ccExecutor.updateProxyConfig).toHaveBeenCalledWith(undefined);
     });
 
-    it('should NOT call updateProxyConfig on non-ClaudeCode executors', async () => {
-      // mockExecutor is a plain object, not instanceof ClaudeCodeExecutorService
+    it('should NOT call updateProxyConfig on non-proxy-aware executors', async () => {
+      // mockExecutor is a plain object, not instanceof any executor class
       vi.mocked(mockSettingsRepo.load).mockResolvedValue({
         ...defaultSettings,
         litellmProxy: { baseUrl: 'http://proxy:4000' },
@@ -135,8 +137,48 @@ describe('AgentExecutorProvider', () => {
 
       const result = await provider.getExecutor();
 
-      // Should not throw — the instanceof check correctly skips non-CC executors
+      // Should not throw — the instanceof check correctly skips unknown executors
       expect(result).toBe(mockExecutor);
+    });
+
+    it('should call updateProxyConfig on GeminiCliExecutorService instances', async () => {
+      const gcExecutor = new GeminiCliExecutorService(vi.fn() as any);
+      vi.spyOn(gcExecutor, 'updateProxyConfig');
+      vi.mocked(mockFactory.createExecutor).mockReturnValue(gcExecutor);
+
+      const proxyConfig = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-key',
+        geminiCli: { routingMode: LiteLLMProxyRoutingMode.proxy },
+      };
+      vi.mocked(mockSettingsRepo.load).mockResolvedValue({
+        ...defaultSettings,
+        litellmProxy: proxyConfig,
+      } as any);
+
+      await provider.getExecutor();
+
+      expect(gcExecutor.updateProxyConfig).toHaveBeenCalledWith(proxyConfig);
+    });
+
+    it('should call updateProxyConfig on CodexCliExecutorService instances', async () => {
+      const cxExecutor = new CodexCliExecutorService(vi.fn() as any);
+      vi.spyOn(cxExecutor, 'updateProxyConfig');
+      vi.mocked(mockFactory.createExecutor).mockReturnValue(cxExecutor);
+
+      const proxyConfig = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-key',
+        codexCli: { routingMode: LiteLLMProxyRoutingMode.proxy },
+      };
+      vi.mocked(mockSettingsRepo.load).mockResolvedValue({
+        ...defaultSettings,
+        litellmProxy: proxyConfig,
+      } as any);
+
+      await provider.getExecutor();
+
+      expect(cxExecutor.updateProxyConfig).toHaveBeenCalledWith(proxyConfig);
     });
   });
 });
