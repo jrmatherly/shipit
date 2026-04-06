@@ -24,6 +24,7 @@ const ENV_FALLBACK_FLAGS = {
   adoptBranch: () => false,
   gitRebaseSync: () => false,
   reactFileManager: () => isEnabled(process.env.NEXT_PUBLIC_FLAG_REACT_FILE_MANAGER),
+  plugins: () => false,
 };
 
 export interface FeatureFlagsState {
@@ -34,6 +35,7 @@ export interface FeatureFlagsState {
   adoptBranch: boolean;
   gitRebaseSync: boolean;
   reactFileManager: boolean;
+  plugins: boolean;
 }
 
 export async function getFeatureFlags(): Promise<FeatureFlagsState> {
@@ -50,6 +52,7 @@ export async function getFeatureFlags(): Promise<FeatureFlagsState> {
         adoptBranch: flags.adoptBranch,
         gitRebaseSync: flags.gitRebaseSync,
         reactFileManager: flags.reactFileManager,
+        plugins: flags.plugins,
       };
     }
   } catch {
@@ -64,6 +67,7 @@ export async function getFeatureFlags(): Promise<FeatureFlagsState> {
     adoptBranch: ENV_FALLBACK_FLAGS.adoptBranch(),
     gitRebaseSync: ENV_FALLBACK_FLAGS.gitRebaseSync(),
     reactFileManager: ENV_FALLBACK_FLAGS.reactFileManager(),
+    plugins: ENV_FALLBACK_FLAGS.plugins(),
   };
 }
 
@@ -92,5 +96,8 @@ export const featureFlags = {
   },
   get reactFileManager() {
     return ENV_FALLBACK_FLAGS.reactFileManager();
+  },
+  get plugins() {
+    return ENV_FALLBACK_FLAGS.plugins();
   },
 } as const;

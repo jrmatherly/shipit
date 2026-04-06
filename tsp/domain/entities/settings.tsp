@@ -512,6 +512,27 @@ model NotificationPreferences {
 }
 
 /**
+ * LiteLLM Proxy Configuration
+ *
+ * Configuration for connecting to a LiteLLM proxy instance.
+ * Used for the plugin marketplace (fetching catalog from the proxy's
+ * /claude-code/marketplace.json endpoint) and potentially for model routing.
+ * All fields optional — when not configured, marketplace features are disabled.
+ * API key stored in plaintext in SQLite, consistent with agent.token pattern.
+ */
+@doc("LiteLLM proxy configuration for plugin marketplace and model routing")
+model LiteLLMProxyConfig {
+  @doc("LiteLLM proxy base URL (e.g., http://localhost:4000)")
+  baseUrl?: string;
+
+  @doc("API key for the LiteLLM proxy (virtual key). Stored in plaintext in SQLite consistent with agent.token pattern.")
+  apiKey?: string;
+
+  @doc("Whether to use this proxy for the plugin marketplace")
+  marketplaceEnabled?: boolean;
+}
+
+/**
  * Feature Flags
  *
  * Controls runtime feature visibility in the web UI.
@@ -542,6 +563,9 @@ model FeatureFlags {
 
   @doc("Use the built-in React file manager instead of the native OS folder picker")
   reactFileManager: boolean = false;
+
+  @doc("Enable the Claude Code plugins marketplace browser")
+  plugins: boolean = false;
 }
 
 /**
@@ -768,4 +792,12 @@ model Settings extends BaseEntity {
    */
   @doc("FAB layout configuration (optional, defaults applied at runtime)")
   fabLayout?: FabLayoutConfig;
+
+  /**
+   * LiteLLM proxy configuration.
+   * Connects to a LiteLLM proxy for plugin marketplace catalog access
+   * and model routing. Optional — marketplace features disabled when absent.
+   */
+  @doc("LiteLLM proxy configuration (optional, marketplace disabled when absent)")
+  litellmProxy?: LiteLLMProxyConfig;
 }

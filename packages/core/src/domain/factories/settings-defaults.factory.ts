@@ -193,6 +193,7 @@ export function createDefaultSettings(overrides?: {
     adoptBranch: false,
     gitRebaseSync: false,
     reactFileManager: false,
+    plugins: false,
   };
 
   return {

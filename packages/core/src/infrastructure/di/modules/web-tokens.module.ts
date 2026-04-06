@@ -45,6 +45,13 @@ import { LoadSettingsUseCase } from '../../../application/use-cases/settings/loa
 import { UpdateSettingsUseCase } from '../../../application/use-cases/settings/update-settings.use-case.js';
 import { CompleteWebOnboardingUseCase } from '../../../application/use-cases/settings/complete-web-onboarding.use-case.js';
 
+// Plugin marketplace use cases
+import { FetchPluginCatalogUseCase } from '../../../application/use-cases/plugins/fetch-plugin-catalog.use-case.js';
+import { InstallPluginUseCase } from '../../../application/use-cases/plugins/install-plugin.use-case.js';
+import { UninstallPluginUseCase } from '../../../application/use-cases/plugins/uninstall-plugin.use-case.js';
+import { TogglePluginUseCase } from '../../../application/use-cases/plugins/toggle-plugin.use-case.js';
+import { AddMarketplaceUseCase } from '../../../application/use-cases/plugins/add-marketplace.use-case.js';
+
 // Upgrade use case
 import { UpgradeCliUseCase } from '../../../application/use-cases/upgrade/upgrade-cli.use-case.js';
 
@@ -173,5 +180,22 @@ export function registerWebTokensModule(container: DependencyContainer): void {
   });
   container.register('GetInteractiveChatStateUseCase', {
     useFactory: (c) => c.resolve(GetInteractiveChatStateUseCase),
+  });
+
+  // Plugin marketplace
+  container.register('FetchPluginCatalogUseCase', {
+    useFactory: (c) => c.resolve(FetchPluginCatalogUseCase),
+  });
+  container.register('InstallPluginUseCase', {
+    useFactory: (c) => c.resolve(InstallPluginUseCase),
+  });
+  container.register('UninstallPluginUseCase', {
+    useFactory: (c) => c.resolve(UninstallPluginUseCase),
+  });
+  container.register('TogglePluginUseCase', {
+    useFactory: (c) => c.resolve(TogglePluginUseCase),
+  });
+  container.register('AddMarketplaceUseCase', {
+    useFactory: (c) => c.resolve(AddMarketplaceUseCase),
   });
 }

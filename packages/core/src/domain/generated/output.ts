@@ -639,6 +639,24 @@ export type NotificationPreferences = {
 };
 
 /**
+ * LiteLLM proxy configuration for plugin marketplace and model routing
+ */
+export type LiteLLMProxyConfig = {
+  /**
+   * LiteLLM proxy base URL (e.g., http://localhost:4000)
+   */
+  baseUrl?: string;
+  /**
+   * API key for the LiteLLM proxy (virtual key). Stored in plaintext in SQLite consistent with agent.token pattern.
+   */
+  apiKey?: string;
+  /**
+   * Whether to use this proxy for the plugin marketplace
+   */
+  marketplaceEnabled?: boolean;
+};
+
+/**
  * Feature flag toggles for runtime feature control
  */
 export type FeatureFlags = {
@@ -670,6 +688,10 @@ export type FeatureFlags = {
    * Use the built-in React file manager instead of the native OS folder picker
    */
   reactFileManager: boolean;
+  /**
+   * Enable the Claude Code plugins marketplace browser
+   */
+  plugins: boolean;
 };
 
 /**
@@ -748,6 +770,10 @@ export type Settings = BaseEntity & {
    * FAB layout configuration (optional, defaults applied at runtime)
    */
   fabLayout?: FabLayoutConfig;
+  /**
+   * LiteLLM proxy configuration (optional, marketplace disabled when absent)
+   */
+  litellmProxy?: LiteLLMProxyConfig;
 };
 export enum TaskState {
   Todo = 'Todo',

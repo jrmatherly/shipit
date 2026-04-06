@@ -1,0 +1,14 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: LiteLLMProxyConfig.yaml
+type: object
+properties:
+  baseUrl:
+    type: string
+    description: LiteLLM proxy base URL (e.g., http://localhost:4000)
+  apiKey:
+    type: string
+    description: API key for the LiteLLM proxy (virtual key). Stored in plaintext in SQLite consistent with agent.token pattern.
+  marketplaceEnabled:
+    type: boolean
+    description: Whether to use this proxy for the plugin marketplace
+description: LiteLLM proxy configuration for plugin marketplace and model routing

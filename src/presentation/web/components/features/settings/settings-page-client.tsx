@@ -13,6 +13,7 @@ import {
   MessageSquare,
   LayoutGrid,
   LayoutList,
+  Server,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
 import { cn } from '@/lib/utils';
@@ -26,6 +27,7 @@ import { FeatureFlagsSettingsSection } from './feature-flags-settings-section';
 import { InteractiveAgentSettingsSection } from './interactive-agent-settings-section';
 import { FabLayoutSettingsSection } from './fab-layout-settings-section';
 import { DatabaseSettingsSection } from './database-settings-section';
+import { LiteLLMProxySettingsSection } from './litellm-proxy-settings-section';
 import type { Settings } from '@shipit-ai/core/domain/generated/output';
 import type { AvailableTerminal } from '@/app/actions/get-available-terminals';
 import type { AvailableEditor } from '@/app/actions/get-available-editors';
@@ -42,6 +44,7 @@ const SECTIONS = [
   { id: 'interactive-agent', labelKey: 'settings.sections.chat', icon: MessageSquare },
   { id: 'fab-layout', labelKey: 'settings.sections.layout', icon: LayoutGrid },
   { id: 'database', labelKey: 'settings.sections.database', icon: Database },
+  { id: 'litellm-proxy', labelKey: 'settings.sections.proxy', icon: Server },
 ] as const;
 
 const TABS = [{ id: 'all', labelKey: 'settings.sections.all', icon: LayoutList }, ...SECTIONS];
@@ -206,6 +209,13 @@ export function SettingsPageClient({
         {(activeTab === 'all' || activeTab === 'database') && (
           <div id="section-database" className="scroll-mt-18 rounded-lg">
             <DatabaseSettingsSection shipitAiHome={shipitAiHome} dbFileSize={dbFileSize} />
+          </div>
+        )}
+
+        {/* -- LiteLLM Proxy -- */}
+        {(activeTab === 'all' || activeTab === 'litellm-proxy') && (
+          <div id="section-litellm-proxy" className="scroll-mt-18 rounded-lg">
+            <LiteLLMProxySettingsSection settings={settings} />
           </div>
         )}
       </div>

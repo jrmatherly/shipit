@@ -8,6 +8,13 @@ import { CompleteOnboardingUseCase } from '../../../application/use-cases/settin
 import { CompleteWebOnboardingUseCase } from '../../../application/use-cases/settings/complete-web-onboarding.use-case.js';
 import { DetectEnvironmentDefaultsUseCase } from '../../../application/use-cases/settings/detect-environment-defaults.use-case.js';
 
+// Plugin marketplace use cases
+import { FetchPluginCatalogUseCase } from '../../../application/use-cases/plugins/fetch-plugin-catalog.use-case.js';
+import { InstallPluginUseCase } from '../../../application/use-cases/plugins/install-plugin.use-case.js';
+import { UninstallPluginUseCase } from '../../../application/use-cases/plugins/uninstall-plugin.use-case.js';
+import { TogglePluginUseCase } from '../../../application/use-cases/plugins/toggle-plugin.use-case.js';
+import { AddMarketplaceUseCase } from '../../../application/use-cases/plugins/add-marketplace.use-case.js';
+
 // Agent use cases
 import { ConfigureAgentUseCase } from '../../../application/use-cases/agents/configure-agent.use-case.js';
 import { ValidateAgentAuthUseCase } from '../../../application/use-cases/agents/validate-agent-auth.use-case.js';
@@ -141,6 +148,13 @@ export function registerUseCasesModule(container: DependencyContainer): void {
 
   // Upgrade
   container.registerSingleton(UpgradeCliUseCase);
+
+  // Plugin marketplace
+  container.registerSingleton(FetchPluginCatalogUseCase);
+  container.registerSingleton(InstallPluginUseCase);
+  container.registerSingleton(UninstallPluginUseCase);
+  container.registerSingleton(TogglePluginUseCase);
+  container.registerSingleton(AddMarketplaceUseCase);
 
   // Conflict resolution
   container.registerSingleton(ConflictResolutionService);

@@ -16,7 +16,8 @@
       "flags": "Флаги",
       "chat": "Чат",
       "layout": "Расположение",
-      "database": "База данных"
+      "database": "База данных",
+      "proxy": "LiteLLM Прокси"
     },
     "language": {
       "title": "Язык",
@@ -209,7 +210,23 @@
       "gitRebaseSyncDescription": "Включить операции git rebase-on-main и sync-main",
       "reactFileManager": "Файловый менеджер React",
       "reactFileManagerDescription": "Использовать встроенный файловый менеджер React вместо системного выбора папок",
+      "plugins": "Plugins Marketplace",
+      "pluginsDescription": "Enable the Claude Code plugins marketplace browser",
       "hint": "Экспериментальные функции, которые ещё находятся в разработке. Включайте на свой страх и риск — они могут измениться или быть удалены в будущих версиях. Режим отладки добавляет подробное логирование, полезное для устранения неполадок."
+    },
+    "litellmProxy": {
+      "title": "LiteLLM Proxy",
+      "description": "Configure connection to a LiteLLM proxy for plugin marketplace access",
+      "baseUrl": "Proxy URL",
+      "baseUrlDescription": "Base URL of your LiteLLM proxy (e.g., http://localhost:4000)",
+      "apiKey": "API Key",
+      "apiKeyDescription": "Virtual API key for LiteLLM proxy authentication",
+      "marketplaceEnabled": "Enable Marketplace",
+      "marketplaceEnabledDescription": "Use this proxy for the plugin marketplace catalog",
+      "hint": "Connect to a LiteLLM proxy to browse and install Claude Code plugins from your organization's curated marketplace.",
+      "testConnection": "Test Connection",
+      "testSuccess": "Connection successful",
+      "testFailed": "Connection failed"
     },
     "interactiveAgent": {
       "title": "Интерактивный агент",
@@ -251,7 +268,8 @@
     "settings": "Настройки",
     "sessions": "Сессии",
     "tools": "Инструменты",
-    "skills": "Навыки"
+    "skills": "Навыки",
+    "plugins": "Plugins"
   },
   "sidebar": {
     "features": "Функции",
@@ -611,6 +629,25 @@
     "imageNotes": "Заметки к изображению",
     "viewServerLogs": "Просмотр журналов сервера",
     "toggleSidebar": "Переключить боковую панель"
+  },
+  "plugins": {
+    "title": "Plugins",
+    "search": "Search",
+    "searchPlaceholder": "Search plugins...",
+    "emptyState": "No plugins found",
+    "noProxy": "No LiteLLM proxy configured. Go to Settings to set up your proxy URL.",
+    "wrongAgent": "Plugin marketplace is only available for Claude Code agent type.",
+    "install": "Install",
+    "uninstall": "Uninstall",
+    "enable": "Enable",
+    "disable": "Disable",
+    "installed": "Installed",
+    "notInstalled": "Not Installed",
+    "allCategories": "All Categories",
+    "version": "Version",
+    "source": "Source",
+    "category": "Category",
+    "clearFilters": "Clear filters"
   },
   "feature": {
     "create": {

@@ -24,6 +24,7 @@ export function FeatureFlagsSettingsSection({ settings }: FeatureFlagsSettingsSe
     adoptBranch: false,
     gitRebaseSync: false,
     reactFileManager: false,
+    plugins: false,
   };
 
   const [flags, setFlags] = useState<FeatureFlags>({ ...featureFlags });
@@ -133,6 +134,19 @@ export function FeatureFlagsSettingsSection({ settings }: FeatureFlagsSettingsSe
         checked={flags.reactFileManager}
         onChange={(v) => {
           const newFlags = { ...flags, reactFileManager: v };
+          setFlags(newFlags);
+          save({ featureFlags: newFlags });
+        }}
+      />
+      <SwitchRow
+        label={t('settings.featureFlags.plugins')}
+        description={t('settings.featureFlags.pluginsDescription')}
+        tooltip="Enables the Plugins page for browsing and managing Claude Code plugins from a LiteLLM marketplace."
+        id="flag-plugins"
+        testId="switch-flag-plugins"
+        checked={flags.plugins}
+        onChange={(v) => {
+          const newFlags = { ...flags, plugins: v };
           setFlags(newFlags);
           save({ featureFlags: newFlags });
         }}

@@ -117,6 +117,11 @@ export interface SettingsRow {
   feature_flag_adopt_branch: number;
   feature_flag_git_rebase_sync: number;
   feature_flag_react_file_manager: number;
+  feature_flag_plugins: number;
+  // LiteLLM Proxy config (added in migration 054)
+  litellm_proxy_base_url: string | null;
+  litellm_proxy_api_key: string | null;
+  litellm_proxy_marketplace_enabled: number;
   // Interactive agent config (added in migration 046)
   interactive_agent_enabled: number;
   interactive_agent_auto_timeout_minutes: number;
@@ -242,6 +247,12 @@ export function toDatabase(settings: Settings): SettingsRow {
     feature_flag_adopt_branch: settings.featureFlags?.adoptBranch ? 1 : 0,
     feature_flag_git_rebase_sync: settings.featureFlags?.gitRebaseSync ? 1 : 0,
     feature_flag_react_file_manager: settings.featureFlags?.reactFileManager ? 1 : 0,
+    feature_flag_plugins: settings.featureFlags?.plugins ? 1 : 0,
+
+    // LiteLLMProxyConfig (string fields nullable, boolean → 0/1)
+    litellm_proxy_base_url: settings.litellmProxy?.baseUrl ?? null,
+    litellm_proxy_api_key: settings.litellmProxy?.apiKey ?? null,
+    litellm_proxy_marketplace_enabled: settings.litellmProxy?.marketplaceEnabled ? 1 : 0,
 
     // InteractiveAgentConfig (boolean → 0/1, integer fields; defaults applied here)
     interactive_agent_enabled: (settings.interactiveAgent?.enabled ?? true) ? 1 : 0,
@@ -420,7 +431,21 @@ export function fromDatabase(row: SettingsRow): Settings {
       adoptBranch: row.feature_flag_adopt_branch === 1,
       gitRebaseSync: row.feature_flag_git_rebase_sync === 1,
       reactFileManager: row.feature_flag_react_file_manager === 1,
+      plugins: row.feature_flag_plugins === 1,
     },
+
+    // LiteLLMProxyConfig (TEXT → string, INTEGER 0/1 → boolean)
+    ...(row.litellm_proxy_base_url != null ||
+    row.litellm_proxy_api_key != null ||
+    row.litellm_proxy_marketplace_enabled
+      ? {
+          litellmProxy: {
+            baseUrl: row.litellm_proxy_base_url ?? undefined,
+            apiKey: row.litellm_proxy_api_key ?? undefined,
+            marketplaceEnabled: row.litellm_proxy_marketplace_enabled === 1,
+          },
+        }
+      : {}),
 
     // InteractiveAgentConfig (INTEGER 0/1 → boolean, integer → number)
     interactiveAgent: {
