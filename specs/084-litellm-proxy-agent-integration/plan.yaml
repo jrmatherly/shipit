@@ -5,35 +5,83 @@ name: litellm-proxy-agent-integration
 summary: Implementation plan for 084-litellm-proxy-agent-integration
 
 # Relationships
-relatedFeatures: []
-technologies: []
-relatedLinks: []
+relatedFeatures:
+  - "005-global-settings-service"
+  - "082-agent-permission-modes"
+  - "083-claude-code-plugin-marketplace"
+
+technologies:
+  - TypeSpec 1.10
+  - TypeScript 6.0
+  - better-sqlite3
+  - React 19
+  - Next.js 16
+  - Vitest
+  - shadcn/ui
+
+relatedLinks:
+  - title: "Spec"
+    url: specs/084-litellm-proxy-agent-integration/spec.yaml
+  - title: "Research"
+    url: specs/084-litellm-proxy-agent-integration/research.yaml
+  - title: "Data Model"
+    url: specs/084-litellm-proxy-agent-integration/data-model.md
 
 # Structured implementation phases
 phases:
   - id: phase-1
-    name: 'Foundation'
+    name: "TypeSpec Models + Migration + Persistence"
     parallel: false
     taskIds:
       - task-1
       - task-2
+      - task-3
   - id: phase-2
-    name: 'Core Implementation'
+    name: "Executor Env Var Injection (TDD)"
     parallel: false
     taskIds:
-      - task-3
       - task-4
+      - task-5
+  - id: phase-3
+    name: "Factory + Provider Threading"
+    parallel: false
+    taskIds:
+      - task-6
+  - id: phase-4
+    name: "Settings UI Section"
+    parallel: false
+    taskIds:
+      - task-7
+      - task-8
+  - id: phase-5
+    name: "i18n + Storybook + Validation"
+    parallel: false
+    taskIds:
+      - task-9
+      - task-10
 
 # File change tracking
 filesToCreate:
-  - src/domain/entities/{{ENTITY_NAME}}.ts
-  - tests/unit/domain/entities/{{ENTITY_NAME}}.test.ts
+  - packages/core/src/infrastructure/persistence/sqlite/migrations/055-add-litellm-proxy-agent-config.ts
+  - src/presentation/web/components/features/settings/litellm-proxy-routing-section.tsx
+  - src/presentation/web/components/features/settings/litellm-proxy-routing-section.stories.tsx
+  - tests/unit/infrastructure/services/agents/common/executors/claude-code-executor-proxy.test.ts
+  - tests/integration/infrastructure/persistence/sqlite/settings-proxy-agent-config.test.ts
 
 filesToModify:
-  - src/infrastructure/di/container.ts
-  - package.json
+  - tsp/domain/entities/settings.tsp
+  - packages/core/src/domain/generated/output.ts (via tsp:codegen)
+  - packages/core/src/domain/factories/settings-defaults.factory.ts
+  - packages/core/src/infrastructure/persistence/sqlite/mappers/settings.mapper.ts
+  - packages/core/src/infrastructure/repositories/sqlite-settings.repository.ts
+  - packages/core/src/infrastructure/services/agents/common/executors/claude-code-executor.service.ts
+  - packages/core/src/infrastructure/services/agents/common/agent-executor-factory.service.ts
+  - packages/core/src/infrastructure/services/agents/common/agent-executor-provider.service.ts
+  - packages/core/src/application/ports/output/agents/agent-executor-factory.interface.ts
+  - src/presentation/web/components/features/settings/settings-page-client.tsx
+  - translations/en/web.json (+ 7 other locales)
 
-# Open questions (should all be resolved before implementation)
+# Open questions (all resolved)
 openQuestions: []
 
 # Markdown content — architecture, strategy, and risks only.
@@ -47,16 +95,87 @@ content: |
   ## Architecture Overview
 
   ```
-  {{ARCHITECTURE_DIAGRAM}}
+  Settings (SQLite)                                            claude CLI
+  ┌─────────────────────────────┐                            ┌──────────┐
+  │ settings.litellmProxy:      │                            │          │
+  │   baseUrl: "http://proxy"   │    AgentExecutor            │  claude  │
+  │   apiKey: "sk-..."          │    Provider                 │  -p ...  │
+  │   claudeCode:               │   ┌───────────┐            │          │
+  │     routingMode: "proxy"    │──►│ load()    │  Factory    └──────────┘
+  │     customHeaders: "..."    │   │ thread    │─►┌────────┐     ▲
+  │     sonnetModel: "claude-*" │   │ proxyConf │  │create()│     │
+  │     haikuModel: null        │   └───────────┘  │+ proxy │  spawn()
+  │     opusModel: null         │                  └────────┘     │
+  └─────────────────────────────┘                      │         │
+                                                       ▼         │
+                                              ┌──────────────────┐
+                                              │ ClaudeCodeExecutor│
+                                              │ buildSpawnEnv():  │
+                                              │  ANTHROPIC_BASE_  │
+                                              │    URL = proxy    │
+                                              │  ANTHROPIC_AUTH_  │
+                                              │    TOKEN = sk-... │
+                                              │  ANTHROPIC_DEFAULT│
+                                              │    _SONNET_MODEL  │
+                                              └──────────────────┘
   ```
 
   ## Implementation Strategy
 
-  **MANDATORY TDD**: All phases with executable code follow RED-GREEN-REFACTOR cycles.
+  **MANDATORY TDD**: All phases with executable code follow RED-GREEN-REFACTOR.
 
-  High-level walkthrough of how the phases connect and why they are ordered
-  this way. Focus on architectural decisions and data flow — not individual
-  task descriptions (see tasks.yaml for the detailed breakdown).
+  ### Phase 1: Foundation (TypeSpec + DB + Persistence)
+
+  The data model drives everything. We start by defining the TypeSpec enum and
+  nested model, running codegen, then building the migration and persistence
+  pipeline. This phase is foundational — no TDD because TypeSpec codegen and
+  SQL migrations are declarative, not behavioral.
+
+  **Flow:** TypeSpec → codegen → migration → mapper → repository SQL → defaults factory
+
+  The key gotcha from spec 083 experience: the INSERT column list, VALUES list,
+  and UPDATE SET clause in `sqlite-settings.repository.ts` must ALL include the
+  new columns. Missing any one causes silent data loss on save (settings appear
+  to save but revert on reload).
+
+  ### Phase 2: Executor Injection (TDD Core)
+
+  This is the heart of the feature. We write failing tests for `buildSpawnEnv()`
+  covering all three routing modes, then implement the override. Tests verify:
+  - "direct" mode → no proxy env vars
+  - "proxy" mode → ANTHROPIC_BASE_URL + ANTHROPIC_AUTH_TOKEN
+  - "passthrough" mode → ANTHROPIC_BASE_URL + ANTHROPIC_CUSTOM_HEADERS with proxy key
+  - Model overrides → ANTHROPIC_DEFAULT_*_MODEL env vars
+  - Edge cases: missing baseUrl, missing apiKey, empty custom headers
+
+  The executor gains a `proxyConfig` property and a setter method. The
+  `buildSpawnEnv()` override reads this property to decide which env vars to set.
+
+  ### Phase 3: Factory + Provider Threading
+
+  Wire the proxy config from Settings through the execution pipeline:
+  - Provider: extract `settings.litellmProxy` and pass to factory
+  - Factory: accept `proxyConfig` parameter and pass to Claude Code executor
+  - Factory interface: update type signature
+
+  TDD: Test that the provider correctly threads proxy config, and that the
+  factory passes it to the executor.
+
+  ### Phase 4: Settings UI
+
+  New `LiteLLMProxyRoutingSection` component below the existing proxy settings.
+  Contains:
+  - Radio group for routing mode (direct/proxy/passthrough)
+  - Conditional fields: custom headers textarea, model override inputs
+  - Mode-specific help text (passthrough shows proxy-side config reminder)
+  - onBlur save pattern (matching existing proxy settings section)
+
+  ### Phase 5: Polish (i18n + Storybook + Validation)
+
+  - i18n keys across all 8 locales
+  - Storybook story for the new section (all three modes)
+  - Input validation: URL scheme, header format, model name characters
+  - Integration test for round-trip persistence
 
   ## Files to Create/Modify
 
@@ -64,13 +183,27 @@ content: |
 
   | File | Purpose |
   | ---- | ------- |
-  | {{FILE_PATH}} | {{PURPOSE}} |
+  | `packages/core/.../migrations/055-add-litellm-proxy-agent-config.ts` | SQLite migration for 5 new columns |
+  | `src/.../settings/litellm-proxy-routing-section.tsx` | Settings UI for proxy routing mode + config |
+  | `src/.../settings/litellm-proxy-routing-section.stories.tsx` | Storybook stories (3 modes) |
+  | `tests/unit/.../claude-code-executor-proxy.test.ts` | Unit tests for env var injection |
+  | `tests/integration/.../settings-proxy-agent-config.test.ts` | Round-trip persistence test |
 
   ### Modified Files
 
   | File | Changes |
   | ---- | ------- |
-  | {{FILE_PATH}} | {{CHANGES}} |
+  | `tsp/domain/entities/settings.tsp` | Add LiteLLMProxyRoutingMode enum + ClaudeCodeProxyConfig model |
+  | `packages/core/src/domain/generated/output.ts` | Regenerated via tsp:codegen |
+  | `settings-defaults.factory.ts` | Add claudeCode defaults (routingMode: 'direct') |
+  | `settings.mapper.ts` | SettingsRow + toDatabase + fromDatabase for 5 new columns |
+  | `sqlite-settings.repository.ts` | INSERT columns + VALUES + UPDATE SET for 5 new columns |
+  | `claude-code-executor.service.ts` | Add proxyConfig property + buildSpawnEnv() override |
+  | `agent-executor-factory.service.ts` | Accept + pass proxyConfig to Claude Code executor |
+  | `agent-executor-provider.service.ts` | Thread settings.litellmProxy to factory |
+  | `agent-executor-factory.interface.ts` | Update createExecutor signature |
+  | `settings-page-client.tsx` | Add LiteLLMProxyRoutingSection to settings tabs |
+  | `translations/*/web.json` | i18n keys for routing mode labels, descriptions, help text |
 
   ## Testing Strategy (TDD: Tests FIRST)
 
@@ -78,18 +211,33 @@ content: |
 
   ### Unit Tests (RED -> GREEN -> REFACTOR)
 
-  - {{TEST_AREA_1}}
-  - {{TEST_AREA_2}}
+  - **Env var injection** (Phase 2): 8-10 test cases covering all routing modes,
+    edge cases, model overrides, and custom headers. This is the primary TDD target.
+  - **Factory threading** (Phase 3): Verify proxyConfig is passed to executor.
+  - **Provider threading** (Phase 3): Verify settings.litellmProxy reaches factory.
 
   ### Integration Tests
 
-  - {{INTEGRATION_TEST_1}}
+  - **Settings persistence** (Phase 5): Round-trip test — save proxy agent config
+    to SQLite, reload, verify all fields preserved. Follows the pattern of existing
+    settings integration tests.
+  - **Migration** (Phase 1): Verify migration adds columns idempotently.
+
+  ### Component Tests
+
+  - **Settings UI** (Phase 4): Render with each routing mode, verify conditional
+    fields appear/hide, verify onBlur save calls.
 
   ## Risk Mitigation
 
   | Risk | Mitigation |
   | ---- | ---------- |
-  | {{RISK}} | {{MITIGATION}} |
+  | Silent data loss from missing SQL columns | Phase 1 adds all 5 columns to INSERT + UPDATE + mapper simultaneously; integration test verifies round-trip |
+  | Executor cache returns stale proxy config | Executor exposes setter; provider updates before returning cached instance |
+  | Spec 083 plugin marketplace regression | Phase 1 does not modify existing LiteLLMProxyConfig fields; only adds new nested model |
+  | Custom headers injection enables header smuggling | Validate format at save boundary (key: value per line, no control chars) |
+  | Model override enables command injection | Validate against allowlist regex at save boundary |
+  | Passthrough mode fails silently when proxy-side config missing | Help text in UI explains required proxy-side settings; test connection validates reachability |
 
   ---
 

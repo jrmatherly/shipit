@@ -9,55 +9,67 @@
 
 ## Overview
 
-{{DATA_MODEL_OVERVIEW}}
+Extends the existing `LiteLLMProxyConfig` model with a nested `ClaudeCodeProxyConfig` for per-agent proxy routing. Adds a `LiteLLMProxyRoutingMode` enum. No new top-level entities — all changes nest under the existing `Settings.litellmProxy` path.
 
 ## New Entities
 
-### {{ENTITY_NAME}}
+### ClaudeCodeProxyConfig
 
-**Location:** `tsp/domain/entities/{{entity-name}}.tsp`
+**Location:** `tsp/domain/entities/settings.tsp` (nested inside LiteLLMProxyConfig section)
 
-| Property      | Type          | Required     | Description   |
-| ------------- | ------------- | ------------ | ------------- |
-| {{PROP_NAME}} | {{PROP_TYPE}} | {{REQUIRED}} | {{PROP_DESC}} |
+| Property | Type | Required | Description |
+| --- | --- | --- | --- |
+| routingMode | LiteLLMProxyRoutingMode | No | How Claude Code routes API traffic: direct, proxy, or passthrough |
+| customHeaders | string | No | Newline-separated key: value headers for ANTHROPIC_CUSTOM_HEADERS |
+| sonnetModel | string | No | Model name override for ANTHROPIC_DEFAULT_SONNET_MODEL |
+| haikuModel | string | No | Model name override for ANTHROPIC_DEFAULT_HAIKU_MODEL |
+| opusModel | string | No | Model name override for ANTHROPIC_DEFAULT_OPUS_MODEL |
 
 **Relationships:**
 
-- {{RELATIONSHIP_1}}
+- Child of `LiteLLMProxyConfig` (accessed via `settings.litellmProxy.claudeCode`)
+- Consumed by `ClaudeCodeExecutorService.buildSpawnEnv()`
 
 ## Modified Entities
 
-### {{EXISTING_ENTITY}}
+### LiteLLMProxyConfig
 
 **Changes:**
 
-- Add: {{NEW_PROPERTY}}
-- Modify: {{MODIFIED_PROPERTY}}
+- Add: `claudeCode?: ClaudeCodeProxyConfig` — per-agent proxy routing config for Claude Code
 
-## Value Objects
+### Settings (indirect)
 
-### {{VALUE_OBJECT_NAME}}
+**Changes:**
 
-**Location:** `tsp/domain/value-objects/{{value-object}}.tsp`
-
-| Property    | Type        | Description |
-| ----------- | ----------- | ----------- |
-| {{VO_PROP}} | {{VO_TYPE}} | {{VO_DESC}} |
+- No direct changes — `LiteLLMProxyConfig` is already referenced as `settings.litellmProxy`
+- New fields flow through existing persistence pipeline
 
 ## Enums
 
-### {{ENUM_NAME}}
+### LiteLLMProxyRoutingMode
 
-**Location:** `tsp/common/enums/{{enum-name}}.tsp`
+**Location:** `tsp/domain/entities/settings.tsp` (colocated with LiteLLMProxyConfig)
 
-| Value          | Description   |
-| -------------- | ------------- |
-| {{ENUM_VALUE}} | {{ENUM_DESC}} |
+| Value | Description |
+| --- | --- |
+| `direct` | No proxy routing — Claude Code uses its own auth (default) |
+| `proxy` | Full proxy routing — ANTHROPIC_BASE_URL + ANTHROPIC_AUTH_TOKEN |
+| `passthrough` | Proxy with forwarded user auth — ANTHROPIC_BASE_URL + ANTHROPIC_CUSTOM_HEADERS |
 
-<!-- If no data model changes, replace all with:
-## Overview
-No domain model changes required for this feature.
--->
+## Database Columns (Migration)
+
+New columns added to `settings` table:
+
+| Column | Type | Default | Maps To |
+| --- | --- | --- | --- |
+| `litellm_proxy_cc_routing_mode` | TEXT | NULL | `litellmProxy.claudeCode.routingMode` |
+| `litellm_proxy_cc_custom_headers` | TEXT | NULL | `litellmProxy.claudeCode.customHeaders` |
+| `litellm_proxy_cc_sonnet_model` | TEXT | NULL | `litellmProxy.claudeCode.sonnetModel` |
+| `litellm_proxy_cc_haiku_model` | TEXT | NULL | `litellmProxy.claudeCode.haikuModel` |
+| `litellm_proxy_cc_opus_model` | TEXT | NULL | `litellmProxy.claudeCode.opusModel` |
+
+All TEXT with NULL default — absent means "not configured" (routingMode defaults to "direct" in domain logic, not DB).
 
 ---
 

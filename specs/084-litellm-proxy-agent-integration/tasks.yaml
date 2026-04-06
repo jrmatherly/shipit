@@ -5,44 +5,284 @@ name: litellm-proxy-agent-integration
 summary: Task breakdown for 084-litellm-proxy-agent-integration
 
 # Relationships
-relatedFeatures: []
-technologies: []
-relatedLinks: []
+relatedFeatures:
+  - "005-global-settings-service"
+  - "082-agent-permission-modes"
+  - "083-claude-code-plugin-marketplace"
+
+technologies:
+  - TypeSpec 1.10
+  - TypeScript 6.0
+  - better-sqlite3
+  - React 19
+  - Vitest
+
+relatedLinks:
+  - title: "Plan"
+    url: specs/084-litellm-proxy-agent-integration/plan.yaml
 
 # Structured task list — this is the single source of truth for tasks.
 # The content field below is a summary only; it does NOT duplicate task details.
 tasks:
+  # =========================================================================
+  # Phase 1: TypeSpec Models + Migration + Persistence
+  # =========================================================================
   - id: task-1
-    title: { { TASK_1_TITLE } }
-    description: { { TASK_1_DESCRIPTION } }
+    title: "TypeSpec: Add LiteLLMProxyRoutingMode enum + ClaudeCodeProxyConfig model"
+    description: >
+      Define the routing mode enum (direct/proxy/passthrough) and the nested
+      ClaudeCodeProxyConfig model in settings.tsp. Add claudeCode? field to
+      LiteLLMProxyConfig. Run pnpm tsp:codegen and verify output.ts changes.
     state: Todo
     dependencies: []
     acceptanceCriteria:
-      - { { CRITERION_1 } }
-      - { { CRITERION_2 } }
-    tdd:
-      red:
-        - Write tests for {{FEATURE_1}}
-      green:
-        - Implement {{FEATURE_1}} to pass tests
-      refactor:
-        - Extract helpers, improve naming
-    estimatedEffort: { { EFFORT_1 } }
+      - LiteLLMProxyRoutingMode enum with 3 values in settings.tsp
+      - ClaudeCodeProxyConfig model with 5 fields in settings.tsp
+      - claudeCode? field added to LiteLLMProxyConfig
+      - pnpm tsp:codegen produces updated output.ts with new types
+      - Existing LiteLLMProxyConfig fields unchanged (no regression)
+    tdd: null # Declarative codegen — no behavioral tests
+    estimatedEffort: "30min"
 
   - id: task-2
-    title: { { TASK_2_TITLE } }
-    description: { { TASK_2_DESCRIPTION } }
+    title: "SQLite migration 055 + settings mapper for proxy agent config"
+    description: >
+      Create migration 055-add-litellm-proxy-agent-config.ts adding 5 TEXT columns
+      (litellm_proxy_cc_routing_mode, _custom_headers, _sonnet_model, _haiku_model,
+      _opus_model). Update SettingsRow interface, toDatabase(), and fromDatabase()
+      in settings.mapper.ts.
     state: Todo
     dependencies:
       - task-1
     acceptanceCriteria:
-      - { { CRITERION_1 } }
-      - { { CRITERION_2 } }
-    tdd: null # No TDD for foundational/doc tasks
-    estimatedEffort: { { EFFORT_2 } }
+      - Migration adds 5 columns with idempotent column checks
+      - SettingsRow has 5 new fields (all string | null)
+      - toDatabase() maps claudeCode fields to DB columns
+      - fromDatabase() reconstructs claudeCode from DB columns
+      - Conditional spread: claudeCode only present when at least one field non-null
+    tdd: null # Declarative migration + mapper — tested via integration test in task-10
+    estimatedEffort: "45min"
+
+  - id: task-3
+    title: "Repository SQL sync + settings defaults for proxy agent config"
+    description: >
+      Add 5 new columns to INSERT column list, INSERT VALUES list, and UPDATE SET
+      clause in sqlite-settings.repository.ts. Update settings-defaults.factory.ts
+      to include claudeCode defaults (routingMode: 'direct', others undefined).
+    state: Todo
+    dependencies:
+      - task-2
+    acceptanceCriteria:
+      - INSERT INTO has all 5 new columns in column list
+      - INSERT VALUES has all 5 @litellm_proxy_cc_* named parameters
+      - UPDATE SET has all 5 column = @param assignments
+      - settings-defaults.factory.ts returns litellmProxy.claudeCode with routingMode 'direct'
+      - pnpm test:int passes (existing settings integration tests still work)
+    tdd: null # SQL sync is mechanical — verified by integration test in task-10
+    estimatedEffort: "30min"
+
+  # =========================================================================
+  # Phase 2: Executor Env Var Injection (TDD)
+  # =========================================================================
+  - id: task-4
+    title: "RED: Write failing tests for Claude Code executor proxy env injection"
+    description: >
+      Create claude-code-executor-proxy.test.ts with test cases for all routing
+      modes. Tests call buildSpawnEnv() and assert on env var presence/absence.
+      All tests must FAIL (RED) before implementation.
+    state: Todo
+    dependencies:
+      - task-1 # Needs generated types for proxy config
+    acceptanceCriteria:
+      - Test file exists at tests/unit/.../claude-code-executor-proxy.test.ts
+      - "Test: direct mode — no ANTHROPIC_BASE_URL, no ANTHROPIC_AUTH_TOKEN"
+      - "Test: proxy mode — ANTHROPIC_BASE_URL set to proxyConfig.baseUrl"
+      - "Test: proxy mode — ANTHROPIC_AUTH_TOKEN set to proxyConfig.apiKey"
+      - "Test: passthrough mode — ANTHROPIC_BASE_URL set, no ANTHROPIC_AUTH_TOKEN"
+      - "Test: passthrough mode — ANTHROPIC_CUSTOM_HEADERS includes x-litellm-api-key"
+      - "Test: passthrough mode — user custom headers appended after proxy key header"
+      - "Test: proxy mode — user custom headers set as ANTHROPIC_CUSTOM_HEADERS"
+      - "Test: model overrides — ANTHROPIC_DEFAULT_SONNET_MODEL set when sonnetModel present"
+      - "Test: model overrides — ANTHROPIC_DEFAULT_HAIKU_MODEL set when haikuModel present"
+      - "Test: model overrides — ANTHROPIC_DEFAULT_OPUS_MODEL set when opusModel present"
+      - "Test: model overrides — not set in direct mode"
+      - "Test: missing baseUrl — no env vars even if routingMode is proxy"
+      - All tests fail (RED state confirmed)
+    tdd:
+      red:
+        - Write 12+ test cases covering all routing modes and edge cases
+        - Run tests and verify all FAIL
+      green: null
+      refactor: null
+    estimatedEffort: "45min"
+
+  - id: task-5
+    title: "GREEN+REFACTOR: Implement buildSpawnEnv() override in Claude Code executor"
+    description: >
+      Add proxyConfig property to ClaudeCodeExecutorService. Add setter method
+      (updateProxyConfig). Override buildSpawnEnv() to inject env vars based on
+      routing mode. All tests from task-4 must pass (GREEN).
+    state: Todo
+    dependencies:
+      - task-4
+    acceptanceCriteria:
+      - ClaudeCodeExecutorService has proxyConfig?: LiteLLMProxyConfig property
+      - updateProxyConfig(config) setter updates the property
+      - buildSpawnEnv() implements direct/proxy/passthrough logic per research doc
+      - All 12+ tests from task-4 pass (GREEN)
+      - CLAUDECODE env var still stripped (base class behavior preserved)
+      - No changes to execute() or executeStream() methods
+    tdd:
+      red: null # Already done in task-4
+      green:
+        - Add proxyConfig property and setter
+        - Implement buildSpawnEnv() override with mode switch
+        - Run tests until all pass
+      refactor:
+        - Extract env var building into focused helper methods if complex
+        - Ensure no duplication between proxy and passthrough branches
+    estimatedEffort: "45min"
+
+  # =========================================================================
+  # Phase 3: Factory + Provider Threading
+  # =========================================================================
+  - id: task-6
+    title: "Thread proxy config through factory and provider (TDD)"
+    description: >
+      Update IAgentExecutorFactory interface to accept optional proxyConfig.
+      Update AgentExecutorFactory.createExecutor() to pass proxyConfig to Claude
+      Code executor. Update AgentExecutorProvider to extract settings.litellmProxy
+      and pass to factory. Update provider to call updateProxyConfig on cached
+      executor.
+    state: Todo
+    dependencies:
+      - task-5
+    acceptanceCriteria:
+      - IAgentExecutorFactory.createExecutor signature includes proxyConfig?: LiteLLMProxyConfig
+      - Factory passes proxyConfig to ClaudeCodeExecutorService constructor or setter
+      - Provider extracts settings.litellmProxy and passes to factory
+      - Provider calls executor.updateProxyConfig() for cached executors
+      - Existing tests for factory/provider still pass
+      - Feature agent worker gets proxy-aware executor without code changes
+    tdd:
+      red:
+        - Write test that provider passes litellmProxy to factory
+        - Write test that factory passes proxyConfig to claude-code executor
+      green:
+        - Update interface, factory, and provider
+        - Run tests until all pass
+      refactor:
+        - Ensure other agent executors (codex, gemini) are unaffected
+    estimatedEffort: "45min"
+
+  # =========================================================================
+  # Phase 4: Settings UI Section
+  # =========================================================================
+  - id: task-7
+    title: "Create LiteLLMProxyRoutingSection component"
+    description: >
+      New React component for the settings page. Radio group for routing mode
+      (direct/proxy/passthrough). Conditional fields: custom headers textarea
+      (proxy + passthrough), model override inputs (proxy + passthrough). Mode-
+      specific help text. onBlur save pattern. Placed below existing LiteLLM
+      proxy settings section on the settings page.
+    state: Todo
+    dependencies:
+      - task-3 # Needs persistence working for save
+    acceptanceCriteria:
+      - Component renders radio group with 3 mode options
+      - Selecting "proxy" shows custom headers textarea + model override inputs
+      - Selecting "passthrough" shows same fields + help text about proxy-side config
+      - Selecting "direct" hides all optional fields
+      - onBlur triggers updateSettingsAction with correct payload shape
+      - Component is conditionally rendered (only when litellmProxy.baseUrl is set)
+      - Component uses SettingsSection/SettingsRow from settings-section-utils
+      - All labels/descriptions use i18n t() calls
+    tdd:
+      red:
+        - Write component render test for each routing mode
+        - Write test that mode change triggers save
+      green:
+        - Implement component with radio group and conditional fields
+      refactor:
+        - Extract mode-specific field groups if component exceeds 200 lines
+    estimatedEffort: "60min"
+
+  - id: task-8
+    title: "Integrate routing section into settings page"
+    description: >
+      Add LiteLLMProxyRoutingSection to settings-page-client.tsx below the
+      existing LiteLLMProxySettingsSection. Conditionally render when
+      litellmProxy.baseUrl is configured.
+    state: Todo
+    dependencies:
+      - task-7
+    acceptanceCriteria:
+      - Routing section appears below proxy URL/API key section
+      - Section only renders when settings.litellmProxy?.baseUrl is set
+      - Section included in "All" tab and "LiteLLM Proxy" individual tab
+      - No layout regressions in other settings sections
+    tdd: null # Integration wiring — visual verification
+    estimatedEffort: "15min"
+
+  # =========================================================================
+  # Phase 5: i18n + Storybook + Validation
+  # =========================================================================
+  - id: task-9
+    title: "i18n keys + Storybook story + input validation"
+    description: >
+      Add i18n keys for routing mode labels, descriptions, and help text to all
+      8 locale files. Create Storybook story with 3 variants (one per mode).
+      Add validation for custom headers (key: value format, no control chars)
+      and model override names (alphanumeric + dots/hyphens/colons).
+    state: Todo
+    dependencies:
+      - task-7
+    acceptanceCriteria:
+      - All 8 locale files have identical key sets (translation parity test passes)
+      - Storybook story renders all 3 routing modes
+      - pnpm build:storybook succeeds
+      - Custom headers validation rejects lines not matching key: value
+      - Model name validation rejects characters outside [a-zA-Z0-9._:-]
+      - Validation errors shown as toast or inline message
+    tdd:
+      red:
+        - Write validation tests for custom headers format
+        - Write validation tests for model name characters
+      green:
+        - Implement validation functions
+        - Add i18n keys to all 8 locales
+        - Create Storybook story
+      refactor:
+        - Extract validators to shared utility if reusable
+    estimatedEffort: "60min"
+
+  - id: task-10
+    title: "Integration test: round-trip proxy agent config persistence"
+    description: >
+      Write integration test that saves full proxy agent config (all 5 fields +
+      existing base fields) to SQLite, reloads, and verifies all values preserved.
+      Validates the entire persistence pipeline (migration + mapper + repository SQL).
+    state: Todo
+    dependencies:
+      - task-3
+    acceptanceCriteria:
+      - Test saves settings with claudeCode proxy config (all 5 fields populated)
+      - Test reloads settings and asserts all claudeCode fields match
+      - Test saves settings with claudeCode absent (null) and verifies no regression
+      - Test saves settings with partial claudeCode (only routingMode) and verifies
+      - All existing settings integration tests still pass
+    tdd:
+      red:
+        - Write 3-4 test cases for round-trip persistence
+      green:
+        - Tests should pass against the persistence code from tasks 2-3
+      refactor:
+        - Extract factory helpers if test setup is verbose
+    estimatedEffort: "30min"
 
 # Total effort estimate
-totalEstimate: { { TOTAL_EFFORT } }
+totalEstimate: "6-7 hours"
 
 # Open questions
 openQuestions: []
@@ -52,17 +292,24 @@ openQuestions: []
 content: |
   ## Summary
 
-  {{BRIEF_DESCRIPTION_OF_SCOPE}} — {{TASK_COUNT}} tasks across {{PHASE_COUNT}} phases.
+  LiteLLM proxy agent integration — 10 tasks across 5 phases. Extends existing
+  proxy settings to inject Claude Code env vars for three routing modes (direct,
+  proxy, passthrough) with model overrides and custom header support.
 
   ## Acceptance Checklist
 
   Before marking feature complete:
 
-  - [ ] All tasks completed
+  - [ ] All 10 tasks completed
   - [ ] Tests passing (`pnpm test`)
-  - [ ] Linting clean (`pnpm lint`)
-  - [ ] Types valid (`pnpm typecheck`)
-  - [ ] TypeSpec compiles (`pnpm tsp:compile`)
+  - [ ] Linting clean (`pnpm lint:fix`)
+  - [ ] Types valid (`pnpm typecheck` via `pnpm validate`)
+  - [ ] TypeSpec compiles (`pnpm tsp:codegen`)
+  - [ ] Storybook builds (`pnpm build:storybook`)
+  - [ ] Translation parity (all 8 locales have identical key sets)
+  - [ ] Settings round-trip verified (integration test)
+  - [ ] Env var injection verified for all 3 modes (unit tests)
+  - [ ] Spec 083 plugin marketplace not regressed
   - [ ] PR created and reviewed
 
   ---

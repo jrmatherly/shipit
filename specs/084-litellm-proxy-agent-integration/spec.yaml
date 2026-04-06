@@ -16,7 +16,7 @@ summary: >
   custom header injection for cost attribution, and a new settings UI section for
   per-agent proxy configuration. Claude Code is the first supported agent; the pattern
   is designed for multi-agent extension.
-phase: research
+phase: planning
 sizeEstimate: L
 
 # Relationships
