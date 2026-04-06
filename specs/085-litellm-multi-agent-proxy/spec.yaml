@@ -1,0 +1,188 @@
+# Feature Specification (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: litellm-multi-agent-proxy
+number: 085
+branch: feat/085-litellm-multi-agent-proxy
+oneLiner: Extend LiteLLM proxy routing to Gemini CLI, Codex CLI, Cursor, and Copilot CLI agents
+summary: >
+  Replicate the LiteLLM proxy routing pattern from spec 084 (Claude Code) to the
+  remaining 4 agent executors. Gemini CLI and Codex CLI get full env-var-based proxy
+  routing (same 3-mode pattern: direct/proxy/passthrough). Cursor and Copilot CLI
+  get documentation-only support since they require IDE-level config changes that
+  ShipIT cannot inject via env vars. Adds per-agent proxy config models in TypeSpec,
+  extends the settings UI routing section to show agent-specific fields, and adds
+  migration + persistence for the new columns.
+phase: Requirements
+sizeEstimate: L
+
+# Relationships
+relatedFeatures:
+  - "005-global-settings-service"
+  - "082-agent-permission-modes"
+  - "083-claude-code-plugin-marketplace"
+  - "084-litellm-proxy-agent-integration"
+
+technologies:
+  - TypeScript
+  - TypeSpec
+  - React
+  - Next.js
+  - SQLite
+  - Vitest
+
+relatedLinks:
+  - title: "LiteLLM: Cursor Integration"
+    url: https://docs.litellm.ai/docs/tutorials/cursor_integration
+  - title: "LiteLLM: GitHub Copilot Integration"
+    url: https://docs.litellm.ai/docs/tutorials/github_copilot_integration
+  - title: "LiteLLM: Gemini CLI"
+    url: https://docs.litellm.ai/docs/tutorials/litellm_gemini_cli
+  - title: "LiteLLM: OpenAI Codex"
+    url: https://docs.litellm.ai/docs/tutorials/openai_codex
+  - title: "Spec 084 (Claude Code pattern)"
+    url: specs/084-litellm-proxy-agent-integration/spec.yaml
+
+# Open questions (must be resolved before implementation)
+openQuestions:
+  - question: >
+      Cursor requires the base URL to end with /cursor for proper routing. Should
+      ShipIT auto-append this suffix in the documentation instructions, or should
+      the user configure the full URL including the suffix?
+    resolved: false
+    answer: null
+  - question: >
+      Copilot CLI requires modifying VS Code's settings.json with undocumented
+      debug.overrideProxyUrl settings. Should ShipIT attempt to write this file
+      programmatically (risky — could conflict with user's VS Code config), or
+      only show a copy-pasteable instruction panel?
+    resolved: false
+    answer: null
+  - question: >
+      For Gemini CLI and Codex CLI, should passthrough mode be supported (using
+      custom headers for proxy auth), or only direct and proxy modes since their
+      proxy integrations are simpler and have no BYOK/Max subscription equivalent?
+    resolved: false
+    answer: null
+
+# Markdown content (the actual spec)
+content: |
+  ## Problem Statement
+
+  Spec 084 added LiteLLM proxy routing for Claude Code, but the other 4 supported
+  agents (Cursor, Copilot CLI, Gemini CLI, Codex CLI) have no proxy support. Users
+  who deploy a LiteLLM proxy for cost tracking, model routing, and policy enforcement
+  cannot route these agents through it from within ShipIT.
+
+  The 4 agents fall into two integration tiers:
+
+  **Tier 1 — Env-var-based (programmatic, same pattern as Claude Code):**
+  - **Gemini CLI:** `GOOGLE_GEMINI_BASE_URL` + `GEMINI_API_KEY`
+  - **Codex CLI:** `OPENAI_BASE_URL` + `OPENAI_API_KEY` (overrides existing `CODEX_API_KEY`)
+
+  **Tier 2 — Config-file-based (manual/guided, cannot inject via env vars):**
+  - **Cursor:** Override OpenAI Base URL in Cursor Settings UI + API key paste
+  - **Copilot CLI:** `debug.overrideProxyUrl` in VS Code `settings.json`
+
+  Both Gemini CLI and Codex CLI already have `buildSpawnEnv()` overrides that inject
+  API keys. They need the same `updateProxyConfig()` + routing mode pattern from
+  spec 084.
+
+  ## Success Criteria
+
+  ### Tier 1: Gemini CLI
+  - [ ] When proxy mode is "proxy", spawns with GOOGLE_GEMINI_BASE_URL + GEMINI_API_KEY (proxy key)
+  - [ ] When proxy mode is "direct", no proxy env vars injected (existing GEMINI_API_KEY from authConfig preserved)
+  - [ ] Proxy routing does not interfere with existing token-based auth injection
+  - [ ] Per-agent proxy config stored in settings (routingMode field)
+
+  ### Tier 1: Codex CLI
+  - [ ] When proxy mode is "proxy", spawns with OPENAI_BASE_URL + OPENAI_API_KEY (proxy key)
+  - [ ] When proxy mode is "direct", no proxy env vars injected (existing CODEX_API_KEY from authConfig preserved)
+  - [ ] Proxy routing does not interfere with existing token-based auth injection
+
+  ### Tier 2: Cursor
+  - [ ] Settings UI shows documentation panel with copy-pasteable Cursor config instructions
+  - [ ] Instructions include the proxy URL (with /cursor suffix) and API key
+  - [ ] No env var injection (Cursor does not support it)
+
+  ### Tier 2: Copilot CLI
+  - [ ] Settings UI shows documentation panel with copy-pasteable VS Code settings.json snippet
+  - [ ] Instructions include the proxy URL
+  - [ ] No env var injection (Copilot uses VS Code settings, not env vars)
+
+  ### Cross-cutting
+  - [ ] Settings UI routing section shows agent-specific config based on selected agent type
+  - [ ] TypeSpec models for Gemini CLI and Codex CLI proxy config (reuse LiteLLMProxyRoutingMode enum)
+  - [ ] Migration for new per-agent columns
+  - [ ] Settings mapper and repository SQL synced for new columns
+  - [ ] Provider and worker thread proxy config for Gemini CLI and Codex CLI executors
+  - [ ] TDD: failing tests first for env var injection on both Tier 1 agents
+  - [ ] All 8 locale files updated with i18n key parity
+  - [ ] Storybook stories for each agent's routing config view
+
+  ## Affected Areas
+
+  | Area | Impact | Reasoning |
+  | --- | --- | --- |
+  | tsp/domain/entities/settings.tsp | High | New GeminiCliProxyConfig + CodexCliProxyConfig models |
+  | packages/core/src/domain/generated/output.ts | High | Generated from TypeSpec |
+  | packages/core/src/infrastructure/persistence/sqlite/ | High | Migration + mapper + repository SQL for new columns |
+  | gemini-cli-executor.service.ts | High | Add updateProxyConfig + extend buildSpawnEnv for proxy routing |
+  | codex-cli-executor.service.ts | High | Add updateProxyConfig + extend buildSpawnEnv for proxy routing |
+  | agent-executor-provider.service.ts | Medium | Add instanceof checks for Gemini + Codex executors |
+  | feature-agent-worker.ts | Medium | Add instanceof checks for Gemini + Codex executors |
+  | litellm-proxy-routing-section.tsx | High | Agent-aware conditional rendering of config fields + Tier 2 docs |
+  | translations/*/web.json | Medium | New i18n keys for agent-specific routing labels |
+  | tests/ | High | TDD unit tests for Gemini + Codex env injection |
+
+  ## Architecture
+
+  **Tier 1 env var mapping:**
+
+  | Agent | Base URL Env Var | API Key Env Var | Notes |
+  | --- | --- | --- | --- |
+  | Claude Code (done) | ANTHROPIC_BASE_URL | ANTHROPIC_AUTH_TOKEN | + custom headers + model overrides |
+  | Gemini CLI | GOOGLE_GEMINI_BASE_URL | GEMINI_API_KEY | Overrides existing GEMINI_API_KEY injection |
+  | Codex CLI | OPENAI_BASE_URL | OPENAI_API_KEY | Different key name from CODEX_API_KEY |
+
+  **Tier 2 config instructions:**
+
+  | Agent | Config Location | What to Set |
+  | --- | --- | --- |
+  | Cursor | Cursor Settings > Models > Override OpenAI Base URL | `{proxyUrl}/cursor` + API key |
+  | Copilot CLI | VS Code `settings.json` | `github.copilot.advanced.debug.overrideProxyUrl` |
+
+  **Settings model extension (sibling to claudeCode in LiteLLMProxyConfig):**
+  ```
+  LiteLLMProxyConfig:
+    baseUrl?, apiKey?, marketplaceEnabled?
+    claudeCode?: ClaudeCodeProxyConfig  (existing, from spec 084)
+    geminiCli?: GeminiCliProxyConfig    (NEW)
+    codexCli?: CodexCliProxyConfig      (NEW)
+  ```
+
+  Cursor and Copilot don't need per-agent config models — they just show
+  documentation instructions derived from the shared baseUrl + apiKey.
+
+  ## Security Requirements
+
+  - Same as spec 084: API keys in env vars only, never CLI args
+  - Codex CLI's OPENAI_API_KEY uses the proxy key, not the user's real OpenAI key
+  - Gemini CLI's GEMINI_API_KEY override uses the proxy key when in proxy mode
+
+  ## Dependencies
+
+  - Spec 084 (Claude Code proxy integration) — pattern and infrastructure to extend
+  - Spec 082 (Agent Permission Modes) — per-agent settings coexistence
+
+  ## Size Estimate
+
+  **L** — ~20-25 files, ~1000-1500 lines. Similar scope to spec 084 but across
+  4 agents. Tier 1 (Gemini + Codex) is mechanical replication of the Claude Code
+  pattern. Tier 2 (Cursor + Copilot) is UI-only documentation panels. TypeSpec
+  model extension, migration, and settings persistence follow established patterns.
+
+  ---
+
+  _Generated by `/shipit-kit:new-feature` — proceed with `/shipit-kit:research`_
