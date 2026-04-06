@@ -1,3 +1,10 @@
+# [1.170.0](https://github.com/jrmatherly/shipit/compare/v1.169.0...v1.170.0) (2026-04-06)
+
+
+### Features
+
+* claude code plugin marketplace via litellm proxy ([#12](https://github.com/jrmatherly/shipit/issues/12)) ([6bd488f](https://github.com/jrmatherly/shipit/commit/6bd488f34f050d69a048f0e3a653ee237ea7035b))
+
 # [1.169.0](https://github.com/jrmatherly/shipit/compare/v1.168.0...v1.169.0) (2026-04-06)
 
 
