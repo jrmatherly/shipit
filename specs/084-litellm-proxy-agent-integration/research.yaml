@@ -5,25 +5,143 @@ name: litellm-proxy-agent-integration
 summary: Technical analysis for 084-litellm-proxy-agent-integration
 
 # Relationships
-relatedFeatures: []
-technologies: []
-relatedLinks: []
+relatedFeatures:
+  - "005-global-settings-service"
+  - "083-claude-code-plugin-marketplace"
+  - "082-agent-permission-modes"
+
+technologies:
+  - TypeSpec 1.10
+  - TypeScript 6.0
+  - better-sqlite3
+  - React 19
+  - Next.js 16
+  - Vitest
+
+relatedLinks:
+  - title: "Executor base class"
+    url: packages/core/src/infrastructure/services/agents/common/executors/executor-base.ts
+  - title: "Claude Code executor"
+    url: packages/core/src/infrastructure/services/agents/common/executors/claude-code-executor.service.ts
+  - title: "Codex executor (reference pattern)"
+    url: packages/core/src/infrastructure/services/agents/common/executors/codex-cli-executor.service.ts
+  - title: "Agent executor factory"
+    url: packages/core/src/infrastructure/services/agents/common/agent-executor-factory.service.ts
+  - title: "Agent executor provider"
+    url: packages/core/src/infrastructure/services/agents/common/agent-executor-provider.service.ts
+  - title: "LiteLLM TypeSpec model"
+    url: tsp/domain/entities/settings.tsp
+  - title: "Settings mapper"
+    url: packages/core/src/infrastructure/persistence/sqlite/mappers/settings.mapper.ts
+  - title: "SQLite settings repository"
+    url: packages/core/src/infrastructure/repositories/sqlite-settings.repository.ts
+  - title: "LiteLLM proxy settings UI"
+    url: src/presentation/web/components/features/settings/litellm-proxy-settings-section.tsx
 
 # Structured technology decisions
 decisions:
-  - title: { { DECISION_TITLE } }
-    chosen: { { CHOSEN_OPTION } }
+  - title: "Config threading: How to pass proxy config from Settings to executor"
+    chosen: "Add separate proxyConfig parameter to factory.createExecutor() and executor constructor"
     rejected:
-      - { { OPTION_1 } }
-      - { { OPTION_2 } }
-    rationale: { { RATIONALE } }
+      - "Extend AgentConfig type in TypeSpec to include proxy reference"
+      - "Inject full Settings object into executor"
+      - "Use a global settings accessor in the executor"
+    rationale: >
+      Adding a separate proxyConfig parameter keeps the domain model clean (AgentConfig
+      stays focused on agent identity/auth), follows the existing pattern (Codex/Gemini
+      executors already receive a second config object alongside spawn), and avoids
+      injecting the entire Settings blob into executors. The factory already receives
+      both spawn and authConfig — adding a third parameter for proxyConfig is minimal.
+      Extending AgentConfig would pollute a shared domain type with infrastructure
+      concerns (proxy routing is not intrinsic to agent identity). Injecting full
+      Settings violates the principle of least privilege — executors don't need 80+
+      unrelated settings fields.
 
-# Open questions (should be resolved by end of research)
-openQuestions:
-  []
-  # - question: "Which library should we use?"
-  #   resolved: true
-  #   answer: "Library X because of Y"
+  - title: "Routing mode representation: Enum vs string union"
+    chosen: "TypeSpec enum LiteLLMProxyRoutingMode with three values"
+    rejected:
+      - "String literal union type in TypeScript only"
+      - "Boolean flags (useProxy, usePassthrough)"
+    rationale: >
+      A TypeSpec enum generates both the TypeScript type and the string values,
+      ensuring consistency across domain model, persistence, and UI. Boolean flags
+      create invalid state combinations (useProxy AND usePassthrough both true) and
+      don't scale to new modes. String literals in TS-only miss the TypeSpec-first
+      mandate. The enum has three values: "direct", "proxy", "passthrough".
+
+  - title: "Env var injection scope: Override buildSpawnEnv() in Claude Code executor"
+    chosen: "Override buildSpawnEnv() in ClaudeCodeExecutorService"
+    rejected:
+      - "Inject env vars in ExecutorBase (affects all agents)"
+      - "Inject env vars in AgentExecutorFactory (wrong abstraction level)"
+      - "Inject env vars via a middleware/wrapper around spawn"
+    rationale: >
+      The buildSpawnEnv() override is the established pattern — Codex injects
+      CODEX_API_KEY and Gemini injects GEMINI_API_KEY using exactly this approach.
+      The executor owns the knowledge of which env vars its CLI expects. Base class
+      injection would force all agents through LiteLLM logic. Factory injection
+      would mix infrastructure concerns into the creation pattern. A middleware
+      wrapper adds unnecessary indirection.
+
+  - title: "Custom headers format: Newline-separated vs JSON"
+    chosen: "Newline-separated key: value pairs (matching ANTHROPIC_CUSTOM_HEADERS format)"
+    rejected:
+      - "JSON object { key: value }"
+      - "Comma-separated key=value pairs"
+    rationale: >
+      Claude Code's ANTHROPIC_CUSTOM_HEADERS env var uses newline-separated
+      "key: value" format natively (documented in LiteLLM BYOK docs). Storing
+      the value in exactly this format means zero transformation at injection
+      time — the settings value IS the env var value. JSON would require
+      serialization/deserialization. Comma-separated is ambiguous when values
+      contain commas.
+
+  - title: "Model override storage: Per-field columns vs JSON blob"
+    chosen: "Per-field TEXT columns (one per model tier)"
+    rejected:
+      - "Single JSON blob column for all model overrides"
+      - "Key-value pair table for flexible model mappings"
+    rationale: >
+      Three model tiers (sonnet, haiku, opus) are a fixed, small set defined by
+      Claude Code's env var interface. Per-column storage follows the existing
+      settings pattern (every field has its own column), enables direct SELECT
+      queries per field, and avoids JSON parsing overhead. A JSON blob would be
+      appropriate for an unbounded set of model mappings, but Claude Code only
+      supports three override env vars.
+
+  - title: "Settings nesting: Flat fields vs nested ClaudeCodeProxyConfig object"
+    chosen: "Nested ClaudeCodeProxyConfig model under LiteLLMProxyConfig in TypeSpec"
+    rejected:
+      - "Flat fields directly on LiteLLMProxyConfig"
+      - "Separate top-level ProxyAgentConfig model"
+    rationale: >
+      Nesting under LiteLLMProxyConfig groups agent-specific proxy settings under
+      the proxy config where they logically belong. Flat fields would pollute
+      LiteLLMProxyConfig with agent-specific concerns that don't apply to all
+      agents. A separate top-level model would disconnect proxy agent config from
+      the proxy config it depends on. The nested model also prepares for multi-agent
+      extension (add geminiCli?, codexCli? siblings later).
+
+  - title: "Executor caching: Invalidate cache when proxy config changes"
+    chosen: "Don't cache — create fresh executor per execution cycle"
+    rejected:
+      - "Keep cache, add config hash check for invalidation"
+      - "Keep cache, proxy config is immutable after startup"
+    rationale: >
+      The current factory caches executors as singletons per agent type. Proxy config
+      can change mid-session (user updates settings in UI). Caching an executor with
+      stale proxy config would silently use old proxy settings. The simplest fix is
+      to pass proxy config as a method parameter to buildSpawnEnv() rather than
+      storing it in the constructor, OR to skip caching for Claude Code when proxy
+      config is present. Since the executor is lightweight (just holds a spawn
+      function reference), creating fresh instances has negligible cost.
+      REFINED APPROACH: Store proxyConfig on the executor instance and provide a
+      setter/update method. The factory cache stays, but the provider updates the
+      proxy config on the cached executor before returning it. This preserves the
+      performance benefit of caching while ensuring fresh config.
+
+# Open questions (all resolved)
+openQuestions: []
 
 # Markdown content (the full research document)
 content: |
@@ -32,37 +150,242 @@ content: |
   - **Phase:** Research
   - **Updated:** 2026-04-06
 
+  ## Codebase Analysis
+
+  ### Current Executor Pipeline
+
+  The agent execution pipeline flows: Settings → AgentExecutorProvider → AgentExecutorFactory → *Executor → spawn(cli).
+
+  **ExecutorBase.buildSpawnEnv()** (executor-base.ts:51-54):
+  ```typescript
+  protected buildSpawnEnv(): Record<string, string | undefined> {
+    const { CLAUDECODE: _, ...cleanEnv } = process.env;
+    return cleanEnv;
+  }
+  ```
+
+  **Codex executor override pattern** (codex-cli-executor.service.ts:592-598):
+  ```typescript
+  protected override buildSpawnEnv(): Record<string, string | undefined> {
+    const env = super.buildSpawnEnv();
+    if (this.authConfig?.authMethod === 'token' && this.authConfig.token) {
+      return { ...env, CODEX_API_KEY: this.authConfig.token };
+    }
+    return env;
+  }
+  ```
+
+  **Claude Code executor** currently takes only `SpawnFunction` — no authConfig, no proxy config.
+
+  **Factory** already receives `authConfig` but passes it only to Codex/Gemini, not Claude Code:
+  ```typescript
+  case 'claude-code':
+    executor = new ClaudeCodeExecutorService(this.spawn); // No authConfig!
+  ```
+
+  **Provider** has full `Settings` access but only passes `settings.agent`:
+  ```typescript
+  return this.factory.createExecutor(settings.agent.type, settings.agent);
+  ```
+
+  ### Current LiteLLM Settings Pipeline
+
+  **TypeSpec** (settings.tsp:514-533): `LiteLLMProxyConfig { baseUrl?, apiKey?, marketplaceEnabled? }`
+
+  **DB columns**: `litellm_proxy_base_url TEXT`, `litellm_proxy_api_key TEXT`, `litellm_proxy_marketplace_enabled INTEGER`
+
+  **Mapper pattern**: `toDatabase()` uses `?? null` for strings, `? 1 : 0` for booleans. `fromDatabase()` conditionally spreads the object only when at least one field is non-null.
+
+  **Migration pattern**: Idempotent column checks via `pragma('table_info(settings)')`.
+
+  **UI**: `LiteLLMProxySettingsSection` component with onBlur save, test connection button, password input for API key.
+
   ## Technology Decisions
 
-  ### {{DECISION_TITLE}}
+  ### 1. Config Threading: Separate proxyConfig Parameter
 
-  **Options considered:**
+  The factory and executor constructors gain a `proxyConfig?: LiteLLMProxyConfig` parameter alongside `authConfig`. The provider threads `settings.litellmProxy` through to the factory.
 
-  1. {{OPTION_1}}
-  2. {{OPTION_2}}
-  3. {{OPTION_3}}
+  **Why not extend AgentConfig?** AgentConfig is a domain model representing agent identity (type, auth method, token, permissions). Proxy routing config is an infrastructure concern — it describes how API traffic is routed, not what agent is being used. Mixing these violates separation of concerns.
 
-  **Decision:** {{CHOSEN_OPTION}}
+  **Why not inject full Settings?** Executors would gain access to 80+ unrelated fields. The principle of least privilege says: give the executor only the data it needs to build env vars.
 
-  **Rationale:** {{RATIONALE}}
+  ### 2. Routing Mode: TypeSpec Enum
+
+  ```typespec
+  enum LiteLLMProxyRoutingMode {
+    direct: "direct",
+    proxy: "proxy",
+    passthrough: "passthrough"
+  }
+  ```
+
+  Three distinct modes with clear semantics. No invalid state combinations. TypeSpec generates both the TS type and the allowed values.
+
+  ### 3. Env Var Injection: buildSpawnEnv() Override
+
+  Following the Codex/Gemini pattern exactly:
+
+  ```typescript
+  protected override buildSpawnEnv(): Record<string, string | undefined> {
+    const env = super.buildSpawnEnv();
+    if (!this.proxyConfig?.claudeCode) return env;
+    const { routingMode, customHeaders, sonnetModel, haikuModel, opusModel }
+      = this.proxyConfig.claudeCode;
+
+    if (routingMode === 'direct' || !this.proxyConfig.baseUrl) return env;
+
+    // Both proxy and passthrough set BASE_URL
+    env.ANTHROPIC_BASE_URL = this.proxyConfig.baseUrl;
+
+    if (routingMode === 'proxy') {
+      // Proxy mode: use proxy API key as auth token
+      if (this.proxyConfig.apiKey) {
+        env.ANTHROPIC_AUTH_TOKEN = this.proxyConfig.apiKey;
+      }
+    } else if (routingMode === 'passthrough') {
+      // Passthrough mode: proxy key goes in custom headers
+      const headers = [];
+      if (this.proxyConfig.apiKey) {
+        headers.push(`x-litellm-api-key: Bearer ${this.proxyConfig.apiKey}`);
+      }
+      if (customHeaders) headers.push(customHeaders);
+      if (headers.length) env.ANTHROPIC_CUSTOM_HEADERS = headers.join('\n');
+    }
+
+    // Model overrides (both proxy and passthrough)
+    if (sonnetModel) env.ANTHROPIC_DEFAULT_SONNET_MODEL = sonnetModel;
+    if (haikuModel) env.ANTHROPIC_DEFAULT_HAIKU_MODEL = haikuModel;
+    if (opusModel) env.ANTHROPIC_DEFAULT_OPUS_MODEL = opusModel;
+
+    // User-defined custom headers for proxy mode
+    if (routingMode === 'proxy' && customHeaders) {
+      env.ANTHROPIC_CUSTOM_HEADERS = customHeaders;
+    }
+
+    return env;
+  }
+  ```
+
+  ### 4. Custom Headers: Newline-Separated Format
+
+  Stored and injected as-is — the settings value IS the ANTHROPIC_CUSTOM_HEADERS value.
+  No transformation needed. The LiteLLM docs confirm this format:
+  ```
+  x-litellm-customer-id: my-user-123
+  x-litellm-tags: project:acme,env:prod
+  ```
+
+  ### 5. Model Overrides: Per-Column Storage
+
+  Three columns matching Claude Code's three env vars:
+  - `litellm_proxy_cc_sonnet_model TEXT` → ANTHROPIC_DEFAULT_SONNET_MODEL
+  - `litellm_proxy_cc_haiku_model TEXT` → ANTHROPIC_DEFAULT_HAIKU_MODEL
+  - `litellm_proxy_cc_opus_model TEXT` → ANTHROPIC_DEFAULT_OPUS_MODEL
+
+  Column naming convention: `litellm_proxy_cc_*` prefix (cc = claude code) to namespace agent-specific fields.
+
+  ### 6. Nested TypeSpec Model
+
+  ```typespec
+  model ClaudeCodeProxyConfig {
+    routingMode?: LiteLLMProxyRoutingMode;
+    customHeaders?: string;
+    sonnetModel?: string;
+    haikuModel?: string;
+    opusModel?: string;
+  }
+
+  model LiteLLMProxyConfig {
+    baseUrl?: string;
+    apiKey?: string;
+    marketplaceEnabled?: boolean;
+    claudeCode?: ClaudeCodeProxyConfig;
+  }
+  ```
+
+  ### 7. Executor Caching Strategy
+
+  The provider calls `executor.updateProxyConfig(settings.litellmProxy)` on the
+  cached executor before returning it. This keeps the singleton cache (no
+  re-construction overhead) while ensuring the executor always has fresh proxy config.
 
   ## Library Analysis
 
-  | Library     | Version     | Purpose     | Pros     | Cons     |
-  | ----------- | ----------- | ----------- | -------- | -------- |
-  | {{LIBRARY}} | {{VERSION}} | {{PURPOSE}} | {{PROS}} | {{CONS}} |
+  No new libraries needed. All implementation uses existing project dependencies:
+
+  | Component | Existing Dep | Purpose |
+  | --- | --- | --- |
+  | TypeSpec models | @typespec/compiler 1.10 | Domain model for proxy config + enum |
+  | DB migration | better-sqlite3 | ALTER TABLE for new columns |
+  | Settings persistence | better-sqlite3 | INSERT/UPDATE with named parameters |
+  | UI components | React 19, shadcn/ui | Mode selector, input fields, help text |
+  | Testing | Vitest | Unit tests for env var injection logic |
+  | i18n | react-i18next | Localized labels/descriptions |
 
   ## Security Considerations
 
-  No security implications identified.
+  1. **Env var injection only** — API keys never appear in CLI args, avoiding
+     /proc/PID/cmdline exposure. The buildSpawnEnv() approach inherits this
+     safety from the existing pattern.
+
+  2. **Proxy URL validation** — Must be http:// or https:// scheme. HTTPS
+     required for non-localhost URLs. Validated at the settings save boundary,
+     not at injection time (injection trusts persisted settings).
+
+  3. **Custom headers validation** — Each line must match `key: value` format.
+     No control characters (CR, LF injection in header names would be benign
+     since they're env vars, not HTTP headers — but validate anyway for defense
+     in depth). Validated at settings save boundary.
+
+  4. **Model override validation** — Must match `[a-zA-Z0-9._:-]+` — alphanumeric
+     with dots, hyphens, underscores, colons. Prevents injection of env var
+     values that could confuse the shell or CLI.
+
+  5. **No new attack surface** — No new HTTP endpoints, no new subprocess commands.
+     The only change is additional env vars on an already-spawned process.
+
+  6. **Passthrough mode trust model** — In passthrough mode, the user's own
+     Anthropic auth token flows through the proxy. ShipIT does not see or store
+     this token — it's handled by Claude Code's /login flow. ShipIT only injects
+     the proxy routing env vars.
 
   ## Performance Implications
 
-  No performance implications identified.
+  1. **Zero runtime overhead** — Env var injection happens once at process spawn
+     time (a dictionary merge). No ongoing per-request cost.
+
+  2. **Proxy latency** — When routing through LiteLLM proxy, each API call gains
+     one network hop. This is inherent to proxy architectures and not something
+     ShipIT can optimize. The benefit (cost tracking, model routing, fallbacks)
+     justifies the latency.
+
+  3. **Settings load** — The provider already loads settings to get agent type.
+     Threading litellmProxy through adds zero additional DB queries.
+
+  4. **Executor cache preserved** — The update-in-place strategy avoids
+     re-creating executor instances while keeping config fresh.
+
+  ## Claude Code Env Var Reference
+
+  Complete mapping from LiteLLM docs:
+
+  | Env Var | Set By | Mode | Purpose |
+  | --- | --- | --- | --- |
+  | ANTHROPIC_BASE_URL | ShipIT | proxy, passthrough | Points Claude Code at the proxy |
+  | ANTHROPIC_AUTH_TOKEN | ShipIT | proxy | Proxy virtual key (authenticates to proxy) |
+  | ANTHROPIC_CUSTOM_HEADERS | ShipIT | passthrough (required), proxy (optional) | x-litellm-api-key for passthrough; tracking headers for proxy |
+  | ANTHROPIC_DEFAULT_SONNET_MODEL | ShipIT | proxy, passthrough | Override default Sonnet model |
+  | ANTHROPIC_DEFAULT_HAIKU_MODEL | ShipIT | proxy, passthrough | Override default Haiku model |
+  | ANTHROPIC_DEFAULT_OPUS_MODEL | ShipIT | proxy, passthrough | Override default Opus model |
+  | ANTHROPIC_MODEL | Not set by ShipIT | — | Per-session model override (user sets via claude --model) |
 
   ## Open Questions
 
-  All questions resolved.
+  All questions resolved during spec phase:
+  1. Custom headers — included (newline-separated format)
+  2. Proxy-side validation — document only (no runtime introspection)
+  3. Model overrides — included (three per-column fields)
 
   ---
 
