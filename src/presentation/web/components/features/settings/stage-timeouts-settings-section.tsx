@@ -124,6 +124,7 @@ export function StageTimeoutsSettingsSection({ settings }: StageTimeoutsSettings
       title={t('settings.stageTimeouts.title')}
       description={t('settings.stageTimeouts.description')}
       testId="stage-timeouts-settings-section"
+      tooltip={t('settings.stageTimeouts.hint')}
     >
       <SubsectionLabel>{t('settings.stageTimeouts.subsections.featureAgent')}</SubsectionLabel>
       <SettingsRow

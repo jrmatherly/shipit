@@ -43,7 +43,6 @@ import {
   SwitchRow,
   NumberStepper,
   SubsectionLabel,
-  SectionHint,
 } from '@/components/features/settings/settings-section-utils';
 import type {
   Settings,
@@ -363,15 +362,27 @@ export function SettingsPageClient({
         {/* ── Language — hidden from UI per product decision ── */}
 
         {/* ── Agent ── */}
-        <div
-          id="section-agent"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-agent" className="scroll-mt-18 rounded-lg">
           <SettingsSection
             icon={Bot}
             title={t('settings.agent.sectionTitle')}
             description={t('settings.agent.sectionDescription')}
             testId="agent-settings-section"
+            tooltip={t('settings.agent.hint')}
+            tooltipLinks={[
+              {
+                label: t('settings.agent.links.agentSystem'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/architecture/agent-system.md',
+              },
+              {
+                label: t('settings.agent.links.addingAgents'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/development/adding-agents.md',
+              },
+              {
+                label: t('settings.agent.links.configurationGuide'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/guides/configuration.md',
+              },
+            ]}
           >
             <SettingsRow
               label={t('settings.agent.agentAndModel')}
@@ -388,36 +399,22 @@ export function SettingsPageClient({
               />
             </SettingsRow>
           </SettingsSection>
-          <SectionHint
-            links={[
-              {
-                label: t('settings.agent.links.agentSystem'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/architecture/agent-system.md',
-              },
-              {
-                label: t('settings.agent.links.addingAgents'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/development/adding-agents.md',
-              },
-              {
-                label: t('settings.agent.links.configurationGuide'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/guides/configuration.md',
-              },
-            ]}
-          >
-            {t('settings.agent.hint')}
-          </SectionHint>
         </div>
 
         {/* ── Environment ── */}
-        <div
-          id="section-environment"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-environment" className="scroll-mt-18 rounded-lg">
           <SettingsSection
             icon={Terminal}
             title={t('settings.environment.sectionTitle')}
             description={t('settings.environment.sectionDescription')}
             testId="environment-settings-section"
+            tooltip={t('settings.environment.hint')}
+            tooltipLinks={[
+              {
+                label: t('settings.environment.links.configurationGuide'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/guides/configuration.md',
+              },
+            ]}
           >
             <SettingsRow
               label={t('settings.environment.defaultEditor')}
@@ -568,28 +565,26 @@ export function SettingsPageClient({
               </Select>
             </SettingsRow>
           </SettingsSection>
-          <SectionHint
-            links={[
-              {
-                label: t('settings.environment.links.configurationGuide'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/guides/configuration.md',
-              },
-            ]}
-          >
-            {t('settings.environment.hint')}
-          </SectionHint>
         </div>
 
         {/* ── Workflow ── */}
-        <div
-          id="section-workflow"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-workflow" className="scroll-mt-18 rounded-lg">
           <SettingsSection
             icon={GitBranch}
             title={t('settings.workflow.title')}
             description={t('settings.workflow.sectionDescription')}
             testId="workflow-settings-section"
+            tooltip={t('settings.workflow.hint')}
+            tooltipLinks={[
+              {
+                label: t('settings.workflow.links.approvalGates'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/016-hitl-approval-gates/spec.yaml',
+              },
+              {
+                label: t('settings.workflow.links.pushAndPrFlags'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/037-feature-pr-push-flags/spec.yaml',
+              },
+            ]}
           >
             <SwitchRow
               label={t('settings.workflow.defaultFastMode')}
@@ -753,63 +748,32 @@ export function SettingsPageClient({
               />
             </SettingsRow>
           </SettingsSection>
-          <SectionHint
-            links={[
-              {
-                label: t('settings.workflow.links.approvalGates'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/016-hitl-approval-gates/spec.yaml',
-              },
-              {
-                label: t('settings.workflow.links.pushAndPrFlags'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/037-feature-pr-push-flags/spec.yaml',
-              },
-            ]}
-          >
-            {t('settings.workflow.hint')}
-          </SectionHint>
         </div>
 
         {/* ── CI ── */}
-        <div
-          id="section-ci"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-ci" className="scroll-mt-18 rounded-lg">
           <CiSettingsSection settings={settings} />
-          <SectionHint
-            links={[
-              {
-                label: t('settings.ci.links.cicdPipeline'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/development/cicd.md',
-              },
-              {
-                label: t('settings.ci.links.ciSecurityGates'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/003-cicd-security-gates/spec.md',
-              },
-            ]}
-          >
-            {t('settings.ci.hint')}
-          </SectionHint>
         </div>
 
         {/* ── Stage Timeouts ── */}
-        <div
-          id="section-stage-timeouts"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-stage-timeouts" className="scroll-mt-18 rounded-lg">
           <StageTimeoutsSettingsSection settings={settings} />
-          <SectionHint>{t('settings.stageTimeouts.hint')}</SectionHint>
         </div>
 
         {/* ── Notifications ── */}
-        <div
-          id="section-notifications"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-notifications" className="scroll-mt-18 rounded-lg">
           <SettingsSection
             icon={Bell}
             title={t('settings.notifications.title')}
             description={t('settings.notifications.sectionDescription')}
             testId="notification-settings-section"
+            tooltip={t('settings.notifications.hint')}
+            tooltipLinks={[
+              {
+                label: t('settings.notifications.links.notificationSystem'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/021-agent-notifications/spec.yaml',
+              },
+            ]}
           >
             <SubsectionLabel>{t('settings.notifications.channels')}</SubsectionLabel>
             <SwitchRow
@@ -963,29 +927,17 @@ export function SettingsPageClient({
               }}
             />
           </SettingsSection>
-          <SectionHint
-            links={[
-              {
-                label: t('settings.notifications.links.notificationSystem'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/021-agent-notifications/spec.yaml',
-              },
-            ]}
-          >
-            {t('settings.notifications.hint')}
-          </SectionHint>
         </div>
 
         {/* ── Feature Flags ── */}
-        <div
-          id="section-feature-flags"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-feature-flags" className="scroll-mt-18 rounded-lg">
           <SettingsSection
             icon={Flag}
             title={t('settings.featureFlags.title')}
             description={t('settings.featureFlags.sectionDescription')}
             badge={t('settings.featureFlags.badge')}
             testId="feature-flags-settings-section"
+            tooltip={t('settings.featureFlags.hint')}
           >
             <SwitchRow
               label={t('settings.featureFlags.skills')}
@@ -1079,37 +1031,36 @@ export function SettingsPageClient({
               }}
             />
           </SettingsSection>
-          <SectionHint>{t('settings.featureFlags.hint')}</SectionHint>
         </div>
 
         {/* ── Interactive Agent ── */}
-        <div
-          id="section-interactive-agent"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-interactive-agent" className="scroll-mt-18 rounded-lg">
           <InteractiveAgentSettingsSection settings={settings} />
-          <SectionHint>{t('settings.interactiveAgent.hint')}</SectionHint>
         </div>
 
         {/* ── FAB Layout ── */}
-        <div
-          id="section-fab-layout"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-fab-layout" className="scroll-mt-18 rounded-lg">
           <FabLayoutSettingsSection settings={settings} />
-          <SectionHint>{t('settings.fabLayout.hint')}</SectionHint>
         </div>
 
         {/* ── Database ── */}
-        <div
-          id="section-database"
-          className="grid scroll-mt-18 grid-cols-1 gap-x-5 rounded-lg lg:grid-cols-[1fr_280px]"
-        >
+        <div id="section-database" className="scroll-mt-18 rounded-lg">
           <SettingsSection
             icon={Database}
             title={t('settings.database.title')}
             description={t('settings.database.sectionDescription')}
             testId="database-settings-section"
+            tooltip={t('settings.database.hint')}
+            tooltipLinks={[
+              {
+                label: t('settings.database.links.settingsService'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/architecture/settings-service.md',
+              },
+              {
+                label: t('settings.database.links.settingsSpec'),
+                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/005-global-settings-service/spec.md',
+              },
+            ]}
           >
             <SettingsRow
               label={t('settings.database.location')}
@@ -1132,20 +1083,6 @@ export function SettingsPageClient({
               </span>
             </SettingsRow>
           </SettingsSection>
-          <SectionHint
-            links={[
-              {
-                label: t('settings.database.links.settingsService'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/docs/architecture/settings-service.md',
-              },
-              {
-                label: t('settings.database.links.settingsSpec'),
-                href: 'https://github.com/jrmatherly/shipit/blob/main/specs/005-global-settings-service/spec.md',
-              },
-            ]}
-          >
-            {t('settings.database.hint')}
-          </SectionHint>
         </div>
       </div>
     </div>

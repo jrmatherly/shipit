@@ -34,10 +34,12 @@ export function FabLayoutSettingsSection({ settings }: FabLayoutSettingsSectionP
       title={t('settings.fabLayout.title')}
       description={t('settings.fabLayout.description')}
       testId="fab-layout-settings-section"
+      tooltip={t('settings.fabLayout.hint')}
     >
       <SwitchRow
         label={t('settings.fabLayout.swapPosition')}
         description={t('settings.fabLayout.swapPositionDescription')}
+        tooltip="Swaps the Create button (bottom-right) and Chat button (bottom-left) positions on the control center canvas."
         id="fab-swap-position"
         testId="switch-fab-swap-position"
         checked={fabSwapPosition}

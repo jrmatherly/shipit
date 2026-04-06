@@ -87,10 +87,22 @@ export function CiSettingsSection({ settings }: CiSettingsSectionProps) {
       title={t('settings.ci.title')}
       description={t('settings.ci.description')}
       testId="ci-settings-section"
+      tooltip={t('settings.ci.hint')}
+      tooltipLinks={[
+        {
+          label: t('settings.ci.links.cicdPipeline'),
+          href: 'https://github.com/jrmatherly/shipit/blob/main/docs/development/cicd.md',
+        },
+        {
+          label: t('settings.ci.links.ciSecurityGates'),
+          href: 'https://github.com/jrmatherly/shipit/blob/main/specs/003-cicd-security-gates/spec.md',
+        },
+      ]}
     >
       <SettingsRow
         label={t('settings.ci.maxFixAttempts')}
         description={t('settings.ci.maxFixAttemptsDescription')}
+        tooltip="How many times the agent will attempt to fix failing CI checks before giving up. Higher values increase the chance of auto-resolution but consume more agent time and API calls."
         htmlFor="ci-max-fix"
       >
         <NumberStepper
@@ -109,6 +121,7 @@ export function CiSettingsSection({ settings }: CiSettingsSectionProps) {
       <SettingsRow
         label={t('settings.ci.watchTimeout')}
         description={t('settings.ci.watchTimeoutDescription')}
+        tooltip="Maximum time the agent will wait for CI to finish. If CI hasn't completed within this window, the agent stops watching. Increase for repos with slow CI pipelines."
         htmlFor="ci-timeout"
       >
         <NumberStepper
@@ -128,6 +141,7 @@ export function CiSettingsSection({ settings }: CiSettingsSectionProps) {
       <SettingsRow
         label={t('settings.ci.maxLogSize')}
         description={t('settings.ci.maxLogSizeDescription')}
+        tooltip="CI logs beyond this character limit are truncated before being sent to the agent for analysis. Keeps agent context focused and avoids excessive token usage."
         htmlFor="ci-log-max"
       >
         <NumberStepper
@@ -147,6 +161,7 @@ export function CiSettingsSection({ settings }: CiSettingsSectionProps) {
       <SettingsRow
         label={t('settings.ci.pollInterval')}
         description={t('settings.ci.pollIntervalDescription')}
+        tooltip="How frequently the agent checks GitHub for CI status updates. Lower values give faster feedback but increase API call volume."
         htmlFor="ci-poll-interval"
       >
         <NumberStepper
@@ -166,6 +181,7 @@ export function CiSettingsSection({ settings }: CiSettingsSectionProps) {
       <SwitchRow
         label={t('settings.ci.hideCiStatus')}
         description={t('settings.ci.hideCiStatusDescription')}
+        tooltip="When enabled, CI status indicators are hidden from the feature drawer and merge review panels. Useful if you monitor CI through GitHub directly."
         id="hide-ci-status"
         testId="switch-hide-ci-status"
         checked={hideCiStatus}

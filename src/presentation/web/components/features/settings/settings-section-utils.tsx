@@ -38,8 +38,8 @@ export function SettingsRow({
               <TooltipTrigger asChild>
                 <Info className="text-muted-foreground/40 hover:text-muted-foreground h-3.5 w-3.5 shrink-0 cursor-help transition-colors" />
               </TooltipTrigger>
-              <TooltipContent side="top" className="max-w-72 text-xs leading-relaxed">
-                {tooltipText}
+              <TooltipContent side="top" className="max-w-64 text-[11px] leading-relaxed">
+                <span className="text-muted-foreground">{tooltipText}</span>
               </TooltipContent>
             </Tooltip>
           ) : null}
@@ -94,6 +94,8 @@ export function SettingsSection({
   description,
   badge,
   testId,
+  tooltip,
+  tooltipLinks,
   children,
 }: {
   icon: React.ComponentType<{ className?: string }>;
@@ -101,6 +103,10 @@ export function SettingsSection({
   description: string;
   badge?: string;
   testId: string;
+  /** Section-level tooltip describing the purpose of this settings group. */
+  tooltip?: string;
+  /** Documentation links rendered below the tooltip text. */
+  tooltipLinks?: { label: string; href: string }[];
   children: React.ReactNode;
 }) {
   return (
@@ -109,6 +115,32 @@ export function SettingsSection({
         <div className="flex items-center gap-2">
           <Icon className="text-muted-foreground h-3.5 w-3.5" />
           <h2 className="text-sm font-semibold">{title}</h2>
+          {tooltip ? (
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Info className="text-muted-foreground/40 hover:text-muted-foreground h-3.5 w-3.5 shrink-0 cursor-help transition-colors" />
+              </TooltipTrigger>
+              <TooltipContent side="bottom" className="max-w-72 text-[11px] leading-relaxed">
+                <p className="text-muted-foreground">{tooltip}</p>
+                {tooltipLinks != null && tooltipLinks.length > 0 ? (
+                  <div className="border-border/50 mt-1.5 flex flex-col gap-0.5 border-t pt-1.5">
+                    {tooltipLinks.map((link) => (
+                      <a
+                        key={link.href}
+                        href={link.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1.5 text-[10px] tracking-wide transition-colors"
+                      >
+                        <ExternalLink className="h-2.5 w-2.5 shrink-0 opacity-50" />
+                        {link.label}
+                      </a>
+                    ))}
+                  </div>
+                ) : null}
+              </TooltipContent>
+            </Tooltip>
+          ) : null}
           {badge ? (
             <span className="bg-muted text-muted-foreground rounded px-1.5 py-0.5 text-[9px] font-medium tracking-wider uppercase">
               {badge}
@@ -212,36 +244,6 @@ export function SubsectionLabel({ children }: { children: React.ReactNode }) {
       <span className="text-muted-foreground text-[10px] font-semibold tracking-wider uppercase">
         {children}
       </span>
-    </div>
-  );
-}
-
-export function SectionHint({
-  children,
-  links,
-}: {
-  children: React.ReactNode;
-  links?: { label: string; href: string }[];
-}) {
-  return (
-    <div className="hidden pt-2 lg:block">
-      <p className="text-muted-foreground/70 text-[11px] leading-relaxed">{children}</p>
-      {links != null && links.length > 0 ? (
-        <div className="mt-2 flex flex-col gap-1">
-          {links.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-muted-foreground hover:text-foreground inline-flex items-center gap-1 text-[10px] transition-colors"
-            >
-              <ExternalLink className="h-2.5 w-2.5" />
-              {link.label}
-            </a>
-          ))}
-        </div>
-      ) : null}
     </div>
   );
 }

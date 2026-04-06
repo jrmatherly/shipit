@@ -47,10 +47,12 @@ export function InteractiveAgentSettingsSection({
       title={t('settings.interactiveAgent.title')}
       description={t('settings.interactiveAgent.description')}
       testId="interactive-agent-settings-section"
+      tooltip={t('settings.interactiveAgent.hint')}
     >
       <SwitchRow
         label={t('settings.interactiveAgent.enableChatTab')}
         description={t('settings.interactiveAgent.enableChatTabDescription')}
+        tooltip="Shows or hides the Chat tab on feature detail pages. When enabled, you can have interactive conversations with the agent about a specific feature."
         id="interactive-agent-enabled"
         testId="switch-interactive-agent-enabled"
         checked={interactiveEnabled}
@@ -68,6 +70,7 @@ export function InteractiveAgentSettingsSection({
       <SettingsRow
         label={t('settings.interactiveAgent.autoTimeout')}
         description={t('settings.interactiveAgent.autoTimeoutDescription')}
+        tooltip="Minutes of inactivity before a chat agent session is automatically terminated. Prevents idle agent processes from consuming resources indefinitely."
         htmlFor="interactive-agent-timeout"
       >
         <NumberStepper
@@ -97,6 +100,7 @@ export function InteractiveAgentSettingsSection({
       <SettingsRow
         label={t('settings.interactiveAgent.maxConcurrentSessions')}
         description={t('settings.interactiveAgent.maxConcurrentSessionsDescription')}
+        tooltip="Maximum number of interactive agent sessions that can run simultaneously. Each session spawns a separate agent process, so higher values use more CPU and memory."
         htmlFor="interactive-agent-sessions"
       >
         <NumberStepper

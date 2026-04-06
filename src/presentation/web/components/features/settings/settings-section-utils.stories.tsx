@@ -7,7 +7,6 @@ import {
   SettingsSection,
   NumberStepper,
   SubsectionLabel,
-  SectionHint,
 } from './settings-section-utils';
 
 /**
@@ -78,6 +77,11 @@ function SettingsSectionDemo() {
         title="General Settings"
         description="Configure general application behavior"
         testId="general-settings"
+        tooltip="Configure the agent model used for all AI-powered operations. Changes take effect on the next agent run."
+        tooltipLinks={[
+          { label: 'Documentation', href: 'https://docs.example.com' },
+          { label: 'Getting started guide', href: 'https://docs.example.com/start' },
+        ]}
       >
         <SwitchRow
           label="Show tooltips"
@@ -163,18 +167,6 @@ export const SubsectionLabelExample: Story = {
   ),
 };
 
-export const SectionHintExample: Story = {
-  render: () => (
-    <div className="w-80">
-      <SectionHint
-        links={[
-          { label: 'Documentation', href: 'https://docs.example.com' },
-          { label: 'Getting started guide', href: 'https://docs.example.com/start' },
-        ]}
-      >
-        Configure the agent model used for all AI-powered operations. Changes take effect on the
-        next agent run.
-      </SectionHint>
-    </div>
-  ),
+export const SectionWithTooltip: Story = {
+  render: () => <SettingsSectionDemo />,
 };
