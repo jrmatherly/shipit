@@ -65,15 +65,6 @@ describe('LiteLLMProxySettingsSection', () => {
     expect(screen.getByTestId('litellm-api-key-input')).toBeDefined();
   });
 
-  it('renders marketplace enabled toggle', () => {
-    render(
-      <TooltipProvider>
-        <LiteLLMProxySettingsSection settings={buildSettings()} />
-      </TooltipProvider>
-    );
-    expect(screen.getByTestId('switch-litellm-marketplace-enabled')).toBeDefined();
-  });
-
   it('renders test connection button', () => {
     render(
       <TooltipProvider>

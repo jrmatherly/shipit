@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { updateSettingsAction } from '@/app/actions/update-settings';
 import { addMarketplaceAction } from '@/app/actions/add-marketplace';
 import type { Settings } from '@shipit-ai/core/domain/generated/output';
-import { SettingsSection, SettingsRow, SwitchRow } from './settings-section-utils';
+import { SettingsSection, SettingsRow } from './settings-section-utils';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 
@@ -21,9 +21,6 @@ export function LiteLLMProxySettingsSection({ settings }: LiteLLMProxySettingsSe
 
   const [baseUrl, setBaseUrl] = useState(settings.litellmProxy?.baseUrl ?? '');
   const [apiKey, setApiKey] = useState(settings.litellmProxy?.apiKey ?? '');
-  const [marketplaceEnabled, setMarketplaceEnabled] = useState(
-    settings.litellmProxy?.marketplaceEnabled ?? false
-  );
   const [testStatus, setTestStatus] = useState<'idle' | 'success' | 'failed'>('idle');
   const [isTesting, setIsTesting] = useState(false);
 
@@ -39,16 +36,13 @@ export function LiteLLMProxySettingsSection({ settings }: LiteLLMProxySettingsSe
     });
   }
 
-  function buildPayload(overrides?: {
-    baseUrl?: string;
-    apiKey?: string;
-    marketplaceEnabled?: boolean;
-  }) {
+  function buildPayload(overrides?: { baseUrl?: string; apiKey?: string }) {
+    const url = overrides?.baseUrl ?? baseUrl;
     return {
       litellmProxy: {
-        baseUrl: overrides?.baseUrl ?? baseUrl,
+        baseUrl: url,
         apiKey: overrides?.apiKey ?? apiKey,
-        marketplaceEnabled: overrides?.marketplaceEnabled ?? marketplaceEnabled,
+        marketplaceEnabled: !!url,
       },
     };
   }
@@ -123,18 +117,6 @@ export function LiteLLMProxySettingsSection({ settings }: LiteLLMProxySettingsSe
           className="w-64 text-xs"
         />
       </SettingsRow>
-      <SwitchRow
-        label={t('settings.litellmProxy.marketplaceEnabled')}
-        description={t('settings.litellmProxy.marketplaceEnabledDescription')}
-        tooltip="When enabled, the plugin marketplace will fetch its catalog from this LiteLLM proxy instead of using built-in defaults."
-        id="litellm-marketplace-enabled"
-        testId="switch-litellm-marketplace-enabled"
-        checked={marketplaceEnabled}
-        onChange={(v) => {
-          setMarketplaceEnabled(v);
-          save(buildPayload({ marketplaceEnabled: v }));
-        }}
-      />
       <SettingsRow
         label={t('settings.litellmProxy.testConnection')}
         tooltip="Attempt to connect to the proxy and fetch the marketplace catalog to verify the configuration is correct."

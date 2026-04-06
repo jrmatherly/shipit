@@ -57,7 +57,7 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         notif_evt_pr_checks_passed, notif_evt_pr_checks_failed,
         notif_evt_pr_blocked, notif_evt_merge_review_ready,
         workflow_open_pr_on_impl_complete,
-        ci_max_fix_attempts, ci_watch_timeout_ms, ci_log_max_chars,
+        ci_max_fix_attempts, ci_watch_timeout_ms, ci_log_max_chars, ci_watch_enabled,
         stage_timeout_analyze_ms, stage_timeout_requirements_ms,
         stage_timeout_research_ms, stage_timeout_plan_ms,
         stage_timeout_implement_ms, stage_timeout_merge_ms,
@@ -71,7 +71,12 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         hide_ci_status, default_fast_mode,
         interactive_agent_enabled, interactive_agent_auto_timeout_minutes,
         interactive_agent_max_concurrent_sessions,
-        auto_archive_delay_minutes
+        auto_archive_delay_minutes,
+        fab_position_swapped,
+        agent_perm_claude_code, agent_perm_cursor, agent_perm_gemini_cli,
+        agent_perm_codex_cli, agent_perm_copilot_cli, agent_perm_rovo_dev,
+        feature_flag_plugins,
+        litellm_proxy_base_url, litellm_proxy_api_key, litellm_proxy_marketplace_enabled
       ) VALUES (
         @id, @created_at, @updated_at,
         @model_analyze, @model_requirements, @model_plan, @model_implement, @model_default,
@@ -86,7 +91,7 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         @notif_evt_pr_checks_passed, @notif_evt_pr_checks_failed,
         @notif_evt_pr_blocked, @notif_evt_merge_review_ready,
         @workflow_open_pr_on_impl_complete,
-        @ci_max_fix_attempts, @ci_watch_timeout_ms, @ci_log_max_chars,
+        @ci_max_fix_attempts, @ci_watch_timeout_ms, @ci_log_max_chars, @ci_watch_enabled,
         @stage_timeout_analyze_ms, @stage_timeout_requirements_ms,
         @stage_timeout_research_ms, @stage_timeout_plan_ms,
         @stage_timeout_implement_ms, @stage_timeout_merge_ms,
@@ -100,7 +105,12 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         @hide_ci_status, @default_fast_mode,
         @interactive_agent_enabled, @interactive_agent_auto_timeout_minutes,
         @interactive_agent_max_concurrent_sessions,
-        @auto_archive_delay_minutes
+        @auto_archive_delay_minutes,
+        @fab_position_swapped,
+        @agent_perm_claude_code, @agent_perm_cursor, @agent_perm_gemini_cli,
+        @agent_perm_codex_cli, @agent_perm_copilot_cli, @agent_perm_rovo_dev,
+        @feature_flag_plugins,
+        @litellm_proxy_base_url, @litellm_proxy_api_key, @litellm_proxy_marketplace_enabled
       )
     `);
 
@@ -185,6 +195,7 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         ci_max_fix_attempts = @ci_max_fix_attempts,
         ci_watch_timeout_ms = @ci_watch_timeout_ms,
         ci_log_max_chars = @ci_log_max_chars,
+        ci_watch_enabled = @ci_watch_enabled,
         stage_timeout_analyze_ms = @stage_timeout_analyze_ms,
         stage_timeout_requirements_ms = @stage_timeout_requirements_ms,
         stage_timeout_research_ms = @stage_timeout_research_ms,
@@ -211,7 +222,18 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         interactive_agent_enabled = @interactive_agent_enabled,
         interactive_agent_auto_timeout_minutes = @interactive_agent_auto_timeout_minutes,
         interactive_agent_max_concurrent_sessions = @interactive_agent_max_concurrent_sessions,
-        auto_archive_delay_minutes = @auto_archive_delay_minutes
+        auto_archive_delay_minutes = @auto_archive_delay_minutes,
+        fab_position_swapped = @fab_position_swapped,
+        agent_perm_claude_code = @agent_perm_claude_code,
+        agent_perm_cursor = @agent_perm_cursor,
+        agent_perm_gemini_cli = @agent_perm_gemini_cli,
+        agent_perm_codex_cli = @agent_perm_codex_cli,
+        agent_perm_copilot_cli = @agent_perm_copilot_cli,
+        agent_perm_rovo_dev = @agent_perm_rovo_dev,
+        feature_flag_plugins = @feature_flag_plugins,
+        litellm_proxy_base_url = @litellm_proxy_base_url,
+        litellm_proxy_api_key = @litellm_proxy_api_key,
+        litellm_proxy_marketplace_enabled = @litellm_proxy_marketplace_enabled
       WHERE id = @id
     `);
 

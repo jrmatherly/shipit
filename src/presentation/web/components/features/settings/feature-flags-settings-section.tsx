@@ -140,11 +140,16 @@ export function FeatureFlagsSettingsSection({ settings }: FeatureFlagsSettingsSe
       />
       <SwitchRow
         label={t('settings.featureFlags.plugins')}
-        description={t('settings.featureFlags.pluginsDescription')}
-        tooltip="Enables the Plugins page for browsing and managing Claude Code plugins from a LiteLLM marketplace."
+        description={
+          settings.litellmProxy?.baseUrl
+            ? t('settings.featureFlags.pluginsDescription')
+            : `${t('settings.featureFlags.pluginsDescription')} — ${t('plugins.noProxy')}`
+        }
+        tooltip="Enables the Plugins page for browsing and managing Claude Code plugins from a LiteLLM marketplace. Requires a LiteLLM proxy URL to be configured."
         id="flag-plugins"
         testId="switch-flag-plugins"
         checked={flags.plugins}
+        disabled={!settings.litellmProxy?.baseUrl}
         onChange={(v) => {
           const newFlags = { ...flags, plugins: v };
           setFlags(newFlags);
