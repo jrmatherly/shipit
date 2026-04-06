@@ -76,7 +76,9 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         agent_perm_claude_code, agent_perm_cursor, agent_perm_gemini_cli,
         agent_perm_codex_cli, agent_perm_copilot_cli, agent_perm_rovo_dev,
         feature_flag_plugins,
-        litellm_proxy_base_url, litellm_proxy_api_key, litellm_proxy_marketplace_enabled
+        litellm_proxy_base_url, litellm_proxy_api_key, litellm_proxy_marketplace_enabled,
+        litellm_proxy_cc_routing_mode, litellm_proxy_cc_custom_headers,
+        litellm_proxy_cc_sonnet_model, litellm_proxy_cc_haiku_model, litellm_proxy_cc_opus_model
       ) VALUES (
         @id, @created_at, @updated_at,
         @model_analyze, @model_requirements, @model_plan, @model_implement, @model_default,
@@ -110,7 +112,9 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         @agent_perm_claude_code, @agent_perm_cursor, @agent_perm_gemini_cli,
         @agent_perm_codex_cli, @agent_perm_copilot_cli, @agent_perm_rovo_dev,
         @feature_flag_plugins,
-        @litellm_proxy_base_url, @litellm_proxy_api_key, @litellm_proxy_marketplace_enabled
+        @litellm_proxy_base_url, @litellm_proxy_api_key, @litellm_proxy_marketplace_enabled,
+        @litellm_proxy_cc_routing_mode, @litellm_proxy_cc_custom_headers,
+        @litellm_proxy_cc_sonnet_model, @litellm_proxy_cc_haiku_model, @litellm_proxy_cc_opus_model
       )
     `);
 
@@ -233,7 +237,12 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         feature_flag_plugins = @feature_flag_plugins,
         litellm_proxy_base_url = @litellm_proxy_base_url,
         litellm_proxy_api_key = @litellm_proxy_api_key,
-        litellm_proxy_marketplace_enabled = @litellm_proxy_marketplace_enabled
+        litellm_proxy_marketplace_enabled = @litellm_proxy_marketplace_enabled,
+        litellm_proxy_cc_routing_mode = @litellm_proxy_cc_routing_mode,
+        litellm_proxy_cc_custom_headers = @litellm_proxy_cc_custom_headers,
+        litellm_proxy_cc_sonnet_model = @litellm_proxy_cc_sonnet_model,
+        litellm_proxy_cc_haiku_model = @litellm_proxy_cc_haiku_model,
+        litellm_proxy_cc_opus_model = @litellm_proxy_cc_opus_model
       WHERE id = @id
     `);
 

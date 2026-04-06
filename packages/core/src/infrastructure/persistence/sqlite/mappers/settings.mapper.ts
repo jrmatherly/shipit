@@ -17,8 +17,17 @@ import {
   type AgentAuthMethod,
   type EditorType,
   type Language,
+  LiteLLMProxyRoutingMode,
   type TerminalType,
 } from '../../../../domain/generated/output.js';
+
+const validRoutingModes = new Set<string>(Object.values(LiteLLMProxyRoutingMode));
+
+/** Convert empty/undefined/null strings to null for SQLite TEXT columns (enables field clearing). */
+function textOrNull(value: string | undefined | null): string | null {
+  if (value === undefined || value === null || value === '') return null;
+  return value;
+}
 
 /**
  * Database row type matching the settings table schema.
@@ -122,6 +131,12 @@ export interface SettingsRow {
   litellm_proxy_base_url: string | null;
   litellm_proxy_api_key: string | null;
   litellm_proxy_marketplace_enabled: number;
+  // LiteLLM Proxy per-agent config for Claude Code (added in migration 055)
+  litellm_proxy_cc_routing_mode: string | null;
+  litellm_proxy_cc_custom_headers: string | null;
+  litellm_proxy_cc_sonnet_model: string | null;
+  litellm_proxy_cc_haiku_model: string | null;
+  litellm_proxy_cc_opus_model: string | null;
   // Interactive agent config (added in migration 046)
   interactive_agent_enabled: number;
   interactive_agent_auto_timeout_minutes: number;
@@ -253,6 +268,12 @@ export function toDatabase(settings: Settings): SettingsRow {
     litellm_proxy_base_url: settings.litellmProxy?.baseUrl ?? null,
     litellm_proxy_api_key: settings.litellmProxy?.apiKey ?? null,
     litellm_proxy_marketplace_enabled: settings.litellmProxy?.marketplaceEnabled ? 1 : 0,
+    // ClaudeCodeProxyConfig (all TEXT nullable, empty string → null for clearability)
+    litellm_proxy_cc_routing_mode: settings.litellmProxy?.claudeCode?.routingMode ?? null,
+    litellm_proxy_cc_custom_headers: textOrNull(settings.litellmProxy?.claudeCode?.customHeaders),
+    litellm_proxy_cc_sonnet_model: textOrNull(settings.litellmProxy?.claudeCode?.sonnetModel),
+    litellm_proxy_cc_haiku_model: textOrNull(settings.litellmProxy?.claudeCode?.haikuModel),
+    litellm_proxy_cc_opus_model: textOrNull(settings.litellmProxy?.claudeCode?.opusModel),
 
     // InteractiveAgentConfig (boolean → 0/1, integer fields; defaults applied here)
     interactive_agent_enabled: (settings.interactiveAgent?.enabled ?? true) ? 1 : 0,
@@ -437,12 +458,35 @@ export function fromDatabase(row: SettingsRow): Settings {
     // LiteLLMProxyConfig (TEXT → string, INTEGER 0/1 → boolean)
     ...(row.litellm_proxy_base_url != null ||
     row.litellm_proxy_api_key != null ||
-    row.litellm_proxy_marketplace_enabled
+    row.litellm_proxy_marketplace_enabled ||
+    row.litellm_proxy_cc_routing_mode != null ||
+    row.litellm_proxy_cc_custom_headers != null ||
+    row.litellm_proxy_cc_sonnet_model != null ||
+    row.litellm_proxy_cc_haiku_model != null ||
+    row.litellm_proxy_cc_opus_model != null
       ? {
           litellmProxy: {
             baseUrl: row.litellm_proxy_base_url ?? undefined,
             apiKey: row.litellm_proxy_api_key ?? undefined,
             marketplaceEnabled: row.litellm_proxy_marketplace_enabled === 1,
+            // ClaudeCodeProxyConfig (only include if any cc field is set)
+            ...(row.litellm_proxy_cc_routing_mode != null ||
+            row.litellm_proxy_cc_custom_headers != null ||
+            row.litellm_proxy_cc_sonnet_model != null ||
+            row.litellm_proxy_cc_haiku_model != null ||
+            row.litellm_proxy_cc_opus_model != null
+              ? {
+                  claudeCode: {
+                    routingMode: validRoutingModes.has(row.litellm_proxy_cc_routing_mode ?? '')
+                      ? (row.litellm_proxy_cc_routing_mode as LiteLLMProxyRoutingMode)
+                      : undefined,
+                    customHeaders: row.litellm_proxy_cc_custom_headers ?? undefined,
+                    sonnetModel: row.litellm_proxy_cc_sonnet_model ?? undefined,
+                    haikuModel: row.litellm_proxy_cc_haiku_model ?? undefined,
+                    opusModel: row.litellm_proxy_cc_opus_model ?? undefined,
+                  },
+                }
+              : {}),
           },
         }
       : {}),

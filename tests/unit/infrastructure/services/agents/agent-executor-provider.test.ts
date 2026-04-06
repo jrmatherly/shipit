@@ -1,9 +1,11 @@
 import 'reflect-metadata';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 import { AgentExecutorProvider } from '@/infrastructure/services/agents/common/agent-executor-provider.service.js';
+import { ClaudeCodeExecutorService } from '@/infrastructure/services/agents/common/executors/claude-code-executor.service.js';
 import type { IAgentExecutorFactory } from '@/application/ports/output/agents/agent-executor-factory.interface.js';
 import type { IAgentExecutor } from '@/application/ports/output/agents/agent-executor.interface.js';
 import type { ISettingsRepository } from '@/application/ports/output/repositories/settings.repository.interface.js';
+import { LiteLLMProxyRoutingMode } from '@/domain/generated/output.js';
 
 describe('AgentExecutorProvider', () => {
   let provider: AgentExecutorProvider;
@@ -90,6 +92,51 @@ describe('AgentExecutorProvider', () => {
     expect(mockFactory.createExecutor).toHaveBeenLastCalledWith('cursor', {
       type: 'cursor',
       authMethod: 'token',
+    });
+  });
+
+  describe('proxy config threading', () => {
+    it('should call updateProxyConfig on ClaudeCodeExecutorService instances', async () => {
+      const ccExecutor = new ClaudeCodeExecutorService(vi.fn() as any);
+      vi.spyOn(ccExecutor, 'updateProxyConfig');
+      vi.mocked(mockFactory.createExecutor).mockReturnValue(ccExecutor);
+
+      const proxyConfig = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-key',
+        claudeCode: { routingMode: LiteLLMProxyRoutingMode.proxy },
+      };
+      vi.mocked(mockSettingsRepo.load).mockResolvedValue({
+        ...defaultSettings,
+        litellmProxy: proxyConfig,
+      } as any);
+
+      await provider.getExecutor();
+
+      expect(ccExecutor.updateProxyConfig).toHaveBeenCalledWith(proxyConfig);
+    });
+
+    it('should call updateProxyConfig with undefined when no proxy config exists', async () => {
+      const ccExecutor = new ClaudeCodeExecutorService(vi.fn() as any);
+      vi.spyOn(ccExecutor, 'updateProxyConfig');
+      vi.mocked(mockFactory.createExecutor).mockReturnValue(ccExecutor);
+
+      await provider.getExecutor();
+
+      expect(ccExecutor.updateProxyConfig).toHaveBeenCalledWith(undefined);
+    });
+
+    it('should NOT call updateProxyConfig on non-ClaudeCode executors', async () => {
+      // mockExecutor is a plain object, not instanceof ClaudeCodeExecutorService
+      vi.mocked(mockSettingsRepo.load).mockResolvedValue({
+        ...defaultSettings,
+        litellmProxy: { baseUrl: 'http://proxy:4000' },
+      } as any);
+
+      const result = await provider.getExecutor();
+
+      // Should not throw — the instanceof check correctly skips non-CC executors
+      expect(result).toBe(mockExecutor);
     });
   });
 });

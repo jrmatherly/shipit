@@ -173,8 +173,8 @@ describe('SkillsPageClient', () => {
     await user.click(screen.getByRole('button', { name: /^Workflow/ }));
     expect(screen.queryByTestId('skill-card-shadcn-ui')).not.toBeInTheDocument();
 
-    // Click "All" to reset
-    await user.click(screen.getByRole('button', { name: /^All/ }));
+    // Click "All" to reset (exact match — "All Sources" is a separate filter)
+    await user.click(screen.getByRole('button', { name: /^All$/ }));
     expect(screen.getByTestId('skill-card-shadcn-ui')).toBeInTheDocument();
   });
 

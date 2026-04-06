@@ -1,0 +1,219 @@
+# Feature Specification (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: litellm-proxy-agent-integration
+number: 084
+branch: feat/084-litellm-proxy-agent-integration
+oneLiner: Route Claude Code agent execution through LiteLLM proxy with env var injection, supporting proxy, passthrough, and direct subscription modes
+summary: >
+  Extend the existing LiteLLM proxy settings (URL + API key) to inject Claude Code
+  environment variables (ANTHROPIC_BASE_URL, ANTHROPIC_AUTH_TOKEN, custom headers,
+  model overrides) into the agent executor's spawned process. Users configure proxy
+  integration mode per-agent in settings: "direct" (own subscription, no proxy routing),
+  "proxy" (route all requests through LiteLLM), or "passthrough" (route through LiteLLM
+  but forward the user's own Anthropic auth to the provider). Includes optional model
+  override fields for routing to non-default or non-Anthropic models through LiteLLM,
+  custom header injection for cost attribution, and a new settings UI section for
+  per-agent proxy configuration. Claude Code is the first supported agent; the pattern
+  is designed for multi-agent extension.
+phase: planning
+sizeEstimate: L
+
+# Relationships
+relatedFeatures:
+  - "005-global-settings-service"
+  - "013-feature-agent"
+  - "082-agent-permission-modes"
+  - "083-claude-code-plugin-marketplace"
+
+technologies:
+  - TypeScript
+  - TypeSpec
+  - React
+  - Next.js
+  - SQLite
+  - Vitest
+
+relatedLinks:
+  - title: "LiteLLM: Claude Code Quickstart (Responses API)"
+    url: https://docs.litellm.ai/docs/tutorials/claude_responses_api
+  - title: "LiteLLM: Customer Tracking"
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_customer_tracking
+  - title: "LiteLLM: Prompt Cache Routing"
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_prompt_cache_routing
+  - title: "LiteLLM: Web Search"
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_websearch
+  - title: "LiteLLM: MCP Server Integration"
+    url: https://docs.litellm.ai/docs/tutorials/claude_mcp
+  - title: "LiteLLM: Non-Anthropic Models"
+    url: https://docs.litellm.ai/docs/tutorials/claude_non_anthropic_models
+  - title: "LiteLLM: Plugin Marketplace"
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_plugin_marketplace
+  - title: "LiteLLM: Beta Headers"
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_beta_headers
+  - title: "LiteLLM: Max Subscription Support"
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_max_subscription
+  - title: "LiteLLM: BYOK (Bring Your Own Key)"
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_byok
+  - title: "Deployed LiteLLM Config (reference)"
+    url: file:///Users/jason/dev/ai-k8s/talos-ai-cluster/templates/config/kubernetes/apps/ai/litellm/app/configmap.yaml.j2
+
+# Open questions (must be resolved before implementation)
+openQuestions: []
+
+# Markdown content (the actual spec)
+content: |
+  ## Problem Statement
+
+  ShipIT currently integrates with LiteLLM proxy only for the plugin marketplace
+  (spec 083). The proxy URL and API key are stored in settings but are never used
+  to route actual agent API traffic. Users who deploy a LiteLLM proxy for cost
+  tracking, prompt caching, model routing, cross-provider fallbacks, or policy
+  enforcement cannot leverage it through ShipIT — they must manually configure
+  environment variables outside ShipIT.
+
+  Claude Code supports LiteLLM integration via environment variables:
+  - `ANTHROPIC_BASE_URL` — points requests to the proxy instead of api.anthropic.com
+  - `ANTHROPIC_AUTH_TOKEN` — authenticates to the proxy (virtual key)
+  - `ANTHROPIC_CUSTOM_HEADERS` — carries metadata (customer ID, tags, proxy auth for BYOK/Max)
+  - `ANTHROPIC_DEFAULT_SONNET_MODEL` / `_HAIKU_MODEL` / `_OPUS_MODEL` — model overrides for
+    non-default or non-Anthropic model routing through LiteLLM
+
+  ShipIT already spawns Claude Code via `claude` CLI subprocess and controls its
+  environment via `buildSpawnEnv()` in the executor. The integration point is clear:
+  inject these env vars based on settings before spawning the process.
+
+  Users with direct Anthropic subscriptions (API key, Max plan, or BYOK) must still
+  be able to use ShipIT without a proxy. The proxy integration must be opt-in and
+  per-agent, since not all agents may support LiteLLM routing.
+
+  ## Success Criteria
+
+  - [ ] When proxy mode is "proxy", Claude Code spawns with ANTHROPIC_BASE_URL set to the configured proxy URL
+  - [ ] When proxy mode is "proxy", Claude Code spawns with ANTHROPIC_AUTH_TOKEN set to the configured proxy API key
+  - [ ] When proxy mode is "passthrough", Claude Code spawns with ANTHROPIC_BASE_URL + ANTHROPIC_CUSTOM_HEADERS for proxy auth, forwarding user's own Anthropic credentials
+  - [ ] When proxy mode is "direct" (default), no proxy env vars are injected — Claude Code uses its own auth
+  - [ ] Custom headers field supports arbitrary header injection (x-litellm-customer-id, x-litellm-tags, etc.)
+  - [ ] Model override fields (sonnet, haiku, opus) allow routing to non-default models through LiteLLM
+  - [ ] Model override env vars are injected in both "proxy" and "passthrough" modes (but not "direct")
+  - [ ] Proxy mode is configurable per-agent in Settings UI (starting with Claude Code only)
+  - [ ] Settings UI shows a clear explanation of each mode with contextual help text
+  - [ ] Settings UI for passthrough mode shows help text about required proxy-side config
+  - [ ] "Test Connection" validates proxy reachability when proxy/passthrough mode is selected
+  - [ ] Proxy env var injection happens ONLY in buildSpawnEnv() — no changes to CLI arg construction
+  - [ ] All proxy configuration is stored in SQLite via existing settings persistence
+  - [ ] Feature is gated: proxy routing only active when litellmProxy.baseUrl is configured
+  - [ ] Existing plugin marketplace functionality (spec 083) continues to work unchanged
+  - [ ] All 8 locale files have complete i18n key parity for new strings
+  - [ ] Every new UI component has a colocated Storybook story
+  - [ ] TDD workflow followed: failing tests first in every phase
+  - [ ] Pattern is extensible to other agents (Codex, Gemini, Copilot) without architectural changes
+
+  ## Affected Areas
+
+  | Area | Impact | Reasoning |
+  | --- | --- | --- |
+  | tsp/domain/entities/settings.tsp | High | New LiteLLMProxyRoutingMode enum + ClaudeCodeProxyConfig model nested in LiteLLMProxyConfig |
+  | packages/core/src/domain/generated/output.ts | High | Generated from TypeSpec changes |
+  | packages/core/src/domain/factories/settings-defaults.factory.ts | Medium | Default values for new proxy agent config fields |
+  | packages/core/src/infrastructure/persistence/sqlite/migrations/ | Medium | Migration for new columns (routing mode, custom headers, model overrides) |
+  | packages/core/src/infrastructure/persistence/sqlite/mappers/settings.mapper.ts | High | SettingsRow + toDatabase + toDomain for new columns |
+  | sqlite-settings.repository.ts | High | INSERT column list + VALUES list + UPDATE SET clause for new columns |
+  | packages/core/src/infrastructure/services/agents/common/executors/claude-code-executor.service.ts | High | Override buildSpawnEnv() to inject proxy env vars based on settings |
+  | packages/core/src/infrastructure/services/agents/common/agent-executor-factory.service.ts | Medium | Pass proxy config through to executor creation |
+  | packages/core/src/infrastructure/services/agents/common/agent-executor-provider.service.ts | Medium | Thread settings.litellmProxy through to factory |
+  | src/presentation/web/components/features/settings/ | High | New proxy routing settings section with mode selector and config fields |
+  | translations/*/web.json | Medium | New i18n keys for proxy routing UI (mode labels, descriptions, help text) |
+  | tests/ | High | Unit tests for env var injection logic, integration tests for settings persistence |
+
+  ## Architecture
+
+  **Env var injection approach:** The executor's `buildSpawnEnv()` is the single
+  injection point. When proxy mode is enabled for an agent, the executor adds
+  LiteLLM-specific env vars to the spawned process environment. No changes to CLI
+  args, stdin piping, or stream parsing.
+
+  ```
+  Settings (SQLite)                  Executor Pipeline               claude CLI
+  ┌─────────────────┐              ┌──────────────────┐            ┌──────────┐
+  │ litellmProxy:   │              │ buildSpawnEnv()   │            │          │
+  │   baseUrl       │──Settings──►│   + ANTHROPIC_    │──spawn──►  │ claude   │
+  │   apiKey        │  resolution  │     BASE_URL      │            │ -p ...   │
+  │   claudeCode:   │              │   + ANTHROPIC_    │            │          │
+  │     mode: proxy │              │     AUTH_TOKEN    │            └──────────┘
+  │     customHdrs  │              │   + ANTHROPIC_    │
+  │     sonnetModel │              │     CUSTOM_HEADERS│
+  │     haikuModel  │              │   + ANTHROPIC_    │
+  │     opusModel   │              │     DEFAULT_*_    │
+  └─────────────────┘              │     MODEL         │
+                                   └──────────────────┘
+  ```
+
+  **Three routing modes:**
+
+  | Mode | ANTHROPIC_BASE_URL | ANTHROPIC_AUTH_TOKEN | ANTHROPIC_CUSTOM_HEADERS | Use Case |
+  | --- | --- | --- | --- | --- |
+  | `direct` | Not set | Not set | Not set | User's own subscription (default) |
+  | `proxy` | Proxy URL | Proxy API key | User-defined (optional, for tracking) | Full proxy routing (cost tracking, model routing, caching) |
+  | `passthrough` | Proxy URL | Not set | `x-litellm-api-key: Bearer <proxy-key>` + user-defined | Max/BYOK — proxy logs but user authenticates to Anthropic |
+
+  **Model override env vars (set when non-empty, in proxy or passthrough mode):**
+
+  | Setting Field | Environment Variable | Purpose |
+  | --- | --- | --- |
+  | sonnetModel | ANTHROPIC_DEFAULT_SONNET_MODEL | Override default Sonnet model (e.g., claude-sonnet-4-6) |
+  | haikuModel | ANTHROPIC_DEFAULT_HAIKU_MODEL | Override default Haiku model |
+  | opusModel | ANTHROPIC_DEFAULT_OPUS_MODEL | Override default Opus model |
+
+  **Settings model extension:**
+  ```
+  LiteLLMProxyConfig (existing, extended):
+    baseUrl?: string
+    apiKey?: string
+    marketplaceEnabled?: boolean  (derived from baseUrl presence)
+    claudeCode?: ClaudeCodeProxyConfig  (NEW)
+
+  ClaudeCodeProxyConfig (new):
+    routingMode: "direct" | "proxy" | "passthrough"
+    customHeaders?: string    (newline-separated key: value pairs)
+    sonnetModel?: string      (model name override)
+    haikuModel?: string       (model name override)
+    opusModel?: string        (model name override)
+  ```
+
+  **Why "document only" for proxy-side validation:** LiteLLM's
+  `forward_client_headers_to_llm_api` and `forward_llm_provider_auth_headers`
+  are deployment-time config (often Jinja-templated in K8s). There is no
+  standardized LiteLLM health endpoint that exposes general_settings config.
+  The "Test Connection" button validates reachability. Mode-specific help text
+  explains what proxy-side config is needed for passthrough mode.
+
+  ## Security Requirements
+
+  - API keys injected via env vars only — never in CLI args (avoids /proc exposure)
+  - Proxy URL validated: must be http:// or https:// scheme, HTTPS required for non-localhost
+  - Custom headers validated: must match `key: value` format per line, no control characters
+  - No new secrets stored beyond existing pattern (plaintext in SQLite, consistent with agent.token)
+  - Env var injection is internal to executor — no user-facing API exposes raw keys
+  - Test connection endpoint uses same localhost-only proxy as all web API routes
+  - Model override strings validated: alphanumeric, hyphens, dots, colons only (no injection)
+
+  ## Dependencies
+
+  - Spec 005 (Global Settings Service) — extends Settings model
+  - Spec 083 (Plugin Marketplace) — shares LiteLLMProxyConfig; must not regress
+  - Spec 082 (Agent Permission Modes) — permission system coexists with proxy routing
+
+  ## Size Estimate
+
+  **L** — ~20 new/modified files, ~1000-1500 lines. Moderate complexity because
+  the infrastructure (LiteLLM settings, SQLite persistence, feature flag gating)
+  already exists from spec 083. Core work: TypeSpec model extension (enum + nested
+  model), one migration, settings mapper/repository updates, executor env var
+  injection with mode logic, settings UI section with mode selector and conditional
+  fields, model override fields, custom headers field, i18n across 8 locales, and
+  comprehensive tests. No new HTTP client, no new subprocess commands, no new routes.
+
+  ---
+
+  _Generated by `/shipit-kit:new-feature` — proceed with `/shipit-kit:research`_

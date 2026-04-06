@@ -2,6 +2,7 @@ import type { IAgentExecutorProvider } from '../../../../application/ports/outpu
 import type { IAgentExecutorFactory } from '../../../../application/ports/output/agents/agent-executor-factory.interface.js';
 import type { IAgentExecutor } from '../../../../application/ports/output/agents/agent-executor.interface.js';
 import type { ISettingsRepository } from '../../../../application/ports/output/repositories/settings.repository.interface.js';
+import { ClaudeCodeExecutorService } from './executors/claude-code-executor.service.js';
 
 export class AgentExecutorProvider implements IAgentExecutorProvider {
   constructor(
@@ -14,6 +15,13 @@ export class AgentExecutorProvider implements IAgentExecutorProvider {
     if (!settings) {
       throw new Error('Settings not found. Please run initialization first.');
     }
-    return this.factory.createExecutor(settings.agent.type, settings.agent);
+    const executor = this.factory.createExecutor(settings.agent.type, settings.agent);
+
+    // Update proxy config on cached executor so it always has fresh settings
+    if (executor instanceof ClaudeCodeExecutorService) {
+      executor.updateProxyConfig(settings.litellmProxy);
+    }
+
+    return executor;
   }
 }

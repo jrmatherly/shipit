@@ -21,6 +21,7 @@ import {
   AgentAuthMethod,
   EditorType,
   Language,
+  LiteLLMProxyRoutingMode,
   TerminalType,
 } from '@/domain/generated/output.js';
 
@@ -892,6 +893,106 @@ describe('SQLiteSettingsRepository', () => {
       // Assert
       expect(loaded?.system.autoUpdate).toBe(false);
       expect(typeof loaded?.system.autoUpdate).toBe('boolean');
+    });
+  });
+
+  describe('LiteLLM proxy agent routing config (migration 055)', () => {
+    it('should round-trip full ClaudeCodeProxyConfig through save/load', async () => {
+      const settings = createTestSettings();
+      settings.litellmProxy = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-proxy-key',
+        marketplaceEnabled: true,
+        claudeCode: {
+          routingMode: LiteLLMProxyRoutingMode.proxy,
+          customHeaders: 'x-litellm-customer-id: user-123\nx-litellm-tags: project:acme',
+          sonnetModel: 'claude-sonnet-4-6',
+          haikuModel: 'claude-haiku-4-5',
+          opusModel: 'claude-opus-4-6',
+        },
+      };
+
+      await repository.initialize(settings);
+      const loaded = await repository.load();
+
+      expect(loaded?.litellmProxy?.baseUrl).toBe('http://proxy:4000');
+      expect(loaded?.litellmProxy?.apiKey).toBe('sk-proxy-key');
+      expect(loaded?.litellmProxy?.marketplaceEnabled).toBe(true);
+      expect(loaded?.litellmProxy?.claudeCode?.routingMode).toBe(LiteLLMProxyRoutingMode.proxy);
+      expect(loaded?.litellmProxy?.claudeCode?.customHeaders).toBe(
+        'x-litellm-customer-id: user-123\nx-litellm-tags: project:acme'
+      );
+      expect(loaded?.litellmProxy?.claudeCode?.sonnetModel).toBe('claude-sonnet-4-6');
+      expect(loaded?.litellmProxy?.claudeCode?.haikuModel).toBe('claude-haiku-4-5');
+      expect(loaded?.litellmProxy?.claudeCode?.opusModel).toBe('claude-opus-4-6');
+    });
+
+    it('should round-trip passthrough mode', async () => {
+      const settings = createTestSettings();
+      settings.litellmProxy = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-proxy-key',
+        marketplaceEnabled: true,
+        claudeCode: {
+          routingMode: LiteLLMProxyRoutingMode.passthrough,
+          sonnetModel: 'claude-sonnet-4-6',
+        },
+      };
+
+      await repository.initialize(settings);
+      const loaded = await repository.load();
+
+      expect(loaded?.litellmProxy?.claudeCode?.routingMode).toBe(
+        LiteLLMProxyRoutingMode.passthrough
+      );
+      expect(loaded?.litellmProxy?.claudeCode?.sonnetModel).toBe('claude-sonnet-4-6');
+      expect(loaded?.litellmProxy?.claudeCode?.customHeaders).toBeUndefined();
+      expect(loaded?.litellmProxy?.claudeCode?.haikuModel).toBeUndefined();
+      expect(loaded?.litellmProxy?.claudeCode?.opusModel).toBeUndefined();
+    });
+
+    it('should not create claudeCode when no cc fields are set', async () => {
+      const settings = createTestSettings();
+      settings.litellmProxy = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-proxy-key',
+        marketplaceEnabled: true,
+      };
+
+      await repository.initialize(settings);
+      const loaded = await repository.load();
+
+      expect(loaded?.litellmProxy?.baseUrl).toBe('http://proxy:4000');
+      expect(loaded?.litellmProxy?.claudeCode).toBeUndefined();
+    });
+
+    it('should preserve claudeCode through update cycle', async () => {
+      const settings = createTestSettings();
+      settings.litellmProxy = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-proxy-key',
+        marketplaceEnabled: true,
+        claudeCode: {
+          routingMode: LiteLLMProxyRoutingMode.proxy,
+          sonnetModel: 'claude-sonnet-4-6',
+        },
+      };
+
+      await repository.initialize(settings);
+
+      // Update with different routing mode
+      settings.litellmProxy.claudeCode!.routingMode = LiteLLMProxyRoutingMode.passthrough;
+      settings.litellmProxy.claudeCode!.customHeaders = 'x-litellm-customer-id: user-456';
+      await repository.update(settings);
+
+      const loaded = await repository.load();
+      expect(loaded?.litellmProxy?.claudeCode?.routingMode).toBe(
+        LiteLLMProxyRoutingMode.passthrough
+      );
+      expect(loaded?.litellmProxy?.claudeCode?.customHeaders).toBe(
+        'x-litellm-customer-id: user-456'
+      );
+      expect(loaded?.litellmProxy?.claudeCode?.sonnetModel).toBe('claude-sonnet-4-6');
     });
   });
 });

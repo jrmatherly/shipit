@@ -226,7 +226,24 @@
       "hint": "Connect to a LiteLLM proxy to browse and install Claude Code plugins from your organization's curated marketplace.",
       "testConnection": "Test Connection",
       "testSuccess": "Connection successful",
-      "testFailed": "Connection failed"
+      "testFailed": "Connection failed",
+      "routing": {
+        "title": "Proxy Routing (Claude Code)",
+        "description": "Configure how Claude Code routes API traffic through LiteLLM",
+        "hint": "Control whether Claude Code uses the LiteLLM proxy for API requests. Supports full proxy routing, passthrough for Max/BYOK subscriptions, and model overrides.",
+        "mode": "Routing Mode",
+        "modeDescription": "How Claude Code routes API traffic",
+        "modeDirect": "Direct (own subscription)",
+        "modeProxy": "Proxy (full routing)",
+        "modePassthrough": "Passthrough (Max/BYOK)",
+        "passthroughHelp": "Passthrough mode requires the LiteLLM proxy to have forward_client_headers_to_llm_api or forward_llm_provider_auth_headers enabled.",
+        "customHeaders": "Custom Headers",
+        "customHeadersDescription": "Newline-separated headers for cost attribution (e.g., x-litellm-customer-id: user-123)",
+        "sonnetModel": "Sonnet Model Override",
+        "haikuModel": "Haiku Model Override",
+        "opusModel": "Opus Model Override",
+        "modelOverrideDescription": "Override the default model routed through LiteLLM"
+      }
     },
     "interactiveAgent": {
       "title": "Agente interactivo",

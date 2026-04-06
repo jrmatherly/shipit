@@ -1,0 +1,45 @@
+feature:
+  id: '084-litellm-proxy-agent-integration'
+  name: 'litellm-proxy-agent-integration'
+  number: 84
+  branch: 'feat/084-litellm-proxy-agent-integration'
+  lifecycle: 'implementation'
+  createdAt: '2026-04-06T15:36:22Z'
+
+status:
+  phase: 'ready-for-review'
+  progress:
+    completed: 10
+    total: 10
+    percentage: 100
+  currentTask: null
+  lastUpdated: '2026-04-06T18:55:00Z'
+  lastUpdatedBy: 'shipit-kit:implement'
+
+validation:
+  lastRun: null
+  gatesPassed: []
+  autoFixesApplied: []
+
+tasks:
+  current: null
+  blocked: []
+  failed: []
+
+checkpoints:
+  - phase: 'feature-created'
+    completedAt: '2026-04-06T15:36:22Z'
+    completedBy: 'shipit-kit:new-feature'
+  - phase: 'research-complete'
+    completedAt: '2026-04-06T17:15:00Z'
+    completedBy: 'shipit-kit:research'
+  - phase: 'plan-complete'
+    completedAt: '2026-04-06T17:45:00Z'
+    completedBy: 'shipit-kit:plan'
+  - phase: 'implementation-complete'
+    completedAt: '2026-04-06T18:55:00Z'
+    completedBy: 'shipit-kit:implement'
+
+errors:
+  current: null
+  history: []

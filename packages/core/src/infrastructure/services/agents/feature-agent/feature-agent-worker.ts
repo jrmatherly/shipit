@@ -23,6 +23,7 @@ import type { IAgentRunRepository } from '@/application/ports/output/agents/agen
 import type { IAgentExecutorProvider } from '@/application/ports/output/agents/agent-executor-provider.interface.js';
 import type { IAgentExecutorFactory } from '@/application/ports/output/agents/agent-executor-factory.interface.js';
 import type { IFeatureRepository } from '@/application/ports/output/repositories/feature-repository.interface.js';
+import { ClaudeCodeExecutorService } from '@/infrastructure/services/agents/common/executors/claude-code-executor.service.js';
 import type { IGitPrService } from '@/application/ports/output/services/git-pr-service.interface.js';
 import type { IGitForkService } from '@/application/ports/output/services/git-fork-service.interface.js';
 import { AgentRunStatus, SdlcLifecycle, type AgentType } from '@/domain/generated/output.js';
@@ -244,6 +245,10 @@ export async function runWorker(args: WorkerArgs): Promise<void> {
     log(`Creating executor from pinned agent type: ${args.agentType}`);
     const factory = container.resolve<IAgentExecutorFactory>('IAgentExecutorFactory');
     executor = factory.createExecutor(args.agentType, settings.agent);
+    // Update proxy config for direct factory calls (provider does this automatically)
+    if (executor instanceof ClaudeCodeExecutorService) {
+      executor.updateProxyConfig(settings.litellmProxy);
+    }
   } else {
     log('Creating executor from configured agent settings...');
     executor = await executorProvider.getExecutor();
