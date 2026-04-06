@@ -43,27 +43,12 @@ relatedLinks:
   - title: "Spec 084 (Claude Code pattern)"
     url: specs/084-litellm-proxy-agent-integration/spec.yaml
 
-# Open questions (must be resolved before implementation)
-openQuestions:
-  - question: >
-      Cursor requires the base URL to end with /cursor for proper routing. Should
-      ShipIT auto-append this suffix in the documentation instructions, or should
-      the user configure the full URL including the suffix?
-    resolved: false
-    answer: null
-  - question: >
-      Copilot CLI requires modifying VS Code's settings.json with undocumented
-      debug.overrideProxyUrl settings. Should ShipIT attempt to write this file
-      programmatically (risky — could conflict with user's VS Code config), or
-      only show a copy-pasteable instruction panel?
-    resolved: false
-    answer: null
-  - question: >
-      For Gemini CLI and Codex CLI, should passthrough mode be supported (using
-      custom headers for proxy auth), or only direct and proxy modes since their
-      proxy integrations are simpler and have no BYOK/Max subscription equivalent?
-    resolved: false
-    answer: null
+# Open questions (all resolved)
+openQuestions: []
+# Resolved:
+# 1. Cursor URL suffix: Auto-append /cursor to proxy URL in documentation instructions.
+# 2. Copilot config: Documentation-only panel with copy-pasteable VS Code settings.json snippet.
+# 3. Routing modes for Gemini/Codex: Direct + proxy only (no passthrough). No BYOK/Max equivalent exists.
 
 # Markdown content (the actual spec)
 content: |
