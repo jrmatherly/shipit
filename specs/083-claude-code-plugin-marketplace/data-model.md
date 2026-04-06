@@ -9,55 +9,102 @@
 
 ## Overview
 
-{{DATA_MODEL_OVERVIEW}}
+This feature extends the existing Settings domain model with LiteLLM proxy configuration
+and a new feature flag. No new top-level entities are created -- the plugin marketplace
+catalog and installed plugin state are external DTOs (from LiteLLM and Claude CLI), not
+persisted ShipIT domain entities.
 
 ## New Entities
 
-### {{ENTITY_NAME}}
+### LiteLLMProxyConfig
 
-**Location:** `tsp/domain/entities/{{entity-name}}.tsp`
+**Location:** `tsp/domain/entities/settings.tsp` (embedded in Settings model)
 
-| Property      | Type          | Required     | Description   |
-| ------------- | ------------- | ------------ | ------------- |
-| {{PROP_NAME}} | {{PROP_TYPE}} | {{REQUIRED}} | {{PROP_DESC}} |
+| Property           | Type    | Required | Description                                                      |
+| ------------------ | ------- | -------- | ---------------------------------------------------------------- |
+| baseUrl            | string  | No       | LiteLLM proxy base URL (e.g., http://localhost:4000)             |
+| apiKey             | string  | No       | API key for LiteLLM proxy (virtual key). Plaintext in SQLite.    |
+| marketplaceEnabled | boolean | No       | Whether to use this proxy for the plugin marketplace             |
+
+**TypeSpec definition:**
+
+```typespec
+@doc("LiteLLM proxy configuration for plugin marketplace and model routing")
+model LiteLLMProxyConfig {
+  @doc("LiteLLM proxy base URL (e.g., http://localhost:4000)")
+  baseUrl?: string;
+
+  @doc("API key for the LiteLLM proxy (virtual key). Stored in plaintext in SQLite consistent with agent.token pattern.")
+  apiKey?: string;
+
+  @doc("Whether to use this proxy for the plugin marketplace")
+  marketplaceEnabled?: boolean;
+}
+```
 
 **Relationships:**
 
-- {{RELATIONSHIP_1}}
+- Embedded within the `Settings` model as `litellmProxy?: LiteLLMProxyConfig`
 
 ## Modified Entities
 
-### {{EXISTING_ENTITY}}
+### Settings
 
 **Changes:**
 
-- Add: {{NEW_PROPERTY}}
-- Modify: {{MODIFIED_PROPERTY}}
+- Add: `litellmProxy?: LiteLLMProxyConfig` -- LiteLLM proxy configuration
 
-## Value Objects
+### FeatureFlags
 
-### {{VALUE_OBJECT_NAME}}
+**Changes:**
 
-**Location:** `tsp/domain/value-objects/{{value-object}}.tsp`
+- Add: `plugins?: boolean` (default: false) -- Enable the Claude Code plugins marketplace browser
 
-| Property    | Type        | Description |
-| ----------- | ----------- | ----------- |
-| {{VO_PROP}} | {{VO_TYPE}} | {{VO_DESC}} |
+**TypeSpec addition:**
 
-## Enums
+```typespec
+@doc("Enable the Claude Code plugins marketplace browser")
+plugins?: boolean;
+```
 
-### {{ENUM_NAME}}
+## External DTOs (Port Interfaces, Not Persisted)
 
-**Location:** `tsp/common/enums/{{enum-name}}.tsp`
+These types represent external data shapes from LiteLLM and Claude CLI.
+They are defined as TypeScript interfaces in the port, not as TypeSpec domain models.
 
-| Value          | Description   |
-| -------------- | ------------- |
-| {{ENUM_VALUE}} | {{ENUM_DESC}} |
+### PluginMarketplaceEntry
 
-<!-- If no data model changes, replace all with:
-## Overview
-No domain model changes required for this feature.
--->
+**Location:** `packages/core/src/application/ports/output/services/plugin-marketplace.interface.ts`
+
+| Property    | Type                   | Required | Description                        |
+| ----------- | ---------------------- | -------- | ---------------------------------- |
+| name        | string                 | Yes      | Plugin name                        |
+| description | string                 | Yes      | Plugin description                 |
+| version     | string                 | No       | Plugin version                     |
+| source      | PluginSource           | Yes      | Source location (GitHub/URL/subdir) |
+| category    | string                 | No       | Plugin category                    |
+| keywords    | string[]               | No       | Search keywords                    |
+
+### InstalledPlugin
+
+**Location:** `packages/core/src/application/ports/output/services/plugin-marketplace.interface.ts`
+
+| Property    | Type                         | Required | Description                                |
+| ----------- | ---------------------------- | -------- | ------------------------------------------ |
+| id          | string                       | Yes      | Plugin ID (e.g., "superpowers@marketplace")|
+| scope       | 'user' \| 'project' \| 'local' | Yes   | Installation scope                         |
+| version     | string                       | No       | Installed version                          |
+| enabled     | boolean                      | Yes      | Whether plugin is enabled                  |
+| installedAt | string                       | No       | Installation timestamp                     |
+
+## SQLite Migration (054)
+
+| Column                              | Type    | Default | Maps to                             |
+| ----------------------------------- | ------- | ------- | ----------------------------------- |
+| litellm_proxy_base_url              | TEXT    | NULL    | settings.litellmProxy.baseUrl       |
+| litellm_proxy_api_key               | TEXT    | NULL    | settings.litellmProxy.apiKey        |
+| litellm_proxy_marketplace_enabled   | INTEGER | 0       | settings.litellmProxy.marketplaceEnabled |
+| feature_flag_plugins                | INTEGER | 0       | settings.featureFlags.plugins       |
 
 ---
 

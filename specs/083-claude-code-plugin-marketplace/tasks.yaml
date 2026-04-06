@@ -3,67 +3,573 @@
 
 name: claude-code-plugin-marketplace
 summary: Task breakdown for 083-claude-code-plugin-marketplace
+phase: implementation
+updatedAt: '2026-04-06'
 
 # Relationships
-relatedFeatures: []
-technologies: []
-relatedLinks: []
+relatedFeatures:
+  - '005-global-settings-service'
+  - '013-feature-agent'
+  - '082-agent-permission-modes'
 
-# Structured task list — this is the single source of truth for tasks.
+technologies:
+  - TypeScript
+  - TypeSpec
+  - React
+  - Next.js
+  - Zod
+  - SQLite
+  - Vitest
+  - Playwright
+
+relatedLinks:
+  - title: Detailed Implementation Plan
+    url: .scratchpad/plans/claude-code-plugin-marketplace.md
+
+# Structured task list -- this is the single source of truth for tasks.
 # The content field below is a summary only; it does NOT duplicate task details.
 tasks:
-  - id: task-1
-    title: { { TASK_1_TITLE } }
-    description: { { TASK_1_DESCRIPTION } }
+  # ── Phase 1: Domain Model, Settings Extension & Feature Flag ──
+
+  - id: task-1-1
+    title: Add TypeSpec models and run codegen
+    description: >
+      Add LiteLLMProxyConfig model with baseUrl?, apiKey?, marketplaceEnabled?
+      fields to settings.tsp. Add plugins?: boolean to FeatureFlags model.
+      Add litellmProxy?: LiteLLMProxyConfig to Settings model. Run pnpm tsp:codegen.
     state: Todo
     dependencies: []
     acceptanceCriteria:
-      - { { CRITERION_1 } }
-      - { { CRITERION_2 } }
-    tdd:
-      red:
-        - Write tests for {{FEATURE_1}}
-      green:
-        - Implement {{FEATURE_1}} to pass tests
-      refactor:
-        - Extract helpers, improve naming
-    estimatedEffort: { { EFFORT_1 } }
+      - LiteLLMProxyConfig model defined in tsp/domain/entities/settings.tsp
+      - plugins field added to FeatureFlags model (default false)
+      - litellmProxy field added to Settings model
+      - pnpm tsp:codegen succeeds and output.ts includes new types
+      - pnpm typecheck passes
+    tdd: null # TypeSpec codegen, no TDD
+    estimatedEffort: S
 
-  - id: task-2
-    title: { { TASK_2_TITLE } }
-    description: { { TASK_2_DESCRIPTION } }
+  - id: task-1-2
+    title: Create port interface and barrel export
+    description: >
+      Create IPluginMarketplaceService port interface with PluginMarketplaceEntry,
+      InstalledPlugin DTOs and 6 methods (fetchCatalog, listInstalled, installPlugin,
+      uninstallPlugin, togglePlugin, addMarketplace). Export from barrel.
     state: Todo
     dependencies:
-      - task-1
+      - task-1-1
     acceptanceCriteria:
-      - { { CRITERION_1 } }
-      - { { CRITERION_2 } }
-    tdd: null # No TDD for foundational/doc tasks
-    estimatedEffort: { { EFFORT_2 } }
+      - Interface file at packages/core/src/application/ports/output/services/plugin-marketplace.interface.ts
+      - Exported from packages/core/src/application/ports/output/services/index.ts
+      - pnpm typecheck passes
+    tdd: null # Interface definition, no TDD
+    estimatedEffort: S
+
+  - id: task-1-3
+    title: SQLite migration and settings mapper update
+    description: >
+      Create migration 054-add-litellm-proxy.ts with 4 ALTER TABLE columns:
+      litellm_proxy_base_url TEXT, litellm_proxy_api_key TEXT,
+      litellm_proxy_marketplace_enabled INTEGER DEFAULT 0,
+      feature_flag_plugins INTEGER DEFAULT 0. Register in migrations.ts.
+      Update settings.mapper.ts SettingsRow, toDatabase(), toDomain() for all 4 fields.
+    state: Todo
+    dependencies:
+      - task-1-1
+    acceptanceCriteria:
+      - Migration 054 creates all 4 columns
+      - Migration registered in migrations.ts
+      - SettingsRow interface includes 4 new fields
+      - toDatabase() maps litellmProxy nested fields to flat columns
+      - toDomain() reconstructs litellmProxy object and featureFlags.plugins
+      - Round-trip test passes (toDatabase -> toDomain returns equivalent)
+    tdd:
+      red:
+        - Write settings mapper test for toDatabase with litellmProxy fields
+        - Write settings mapper test for toDomain reconstructing litellmProxy object
+        - Write settings mapper test for round-trip (toDatabase -> toDomain)
+      green:
+        - Add columns to SettingsRow interface
+        - Add toDatabase mapping for 4 fields
+        - Add toDomain mapping to reconstruct litellmProxy + featureFlags.plugins
+        - Create migration 054 and register it
+      refactor:
+        - Ensure mapping patterns are consistent with existing fields
+    estimatedEffort: M
+
+  - id: task-1-4
+    title: Settings factory and test factories update
+    description: >
+      Update createDefaultSettings() to include plugins: false in featureFlags.
+      Omit litellmProxy from defaults (optional field, like interactiveAgent).
+      Add createMockPluginMarketplaceEntry() and createMockInstalledPlugin()
+      to tests/factories/index.ts.
+    state: Todo
+    dependencies:
+      - task-1-1
+    acceptanceCriteria:
+      - createDefaultSettings() includes plugins: false in featureFlags
+      - litellmProxy is omitted from defaults
+      - Mock factories exist in tests/factories/index.ts
+      - Factory test passes
+    tdd:
+      red:
+        - Write test verifying createDefaultSettings().featureFlags.plugins === false
+        - Write test verifying litellmProxy is undefined in defaults
+      green:
+        - Add plugins: false to factory
+        - Add mock factories for plugin types
+      refactor:
+        - Ensure factory follows existing patterns
+    estimatedEffort: S
+
+  - id: task-1-5
+    title: Feature flag chain (8 files) + feature flags section
+    description: >
+      Update feature-flags.ts FeatureFlagsState and ENV_FALLBACK_FLAGS with plugins
+      field. Add toggle row to feature-flags-settings-section.tsx. Update all 8
+      translation files with settings.featureFlags.plugins + pluginsDescription keys.
+    state: Todo
+    dependencies:
+      - task-1-1
+      - task-1-3
+    acceptanceCriteria:
+      - FeatureFlagsState includes plugins boolean
+      - ENV_FALLBACK_FLAGS includes plugins: false
+      - getFeatureFlags() returns plugins from settings
+      - Feature flags section renders plugins toggle
+      - All 8 locale files have plugins + pluginsDescription keys
+      - i18n key parity test passes
+    tdd:
+      red:
+        - Write test for feature flags section rendering plugins toggle
+      green:
+        - Add plugins to FeatureFlagsState interface
+        - Add to ENV_FALLBACK_FLAGS
+        - Add toggle row to section component
+        - Add i18n keys to all 8 locales
+      refactor:
+        - Verify consistent ordering with existing flags
+    estimatedEffort: M
+
+  - id: task-1-6
+    title: i18n keys for plugin marketplace UI
+    description: >
+      Add all plugin marketplace i18n keys to all 8 locale files: navigation.plugins,
+      plugins.title, plugins.search, plugins.searchPlaceholder, plugins.emptyState,
+      plugins.noProxy, plugins.wrongAgent, plugins.install, plugins.uninstall,
+      plugins.enable, plugins.disable, plugins.installed, plugins.notInstalled,
+      plugins.allCategories, plugins.version, plugins.source, plugins.category,
+      settings.litellmProxy.title, .description, .baseUrl, .baseUrlDescription,
+      .apiKey, .apiKeyDescription, .marketplaceEnabled, .marketplaceEnabledDescription,
+      .hint, .testConnection, .testSuccess, .testFailed.
+    state: Todo
+    dependencies:
+      - task-1-5
+    acceptanceCriteria:
+      - All i18n keys present in all 8 locale files
+      - i18n key parity test passes
+      - Keys follow existing naming conventions
+    tdd: null # i18n key additions, no TDD
+    estimatedEffort: M
+
+  # ── Phase 2: Infrastructure Service Implementation ──
+
+  - id: task-2-1
+    title: Input validators and Zod schemas
+    description: >
+      Create plugin-marketplace.validators.ts with validatePluginId (regex
+      ^[a-zA-Z0-9_-]+$), validateMarketplaceUrl (scheme + HTTPS check),
+      validateScope (allowlist). Create plugin-marketplace.schema.ts with
+      Zod schemas for PluginEntrySchema, MarketplaceCatalogSchema,
+      InstalledPluginSchema.
+    state: Todo
+    dependencies:
+      - task-1-2
+    acceptanceCriteria:
+      - validatePluginId accepts valid names, throws on invalid
+      - validateMarketplaceUrl accepts http/https, requires HTTPS for non-localhost
+      - validateScope accepts only 'user'|'project'|'local'
+      - Zod schemas validate correct catalog structures
+      - Zod schemas reject malformed entries
+    tdd:
+      red:
+        - Write tests for validatePluginId with valid/invalid names
+        - Write tests for validateMarketplaceUrl with valid/invalid URLs
+        - Write tests for validateScope with valid/invalid scopes
+        - Write tests for Zod schema acceptance and rejection
+      green:
+        - Implement validators with regex and allowlists
+        - Define Zod schemas matching LiteLLM and CLI output formats
+      refactor:
+        - Extract shared validation constants
+    estimatedEffort: M
+
+  - id: task-2-2
+    title: PluginMarketplaceService - HTTP fetch methods
+    description: >
+      Implement fetchCatalog with Node 22+ native fetch: AbortController 10s timeout,
+      redirect: 'error', response size limit 5MB, Zod validation. Validate API key
+      requires HTTPS. This establishes the first HTTP client pattern in the project.
+    state: Todo
+    dependencies:
+      - task-2-1
+    acceptanceCriteria:
+      - fetchCatalog fetches and Zod-validates proxy response
+      - URL scheme validation enforced (http/https only)
+      - HTTPS required for non-localhost when API key provided
+      - AbortController timeout at 10s
+      - Response size limit at 5MB
+      - Redirect responses rejected
+      - Malformed JSON/catalog returns error, not crash
+      - Proxy unreachable returns empty catalog with error
+    tdd:
+      red:
+        - Write test for successful catalog fetch (mock fetch via vi.stubGlobal)
+        - Write test for timeout handling
+        - Write test for oversized response rejection
+        - Write test for malformed JSON rejection
+        - Write test for redirect rejection
+        - Write test for API key over HTTP rejection
+        - Write test for ECONNREFUSED handling
+      green:
+        - Implement fetchCatalog with AbortController, size check, Zod validation
+      refactor:
+        - Extract HTTP client helper if pattern is reusable
+    estimatedEffort: L
+
+  - id: task-2-3
+    title: PluginMarketplaceService - subprocess methods + DI
+    description: >
+      Implement listInstalled, installPlugin, uninstallPlugin, togglePlugin,
+      addMarketplace using execFile with validated args arrays. Cross-platform
+      binary resolution (claude vs claude.cmd). Subprocess timeout 30s.
+      Register service in services.module.ts.
+    state: Todo
+    dependencies:
+      - task-2-1
+      - task-2-2
+    acceptanceCriteria:
+      - listInstalled spawns claude plugin list --json and Zod-validates output
+      - installPlugin validates pluginId + scope before passing to execFile
+      - uninstallPlugin validates pluginId before execFile
+      - togglePlugin routes to enable/disable based on boolean
+      - addMarketplace validates URL before execFile
+      - All methods use args arrays (never string concatenation)
+      - Cross-platform binary name (claude vs claude.cmd)
+      - Subprocess timeout at 30s
+      - Non-zero exit returns { success: false, error: stderr }
+      - ENOENT (binary not found) throws descriptive error
+      - Service registered in DI as IPluginMarketplaceService
+    tdd:
+      red:
+        - Write test for listInstalled with mocked SpawnFunction
+        - Write test for installPlugin arg array construction
+        - Write test for installPlugin with invalid pluginId (rejected)
+        - Write test for uninstallPlugin subprocess call
+        - Write test for togglePlugin enable/disable routing
+        - Write test for addMarketplace URL validation + subprocess
+        - Write test for subprocess timeout handling
+        - Write test for binary not found (ENOENT)
+        - Write test for non-zero exit code handling
+      green:
+        - Implement all 5 subprocess methods
+        - Add cross-platform binary resolution
+        - Register in services.module.ts
+      refactor:
+        - Extract shared subprocess wrapper if methods share boilerplate
+    estimatedEffort: L
+
+  # ── Phase 3: Use Cases ──
+
+  - id: task-3-1
+    title: FetchPluginCatalogUseCase
+    description: >
+      Create FetchPluginCatalogUseCase that reads LiteLLM proxy config from
+      settings via ISettingsReader, calls fetchCatalog + listInstalled, merges
+      results. Returns empty catalog (not error) if proxy not configured.
+    state: Todo
+    dependencies:
+      - task-2-3
+    acceptanceCriteria:
+      - Reads proxy URL from settings via ISettingsReader
+      - Returns merged { plugins, installedPlugins } on success
+      - Returns empty catalog if proxy not configured (not an error)
+      - Returns error if service call fails
+      - Registered in use-cases.module.ts + web-tokens.module.ts
+    tdd:
+      red:
+        - Write test with mocked IPluginMarketplaceService and ISettingsReader
+        - Write test for proxy not configured (returns empty)
+        - Write test for service error propagation
+      green:
+        - Implement use case with constructor injection
+        - Register in DI modules
+      refactor:
+        - Ensure consistent with existing use case patterns
+    estimatedEffort: M
+
+  - id: task-3-2
+    title: InstallPlugin, UninstallPlugin, TogglePlugin, AddMarketplace use cases
+    description: >
+      Create 4 remaining use cases. Each accepts validated input, delegates to
+      IPluginMarketplaceService, returns { success, error? }. AddMarketplace
+      is used by "Test Connection" in settings.
+    state: Todo
+    dependencies:
+      - task-2-3
+    acceptanceCriteria:
+      - Each use case validates input and delegates to service
+      - Each returns { success: boolean, error?: string }
+      - Each handles service errors gracefully
+      - All 4 registered in use-cases.module.ts + web-tokens.module.ts
+    tdd:
+      red:
+        - Write test for each use case success path
+        - Write test for each use case service error path
+        - Write test for invalid input handling
+      green:
+        - Implement 4 use cases
+        - Register in DI modules
+      refactor:
+        - Extract shared patterns if use cases are similar
+    estimatedEffort: M
+
+  # ── Phase 4: Server Actions & Storybook Mocks ──
+
+  - id: task-4-1
+    title: Server actions for all 5 plugin operations
+    description: >
+      Create 5 server actions: fetchPluginCatalogAction, installPluginAction,
+      uninstallPluginAction, togglePluginAction, addMarketplaceAction.
+      Each uses resolve<T>('StringToken') pattern (never class refs).
+      Error handling via apiError() -- never expose raw error.message.
+    state: Todo
+    dependencies:
+      - task-3-1
+      - task-3-2
+    acceptanceCriteria:
+      - Each action resolves use case via string token
+      - Each wraps errors with apiError()
+      - No raw error.message exposed to client
+      - Tests verify DI resolution by string token
+      - Tests verify error handling
+    tdd:
+      red:
+        - Write test for each action mocking @/lib/server-container
+        - Verify resolve called with correct string token
+        - Verify error wrapping
+      green:
+        - Implement 5 server actions
+      refactor:
+        - Ensure consistent with 30+ existing server action patterns
+    estimatedEffort: M
+
+  - id: task-4-2
+    title: Storybook mocks for all 5 actions
+    description: >
+      Create mock implementations in .storybook/mocks/app/actions/ for all 5
+      server actions. fetchPluginCatalogAction returns sample catalog with 5
+      plugins across categories. Others return { success: true }.
+    state: Todo
+    dependencies:
+      - task-4-1
+    acceptanceCriteria:
+      - All 5 mock files exist in .storybook/mocks/app/actions/
+      - fetchPluginCatalogAction mock returns realistic sample data
+      - pnpm build:storybook passes
+    tdd: null # Mock data, no TDD
+    estimatedEffort: S
+
+  # ── Phase 5: Web UI - Plugins Page [P] ──
+
+  - id: task-5-1
+    title: PluginCard and PluginDetailDrawer components
+    description: >
+      Create PluginCard (name, truncated description, category badge, version,
+      install status, enable/disable toggle) and PluginDetailDrawer (full
+      description, source repo link with URL scheme validation, install/uninstall
+      button). Create colocated Storybook stories for both.
+    state: Todo
+    dependencies:
+      - task-4-2
+    acceptanceCriteria:
+      - PluginCard renders all metadata fields
+      - PluginCard shows install/uninstall button based on state
+      - PluginCard shows enable/disable toggle for installed plugins
+      - PluginDetailDrawer shows full details with action buttons
+      - Source URLs validated for https scheme before rendering as links
+      - Display strings truncated (name 100 chars, description 2000)
+      - Stories cover Default, Installed, NotInstalled, LongDescription variants
+      - Component tests verify render states and callback invocations
+    tdd:
+      red:
+        - Write PluginCard test for render with mock entry
+        - Write PluginCard test for install button click callback
+        - Write PluginCard test for truncated description
+        - Write PluginDetailDrawer test for content rendering
+        - Write PluginDetailDrawer test for URL scheme validation
+      green:
+        - Implement PluginCard component
+        - Implement PluginDetailDrawer component
+        - Create Storybook stories
+      refactor:
+        - Extract shared plugin type helpers
+    estimatedEffort: L
+
+  - id: task-5-2
+    title: PluginsPageClient with search, filter, and grid
+    description: >
+      Create PluginsPageClient with search bar, category filter pills, responsive
+      card grid (3 columns desktop). Search filters by name/description. Category
+      filter via pills. Empty states for no proxy, wrong agent, no results.
+      Follow Tools page editorial design pattern.
+    state: Todo
+    dependencies:
+      - task-5-1
+    acceptanceCriteria:
+      - Search filters cards by name and description
+      - Category pills filter by category
+      - Responsive grid (3 cols desktop, 2 tablet, 1 mobile)
+      - Empty state when no proxy configured
+      - Empty state when feature flag off or wrong agent
+      - Stories cover Default, EmptyState, Loading, NoProxy, WrongAgent
+      - Component tests verify search, filter, card click opens drawer
+    tdd:
+      red:
+        - Write test rendering PluginsPageClient with mock catalog
+        - Write test for search filtering by name
+        - Write test for category pill filtering
+        - Write test for card click opening drawer
+        - Write test for empty state (no proxy)
+      green:
+        - Implement PluginsPageClient with search/filter state
+        - Implement responsive grid layout
+        - Create Storybook stories
+      refactor:
+        - Ensure editorial design consistency with Tools page
+    estimatedEffort: L
+
+  - id: task-5-3
+    title: Plugins page route and sidebar navigation
+    description: >
+      Create src/presentation/web/app/plugins/page.tsx with feature flag guard
+      (notFound() if !flags.plugins). Add Plugins nav item to sidebar with
+      Blocks icon, conditional on featureFlags.plugins && agentType === 'claude-code'.
+    state: Todo
+    dependencies:
+      - task-5-2
+    acceptanceCriteria:
+      - /plugins route returns 404 when feature flag off
+      - /plugins route renders PluginsPageClient when flag on
+      - Sidebar shows Plugins nav item with Blocks icon
+      - Sidebar hides Plugins when flag off or non-Claude agent
+    tdd:
+      red:
+        - Write test for page returning 404 with flag off
+      green:
+        - Create page.tsx with flag guard
+        - Add sidebar nav item
+      refactor:
+        - Verify conditional rendering pattern matches Skills page
+    estimatedEffort: S
+
+  # ── Phase 6: Settings Integration [P] ──
+
+  - id: task-6-1
+    title: LiteLLM proxy settings section
+    description: >
+      Create LiteLLMProxySettingsSection with SettingsSection (icon=Server),
+      SettingsRow for Proxy URL (text input), SettingsRow for API Key (password
+      input), SwitchRow for marketplace enabled, "Test Connection" button that
+      calls addMarketplaceAction and shows generic success/failure.
+      Add to SECTIONS/TABS in settings-page-client.tsx.
+    state: Todo
+    dependencies:
+      - task-4-1
+    acceptanceCriteria:
+      - Section renders with Server icon and tooltip
+      - URL input saves to litellmProxy.baseUrl
+      - API key input is masked (password type)
+      - Marketplace toggle saves to litellmProxy.marketplaceEnabled
+      - Test Connection calls addMarketplaceAction
+      - Test Connection shows generic success/failure only (no details)
+      - Section registered in settings page SECTIONS and TABS
+      - Stories cover Default, Configured, TestSuccess, TestFailed
+      - Component test verifies rendering and save behavior
+    tdd:
+      red:
+        - Write test for section rendering with default settings
+        - Write test for Test Connection button callback
+        - Write test for generic success/failure display
+      green:
+        - Implement LiteLLMProxySettingsSection
+        - Add to settings-page-client.tsx SECTIONS/TABS
+        - Create Storybook stories
+      refactor:
+        - Ensure consistent with existing settings section patterns
+    estimatedEffort: M
+
+  # ── Phase 7: E2E Tests & Final Validation ──
+
+  - id: task-7-1
+    title: E2E tests and anti-pattern validation
+    description: >
+      Create Playwright E2E tests for plugins page and settings section.
+      Run anti-pattern grep checks. Run full validation suite.
+    state: Todo
+    dependencies:
+      - task-5-3
+      - task-6-1
+    acceptanceCriteria:
+      - E2E test navigates to /plugins with flag on -- page renders
+      - E2E test navigates to /plugins with flag off -- 404
+      - E2E test verifies settings LiteLLM section renders
+      - No direct ~/.claude/ filesystem reads in production code
+      - No hardcoded proxy URLs outside test fixtures
+      - No claude plugin search usage
+      - No shell:true in plugin marketplace service
+      - No resolve(ClassRef) in server actions
+      - pnpm typecheck passes
+      - pnpm test:unit passes
+      - pnpm test:e2e passes
+      - pnpm build:storybook passes
+      - pnpm lint:fix clean
+      - pnpm build succeeds
+    tdd: null # E2E validation, not unit TDD
+    estimatedEffort: L
 
 # Total effort estimate
-totalEstimate: { { TOTAL_EFFORT } }
+totalEstimate: XL (~2,500 lines across 35 new files and 14 modified files)
 
 # Open questions
 openQuestions: []
 
-# Markdown content — summary and acceptance checklist only.
+# Markdown content -- summary and acceptance checklist only.
 # Individual task details live in the tasks[] array above (no duplication).
 content: |
   ## Summary
 
-  {{BRIEF_DESCRIPTION_OF_SCOPE}} — {{TASK_COUNT}} tasks across {{PHASE_COUNT}} phases.
+  Claude Code plugin marketplace -- 18 tasks across 7 phases.
+
+  Phases 5 and 6 can be parallelized (no mutual dependency).
+  All other phases are sequential by dependency.
 
   ## Acceptance Checklist
 
   Before marking feature complete:
 
-  - [ ] All tasks completed
-  - [ ] Tests passing (`pnpm test`)
-  - [ ] Linting clean (`pnpm lint`)
-  - [ ] Types valid (`pnpm typecheck`)
-  - [ ] TypeSpec compiles (`pnpm tsp:compile`)
-  - [ ] PR created and reviewed
+  - [ ] All 18 tasks completed
+  - [ ] pnpm tsp:codegen succeeds
+  - [ ] pnpm typecheck passes
+  - [ ] pnpm test:unit passes (all new + existing)
+  - [ ] pnpm test:e2e passes
+  - [ ] pnpm build:storybook passes
+  - [ ] pnpm lint:fix clean
+  - [ ] pnpm build succeeds
+  - [ ] i18n key parity across all 8 locales
+  - [ ] Anti-pattern grep checks pass
+  - [ ] Feature flag defaults to false (no user impact until enabled)
+  - [ ] PR created and CI green
 
   ---
 

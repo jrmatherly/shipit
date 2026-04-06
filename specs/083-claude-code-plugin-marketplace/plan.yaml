@@ -3,40 +3,196 @@
 
 name: claude-code-plugin-marketplace
 summary: Implementation plan for 083-claude-code-plugin-marketplace
+phase: planning
+updatedAt: '2026-04-06'
 
 # Relationships
-relatedFeatures: []
-technologies: []
-relatedLinks: []
+relatedFeatures:
+  - '005-global-settings-service'
+  - '013-feature-agent'
+  - '015-cursor-support'
+  - '082-agent-permission-modes'
+
+technologies:
+  - TypeScript
+  - TypeSpec
+  - React
+  - Next.js
+  - Zod
+  - SQLite
+  - Vitest
+  - Playwright
+
+relatedLinks:
+  - title: Implementation Plan (detailed)
+    url: .scratchpad/plans/claude-code-plugin-marketplace.md
+  - title: Research
+    url: specs/083-claude-code-plugin-marketplace/research.yaml
 
 # Structured implementation phases
 phases:
   - id: phase-1
-    name: 'Foundation'
+    name: 'Domain Model, Settings Extension & Feature Flag'
     parallel: false
+    description: >
+      TypeSpec model changes (LiteLLMProxyConfig + plugins feature flag), codegen,
+      settings factory, SQLite migration 054, settings mapper, feature flag chain
+      (8 files), port interface, test factories, i18n keys (all 8 locales).
     taskIds:
-      - task-1
-      - task-2
+      - task-1-1
+      - task-1-2
+      - task-1-3
+      - task-1-4
+      - task-1-5
+      - task-1-6
+
   - id: phase-2
-    name: 'Core Implementation'
+    name: 'Infrastructure Service Implementation'
     parallel: false
+    description: >
+      PluginMarketplaceService with HTTP fetch (first in project), subprocess
+      wrappers, Zod schemas, input validators. Establishes HTTP client pattern.
     taskIds:
-      - task-3
-      - task-4
+      - task-2-1
+      - task-2-2
+      - task-2-3
+
+  - id: phase-3
+    name: 'Use Cases'
+    parallel: false
+    description: >
+      Five presentation-agnostic use cases: FetchPluginCatalog, InstallPlugin,
+      UninstallPlugin, TogglePlugin, AddMarketplace. DI + web-token registration.
+    taskIds:
+      - task-3-1
+      - task-3-2
+
+  - id: phase-4
+    name: 'Server Actions & Storybook Mocks'
+    parallel: false
+    description: >
+      Five Next.js server actions with string-token DI resolution, tests,
+      and Storybook mock counterparts.
+    taskIds:
+      - task-4-1
+      - task-4-2
+
+  - id: phase-5
+    name: 'Web UI - Plugins Page'
+    parallel: true
+    parallelWith: phase-6
+    description: >
+      New /plugins route with feature flag guard, PluginsPageClient with
+      search/filter/grid, PluginCard, PluginDetailDrawer, sidebar nav item,
+      component tests, Storybook stories.
+    taskIds:
+      - task-5-1
+      - task-5-2
+      - task-5-3
+
+  - id: phase-6
+    name: 'Settings Integration - LiteLLM Proxy Section'
+    parallel: true
+    parallelWith: phase-5
+    description: >
+      LiteLLM proxy settings section with URL/API key inputs, marketplace
+      toggle, test connection button. Integrate into settings page tabs.
+    taskIds:
+      - task-6-1
+
+  - id: phase-7
+    name: 'E2E Tests & Final Validation'
+    parallel: false
+    description: >
+      Playwright E2E tests, anti-pattern grep checks, full validation suite.
+    taskIds:
+      - task-7-1
 
 # File change tracking
 filesToCreate:
-  - src/domain/entities/{{ENTITY_NAME}}.ts
-  - tests/unit/domain/entities/{{ENTITY_NAME}}.test.ts
+  # Phase 1 - Domain & Settings
+  - packages/core/src/application/ports/output/services/plugin-marketplace.interface.ts
+  - packages/core/src/infrastructure/persistence/sqlite/migrations/054-add-litellm-proxy.ts
+  - tests/unit/infrastructure/persistence/sqlite/mappers/settings-mapper-litellm.test.ts
+  - tests/unit/domain/factories/settings-defaults-plugins.test.ts
+  # Phase 2 - Infrastructure Service
+  - packages/core/src/infrastructure/services/plugin-marketplace/plugin-marketplace.service.ts
+  - packages/core/src/infrastructure/services/plugin-marketplace/plugin-marketplace.schema.ts
+  - packages/core/src/infrastructure/services/plugin-marketplace/plugin-marketplace.validators.ts
+  - packages/core/src/infrastructure/services/plugin-marketplace/index.ts
+  - tests/unit/infrastructure/services/plugin-marketplace/plugin-marketplace.service.test.ts
+  - tests/unit/infrastructure/services/plugin-marketplace/plugin-marketplace.validators.test.ts
+  # Phase 3 - Use Cases
+  - packages/core/src/application/use-cases/plugins/fetch-plugin-catalog.use-case.ts
+  - packages/core/src/application/use-cases/plugins/install-plugin.use-case.ts
+  - packages/core/src/application/use-cases/plugins/uninstall-plugin.use-case.ts
+  - packages/core/src/application/use-cases/plugins/toggle-plugin.use-case.ts
+  - packages/core/src/application/use-cases/plugins/add-marketplace.use-case.ts
+  - tests/unit/application/use-cases/plugins/fetch-plugin-catalog.use-case.test.ts
+  - tests/unit/application/use-cases/plugins/install-plugin.use-case.test.ts
+  - tests/unit/application/use-cases/plugins/uninstall-plugin.use-case.test.ts
+  - tests/unit/application/use-cases/plugins/toggle-plugin.use-case.test.ts
+  - tests/unit/application/use-cases/plugins/add-marketplace.use-case.test.ts
+  # Phase 4 - Server Actions
+  - src/presentation/web/app/actions/fetch-plugin-catalog.ts
+  - src/presentation/web/app/actions/install-plugin.ts
+  - src/presentation/web/app/actions/uninstall-plugin.ts
+  - src/presentation/web/app/actions/toggle-plugin.ts
+  - src/presentation/web/app/actions/add-marketplace.ts
+  - .storybook/mocks/app/actions/fetch-plugin-catalog.ts
+  - .storybook/mocks/app/actions/install-plugin.ts
+  - .storybook/mocks/app/actions/uninstall-plugin.ts
+  - .storybook/mocks/app/actions/toggle-plugin.ts
+  - .storybook/mocks/app/actions/add-marketplace.ts
+  - tests/unit/presentation/web/actions/fetch-plugin-catalog.test.ts
+  - tests/unit/presentation/web/actions/install-plugin.test.ts
+  - tests/unit/presentation/web/actions/uninstall-plugin.test.ts
+  - tests/unit/presentation/web/actions/toggle-plugin.test.ts
+  - tests/unit/presentation/web/actions/add-marketplace.test.ts
+  # Phase 5 - Plugins Page UI
+  - src/presentation/web/app/plugins/page.tsx
+  - src/presentation/web/components/features/plugins/plugins-page-client.tsx
+  - src/presentation/web/components/features/plugins/plugin-card.tsx
+  - src/presentation/web/components/features/plugins/plugin-detail-drawer.tsx
+  - src/presentation/web/components/features/plugins/plugin-card.stories.tsx
+  - src/presentation/web/components/features/plugins/plugin-detail-drawer.stories.tsx
+  - src/presentation/web/components/features/plugins/plugins-page-client.stories.tsx
+  - tests/unit/presentation/web/components/features/plugins/plugins-page-client.test.tsx
+  - tests/unit/presentation/web/components/features/plugins/plugin-card.test.tsx
+  - tests/unit/presentation/web/components/features/plugins/plugin-detail-drawer.test.tsx
+  # Phase 6 - Settings Section
+  - src/presentation/web/components/features/settings/litellm-proxy-settings-section.tsx
+  - src/presentation/web/components/features/settings/litellm-proxy-settings-section.stories.tsx
+  - tests/unit/presentation/web/components/features/settings/litellm-proxy-settings-section.test.tsx
+  # Phase 7 - E2E
+  - tests/e2e/web/plugins-page.spec.ts
 
 filesToModify:
-  - src/infrastructure/di/container.ts
-  - package.json
+  # Phase 1 - Domain & Settings
+  - tsp/domain/entities/settings.tsp
+  - packages/core/src/domain/generated/output.ts (codegen)
+  - packages/core/src/domain/factories/settings-defaults.factory.ts
+  - packages/core/src/infrastructure/persistence/sqlite/migrations/migrations.ts
+  - packages/core/src/infrastructure/persistence/sqlite/mappers/settings.mapper.ts
+  - packages/core/src/application/ports/output/services/index.ts
+  - src/presentation/web/lib/feature-flags.ts
+  - src/presentation/web/components/features/settings/feature-flags-settings-section.tsx
+  - translations/en/web.json (+ 7 other locales)
+  - tests/factories/index.ts
+  # Phase 2 - DI
+  - packages/core/src/infrastructure/di/modules/services.module.ts
+  # Phase 3 - DI
+  - packages/core/src/infrastructure/di/modules/use-cases.module.ts
+  - packages/core/src/infrastructure/di/modules/web-tokens.module.ts
+  # Phase 5 - Sidebar
+  - src/presentation/web/components/layouts/app-sidebar/app-sidebar.tsx
+  # Phase 6 - Settings Page
+  - src/presentation/web/components/features/settings/settings-page-client.tsx
 
-# Open questions (should all be resolved before implementation)
+# Open questions (all resolved)
 openQuestions: []
 
-# Markdown content — architecture, strategy, and risks only.
+# Markdown content -- architecture, strategy, and risks only.
 # Task-level detail lives in tasks.yaml (no duplication).
 content: |
   ## Status
@@ -47,30 +203,108 @@ content: |
   ## Architecture Overview
 
   ```
-  {{ARCHITECTURE_DIAGRAM}}
+  LiteLLM Proxy                    ShipIT                         Claude Code CLI
+  +----------------+    HTTP GET   +-------------------+  execFile +----------------+
+  | /claude-code/  |<-------------|PluginMarketplace   |--------->| claude plugin   |
+  | marketplace.   |  marketplace  | Service            | install/ | install/list/   |
+  | json           |   catalog     | (infra layer)      | list/etc | enable/etc      |
+  +----------------+              +-------------------+           +----------------+
+                                         |
+                                    Use Cases
+                                    (app layer)
+                                         |
+                                  Server Actions
+                                  (presentation)
+                                         |
+                                  +-------------------+
+                                  | Plugins Page UI   |
+                                  | (card grid +      |
+                                  |  detail drawer)   |
+                                  +-------------------+
   ```
+
+  Data flows through Clean Architecture layers:
+  1. **LiteLLM Proxy** serves the marketplace catalog via HTTP GET
+  2. **PluginMarketplaceService** (infrastructure) fetches catalog + delegates CLI operations
+  3. **Use Cases** (application) orchestrate business logic, read settings for proxy config
+  4. **Server Actions** (presentation/web) bridge React to use cases via DI string tokens
+  5. **Plugins Page** (React) renders card grid with search/filter, drawer details, install/toggle
 
   ## Implementation Strategy
 
   **MANDATORY TDD**: All phases with executable code follow RED-GREEN-REFACTOR cycles.
 
-  High-level walkthrough of how the phases connect and why they are ordered
-  this way. Focus on architectural decisions and data flow — not individual
-  task descriptions (see tasks.yaml for the detailed breakdown).
+  The 7 phases are ordered by dependency:
+
+  **Phase 1 (Foundation)** establishes the domain model and feature flag first. The feature
+  flag gates all subsequent UI work, enabling incremental commits per phase without exposing
+  unfinished features. The feature flag chain touches 8 files and must be done atomically.
+  This phase also creates the port interface that Phase 2 implements.
+
+  **Phase 2 (Infrastructure Service)** implements `PluginMarketplaceService` -- the first
+  HTTP client in the project. Uses Node 22+ native `fetch` with `AbortController` timeout,
+  `redirect: 'error'` (SSRF prevention), and 5MB response limit. All subprocess calls use
+  `execFile` with strict input validators (regex allowlists). Zod schemas validate both
+  proxy responses and CLI output.
+
+  **Phase 3 (Use Cases)** creates 5 presentation-agnostic use cases that compose the service.
+  `FetchPluginCatalogUseCase` reads proxy config from settings via `ISettingsReader` and
+  merges catalog with installed plugin state. The other 4 are thin delegation + validation.
+
+  **Phase 4 (Server Actions)** bridges React to use cases. Each action resolves via
+  `resolve<T>('StringToken')` (never class refs -- Turbopack limitation). Matching Storybook
+  mocks are mandatory for `pnpm build:storybook`.
+
+  **Phases 5 & 6 (UI)** can be developed in parallel -- no mutual dependency. Phase 5 is the
+  Plugins page (card grid, drawer, search/filter). Phase 6 is the LiteLLM proxy settings
+  section. Both depend on Phases 1-4.
+
+  **Phase 7 (E2E)** validates end-to-end with Playwright tests and anti-pattern grep checks.
 
   ## Files to Create/Modify
 
-  ### New Files
+  ### New Files (~35)
 
   | File | Purpose |
   | ---- | ------- |
-  | {{FILE_PATH}} | {{PURPOSE}} |
+  | `plugin-marketplace.interface.ts` | Port interface (IPluginMarketplaceService) |
+  | `054-add-litellm-proxy.ts` | SQLite migration (4 columns) |
+  | `plugin-marketplace.service.ts` | Infrastructure service (HTTP + subprocess) |
+  | `plugin-marketplace.schema.ts` | Zod schemas for proxy + CLI validation |
+  | `plugin-marketplace.validators.ts` | Input validators (plugin name, URL, scope) |
+  | `fetch-plugin-catalog.use-case.ts` | Fetch catalog + merge installed state |
+  | `install-plugin.use-case.ts` | Install via claude CLI |
+  | `uninstall-plugin.use-case.ts` | Uninstall via claude CLI |
+  | `toggle-plugin.use-case.ts` | Enable/disable via claude CLI |
+  | `add-marketplace.use-case.ts` | Register marketplace (test connection) |
+  | 5 server actions | Web bridge to use cases |
+  | 5 Storybook mocks | Mock actions for Storybook builds |
+  | `plugins/page.tsx` | Route with feature flag guard |
+  | `plugins-page-client.tsx` | Main page with search/filter/grid |
+  | `plugin-card.tsx` | Card component per plugin |
+  | `plugin-detail-drawer.tsx` | Detail drawer with actions |
+  | `litellm-proxy-settings-section.tsx` | Settings section for proxy config |
+  | 6 `.stories.tsx` files | Storybook stories for all components |
+  | ~13 test files | Unit + component + E2E tests |
 
-  ### Modified Files
+  ### Modified Files (~14)
 
   | File | Changes |
   | ---- | ------- |
-  | {{FILE_PATH}} | {{CHANGES}} |
+  | `tsp/domain/entities/settings.tsp` | Add LiteLLMProxyConfig model + plugins flag |
+  | `settings-defaults.factory.ts` | Add `plugins: false` default |
+  | `migrations.ts` | Register migration 054 |
+  | `settings.mapper.ts` | Add 4 columns to SettingsRow + mapping |
+  | `services/index.ts` (barrel) | Export IPluginMarketplaceService |
+  | `services.module.ts` | Register PluginMarketplaceService |
+  | `use-cases.module.ts` | Register 5 use cases |
+  | `web-tokens.module.ts` | Register 5 string-token aliases |
+  | `feature-flags.ts` | Add plugins to FeatureFlagsState |
+  | `feature-flags-settings-section.tsx` | Add plugins toggle row |
+  | `app-sidebar.tsx` | Add Plugins nav item (conditional) |
+  | `settings-page-client.tsx` | Add LiteLLM proxy section + tab |
+  | `translations/*/web.json` (x8) | New i18n keys |
+  | `tests/factories/index.ts` | Add plugin mock factories |
 
   ## Testing Strategy (TDD: Tests FIRST)
 
@@ -78,19 +312,58 @@ content: |
 
   ### Unit Tests (RED -> GREEN -> REFACTOR)
 
-  - {{TEST_AREA_1}}
-  - {{TEST_AREA_2}}
+  - Settings factory: `createDefaultSettings()` includes `plugins: false`
+  - Settings mapper: `toDatabase`/`toDomain` round-trips new fields correctly
+  - Input validators: valid/invalid plugin names, URLs, scopes
+  - Zod schemas: accept valid catalog, reject malformed entries
+  - PluginMarketplaceService: mock `fetch` + `SpawnFunction`, verify all 6 methods
+  - Error paths: proxy unreachable, invalid JSON, timeout, binary not found
+  - Use cases: mock service, verify success/error/not-configured paths
+  - Server actions: mock `@/lib/server-container`, verify DI resolution + error handling
+  - Component tests: render states, search filter, category filter, drawer, install/toggle
 
   ### Integration Tests
 
-  - {{INTEGRATION_TEST_1}}
+  - Migration 054: verify column addition via SQLite
+  - Settings mapper end-to-end with new columns
+
+  ### E2E Tests (Playwright)
+
+  - Navigate to /plugins with flag on + Claude Code agent -- page renders
+  - Navigate to /plugins with flag off -- 404
+  - Settings shows LiteLLM proxy section
+  - Plugin cards render from catalog data
+
+  ### Anti-Pattern Grep Checks
+
+  - No direct `~/.claude/` filesystem reads
+  - No hardcoded proxy URLs outside test fixtures
+  - No `claude plugin search` usage
+  - No `shell: true` in subprocess calls
+  - No `resolve(ClassRef)` in server actions
 
   ## Risk Mitigation
 
   | Risk | Mitigation |
   | ---- | ---------- |
-  | {{RISK}} | {{MITIGATION}} |
+  | Claude CLI output format changes between versions | Zod schema validation catches format drift; fail gracefully with error |
+  | LiteLLM marketplace endpoint unavailable/changed | Timeout + error handling returns empty catalog; user sees setup instructions |
+  | Subprocess command injection via malicious plugin names | Regex allowlist `^[a-zA-Z0-9_-]+$` + execFile without shell: true |
+  | SSRF via proxy URL pointing to internal services | URL scheme validation + `redirect: 'error'` + HTTPS required for non-localhost |
+  | API key leaked in error messages | Generic error responses only; never expose raw error.message to client |
+  | Feature flag chain incomplete (breaks existing UI) | Atomic Phase 1 with full chain + i18n parity; test immediately |
+  | Storybook build breaks from missing mocks | Create mocks alongside server actions (Phase 4) |
+  | Large proxy response causes memory exhaustion | 5MB response size limit before JSON parse |
+
+  ## Rollback Plan
+
+  The feature flag (`featureFlags.plugins`, defaults to `false`) gates all UI.
+  If issues are found post-merge:
+  1. Flag is off by default -- no user impact unless explicitly enabled
+  2. Settings migration 054 adds columns (non-destructive, no data loss on rollback)
+  3. The port interface + service can be removed without affecting other features
+  4. No changes to existing agent executor or settings behavior
 
   ---
 
-  _Updated by `/shipit-kit:plan` — see tasks.yaml for detailed task breakdown_
+  _Updated by `/shipit-kit:plan` -- see tasks.yaml for detailed task breakdown_
