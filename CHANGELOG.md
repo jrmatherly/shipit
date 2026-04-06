@@ -1,3 +1,16 @@
+# [1.171.0](https://github.com/jrmatherly/shipit/compare/v1.170.0...v1.171.0) (2026-04-06)
+
+
+### Bug Fixes
+
+* **web:** add missing sql columns and consolidate marketplace toggles ([71f894e](https://github.com/jrmatherly/shipit/commit/71f894ef5322a6c79eb33538da8be986946a7428))
+
+
+### Features
+
+* **web:** add status and source filters to tools, skills, and plugins pages ([9a7f7ad](https://github.com/jrmatherly/shipit/commit/9a7f7ade27ac74940568edf4fb0c23e862ed1516))
+* **agents:** litellm proxy agent integration for claude code ([#13](https://github.com/jrmatherly/shipit/issues/13)) ([112e47d](https://github.com/jrmatherly/shipit/commit/112e47d136bbd3fa54d266376a8d214a26760fb5))
+
 # [1.170.0](https://github.com/jrmatherly/shipit/compare/v1.169.0...v1.170.0) (2026-04-06)
 
 
