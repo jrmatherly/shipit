@@ -29,6 +29,7 @@ export function PluginsPageClient({ proxyConfigured, isClaudeCode }: PluginsPage
   const [, startTransition] = useTransition();
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [statusFilter, setStatusFilter] = useState<'installed' | 'not-installed' | null>(null);
   const [selectedPlugin, setSelectedPlugin] = useState<PluginMarketplaceEntry | null>(null);
   const [plugins, setPlugins] = useState<PluginMarketplaceEntry[]>([]);
   const [installedPlugins, setInstalledPlugins] = useState<InstalledPlugin[]>([]);
@@ -58,6 +59,11 @@ export function PluginsPageClient({ proxyConfigured, isClaudeCode }: PluginsPage
     const query = searchQuery.toLowerCase();
     return plugins.filter((p) => {
       if (activeCategory && p.category !== activeCategory) return false;
+      if (statusFilter) {
+        const isInstalled = !!installedPlugins.find((ip) => ip.id.startsWith(`${p.name}@`));
+        if (statusFilter === 'installed' && !isInstalled) return false;
+        if (statusFilter === 'not-installed' && isInstalled) return false;
+      }
       if (query) {
         const matchesName = p.name.toLowerCase().includes(query);
         const matchesDescription = p.description.toLowerCase().includes(query);
@@ -65,7 +71,7 @@ export function PluginsPageClient({ proxyConfigured, isClaudeCode }: PluginsPage
       }
       return true;
     });
-  }, [plugins, searchQuery, activeCategory]);
+  }, [plugins, searchQuery, activeCategory, statusFilter, installedPlugins]);
 
   const getInstalled = (pluginName: string) =>
     installedPlugins.find((ip) => ip.id.startsWith(`${pluginName}@`));
@@ -163,25 +169,57 @@ export function PluginsPageClient({ proxyConfigured, isClaudeCode }: PluginsPage
         />
       </div>
 
-      {/* Category filter pills */}
-      <div className="flex flex-wrap gap-2">
-        <Button
-          variant={activeCategory === null ? 'default' : 'outline'}
-          size="sm"
-          onClick={() => setActiveCategory(null)}
-        >
-          {t('plugins.allCategories')}
-        </Button>
-        {categories.map((cat) => (
+      {/* Filter pills */}
+      <div className="flex flex-wrap items-center gap-4">
+        {/* Category */}
+        <div className="flex flex-wrap gap-2">
           <Button
-            key={cat}
-            variant={activeCategory === cat ? 'default' : 'outline'}
+            variant={activeCategory === null ? 'default' : 'outline'}
             size="sm"
-            onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
+            onClick={() => setActiveCategory(null)}
           >
-            {cat}
+            {t('plugins.allCategories')}
           </Button>
-        ))}
+          {categories.map((cat) => (
+            <Button
+              key={cat}
+              variant={activeCategory === cat ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setActiveCategory(cat === activeCategory ? null : cat)}
+            >
+              {cat}
+            </Button>
+          ))}
+        </div>
+
+        <div className="bg-border h-6 w-px" />
+
+        {/* Status */}
+        <div className="flex flex-wrap gap-2">
+          <Button
+            variant={statusFilter === null ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setStatusFilter(null)}
+          >
+            All Status
+          </Button>
+          <Button
+            variant={statusFilter === 'installed' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setStatusFilter(statusFilter === 'installed' ? null : 'installed')}
+          >
+            {t('plugins.installed')}
+          </Button>
+          <Button
+            variant={statusFilter === 'not-installed' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() =>
+              setStatusFilter(statusFilter === 'not-installed' ? null : 'not-installed')
+            }
+          >
+            {t('plugins.notInstalled')}
+          </Button>
+        </div>
       </div>
 
       {/* Plugin grid */}
@@ -207,6 +245,7 @@ export function PluginsPageClient({ proxyConfigured, isClaudeCode }: PluginsPage
               onClick={() => {
                 setSearchQuery('');
                 setActiveCategory(null);
+                setStatusFilter(null);
               }}
             >
               {t('plugins.clearFilters')}

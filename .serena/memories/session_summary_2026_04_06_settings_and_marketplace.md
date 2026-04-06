@@ -20,26 +20,37 @@
 - 28 files changed, -1,160 net lines
 - All 5,826 tests pass, Storybook builds
 
-## Feature Branch: feat/083-claude-code-plugin-marketplace
+## Feature 083: Claude Code Plugin Marketplace (MERGED)
 
-### Spec Created (4a615239)
-- `specs/083-claude-code-plugin-marketplace/spec.yaml` — XL feature
-- Plan at `.scratchpad/plans/claude-code-plugin-marketplace.md` (v3, 620 lines)
-- 4-agent team review completed: 36 findings addressed (4 critical, 8 high, 10 medium)
+### Full Lifecycle Completed
+- Spec → Research → Plan → Implement → Code Review → PR → Merge
+- PR #12 squash-merged 2026-04-06T14:16:40Z
+- 93 files changed, ~5,300 lines added across all Clean Architecture layers
+- 18 tasks across 7 phases, all completed
+
+### Implementation Summary
+- **Phase 1:** TypeSpec models (LiteLLMProxyConfig + plugins flag), migration 054, settings mapper, feature flag chain (18 files), port interface, i18n (8 locales)
+- **Phase 2:** PluginMarketplaceService — first HTTP client in project (native fetch + AbortController), Zod schemas, input validators (regex allowlists), subprocess wrappers
+- **Phase 3:** 5 use cases (FetchPluginCatalog, Install, Uninstall, Toggle, AddMarketplace) + DI registration
+- **Phase 4:** 5 server actions + 5 Storybook mocks + 5 action tests
+- **Phase 5:** Plugins page route, PluginCard, PluginDetailDrawer, PluginsPageClient with search/filter/grid
+- **Phase 6:** LiteLLM proxy settings section (URL, API key, marketplace toggle, test connection)
+- **Phase 7:** Validation, anti-pattern checks, code review fix commit
+
+### Code Review Findings Fixed
+- C1: Added `validateMarketplaceName()` for marketplace parameter validation
+- C2: Sanitized subprocess errors to generic messages (no raw stderr to client)
+- I3: Fixed inverted toggle label
+- I4: Added agent type check (plugins page only for Claude Code)
+- M3/M4/M5: i18n fixes + windowsHide for Windows
 
 ### Key Technical Decisions
-- Thin proxy: ShipIT fetches catalog from LiteLLM, delegates to `claude` CLI for operations
-- `claude plugin list --json --available` for status queries (not filesystem reads)
-- Zod runtime validation for all proxy responses
-- Input validation regex for subprocess arguments (command injection prevention)
-- Feature flag `featureFlags.plugins` gates entire UI
+- Thin proxy: ShipIT fetches catalog from LiteLLM, delegates to `claude` CLI
+- Zod runtime validation at all external data boundaries
+- Feature flag `featureFlags.plugins` defaults to false (zero user impact)
 - Agent-aware: only visible when Claude Code is active agent
-
-### Next Steps
-1. `/shipit-kit:research` on feat/083 branch
-2. `/shipit-kit:plan` to formalize task breakdown
-3. `/shipit-kit:implement` for the 7-phase implementation
 
 ## CI Status
 - v1.168.0 released (test skip)
 - v1.169.0 released (settings restructure)
+- Plugin marketplace merged to main (pending next release)

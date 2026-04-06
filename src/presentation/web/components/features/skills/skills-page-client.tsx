@@ -9,7 +9,7 @@ import { EmptyState } from '@/components/common/empty-state';
 import { SkillList } from './skill-list';
 import { CategoryFilter } from './category-filter';
 import { SkillDetailDrawer } from './skill-detail-drawer';
-import type { SkillCategory, SkillData } from '@/lib/skills';
+import type { SkillCategory, SkillData, SkillSource } from '@/lib/skills';
 
 export interface SkillsPageClientProps {
   skills: SkillData[];
@@ -31,6 +31,7 @@ function computeCategoryCounts(skills: SkillData[]): Record<SkillCategory, numbe
 export function SkillsPageClient({ skills }: SkillsPageClientProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [activeCategory, setActiveCategory] = useState<SkillCategory | null>(null);
+  const [sourceFilter, setSourceFilter] = useState<SkillSource | null>(null);
   const [selectedSkill, setSelectedSkill] = useState<SkillData | null>(null);
 
   const categoryCounts = useMemo(() => computeCategoryCounts(skills), [skills]);
@@ -39,6 +40,7 @@ export function SkillsPageClient({ skills }: SkillsPageClientProps) {
     const query = searchQuery.toLowerCase();
     return skills.filter((skill) => {
       if (activeCategory && skill.category !== activeCategory) return false;
+      if (sourceFilter && skill.source !== sourceFilter) return false;
       if (query) {
         const matchesName = skill.name.toLowerCase().includes(query);
         const matchesDescription = skill.description.toLowerCase().includes(query);
@@ -46,11 +48,12 @@ export function SkillsPageClient({ skills }: SkillsPageClientProps) {
       }
       return true;
     });
-  }, [skills, searchQuery, activeCategory]);
+  }, [skills, searchQuery, activeCategory, sourceFilter]);
 
   const clearFilters = () => {
     setSearchQuery('');
     setActiveCategory(null);
+    setSourceFilter(null);
   };
 
   // No skills installed at all
@@ -96,6 +99,31 @@ export function SkillsPageClient({ skills }: SkillsPageClientProps) {
         onCategoryChange={setActiveCategory}
         counts={categoryCounts}
       />
+
+      {/* Source Filter */}
+      <div className="flex flex-wrap gap-2">
+        <Button
+          variant={sourceFilter === null ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setSourceFilter(null)}
+        >
+          All Sources
+        </Button>
+        <Button
+          variant={sourceFilter === 'project' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setSourceFilter('project')}
+        >
+          Project
+        </Button>
+        <Button
+          variant={sourceFilter === 'global' ? 'default' : 'outline'}
+          size="sm"
+          onClick={() => setSourceFilter('global')}
+        >
+          Global
+        </Button>
+      </div>
 
       {/* Skill List or Empty Filter State */}
       {filteredSkills.length > 0 ? (

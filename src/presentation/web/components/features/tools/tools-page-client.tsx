@@ -1,8 +1,10 @@
 'use client';
 
-import { useState, useCallback } from 'react';
-import { Wrench } from 'lucide-react';
+import { useState, useCallback, useMemo } from 'react';
+import { Wrench, Search } from 'lucide-react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { ToolCard } from './tool-card';
 import type { ToolItem } from '@shipit-ai/core/application/use-cases/tools/list-tools.use-case';
@@ -13,6 +15,7 @@ export interface ToolsPageClientProps {
 }
 
 type TabValue = 'all' | 'ide' | 'cli-agent' | 'vcs' | 'terminal';
+type StatusFilter = 'available' | 'missing' | null;
 
 const TAB_FILTER: Record<TabValue, (tool: ToolItem) => boolean> = {
   all: () => true,
@@ -25,6 +28,8 @@ const TAB_FILTER: Record<TabValue, (tool: ToolItem) => boolean> = {
 export function ToolsPageClient({ tools: initialTools, className }: ToolsPageClientProps) {
   const [tools, setTools] = useState<ToolItem[]>(initialTools);
   const [activeTab, setActiveTab] = useState<TabValue>('all');
+  const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<StatusFilter>(null);
 
   const refreshTools = useCallback(async () => {
     try {
@@ -38,7 +43,19 @@ export function ToolsPageClient({ tools: initialTools, className }: ToolsPageCli
     }
   }, []);
 
-  const filtered = tools.filter(TAB_FILTER[activeTab]);
+  const filtered = useMemo(() => {
+    const query = searchQuery.toLowerCase();
+    return tools.filter((tool) => {
+      if (!TAB_FILTER[activeTab](tool)) return false;
+      if (statusFilter && tool.status.status !== statusFilter) return false;
+      if (query) {
+        const matchesName = tool.name.toLowerCase().includes(query);
+        const matchesSummary = tool.summary.toLowerCase().includes(query);
+        if (!matchesName && !matchesSummary) return false;
+      }
+      return true;
+    });
+  }, [tools, activeTab, searchQuery, statusFilter]);
 
   const installedCount = tools.filter((t) => t.status.status === 'available').length;
 
@@ -64,6 +81,18 @@ export function ToolsPageClient({ tools: initialTools, className }: ToolsPageCli
             {installedCount} of {tools.length} installed
           </span>
         </div>
+      </div>
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
+        <Input
+          placeholder="Search tools..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="ps-9"
+          data-testid="tool-search"
+        />
       </div>
 
       <Tabs
@@ -125,6 +154,31 @@ export function ToolsPageClient({ tools: initialTools, className }: ToolsPageCli
             Terminals
           </TabsTrigger>
         </TabsList>
+
+        {/* Status filter pills */}
+        <div className="mt-4 flex flex-wrap gap-2" data-testid="tools-status-filter">
+          <Button
+            variant={statusFilter === null ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setStatusFilter(null)}
+          >
+            All
+          </Button>
+          <Button
+            variant={statusFilter === 'available' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setStatusFilter('available')}
+          >
+            Installed
+          </Button>
+          <Button
+            variant={statusFilter === 'missing' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setStatusFilter('missing')}
+          >
+            Not Installed
+          </Button>
+        </div>
 
         <TabsContent value={activeTab} className="mt-6">
           {filtered.length === 0 ? (

@@ -21,6 +21,7 @@ Former god classes are now **facades** delegating to focused sub-services:
 - tsyringe with constructor injection
 - Container modules in `packages/core/src/infrastructure/di/modules/`
 - 8 domain modules: database, repositories, services, agents, notifications, use-cases, interactive, web-tokens
+- **Services with non-injectable deps:** Register with `useFactory` in `services.module.ts` (see `IPluginMarketplaceService` for the `execFile` wrapper pattern)
 - **Services:** `registerSingleton<IInterface>('StringToken', Impl)` in `services.module.ts` — resolved by string token
 - **Use cases:** `registerSingleton(UseCase)` in `use-cases.module.ts` — resolved by class constructor token
 - **Server actions:** Use `resolve<T>('StringToken')` from `@/lib/server-container`
@@ -39,13 +40,26 @@ Former god classes are now **facades** delegating to focused sub-services:
 - Settings dropdowns show availability badges ("Installed"/"Not Installed")
 - Agent picker shows availability badges and disables unavailable agents
 
+## Feature Flags
+Adding a field to `FeatureFlags` in TypeSpec generates a **required** field, cascading to ~18 files:
+TypeSpec model → codegen → factory → migration → mapper → feature-flags.ts (4 places) → section component → i18n (8 locales) → all stories/tests constructing FeatureFlags. Grep for `reactFileManager:` to find all sites.
+
+## Plugin Marketplace Service (2026-04-06)
+- First HTTP client in infrastructure: native `fetch` with `AbortController` timeout, `redirect: 'error'` (SSRF), 5MB limit
+- Port: `IPluginMarketplaceService` at `application/ports/output/services/plugin-marketplace.interface.ts`
+- Impl: `packages/core/src/infrastructure/services/plugin-marketplace/` (service, schema, validators)
+- Subprocess args validated via regex allowlists (`validatePluginId`, `validateMarketplaceName`, `validateScope`)
+- 5 use cases in `application/use-cases/plugins/`
+- Feature-flagged behind `featureFlags.plugins` (off by default)
+
 ## Testing
-- Shared factories: `tests/factories/` (Feature, AgentRun, Repository, AgentSession)
+- Shared factories: `tests/factories/` (Feature, AgentRun, Repository, AgentSession, PluginMarketplaceEntry, InstalledPlugin)
 - Settings factory: `createDefaultSettings(overrides?)` from domain — accepts optional `{ defaultEditor?, shellPreference?, terminalPreference? }`
 - Storybook mocks: new server actions MUST have mocks in `.storybook/mocks/app/actions/`
 - i18n parity: adding keys to `en/web.json` requires all 7 other locale files or tests fail
+- **reflect-metadata:** Test files importing use cases with `@injectable()`/`@inject()` must add `import 'reflect-metadata'` as the FIRST import
 - TypeSpec dates: all 31 fields are `Date` objects (emitter patched)
-- 5,755+ tests across 399+ files
+- 5,920+ tests across 419+ files
 
 ## Security
 - Localhost-only proxy at `src/presentation/web/proxy.ts` (renamed from middleware.ts in Next.js 16)
