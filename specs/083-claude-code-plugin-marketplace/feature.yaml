@@ -3,18 +3,20 @@ feature:
   name: 'claude-code-plugin-marketplace'
   number: 83
   branch: 'feat/083-claude-code-plugin-marketplace'
-  lifecycle: 'implementation'
+  lifecycle: 'complete'
   createdAt: '2026-04-06T08:32:22Z'
 
 status:
-  phase: 'ready-for-review'
+  phase: 'complete'
   progress:
     completed: 18
     total: 18
     percentage: 100
   currentTask: null
-  lastUpdated: '2026-04-06T09:35:00Z'
-  lastUpdatedBy: 'shipit-kit:implement'
+  lastUpdated: '2026-04-06T14:16:40Z'
+  lastUpdatedBy: 'shipit-kit:merged'
+
+mergedAt: '2026-04-06T14:16:40Z'
 
 validation:
   lastRun: null
@@ -54,6 +56,9 @@ checkpoints:
   - phase: 'implementation-complete'
     completedAt: '2026-04-06T09:35:00Z'
     completedBy: 'shipit-kit:implement'
+  - phase: 'feature-merged'
+    completedAt: '2026-04-06T14:16:40Z'
+    completedBy: 'shipit-kit:merged'
 
 errors:
   current: null
