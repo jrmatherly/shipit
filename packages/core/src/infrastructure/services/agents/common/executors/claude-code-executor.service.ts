@@ -13,7 +13,9 @@ import type {
   AgentType,
   AgentFeature,
   ClaudeCodePermissionMode,
+  LiteLLMProxyConfig,
 } from '../../../../../domain/generated/output.js';
+import { LiteLLMProxyRoutingMode } from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
   AgentExecutionResult,
@@ -38,9 +40,53 @@ const SUPPORTED_FEATURES = new Set<string>([
  */
 export class ClaudeCodeExecutorService extends ExecutorBase {
   readonly agentType: AgentType = 'claude-code' as AgentType;
+  private proxyConfig?: LiteLLMProxyConfig;
 
   constructor(spawn: SpawnFunction) {
     super(spawn);
+  }
+
+  updateProxyConfig(config?: LiteLLMProxyConfig): void {
+    this.proxyConfig = config;
+  }
+
+  protected override buildSpawnEnv(): Record<string, string | undefined> {
+    const env = super.buildSpawnEnv();
+    const cc = this.proxyConfig?.claudeCode;
+    if (!cc || !this.proxyConfig?.baseUrl) return env;
+
+    const mode = cc.routingMode ?? LiteLLMProxyRoutingMode.direct;
+    if (mode === LiteLLMProxyRoutingMode.direct) return env;
+
+    // Both proxy and passthrough set BASE_URL
+    env.ANTHROPIC_BASE_URL = this.proxyConfig.baseUrl;
+
+    if (mode === LiteLLMProxyRoutingMode.proxy) {
+      if (this.proxyConfig.apiKey) {
+        env.ANTHROPIC_AUTH_TOKEN = this.proxyConfig.apiKey;
+      }
+      if (cc.customHeaders) {
+        env.ANTHROPIC_CUSTOM_HEADERS = cc.customHeaders;
+      }
+    } else if (mode === LiteLLMProxyRoutingMode.passthrough) {
+      const headers: string[] = [];
+      if (this.proxyConfig.apiKey) {
+        headers.push(`x-litellm-api-key: Bearer ${this.proxyConfig.apiKey}`);
+      }
+      if (cc.customHeaders) {
+        headers.push(cc.customHeaders);
+      }
+      if (headers.length) {
+        env.ANTHROPIC_CUSTOM_HEADERS = headers.join('\n');
+      }
+    }
+
+    // Model overrides (both proxy and passthrough)
+    if (cc.sonnetModel) env.ANTHROPIC_DEFAULT_SONNET_MODEL = cc.sonnetModel;
+    if (cc.haikuModel) env.ANTHROPIC_DEFAULT_HAIKU_MODEL = cc.haikuModel;
+    if (cc.opusModel) env.ANTHROPIC_DEFAULT_OPUS_MODEL = cc.opusModel;
+
+    return env;
   }
 
   async execute(prompt: string, options?: AgentExecutionOptions): Promise<AgentExecutionResult> {

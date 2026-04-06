@@ -1,0 +1,20 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: ClaudeCodeProxyConfig.yaml
+type: object
+properties:
+  routingMode:
+    $ref: LiteLLMProxyRoutingMode.yaml
+    description: How Claude Code routes API traffic through the proxy
+  customHeaders:
+    type: string
+    description: "Newline-separated key: value headers for ANTHROPIC_CUSTOM_HEADERS"
+  sonnetModel:
+    type: string
+    description: Model name override for ANTHROPIC_DEFAULT_SONNET_MODEL
+  haikuModel:
+    type: string
+    description: Model name override for ANTHROPIC_DEFAULT_HAIKU_MODEL
+  opusModel:
+    type: string
+    description: Model name override for ANTHROPIC_DEFAULT_OPUS_MODEL
+description: Per-agent proxy routing config for Claude Code

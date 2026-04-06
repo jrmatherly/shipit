@@ -11,4 +11,7 @@ properties:
   marketplaceEnabled:
     type: boolean
     description: Whether to use this proxy for the plugin marketplace
-description: LiteLLM proxy configuration for plugin marketplace and model routing
+  claudeCode:
+    $ref: ClaudeCodeProxyConfig.yaml
+    description: Per-agent proxy routing config for Claude Code
+description: LiteLLM proxy configuration for plugin marketplace and agent routing
