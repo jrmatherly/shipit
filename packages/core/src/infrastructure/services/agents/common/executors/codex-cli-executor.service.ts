@@ -16,7 +16,9 @@ import type {
   AgentFeature,
   AgentConfig,
   CodexPermissionMode,
+  LiteLLMProxyConfig,
 } from '../../../../../domain/generated/output.js';
+import { LiteLLMProxyRoutingMode } from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
   AgentExecutionResult,
@@ -54,10 +56,15 @@ export class CodexCliExecutorService extends ExecutorBase {
   readonly agentType: AgentType = 'codex-cli' as AgentType;
 
   private readonly authConfig?: AgentConfig;
+  private proxyConfig?: LiteLLMProxyConfig;
 
   constructor(spawn: SpawnFunction, authConfig?: AgentConfig) {
     super(spawn);
     this.authConfig = authConfig;
+  }
+
+  updateProxyConfig(config?: LiteLLMProxyConfig): void {
+    this.proxyConfig = config;
   }
 
   supportsFeature(feature: AgentFeature): boolean {
@@ -591,8 +598,20 @@ export class CodexCliExecutorService extends ExecutorBase {
 
   protected override buildSpawnEnv(): Record<string, string | undefined> {
     const env = super.buildSpawnEnv();
+
+    // Proxy mode: use OPENAI_BASE_URL + OPENAI_API_KEY (not CODEX_API_KEY)
+    const cx = this.proxyConfig?.codexCli;
+    if (cx?.routingMode === LiteLLMProxyRoutingMode.proxy && this.proxyConfig?.baseUrl) {
+      env.OPENAI_BASE_URL = this.proxyConfig.baseUrl;
+      if (this.proxyConfig.apiKey) {
+        env.OPENAI_API_KEY = this.proxyConfig.apiKey;
+      }
+      return env;
+    }
+
+    // Direct mode: existing authConfig token injection
     if (this.authConfig?.authMethod === 'token' && this.authConfig.token) {
-      return { ...env, CODEX_API_KEY: this.authConfig.token };
+      env.CODEX_API_KEY = this.authConfig.token;
     }
     return env;
   }
