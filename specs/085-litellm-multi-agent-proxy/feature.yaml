@@ -3,18 +3,19 @@ feature:
   name: 'litellm-multi-agent-proxy'
   number: 85
   branch: 'feat/085-litellm-multi-agent-proxy'
-  lifecycle: 'review'
+  lifecycle: 'complete'
   createdAt: '2026-04-06T17:26:26Z'
 
 status:
-  phase: 'ready-for-review'
+  phase: 'complete'
   progress:
     completed: 11
     total: 11
     percentage: 100
   currentTask: null
-  lastUpdated: '2026-04-06T20:45:00Z'
-  lastUpdatedBy: 'shipit-kit:implement'
+  lastUpdated: '2026-04-06T21:30:00Z'
+  lastUpdatedBy: 'shipit-kit:merged'
+  mergedAt: '2026-04-06T21:30:00Z'
 
 validation:
   lastRun: null
@@ -39,6 +40,9 @@ checkpoints:
   - phase: 'implementation-complete'
     completedAt: '2026-04-06T20:45:00Z'
     completedBy: 'shipit-kit:implement'
+  - phase: 'feature-merged'
+    completedAt: '2026-04-06T21:30:00Z'
+    completedBy: 'shipit-kit:merged'
 
 errors:
   current: null
