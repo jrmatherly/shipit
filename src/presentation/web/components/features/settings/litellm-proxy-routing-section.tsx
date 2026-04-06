@@ -154,7 +154,11 @@ export function LiteLLMProxyRoutingSection({ settings }: LiteLLMProxyRoutingSect
   // Tier 2: Documentation-only panels
   if (isTier2) {
     const isCursor = agentType === 'cursor';
-    const displayUrl = isCursor ? `${proxyUrl.replace(/\/+$/, '')}/cursor` : proxyUrl;
+    const displayUrl = proxyUrl
+      ? isCursor
+        ? `${proxyUrl.replace(/\/+$/, '')}/cursor`
+        : proxyUrl
+      : '';
 
     return (
       <SettingsSection

@@ -609,6 +609,13 @@ export class CodexCliExecutorService extends ExecutorBase {
       return env;
     }
 
+    // Guard against unrecognized routing modes
+    if (cx?.routingMode && cx.routingMode !== LiteLLMProxyRoutingMode.direct) {
+      this.log(
+        `WARNING: Unsupported routing mode "${cx.routingMode}" for Codex CLI, falling back to direct`
+      );
+    }
+
     // Direct mode: existing authConfig token injection
     if (this.authConfig?.authMethod === 'token' && this.authConfig.token) {
       env.CODEX_API_KEY = this.authConfig.token;

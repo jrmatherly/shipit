@@ -118,7 +118,7 @@ describe('GeminiCliExecutorService — LiteLLM Proxy Env Var Injection', () => {
       expect(getSpawnEnv(mockSpawn).GEMINI_API_KEY).toBe('sk-proxy-key');
     });
 
-    it('should fall through to authConfig when proxy apiKey is missing', async () => {
+    it('should NOT leak authConfig key when proxy apiKey is missing', async () => {
       const proxyConfig: LiteLLMProxyConfig = {
         baseUrl: 'http://proxy:4000',
         geminiCli: { routingMode: LiteLLMProxyRoutingMode.proxy },
@@ -129,7 +129,8 @@ describe('GeminiCliExecutorService — LiteLLM Proxy Env Var Injection', () => {
 
       const env = getSpawnEnv(mockSpawn);
       expect(env.GOOGLE_GEMINI_BASE_URL).toBe('http://proxy:4000');
-      expect(env.GEMINI_API_KEY).toBe('google-api-key-123');
+      // Personal Google key must NOT be sent to proxy — no GEMINI_API_KEY override
+      expect(env.GEMINI_API_KEY).toBeUndefined();
     });
   });
 

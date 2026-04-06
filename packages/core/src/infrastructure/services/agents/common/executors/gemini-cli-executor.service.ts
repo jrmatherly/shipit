@@ -348,14 +348,25 @@ export class GeminiCliExecutorService extends ExecutorBase {
   protected override buildSpawnEnv(): Record<string, string | undefined> {
     const env = super.buildSpawnEnv();
 
-    // Proxy mode takes precedence — proxy key overrides authConfig token
+    // Proxy mode takes precedence — never leak user's personal key to proxy
     const gc = this.proxyConfig?.geminiCli;
     if (gc?.routingMode === LiteLLMProxyRoutingMode.proxy && this.proxyConfig?.baseUrl) {
       env.GOOGLE_GEMINI_BASE_URL = this.proxyConfig.baseUrl;
       if (this.proxyConfig.apiKey) {
         env.GEMINI_API_KEY = this.proxyConfig.apiKey;
-        return env;
+      } else {
+        this.log(
+          'WARNING: Proxy mode active but no proxy API key configured — proxy may reject requests'
+        );
       }
+      return env;
+    }
+
+    // Guard against unrecognized routing modes
+    if (gc?.routingMode && gc.routingMode !== LiteLLMProxyRoutingMode.direct) {
+      this.log(
+        `WARNING: Unsupported routing mode "${gc.routingMode}" for Gemini CLI, falling back to direct`
+      );
     }
 
     // Direct mode: existing authConfig token injection
