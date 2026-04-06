@@ -5,44 +5,299 @@ name: litellm-mcp-server-management
 summary: Task breakdown for 086-litellm-mcp-server-management
 
 # Relationships
-relatedFeatures: []
-technologies: []
+relatedFeatures:
+  - "083-claude-code-plugin-marketplace"
+technologies:
+  - TypeScript
+  - TypeSpec
+  - Zod
+  - React
+  - Next.js
+  - SQLite
+  - Vitest
 relatedLinks: []
 
 # Structured task list — this is the single source of truth for tasks.
 # The content field below is a summary only; it does NOT duplicate task details.
 tasks:
   - id: task-1
-    title: { { TASK_1_TITLE } }
-    description: { { TASK_1_DESCRIPTION } }
+    title: "TypeSpec model + codegen"
+    description: >
+      Add mcpServers boolean field to FeatureFlags model in settings.tsp,
+      run pnpm tsp:codegen to regenerate output.ts. Add mcpServers: false
+      to settings-defaults.factory.ts.
     state: Todo
     dependencies: []
     acceptanceCriteria:
-      - { { CRITERION_1 } }
-      - { { CRITERION_2 } }
-    tdd:
-      red:
-        - Write tests for {{FEATURE_1}}
-      green:
-        - Implement {{FEATURE_1}} to pass tests
-      refactor:
-        - Extract helpers, improve naming
-    estimatedEffort: { { EFFORT_1 } }
+      - "mcpServers field exists in FeatureFlags model in settings.tsp"
+      - "pnpm tsp:codegen succeeds and output.ts includes mcpServers"
+      - "settings-defaults.factory.ts includes mcpServers: false"
+    tdd: null # Declarative config, no TDD
+    estimatedEffort: "S"
 
   - id: task-2
-    title: { { TASK_2_TITLE } }
-    description: { { TASK_2_DESCRIPTION } }
+    title: "Feature flag persistence (migration + mapper + repository)"
+    description: >
+      Create migration 057-add-mcp-servers-flag.ts adding feature_flag_mcp_servers
+      column. Update SettingsRow, toDatabase, toDomain in settings.mapper.ts.
+      Update INSERT and UPDATE SQL in sqlite-settings.repository.ts.
     state: Todo
     dependencies:
       - task-1
     acceptanceCriteria:
-      - { { CRITERION_1 } }
-      - { { CRITERION_2 } }
-    tdd: null # No TDD for foundational/doc tasks
-    estimatedEffort: { { EFFORT_2 } }
+      - "Migration 057 creates feature_flag_mcp_servers INTEGER DEFAULT 0"
+      - "Migration is idempotent (re-run safe)"
+      - "SettingsRow has feature_flag_mcp_servers: number"
+      - "toDatabase maps featureFlags.mcpServers to 0/1"
+      - "toDomain maps feature_flag_mcp_servers === 1 to boolean"
+      - "INSERT includes feature_flag_mcp_servers in column + values lists"
+      - "UPDATE includes feature_flag_mcp_servers in SET clause"
+      - "Integration test verifies column creation and round-trip"
+    tdd:
+      red:
+        - "Write migration integration test: column exists after up(), removed after down()"
+        - "Write settings persistence test: mcpServers flag saves and loads correctly"
+      green:
+        - "Implement migration with pragma guard"
+        - "Update mapper SettingsRow + toDatabase + toDomain"
+        - "Update repository INSERT + UPDATE SQL"
+      refactor:
+        - "Verify column parity across mapper and repository"
+    estimatedEffort: "M"
+
+  - id: task-3
+    title: "Port interface + Zod schemas"
+    description: >
+      Create IMcpServerBrowserService port interface with fetchServers() and
+      fetchTools() methods. Create Zod schemas for /public/mcp_hub response
+      (McpServerInfoSchema) and /mcp-rest/tools/list response (McpToolSchema).
+      Export types from barrel index. Define domain types (McpServerInfo, McpToolInfo).
+    state: Todo
+    dependencies:
+      - task-1
+    acceptanceCriteria:
+      - "IMcpServerBrowserService interface defined with fetchServers + fetchTools"
+      - "McpServerInfoSchema validates server_id, name, server_name, url, transport, auth_type, mcp_info"
+      - "McpToolSchema validates name, title, description, inputSchema"
+      - "String fields capped via Zod .transform() (name: 100, description: 2000, url: 500)"
+      - "Barrel export in ports/output/services/index.ts"
+    tdd: null # Interface + schema definitions, no runtime logic
+    estimatedEffort: "S"
+
+  - id: task-4
+    title: "McpServerBrowserService implementation"
+    description: >
+      Implement HTTP client service with fetch() + AbortController + Zod
+      validation for both endpoints. fetchServers calls GET /public/mcp_hub.
+      fetchTools calls GET /mcp-rest/tools/list. Both use Bearer auth header,
+      10s timeout, redirect rejection, 5MB size limit, silent failure to
+      empty array.
+    state: Todo
+    dependencies:
+      - task-3
+    acceptanceCriteria:
+      - "fetchServers calls GET {baseUrl}/public/mcp_hub with Bearer token"
+      - "fetchTools calls GET {baseUrl}/mcp-rest/tools/list with Bearer token"
+      - "AbortController with 10s timeout on both methods"
+      - "Redirect rejection (redirect: error)"
+      - "Response size limit (5MB)"
+      - "Zod schema validation on response data"
+      - "Returns empty array on any error (timeout, HTTP error, validation failure)"
+      - "URL scheme validation (http/https only)"
+      - "All unit tests pass"
+    tdd:
+      red:
+        - "Test fetchServers: success returns validated server array"
+        - "Test fetchServers: timeout returns empty array"
+        - "Test fetchServers: invalid JSON returns empty array"
+        - "Test fetchServers: Zod validation failure returns empty array"
+        - "Test fetchServers: HTTP 401/403/500 returns empty array"
+        - "Test fetchServers: oversized response returns empty array"
+        - "Test fetchTools: success returns validated tool array"
+        - "Test fetchTools: timeout returns empty array"
+      green:
+        - "Implement fetchServers with fetch + AbortController + Zod"
+        - "Implement fetchTools with same pattern"
+      refactor:
+        - "Extract shared fetch helper if duplication is significant"
+    estimatedEffort: "L"
+
+  - id: task-5
+    title: "Use cases + DI registration"
+    description: >
+      Create FetchMcpServersUseCase (reads settings, calls service.fetchServers).
+      Create FetchMcpServerToolsUseCase (reads settings, calls service.fetchTools).
+      Register service and use cases in DI modules.
+    state: Todo
+    dependencies:
+      - task-4
+    acceptanceCriteria:
+      - "FetchMcpServersUseCase injects ISettingsReader + IMcpServerBrowserService"
+      - "Returns empty array when proxy not configured"
+      - "Returns empty array when mcpServers flag is false"
+      - "Delegates to service.fetchServers with baseUrl + apiKey from settings"
+      - "FetchMcpServerToolsUseCase delegates to service.fetchTools"
+      - "IMcpServerBrowserService registered as singleton in services.module.ts"
+      - "Both use cases registered in use-cases.module.ts"
+      - "All unit tests pass"
+    tdd:
+      red:
+        - "Test FetchMcpServers: returns empty when proxy not configured"
+        - "Test FetchMcpServers: returns empty when flag disabled"
+        - "Test FetchMcpServers: delegates to service with correct args"
+        - "Test FetchMcpServerTools: delegates to service with correct args"
+        - "Test FetchMcpServerTools: returns empty when proxy not configured"
+      green:
+        - "Implement FetchMcpServersUseCase with settings guard + delegation"
+        - "Implement FetchMcpServerToolsUseCase with settings guard + delegation"
+        - "Register all DI tokens"
+      refactor:
+        - "Verify DI resolution works end-to-end"
+    estimatedEffort: "M"
+
+  - id: task-6
+    title: "Server actions + Storybook mocks"
+    description: >
+      Create fetchMcpServersAction and fetchMcpServerToolsAction server actions.
+      Create corresponding Storybook mocks with realistic sample data (3+ servers,
+      5+ tools across 2 servers).
+    state: Todo
+    dependencies:
+      - task-5
+    acceptanceCriteria:
+      - "fetchMcpServersAction resolves use case and returns servers + error field"
+      - "fetchMcpServerToolsAction resolves use case and returns tools + error field"
+      - "Both actions use try/catch with generic error message"
+      - "Storybook mock for servers returns 3+ sample McpServerInfo objects"
+      - "Storybook mock for tools returns 5+ sample McpToolInfo objects with server prefixes"
+    tdd:
+      red:
+        - "Test fetchMcpServersAction: resolves use case and returns result"
+        - "Test fetchMcpServersAction: returns error field on failure"
+        - "Test fetchMcpServerToolsAction: resolves use case and returns result"
+      green:
+        - "Implement both server actions"
+        - "Create Storybook mocks"
+      refactor:
+        - "Verify mock data matches Zod schema shapes"
+    estimatedEffort: "S"
+
+  - id: task-7
+    title: "MCP Servers page + client component"
+    description: >
+      Create server component (app/mcp-servers/page.tsx) with feature flag gate.
+      Create McpServersPageClient with state management, data fetching via server
+      action, search by name/description, filter by transport type, responsive
+      card grid, and empty states (no proxy, loading, no results).
+    state: Todo
+    dependencies:
+      - task-6
+    acceptanceCriteria:
+      - "Server component checks featureFlags.mcpServers, returns notFound() if false"
+      - "Server component loads settings to determine proxyConfigured"
+      - "Client renders loading state while fetching"
+      - "Client renders 'no proxy' empty state when proxy not configured"
+      - "Client renders 'no results' empty state with clear filters button"
+      - "Search filters by server name and description (case-insensitive)"
+      - "Transport filter: All, HTTP, SSE, STDIO"
+      - "Grid: 1 col mobile, 2 cols tablet, 3 cols desktop"
+      - "Clicking card opens detail drawer"
+    tdd:
+      red:
+        - "Test page renders notFound when flag disabled"
+        - "Test page passes proxyConfigured prop correctly"
+      green:
+        - "Implement server component with flag gate"
+        - "Implement McpServersPageClient with state, fetch, search, filter, grid"
+      refactor:
+        - "Extract filter logic into useMemo hooks"
+    estimatedEffort: "L"
+
+  - id: task-8
+    title: "Card + detail drawer + tool list components"
+    description: >
+      Create McpServerCard (name, transport badge, auth indicator, description,
+      click to select). Create McpServerDetailDrawer (full details + on-demand
+      tool fetch via server action). Create McpToolList (tools grouped by server
+      name prefix, collapsible sections).
+    state: Todo
+    dependencies:
+      - task-6
+    acceptanceCriteria:
+      - "McpServerCard shows name, transport badge, auth type indicator, description"
+      - "Card is accessible: role=button, tabIndex, keyboard handlers"
+      - "Card hover effect: scale + shadow (matching plugin card pattern)"
+      - "McpServerDetailDrawer uses BaseDrawer with open/onClose"
+      - "Drawer shows: name, server_name, url, transport, auth_type, description, access groups"
+      - "Drawer fetches tools on open via fetchMcpServerToolsAction"
+      - "McpToolList groups tools by server name prefix"
+      - "Tools with unmatched prefix go in 'Other' group"
+      - "Each tool shows name (stripped prefix), description"
+      - "URL display is text-only (no clickable links), validated for http/https"
+    tdd:
+      red:
+        - "Test McpToolList groups tools correctly by server prefix"
+        - "Test McpToolList handles unmatched prefixes"
+      green:
+        - "Implement McpServerCard with badges and accessibility"
+        - "Implement McpServerDetailDrawer with BaseDrawer"
+        - "Implement McpToolList with prefix grouping logic"
+      refactor:
+        - "Extract tool grouping into utility function"
+    estimatedEffort: "L"
+
+  - id: task-9
+    title: "Sidebar nav + settings toggle + feature flags UI"
+    description: >
+      Add MCP Servers nav item to app-sidebar (conditional on featureFlags.mcpServers).
+      Add mcpServers toggle to feature-flags-settings-section.tsx (disabled when
+      no proxy configured). Update feature-flags.ts with FeatureFlagsState field,
+      ENV_FALLBACK_FLAGS, and getFeatureFlags mapping.
+    state: Todo
+    dependencies:
+      - task-2
+      - task-7
+    acceptanceCriteria:
+      - "Sidebar shows MCP Servers nav item when featureFlags.mcpServers is true"
+      - "Sidebar nav item uses Server icon from lucide-react"
+      - "Nav item active when pathname is /mcp-servers"
+      - "Settings toggle for mcpServers with label and description"
+      - "Toggle disabled when litellmProxy.baseUrl is not set"
+      - "FeatureFlagsState includes mcpServers: boolean"
+      - "ENV_FALLBACK_FLAGS includes mcpServers: () => false"
+      - "getFeatureFlags returns mcpServers from settings"
+      - "Deprecated getter for mcpServers in feature-flags.ts"
+    tdd: null # UI wiring, visual verification via Storybook
+    estimatedEffort: "M"
+
+  - id: task-10
+    title: "i18n translations + Storybook stories + validation"
+    description: >
+      Add i18n keys to all 8 locale files (en, ar, de, es, fr, he, pt, ru).
+      Create Storybook stories for all 3 components (page client, card, drawer).
+      Run full test suite, Storybook build, lint, typecheck. Fix any issues.
+    state: Todo
+    dependencies:
+      - task-7
+      - task-8
+      - task-9
+    acceptanceCriteria:
+      - "All 8 locale files have matching key sets for mcpServers feature"
+      - "Keys include: navigation.mcpServers, settings.featureFlags.mcpServers, settings.featureFlags.mcpServersDescription"
+      - "Keys include: mcpServers.title, mcpServers.noProxy, mcpServers.noResults, mcpServers.loading"
+      - "Keys include: mcpServers.transport.*, mcpServers.authType.*, mcpServers.tools.*"
+      - "McpServersPageClient stories: Default, NoProxy, Loading"
+      - "McpServerCard stories: HTTP, SSE, STDIO transport variants"
+      - "McpServerDetailDrawer stories: WithTools, NoTools"
+      - "pnpm test passes (all unit + integration tests)"
+      - "pnpm build:storybook succeeds"
+      - "pnpm validate passes (lint + format + typecheck + tsp)"
+      - "i18n parity test passes"
+    tdd: null # Validation phase, no new logic
+    estimatedEffort: "M"
 
 # Total effort estimate
-totalEstimate: { { TOTAL_EFFORT } }
+totalEstimate: "L (10 tasks, ~25 new/modified files, ~1500 lines)"
 
 # Open questions
 openQuestions: []
@@ -52,17 +307,23 @@ openQuestions: []
 content: |
   ## Summary
 
-  {{BRIEF_DESCRIPTION_OF_SCOPE}} — {{TASK_COUNT}} tasks across {{PHASE_COUNT}} phases.
+  LiteLLM MCP server browsing feature — 10 tasks across 5 phases.
+
+  Mirrors spec 083 (plugin marketplace) patterns across all layers: TypeSpec model,
+  feature flag chain, HTTP service with Zod validation, use cases, server actions,
+  page with card grid + detail drawer, i18n, and Storybook stories.
 
   ## Acceptance Checklist
 
   Before marking feature complete:
 
-  - [ ] All tasks completed
+  - [ ] All 10 tasks completed
   - [ ] Tests passing (`pnpm test`)
-  - [ ] Linting clean (`pnpm lint`)
-  - [ ] Types valid (`pnpm typecheck`)
-  - [ ] TypeSpec compiles (`pnpm tsp:compile`)
+  - [ ] Linting clean (`pnpm lint:fix`)
+  - [ ] Types valid (included in `pnpm validate`)
+  - [ ] TypeSpec compiles (`pnpm tsp:codegen`)
+  - [ ] Storybook builds (`pnpm build:storybook`)
+  - [ ] i18n parity across all 8 locales
   - [ ] PR created and reviewed
 
   ---
