@@ -5,6 +5,7 @@
     "saved": "Guardado",
     "failedToSave": "Error al guardar la configuración",
     "sections": {
+      "all": "Todo",
       "language": "Idioma",
       "agent": "Agente",
       "environment": "Entorno",

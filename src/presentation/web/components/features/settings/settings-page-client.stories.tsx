@@ -86,3 +86,17 @@ export const CustomTimeouts: Story = {
     dbFileSize: '2.4 MB',
   },
 };
+
+/** Shows the settings page with only the Workflow tab active (simulated via play function). */
+export const SingleTabView: Story = {
+  args: {
+    settings: defaultSettings,
+    shipitAiHome: '/home/user/.shipit-ai',
+    dbFileSize: '2.4 MB',
+  },
+  play: async ({ canvasElement }) => {
+    const tabs = canvasElement.querySelectorAll<HTMLButtonElement>('nav button');
+    const wfTab = Array.from(tabs).find((btn) => btn.textContent?.includes('Workflow'));
+    wfTab?.click();
+  },
+};

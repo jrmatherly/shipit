@@ -1,85 +1,52 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { AgentSettingsSection } from '@/components/features/settings/agent-settings-section';
-import { AgentType, AgentAuthMethod } from '@shipit-ai/core/domain/generated/output';
-
-const mockUpdateSettingsAction = vi.fn();
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
 
 vi.mock('@/app/actions/update-settings', () => ({
-  updateSettingsAction: (...args: unknown[]) => mockUpdateSettingsAction(...args),
+  updateSettingsAction: vi.fn().mockResolvedValue({ success: true }),
 }));
 
 vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 
+vi.mock('@/components/features/settings/AgentModelPicker', () => ({
+  AgentModelPicker: (props: Record<string, unknown>) => (
+    <div data-testid="agent-model-picker" data-mode={props.mode} />
+  ),
+}));
+
+vi.mock('@/app/actions/get-all-agent-models', () => ({
+  getAllAgentModels: vi.fn().mockResolvedValue([]),
+}));
+
+const baseSettings = createDefaultSettings();
+
+function renderSection(props?: Partial<Parameters<typeof AgentSettingsSection>[0]>) {
+  return render(
+    <TooltipProvider>
+      <AgentSettingsSection settings={baseSettings} {...props} />
+    </TooltipProvider>
+  );
+}
+
 describe('AgentSettingsSection', () => {
-  beforeEach(() => {
-    vi.clearAllMocks();
-    mockUpdateSettingsAction.mockResolvedValue({ success: true });
+  it('renders the section with correct testId', () => {
+    renderSection();
+    expect(screen.getByTestId('agent-settings-section')).toBeDefined();
   });
 
-  it('renders agent type select with current value', () => {
-    render(
-      <AgentSettingsSection
-        agent={{ type: AgentType.ClaudeCode, authMethod: AgentAuthMethod.Session }}
-      />
-    );
-    expect(screen.getByTestId('agent-type-select')).toBeDefined();
-    expect(screen.getByText('Preferred Agent')).toBeDefined();
+  it('renders the AgentModelPicker in settings mode', () => {
+    renderSection();
+    const picker = screen.getByTestId('agent-model-picker');
+    expect(picker).toBeDefined();
+    expect(picker.getAttribute('data-mode')).toBe('settings');
   });
 
-  it('renders auth method select', () => {
-    render(
-      <AgentSettingsSection
-        agent={{ type: AgentType.ClaudeCode, authMethod: AgentAuthMethod.Session }}
-      />
-    );
-    expect(screen.getByTestId('auth-method-select')).toBeDefined();
-  });
-
-  it('does not render token input when authMethod is session', () => {
-    render(
-      <AgentSettingsSection
-        agent={{ type: AgentType.ClaudeCode, authMethod: AgentAuthMethod.Session }}
-      />
-    );
-    expect(screen.queryByTestId('agent-token-input')).toBeNull();
-  });
-
-  it('renders token input when authMethod is token', () => {
-    render(
-      <AgentSettingsSection
-        agent={{ type: AgentType.GeminiCli, authMethod: AgentAuthMethod.Token, token: 'sk-123' }}
-      />
-    );
-    expect(screen.getByTestId('agent-token-input')).toBeDefined();
-  });
-
-  it('does not render a save button (auto-saves on change)', () => {
-    render(
-      <AgentSettingsSection
-        agent={{ type: AgentType.ClaudeCode, authMethod: AgentAuthMethod.Session }}
-      />
-    );
+  it('does not render a save button (auto-saves via picker)', () => {
+    renderSection();
     expect(screen.queryByRole('button', { name: /save/i })).toBeNull();
-  });
-
-  it('renders toggle for token visibility', () => {
-    render(
-      <AgentSettingsSection
-        agent={{ type: AgentType.ClaudeCode, authMethod: AgentAuthMethod.Token, token: 'test' }}
-      />
-    );
-    expect(screen.getByTestId('toggle-token-visibility')).toBeDefined();
-  });
-
-  it('renders section description', () => {
-    render(
-      <AgentSettingsSection
-        agent={{ type: AgentType.ClaudeCode, authMethod: AgentAuthMethod.Session }}
-      />
-    );
-    expect(screen.getByText('Choose your AI coding agent and authentication method')).toBeDefined();
   });
 });

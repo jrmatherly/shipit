@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FeatureFlagsSettingsSection } from './feature-flags-settings-section';
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
+
+const baseSettings = createDefaultSettings();
 
 const meta = {
   title: 'Features/Settings/FeatureFlagsSettingsSection',
@@ -15,42 +18,40 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    featureFlags: {
-      skills: false,
-      envDeploy: false,
-      debug: false,
-      githubImport: false,
-      adoptBranch: false,
-      gitRebaseSync: false,
-      reactFileManager: false,
-    },
+    settings: baseSettings,
   },
 };
 
 export const AllEnabled: Story = {
   args: {
-    featureFlags: {
-      skills: true,
-      envDeploy: true,
-      debug: true,
-      githubImport: true,
-      adoptBranch: true,
-      gitRebaseSync: true,
-      reactFileManager: true,
+    settings: {
+      ...baseSettings,
+      featureFlags: {
+        skills: true,
+        envDeploy: true,
+        debug: true,
+        githubImport: true,
+        adoptBranch: true,
+        gitRebaseSync: true,
+        reactFileManager: true,
+      },
     },
   },
 };
 
 export const AllDisabled: Story = {
   args: {
-    featureFlags: {
-      skills: false,
-      envDeploy: false,
-      debug: false,
-      githubImport: false,
-      adoptBranch: false,
-      gitRebaseSync: false,
-      reactFileManager: false,
+    settings: {
+      ...baseSettings,
+      featureFlags: {
+        skills: false,
+        envDeploy: false,
+        debug: false,
+        githubImport: false,
+        adoptBranch: false,
+        gitRebaseSync: false,
+        reactFileManager: false,
+      },
     },
   },
 };

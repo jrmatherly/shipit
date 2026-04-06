@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EnvironmentSettingsSection } from './environment-settings-section';
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
 import { EditorType, TerminalType } from '@shipit-ai/core/domain/generated/output';
+
+const baseSettings = createDefaultSettings();
 
 const meta = {
   title: 'Features/Settings/EnvironmentSettingsSection',
@@ -16,11 +19,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    environment: {
-      defaultEditor: EditorType.VsCode,
-      shellPreference: 'bash',
-      terminalPreference: TerminalType.System,
-    },
+    settings: baseSettings,
     availableTerminals: [
       { id: 'system', name: 'System Terminal', available: true },
       { id: 'warp', name: 'Warp', available: true },
@@ -31,10 +30,14 @@ export const Default: Story = {
 
 export const CursorWithZsh: Story = {
   args: {
-    environment: {
-      defaultEditor: EditorType.Cursor,
-      shellPreference: 'zsh',
-      terminalPreference: TerminalType.System,
+    settings: {
+      ...baseSettings,
+      environment: {
+        ...baseSettings.environment,
+        defaultEditor: EditorType.Cursor,
+        shellPreference: 'zsh',
+        terminalPreference: TerminalType.System,
+      },
     },
     availableTerminals: [{ id: 'system', name: 'System Terminal', available: true }],
   },
@@ -42,10 +45,14 @@ export const CursorWithZsh: Story = {
 
 export const WarpSelected: Story = {
   args: {
-    environment: {
-      defaultEditor: EditorType.VsCode,
-      shellPreference: 'zsh',
-      terminalPreference: TerminalType.Warp,
+    settings: {
+      ...baseSettings,
+      environment: {
+        ...baseSettings.environment,
+        defaultEditor: EditorType.VsCode,
+        shellPreference: 'zsh',
+        terminalPreference: TerminalType.Warp,
+      },
     },
     availableTerminals: [
       { id: 'system', name: 'System Terminal', available: true },
@@ -59,10 +66,6 @@ export const WarpSelected: Story = {
 
 export const OnlySystemTerminal: Story = {
   args: {
-    environment: {
-      defaultEditor: EditorType.VsCode,
-      shellPreference: 'bash',
-      terminalPreference: TerminalType.System,
-    },
+    settings: baseSettings,
   },
 };

@@ -5,6 +5,7 @@
     "saved": "Enregistré",
     "failedToSave": "Échec de l'enregistrement des paramètres",
     "sections": {
+      "all": "Tout",
       "language": "Langue",
       "agent": "Agent",
       "environment": "Environnement",

@@ -5,6 +5,7 @@
     "saved": "Saved",
     "failedToSave": "Failed to save settings",
     "sections": {
+      "all": "All",
       "language": "Language",
       "agent": "Agent",
       "environment": "Environment",

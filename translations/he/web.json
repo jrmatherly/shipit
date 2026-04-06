@@ -5,6 +5,7 @@
     "saved": "נשמר",
     "failedToSave": "שמירת ההגדרות נכשלה",
     "sections": {
+      "all": "הכל",
       "language": "שפה",
       "agent": "סוכן",
       "environment": "סביבה",

@@ -1,6 +1,9 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { AgentSettingsSection } from './agent-settings-section';
-import { AgentType, AgentAuthMethod } from '@shipit-ai/core/domain/generated/output';
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
+import { AgentType } from '@shipit-ai/core/domain/generated/output';
+
+const baseSettings = createDefaultSettings();
 
 const meta = {
   title: 'Features/Settings/AgentSettingsSection',
@@ -16,37 +19,30 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    agent: {
-      type: AgentType.ClaudeCode,
-      authMethod: AgentAuthMethod.Session,
+    settings: baseSettings,
+  },
+};
+
+export const GeminiAgent: Story = {
+  args: {
+    settings: {
+      ...baseSettings,
+      agent: {
+        ...baseSettings.agent,
+        type: AgentType.GeminiCli,
+      },
     },
   },
 };
 
-export const TokenAuth: Story = {
+export const CursorAgent: Story = {
   args: {
-    agent: {
-      type: AgentType.GeminiCli,
-      authMethod: AgentAuthMethod.Token,
-      token: 'sk-test-token-12345',
-    },
-  },
-};
-
-export const CodexCli: Story = {
-  args: {
-    agent: {
-      type: AgentType.CodexCli,
-      authMethod: AgentAuthMethod.Session,
-    },
-  },
-};
-
-export const CopilotCli: Story = {
-  args: {
-    agent: {
-      type: AgentType.CopilotCli,
-      authMethod: AgentAuthMethod.Session,
+    settings: {
+      ...baseSettings,
+      agent: {
+        ...baseSettings.agent,
+        type: AgentType.Cursor,
+      },
     },
   },
 };

@@ -1,17 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { NotificationSettingsSection } from './notification-settings-section';
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
 
-const meta = {
-  title: 'Features/Settings/NotificationSettingsSection',
-  component: NotificationSettingsSection,
-  tags: ['autodocs'],
-  parameters: {
-    layout: 'padded',
-  },
-} satisfies Meta<typeof NotificationSettingsSection>;
-
-export default meta;
-type Story = StoryObj<typeof meta>;
+const baseSettings = createDefaultSettings();
 
 const allEvents = {
   agentStarted: true,
@@ -41,35 +32,53 @@ const noEvents = {
   prBlocked: false,
 };
 
+const meta = {
+  title: 'Features/Settings/NotificationSettingsSection',
+  component: NotificationSettingsSection,
+  tags: ['autodocs'],
+  parameters: {
+    layout: 'padded',
+  },
+} satisfies Meta<typeof NotificationSettingsSection>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
 export const Default: Story = {
   args: {
-    notifications: {
-      inApp: { enabled: true },
-      browser: { enabled: false },
-      desktop: { enabled: false },
-      events: allEvents,
+    settings: {
+      ...baseSettings,
+      notifications: {
+        ...baseSettings.notifications,
+        inApp: { enabled: true },
+        events: allEvents,
+      },
     },
   },
 };
 
 export const AllEnabled: Story = {
   args: {
-    notifications: {
-      inApp: { enabled: true },
-      browser: { enabled: false },
-      desktop: { enabled: false },
-      events: allEvents,
+    settings: {
+      ...baseSettings,
+      notifications: {
+        ...baseSettings.notifications,
+        inApp: { enabled: true },
+        events: allEvents,
+      },
     },
   },
 };
 
 export const AllDisabled: Story = {
   args: {
-    notifications: {
-      inApp: { enabled: false },
-      browser: { enabled: false },
-      desktop: { enabled: false },
-      events: noEvents,
+    settings: {
+      ...baseSettings,
+      notifications: {
+        ...baseSettings.notifications,
+        inApp: { enabled: false },
+        events: noEvents,
+      },
     },
   },
 };

@@ -5,6 +5,7 @@
     "saved": "تم الحفظ",
     "failedToSave": "فشل حفظ الإعدادات",
     "sections": {
+      "all": "الكل",
       "language": "اللغة",
       "agent": "الوكيل",
       "environment": "البيئة",

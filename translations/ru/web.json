@@ -5,6 +5,7 @@
     "saved": "Сохранено",
     "failedToSave": "Не удалось сохранить настройки",
     "sections": {
+      "all": "Все",
       "language": "Язык",
       "agent": "Агент",
       "environment": "Окружение",

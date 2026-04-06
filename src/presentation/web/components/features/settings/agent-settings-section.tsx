@@ -1,222 +1,56 @@
 'use client';
 
-import { useState, useTransition, useRef, useEffect } from 'react';
-import { Bot, Eye, EyeOff, Check } from 'lucide-react';
-import { toast } from 'sonner';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
-import { updateSettingsAction } from '@/app/actions/update-settings';
-import { setAgentPermissionMode } from '@/app/actions/agent-permissions';
-import { AgentType, AgentAuthMethod } from '@shipit-ai/core/domain/generated/output';
-import { getAgentTypeIcon } from '@/components/common/feature-node/agent-type-icons';
-import { AgentPermissionPicker } from './agent-permission-picker';
-import type { AgentConfig } from '@shipit-ai/core/domain/generated/output';
-
-const AGENT_TYPE_OPTIONS = [
-  { value: AgentType.ClaudeCode, label: 'Claude Code' },
-  { value: AgentType.CodexCli, label: 'Codex CLI' },
-  { value: AgentType.CopilotCli, label: 'GitHub Copilot CLI' },
-  { value: AgentType.Cursor, label: 'Cursor' },
-  { value: AgentType.GeminiCli, label: 'Gemini CLI' },
-  { value: AgentType.RovoDev, label: 'Rovo Dev CLI' },
-];
-
-const AUTH_METHOD_OPTIONS = [
-  { value: AgentAuthMethod.Session, label: 'Session' },
-  { value: AgentAuthMethod.Token, label: 'Token' },
-];
+import { useState } from 'react';
+import { Bot } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
+import type { Settings, AgentType } from '@shipit-ai/core/domain/generated/output';
+import { AgentModelPicker } from '@/components/features/settings/AgentModelPicker';
+import { SettingsSection, SettingsRow } from './settings-section-utils';
 
 export interface AgentSettingsSectionProps {
-  agent: AgentConfig;
+  settings: Settings;
 }
 
-/** Resolve the current permission mode for the active agent from settings. */
-function resolvePermissionMode(agent: AgentConfig): string | undefined {
-  const perms = agent.permissions;
-  if (!perms) return undefined;
-  const keyMap: Record<string, keyof typeof perms> = {
-    [AgentType.ClaudeCode]: 'claudeCode',
-    [AgentType.Cursor]: 'cursor',
-    [AgentType.GeminiCli]: 'geminiCli',
-    [AgentType.CodexCli]: 'codexCli',
-    [AgentType.CopilotCli]: 'copilotCli',
-    [AgentType.RovoDev]: 'rovoDev',
-  };
-  const key = keyMap[agent.type];
-  return key ? (perms[key] as string | undefined) : undefined;
-}
-
-export function AgentSettingsSection({ agent }: AgentSettingsSectionProps) {
-  const [agentType, setAgentType] = useState(agent.type);
-  const [authMethod, setAuthMethod] = useState(agent.authMethod);
-  const [token, setToken] = useState(agent.token ?? '');
-  const [showToken, setShowToken] = useState(false);
-  const [permissionMode, setPermissionMode] = useState<string | undefined>(
-    resolvePermissionMode(agent)
-  );
-  const [isPending, startTransition] = useTransition();
-  const [showSaved, setShowSaved] = useState(false);
-  const prevPendingRef = useRef(false);
-
-  useEffect(() => {
-    if (prevPendingRef.current && !isPending) {
-      setShowSaved(true);
-      const timer = setTimeout(() => setShowSaved(false), 2000);
-      return () => clearTimeout(timer);
-    }
-    prevPendingRef.current = isPending;
-  }, [isPending]);
-
-  function save(payload: { agent: AgentConfig }) {
-    startTransition(async () => {
-      const result = await updateSettingsAction(payload);
-      if (!result.success) {
-        toast.error(result.error ?? 'Failed to save agent settings');
-      }
-    });
-  }
-
-  function buildPayload(overrides: Partial<AgentConfig> = {}): { agent: AgentConfig } {
-    const merged = { type: agentType, authMethod, ...overrides };
-    const result: Record<string, unknown> = { type: merged.type, authMethod: merged.authMethod };
-    if (merged.authMethod === AgentAuthMethod.Token) {
-      result.token = overrides.token ?? token;
-    }
-    return { agent: result as AgentConfig };
-  }
-
-  function handleAgentTypeChange(value: string) {
-    setAgentType(value as AgentType);
-    setPermissionMode(undefined); // Reset permission mode when agent changes
-    save(buildPayload({ type: value as AgentType }));
-  }
-
-  function handlePermissionModeChange(mode: string) {
-    setPermissionMode(mode);
-    startTransition(async () => {
-      const result = await setAgentPermissionMode(agentType, mode);
-      if (!result.success) {
-        toast.error(result.error ?? 'Failed to save permission mode');
-      }
-    });
-  }
-
-  function handleAuthMethodChange(value: string) {
-    setAuthMethod(value as AgentAuthMethod);
-    save(buildPayload({ authMethod: value as AgentAuthMethod }));
-  }
-
-  function handleTokenBlur() {
-    if (token !== (agent.token ?? '')) {
-      save(buildPayload({ token }));
-    }
-  }
+export function AgentSettingsSection({ settings }: AgentSettingsSectionProps) {
+  const { t } = useTranslation('web');
+  const [agentType, setAgentType] = useState(settings.agent.type);
 
   return (
-    <Card id="agent" className="scroll-mt-6" data-testid="agent-settings-section">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bot className="text-muted-foreground h-4 w-4" />
-            <CardTitle>Preferred Agent</CardTitle>
-          </div>
-          {isPending ? <span className="text-muted-foreground text-xs">Saving...</span> : null}
-          {showSaved && !isPending ? (
-            <span className="flex items-center gap-1 text-xs text-green-600">
-              <Check className="h-3 w-3" />
-              Saved
-            </span>
-          ) : null}
-        </div>
-        <CardDescription>Choose your AI coding agent and authentication method</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-2">
-          <Label htmlFor="agent-type">Agent Type</Label>
-          <Select value={agentType} onValueChange={handleAgentTypeChange}>
-            <SelectTrigger id="agent-type" data-testid="agent-type-select">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {AGENT_TYPE_OPTIONS.map((opt) => {
-                const Icon = getAgentTypeIcon(opt.value);
-                return (
-                  <SelectItem key={opt.value} value={opt.value}>
-                    <span className="flex items-center gap-2">
-                      <Icon className="h-4 w-4 shrink-0" />
-                      {opt.label}
-                    </span>
-                  </SelectItem>
-                );
-              })}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <Label htmlFor="auth-method">Authentication Method</Label>
-          <Select value={authMethod} onValueChange={handleAuthMethodChange}>
-            <SelectTrigger id="auth-method" data-testid="auth-method-select">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {AUTH_METHOD_OPTIONS.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value}>
-                  {opt.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <AgentPermissionPicker
-          agentType={agentType}
-          currentMode={permissionMode}
-          onChange={handlePermissionModeChange}
-          disabled={isPending}
+    <SettingsSection
+      icon={Bot}
+      title={t('settings.agent.sectionTitle')}
+      description={t('settings.agent.sectionDescription')}
+      testId="agent-settings-section"
+      tooltip={t('settings.agent.hint')}
+      tooltipLinks={[
+        {
+          label: t('settings.agent.links.agentSystem'),
+          href: 'https://github.com/jrmatherly/shipit/blob/main/docs/architecture/agent-system.md',
+        },
+        {
+          label: t('settings.agent.links.addingAgents'),
+          href: 'https://github.com/jrmatherly/shipit/blob/main/docs/development/adding-agents.md',
+        },
+        {
+          label: t('settings.agent.links.configurationGuide'),
+          href: 'https://github.com/jrmatherly/shipit/blob/main/docs/guides/configuration.md',
+        },
+      ]}
+    >
+      <SettingsRow
+        label={t('settings.agent.agentAndModel')}
+        description={t('settings.agent.agentAndModelDescription')}
+        tooltip="Changing the agent switches which AI CLI tool runs your features. Each agent has different capabilities, speed, and cost tradeoffs."
+        htmlFor="agent-model-picker"
+      >
+        <AgentModelPicker
+          initialAgentType={agentType}
+          initialModel={settings.models.default}
+          mode="settings"
+          onAgentModelChange={(newAgent) => setAgentType(newAgent as AgentType)}
+          className="w-55"
         />
-
-        {authMethod === AgentAuthMethod.Token && (
-          <div className="space-y-2">
-            <Label htmlFor="agent-token">API Token</Label>
-            <div className="relative">
-              <Input
-                id="agent-token"
-                data-testid="agent-token-input"
-                type={showToken ? 'text' : 'password'}
-                value={token}
-                onChange={(e) => setToken(e.target.value)}
-                onBlur={handleTokenBlur}
-                placeholder="Enter your API token"
-                className="pe-10"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                className="absolute top-0 right-0 h-full px-3 hover:bg-transparent"
-                onClick={() => setShowToken(!showToken)}
-                data-testid="toggle-token-visibility"
-                aria-label={showToken ? 'Hide token' : 'Show token'}
-              >
-                {showToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-              </Button>
-            </div>
-            <p className="text-muted-foreground text-xs">
-              Saves automatically when you leave the field
-            </p>
-          </div>
-        )}
-      </CardContent>
-    </Card>
+      </SettingsRow>
+    </SettingsSection>
   );
 }

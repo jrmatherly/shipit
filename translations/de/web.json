@@ -5,6 +5,7 @@
     "saved": "Gespeichert",
     "failedToSave": "Einstellungen konnten nicht gespeichert werden",
     "sections": {
+      "all": "Alle",
       "language": "Sprache",
       "agent": "Agent",
       "environment": "Umgebung",

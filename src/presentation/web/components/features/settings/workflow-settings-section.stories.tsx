@@ -1,5 +1,8 @@
 import type { Meta, StoryObj } from '@storybook/react-vite';
 import { WorkflowSettingsSection } from './workflow-settings-section';
+import { createDefaultSettings } from '@shipit-ai/core/domain/factories/settings-defaults.factory';
+
+const baseSettings = createDefaultSettings();
 
 const meta = {
   title: 'Features/Settings/WorkflowSettingsSection',
@@ -15,82 +18,42 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {
-    workflow: {
-      openPrOnImplementationComplete: false,
-      approvalGateDefaults: {
-        allowPrd: false,
-        allowPlan: false,
-        allowMerge: false,
-        pushOnImplementationComplete: false,
-      },
-      ciWatchEnabled: true,
-      enableEvidence: false,
-      commitEvidence: false,
-      defaultFastMode: true,
-    },
+    settings: baseSettings,
   },
 };
 
 export const AllEnabled: Story = {
   args: {
-    workflow: {
-      openPrOnImplementationComplete: true,
-      approvalGateDefaults: {
-        allowPrd: true,
-        allowPlan: true,
-        allowMerge: true,
-        pushOnImplementationComplete: true,
+    settings: {
+      ...baseSettings,
+      workflow: {
+        ...baseSettings.workflow,
+        openPrOnImplementationComplete: true,
+        approvalGateDefaults: {
+          allowPrd: true,
+          allowPlan: true,
+          allowMerge: true,
+          pushOnImplementationComplete: true,
+        },
+        enableEvidence: true,
+        commitEvidence: true,
+        ciWatchEnabled: true,
+        defaultFastMode: true,
+        autoArchiveDelayMinutes: 15,
       },
-      ciMaxFixAttempts: 3,
-      ciWatchTimeoutMs: 300000,
-      ciLogMaxChars: 50000,
-      stageTimeouts: {
-        analyzeMs: 600000,
-        requirementsMs: 600000,
-        researchMs: 600000,
-        planMs: 600000,
-        implementMs: 600000,
-        mergeMs: 600000,
-      },
-      analyzeRepoTimeouts: {
-        analyzeMs: 600000,
-      },
-      ciWatchEnabled: true,
-      enableEvidence: true,
-      commitEvidence: true,
-      defaultFastMode: true,
     },
   },
 };
 
-export const WithCiSettings: Story = {
+export const EvidenceDisabled: Story = {
   args: {
-    workflow: {
-      openPrOnImplementationComplete: false,
-      approvalGateDefaults: {
-        allowPrd: false,
-        allowPlan: false,
-        allowMerge: false,
-        pushOnImplementationComplete: false,
+    settings: {
+      ...baseSettings,
+      workflow: {
+        ...baseSettings.workflow,
+        enableEvidence: false,
+        commitEvidence: false,
       },
-      ciMaxFixAttempts: 5,
-      ciWatchTimeoutMs: 600000,
-      ciLogMaxChars: 100000,
-      stageTimeouts: {
-        analyzeMs: 1200000,
-        requirementsMs: 1200000,
-        researchMs: 1200000,
-        planMs: 1200000,
-        implementMs: 1200000,
-        mergeMs: 1200000,
-      },
-      analyzeRepoTimeouts: {
-        analyzeMs: 1200000,
-      },
-      ciWatchEnabled: true,
-      enableEvidence: false,
-      commitEvidence: false,
-      defaultFastMode: true,
     },
   },
 };

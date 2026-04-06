@@ -1,65 +1,37 @@
 'use client';
 
-import { useState, useTransition, useRef, useEffect } from 'react';
-import { Bell, Check } from 'lucide-react';
+import { useState, useTransition } from 'react';
+import { Bell } from 'lucide-react';
 import { toast } from 'sonner';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
-import { Separator } from '@/components/ui/separator';
+import { useTranslation } from 'react-i18next';
 import { updateSettingsAction } from '@/app/actions/update-settings';
-import type { NotificationPreferences } from '@shipit-ai/core/domain/generated/output';
-
-const AGENT_EVENT_TOGGLES = [
-  { key: 'agentStarted', label: 'Agent Started' },
-  { key: 'phaseCompleted', label: 'Phase Completed' },
-  { key: 'waitingApproval', label: 'Waiting Approval' },
-  { key: 'agentCompleted', label: 'Agent Completed' },
-  { key: 'agentFailed', label: 'Agent Failed' },
-] as const;
-
-const PR_EVENT_TOGGLES = [
-  { key: 'mergeReviewReady', label: 'Merge Review Ready' },
-  { key: 'prMerged', label: 'PR Merged' },
-  { key: 'prClosed', label: 'PR Closed' },
-  { key: 'prChecksPassed', label: 'PR Checks Passed' },
-  { key: 'prChecksFailed', label: 'PR Checks Failed' },
-  { key: 'prBlocked', label: 'PR Blocked' },
-] as const;
+import type { Settings, NotificationPreferences } from '@shipit-ai/core/domain/generated/output';
+import { SettingsSection, SwitchRow, SubsectionLabel } from './settings-section-utils';
 
 export interface NotificationSettingsSectionProps {
-  notifications: NotificationPreferences;
+  settings: Settings;
 }
 
-export function NotificationSettingsSection({ notifications }: NotificationSettingsSectionProps) {
-  const [inApp, setInApp] = useState(notifications.inApp.enabled);
-  const [events, setEvents] = useState({ ...notifications.events });
-  const [isPending, startTransition] = useTransition();
-  const [showSaved, setShowSaved] = useState(false);
-  const prevPendingRef = useRef(false);
+export function NotificationSettingsSection({ settings }: NotificationSettingsSectionProps) {
+  const { t } = useTranslation('web');
+  const [, startTransition] = useTransition();
 
-  useEffect(() => {
-    if (prevPendingRef.current && !isPending) {
-      setShowSaved(true);
-      const timer = setTimeout(() => setShowSaved(false), 2000);
-      return () => clearTimeout(timer);
-    }
-    prevPendingRef.current = isPending;
-  }, [isPending]);
+  const [inApp, setInApp] = useState(settings.notifications.inApp.enabled);
+  const [events, setEvents] = useState({ ...settings.notifications.events });
 
-  function save(payload: { notifications: Partial<NotificationPreferences> }) {
+  function save(payload: Record<string, unknown>) {
     startTransition(async () => {
       const result = await updateSettingsAction(payload);
       if (!result.success) {
-        toast.error(result.error ?? 'Failed to save notification settings');
+        toast.error(result.error ?? t('settings.failedToSave'));
       }
     });
   }
 
-  function buildFullPayload(
+  function buildNotificationPayload(
     overrides: {
       inApp?: boolean;
-      events?: typeof events;
+      events?: NotificationPreferences['events'];
     } = {}
   ) {
     return {
@@ -70,83 +42,169 @@ export function NotificationSettingsSection({ notifications }: NotificationSetti
     };
   }
 
-  function handleInAppChange(value: boolean) {
-    setInApp(value);
-    save(buildFullPayload({ inApp: value }));
-  }
-
-  function handleEventChange(key: string, value: boolean) {
-    const newEvents = { ...events, [key]: value };
-    setEvents(newEvents);
-    save(buildFullPayload({ events: newEvents }));
-  }
-
   return (
-    <Card id="notifications" className="scroll-mt-6" data-testid="notification-settings-section">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Bell className="text-muted-foreground h-4 w-4" />
-            <CardTitle>Notifications</CardTitle>
-          </div>
-          {isPending ? <span className="text-muted-foreground text-xs">Saving...</span> : null}
-          {showSaved && !isPending ? (
-            <span className="flex items-center gap-1 text-xs text-green-600">
-              <Check className="h-3 w-3" />
-              Saved
-            </span>
-          ) : null}
-        </div>
-        <CardDescription>Configure notification channels and event preferences</CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold">Channels</h3>
-          <div className="flex items-center justify-between">
-            <Label htmlFor="notif-in-app">In-App</Label>
-            <Switch
-              id="notif-in-app"
-              data-testid="switch-in-app"
-              checked={inApp}
-              onCheckedChange={handleInAppChange}
-            />
-          </div>
-        </div>
+    <SettingsSection
+      icon={Bell}
+      title={t('settings.notifications.title')}
+      description={t('settings.notifications.sectionDescription')}
+      testId="notification-settings-section"
+      tooltip={t('settings.notifications.hint')}
+      tooltipLinks={[
+        {
+          label: t('settings.notifications.links.notificationSystem'),
+          href: 'https://github.com/jrmatherly/shipit/blob/main/specs/021-agent-notifications/spec.yaml',
+        },
+      ]}
+    >
+      <SubsectionLabel>{t('settings.notifications.channels')}</SubsectionLabel>
+      <SwitchRow
+        label={t('settings.notifications.inAppLabel')}
+        description={t('settings.notifications.inAppDescription')}
+        tooltip="Master toggle for in-app toast notifications. When disabled, no event toasts will appear regardless of individual event settings below."
+        id="notif-in-app"
+        testId="switch-in-app"
+        checked={inApp}
+        onChange={(v) => {
+          setInApp(v);
+          save(buildNotificationPayload({ inApp: v }));
+        }}
+      />
 
-        <Separator />
+      <SubsectionLabel>{t('settings.notifications.subsections.agentEvents')}</SubsectionLabel>
+      <SwitchRow
+        label={t('settings.notifications.events.agentStarted')}
+        tooltip="Controls whether you receive an in-app toast notification when an agent begins working on a feature."
+        id="notif-event-agentStarted"
+        testId="switch-event-agentStarted"
+        checked={events.agentStarted}
+        onChange={(v) => {
+          const newEvents = { ...events, agentStarted: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.phaseCompleted')}
+        tooltip="Controls whether you receive an in-app toast notification when an agent completes a workflow phase (e.g., requirements, planning, implementation)."
+        id="notif-event-phaseCompleted"
+        testId="switch-event-phaseCompleted"
+        checked={events.phaseCompleted}
+        onChange={(v) => {
+          const newEvents = { ...events, phaseCompleted: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.waitingApproval')}
+        tooltip="Controls whether you receive an in-app toast notification when a feature is paused and waiting for your approval to continue."
+        id="notif-event-waitingApproval"
+        testId="switch-event-waitingApproval"
+        checked={events.waitingApproval}
+        onChange={(v) => {
+          const newEvents = { ...events, waitingApproval: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.agentCompleted')}
+        tooltip="Controls whether you receive an in-app toast notification when an agent finishes all work on a feature successfully."
+        id="notif-event-agentCompleted"
+        testId="switch-event-agentCompleted"
+        checked={events.agentCompleted}
+        onChange={(v) => {
+          const newEvents = { ...events, agentCompleted: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.agentFailed')}
+        tooltip="Controls whether you receive an in-app toast notification when an agent encounters an error and stops working on a feature."
+        id="notif-event-agentFailed"
+        testId="switch-event-agentFailed"
+        checked={events.agentFailed}
+        onChange={(v) => {
+          const newEvents = { ...events, agentFailed: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
 
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold">Agent Events</h3>
-          {AGENT_EVENT_TOGGLES.map(({ key, label }) => (
-            <div key={key} className="flex items-center justify-between">
-              <Label htmlFor={`notif-event-${key}`}>{label}</Label>
-              <Switch
-                id={`notif-event-${key}`}
-                data-testid={`switch-event-${key}`}
-                checked={events[key]}
-                onCheckedChange={(v) => handleEventChange(key, v)}
-              />
-            </div>
-          ))}
-        </div>
-
-        <Separator />
-
-        <div className="space-y-3">
-          <h3 className="text-sm font-semibold">PR Events</h3>
-          {PR_EVENT_TOGGLES.map(({ key, label }) => (
-            <div key={key} className="flex items-center justify-between">
-              <Label htmlFor={`notif-event-${key}`}>{label}</Label>
-              <Switch
-                id={`notif-event-${key}`}
-                data-testid={`switch-event-${key}`}
-                checked={events[key]}
-                onCheckedChange={(v) => handleEventChange(key, v)}
-              />
-            </div>
-          ))}
-        </div>
-      </CardContent>
-    </Card>
+      <SubsectionLabel>{t('settings.notifications.subsections.pullRequestEvents')}</SubsectionLabel>
+      <SwitchRow
+        label={t('settings.notifications.events.prMerged')}
+        tooltip="Controls whether you receive an in-app toast notification when a feature's pull request is merged into the target branch."
+        id="notif-event-prMerged"
+        testId="switch-event-prMerged"
+        checked={events.prMerged}
+        onChange={(v) => {
+          const newEvents = { ...events, prMerged: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.prClosed')}
+        tooltip="Controls whether you receive an in-app toast notification when a feature's pull request is closed without merging."
+        id="notif-event-prClosed"
+        testId="switch-event-prClosed"
+        checked={events.prClosed}
+        onChange={(v) => {
+          const newEvents = { ...events, prClosed: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.prChecksPassed')}
+        tooltip="Controls whether you receive an in-app toast notification when all CI checks pass on a feature's pull request."
+        id="notif-event-prChecksPassed"
+        testId="switch-event-prChecksPassed"
+        checked={events.prChecksPassed}
+        onChange={(v) => {
+          const newEvents = { ...events, prChecksPassed: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.prChecksFailed')}
+        tooltip="Controls whether you receive an in-app toast notification when CI checks fail on a feature's pull request."
+        id="notif-event-prChecksFailed"
+        testId="switch-event-prChecksFailed"
+        checked={events.prChecksFailed}
+        onChange={(v) => {
+          const newEvents = { ...events, prChecksFailed: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.prBlocked')}
+        tooltip="Controls whether you receive an in-app toast notification when a pull request is blocked by merge conflicts or branch protection rules."
+        id="notif-event-prBlocked"
+        testId="switch-event-prBlocked"
+        checked={events.prBlocked}
+        onChange={(v) => {
+          const newEvents = { ...events, prBlocked: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+      <SwitchRow
+        label={t('settings.notifications.events.mergeReviewReady')}
+        tooltip="Controls whether you receive an in-app toast notification when a feature's PR passes all checks and is ready for your merge review."
+        id="notif-event-mergeReviewReady"
+        testId="switch-event-mergeReviewReady"
+        checked={events.mergeReviewReady}
+        onChange={(v) => {
+          const newEvents = { ...events, mergeReviewReady: v };
+          setEvents(newEvents);
+          save(buildNotificationPayload({ events: newEvents }));
+        }}
+      />
+    </SettingsSection>
   );
 }
