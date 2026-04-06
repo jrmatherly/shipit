@@ -228,7 +228,12 @@
         "sonnetModel": "Sonnet Model Override",
         "haikuModel": "Haiku Model Override",
         "opusModel": "Opus Model Override",
-        "modelOverrideDescription": "Override the default model routed through LiteLLM"
+        "modelOverrideDescription": "Override the default model routed through LiteLLM",
+        "notSupported": "Proxy routing is not supported for this agent type.",
+        "cursorInstructions": "Cursor Setup Instructions",
+        "cursorDescription": "Add these values to Cursor Settings > Models > Override OpenAI Base URL and API Key. Only Ask and Plan modes support custom API keys — Agent mode does not.",
+        "copilotInstructions": "GitHub Copilot Setup Instructions",
+        "copilotDescription": "Add this to your VS Code settings.json under github.copilot.advanced: { \"debug.overrideProxyUrl\": \"<url>\", \"debug.testOverrideProxyUrl\": \"<url>\" }. These are undocumented debug settings."
       }
     },
     "interactiveAgent": {

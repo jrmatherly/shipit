@@ -14,4 +14,10 @@ properties:
   claudeCode:
     $ref: ClaudeCodeProxyConfig.yaml
     description: Per-agent proxy routing config for Claude Code
+  geminiCli:
+    $ref: GeminiCliProxyConfig.yaml
+    description: Per-agent proxy routing config for Gemini CLI
+  codexCli:
+    $ref: CodexCliProxyConfig.yaml
+    description: Per-agent proxy routing config for Codex CLI
 description: LiteLLM proxy configuration for plugin marketplace and agent routing

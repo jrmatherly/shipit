@@ -1,0 +1,45 @@
+feature:
+  id: '085-litellm-multi-agent-proxy'
+  name: 'litellm-multi-agent-proxy'
+  number: 85
+  branch: 'feat/085-litellm-multi-agent-proxy'
+  lifecycle: 'review'
+  createdAt: '2026-04-06T17:26:26Z'
+
+status:
+  phase: 'ready-for-review'
+  progress:
+    completed: 11
+    total: 11
+    percentage: 100
+  currentTask: null
+  lastUpdated: '2026-04-06T20:45:00Z'
+  lastUpdatedBy: 'shipit-kit:implement'
+
+validation:
+  lastRun: null
+  gatesPassed: []
+  autoFixesApplied: []
+
+tasks:
+  current: null
+  blocked: []
+  failed: []
+
+checkpoints:
+  - phase: 'feature-created'
+    completedAt: '2026-04-06T17:26:26Z'
+    completedBy: 'shipit-kit:new-feature'
+  - phase: 'research-complete'
+    completedAt: '2026-04-06T19:30:00Z'
+    completedBy: 'shipit-kit:research'
+  - phase: 'plan-complete'
+    completedAt: '2026-04-06T19:45:00Z'
+    completedBy: 'shipit-kit:plan'
+  - phase: 'implementation-complete'
+    completedAt: '2026-04-06T20:45:00Z'
+    completedBy: 'shipit-kit:implement'
+
+errors:
+  current: null
+  history: []

@@ -995,4 +995,57 @@ describe('SQLiteSettingsRepository', () => {
       expect(loaded?.litellmProxy?.claudeCode?.sonnetModel).toBe('claude-sonnet-4-6');
     });
   });
+
+  describe('LiteLLM proxy multi-agent routing config (migration 056)', () => {
+    it('should round-trip Gemini CLI proxy routing mode', async () => {
+      const settings = createTestSettings();
+      settings.litellmProxy = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-proxy-key',
+        marketplaceEnabled: true,
+        geminiCli: { routingMode: LiteLLMProxyRoutingMode.proxy },
+      };
+
+      await repository.initialize(settings);
+      const loaded = await repository.load();
+
+      expect(loaded?.litellmProxy?.geminiCli?.routingMode).toBe(LiteLLMProxyRoutingMode.proxy);
+      expect(loaded?.litellmProxy?.codexCli).toBeUndefined();
+    });
+
+    it('should round-trip Codex CLI proxy routing mode', async () => {
+      const settings = createTestSettings();
+      settings.litellmProxy = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-proxy-key',
+        marketplaceEnabled: true,
+        codexCli: { routingMode: LiteLLMProxyRoutingMode.proxy },
+      };
+
+      await repository.initialize(settings);
+      const loaded = await repository.load();
+
+      expect(loaded?.litellmProxy?.codexCli?.routingMode).toBe(LiteLLMProxyRoutingMode.proxy);
+      expect(loaded?.litellmProxy?.geminiCli).toBeUndefined();
+    });
+
+    it('should round-trip all agent proxy configs together', async () => {
+      const settings = createTestSettings();
+      settings.litellmProxy = {
+        baseUrl: 'http://proxy:4000',
+        apiKey: 'sk-proxy-key',
+        marketplaceEnabled: true,
+        claudeCode: { routingMode: LiteLLMProxyRoutingMode.proxy },
+        geminiCli: { routingMode: LiteLLMProxyRoutingMode.proxy },
+        codexCli: { routingMode: LiteLLMProxyRoutingMode.direct },
+      };
+
+      await repository.initialize(settings);
+      const loaded = await repository.load();
+
+      expect(loaded?.litellmProxy?.claudeCode?.routingMode).toBe(LiteLLMProxyRoutingMode.proxy);
+      expect(loaded?.litellmProxy?.geminiCli?.routingMode).toBe(LiteLLMProxyRoutingMode.proxy);
+      expect(loaded?.litellmProxy?.codexCli?.routingMode).toBe(LiteLLMProxyRoutingMode.direct);
+    });
+  });
 });

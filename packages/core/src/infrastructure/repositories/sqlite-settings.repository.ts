@@ -78,7 +78,8 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         feature_flag_plugins,
         litellm_proxy_base_url, litellm_proxy_api_key, litellm_proxy_marketplace_enabled,
         litellm_proxy_cc_routing_mode, litellm_proxy_cc_custom_headers,
-        litellm_proxy_cc_sonnet_model, litellm_proxy_cc_haiku_model, litellm_proxy_cc_opus_model
+        litellm_proxy_cc_sonnet_model, litellm_proxy_cc_haiku_model, litellm_proxy_cc_opus_model,
+        litellm_proxy_gc_routing_mode, litellm_proxy_cx_routing_mode
       ) VALUES (
         @id, @created_at, @updated_at,
         @model_analyze, @model_requirements, @model_plan, @model_implement, @model_default,
@@ -114,7 +115,8 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         @feature_flag_plugins,
         @litellm_proxy_base_url, @litellm_proxy_api_key, @litellm_proxy_marketplace_enabled,
         @litellm_proxy_cc_routing_mode, @litellm_proxy_cc_custom_headers,
-        @litellm_proxy_cc_sonnet_model, @litellm_proxy_cc_haiku_model, @litellm_proxy_cc_opus_model
+        @litellm_proxy_cc_sonnet_model, @litellm_proxy_cc_haiku_model, @litellm_proxy_cc_opus_model,
+        @litellm_proxy_gc_routing_mode, @litellm_proxy_cx_routing_mode
       )
     `);
 
@@ -242,7 +244,9 @@ export class SQLiteSettingsRepository implements ISettingsRepository {
         litellm_proxy_cc_custom_headers = @litellm_proxy_cc_custom_headers,
         litellm_proxy_cc_sonnet_model = @litellm_proxy_cc_sonnet_model,
         litellm_proxy_cc_haiku_model = @litellm_proxy_cc_haiku_model,
-        litellm_proxy_cc_opus_model = @litellm_proxy_cc_opus_model
+        litellm_proxy_cc_opus_model = @litellm_proxy_cc_opus_model,
+        litellm_proxy_gc_routing_mode = @litellm_proxy_gc_routing_mode,
+        litellm_proxy_cx_routing_mode = @litellm_proxy_cx_routing_mode
       WHERE id = @id
     `);
 

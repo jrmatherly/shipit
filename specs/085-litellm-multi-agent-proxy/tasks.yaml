@@ -1,0 +1,300 @@
+# Task Breakdown (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: litellm-multi-agent-proxy
+summary: Task breakdown for 085-litellm-multi-agent-proxy
+
+relatedFeatures:
+  - "084-litellm-proxy-agent-integration"
+
+technologies:
+  - TypeSpec 1.10
+  - TypeScript 6.0
+  - better-sqlite3
+  - React 19
+  - Vitest
+
+relatedLinks:
+  - title: "Plan"
+    url: specs/085-litellm-multi-agent-proxy/plan.yaml
+
+tasks:
+  # =========================================================================
+  # Phase 1: TypeSpec + Migration + Persistence
+  # =========================================================================
+  - id: task-1
+    title: "TypeSpec: Add GeminiCliProxyConfig + CodexCliProxyConfig models"
+    description: >
+      Define two minimal models with routingMode? field each. Add geminiCli?
+      and codexCli? fields to LiteLLMProxyConfig. Run pnpm tsp:codegen.
+    state: Todo
+    dependencies: []
+    acceptanceCriteria:
+      - GeminiCliProxyConfig and CodexCliProxyConfig in settings.tsp
+      - Both reference existing LiteLLMProxyRoutingMode enum
+      - geminiCli? and codexCli? added to LiteLLMProxyConfig
+      - pnpm tsp:codegen produces updated output.ts
+    tdd: null
+    estimatedEffort: "20min"
+
+  - id: task-2
+    title: "Migration 056 + settings mapper for Gemini/Codex proxy config"
+    description: >
+      Create migration adding 2 TEXT columns (litellm_proxy_gc_routing_mode,
+      litellm_proxy_cx_routing_mode). Update SettingsRow, toDatabase(),
+      fromDatabase() with validated routing mode mapping.
+    state: Todo
+    dependencies:
+      - task-1
+    acceptanceCriteria:
+      - Migration adds 2 columns with idempotent checks
+      - SettingsRow has 2 new fields (string | null)
+      - toDatabase maps routingMode ?? null for both agents
+      - fromDatabase validates against validRoutingModes set
+      - Outer conditional includes gc/cx routing_mode checks
+      - Mock SettingsRow in mapper test updated with new fields
+    tdd: null
+    estimatedEffort: "30min"
+
+  - id: task-3
+    title: "Repository SQL sync + integration test"
+    description: >
+      Add 2 columns to INSERT column list, VALUES list, and UPDATE SET clause.
+      Add integration test for round-trip persistence of gc/cx routing mode.
+    state: Todo
+    dependencies:
+      - task-2
+    acceptanceCriteria:
+      - INSERT has both new columns + values
+      - UPDATE SET has both new columns
+      - Integration test round-trips geminiCli.routingMode and codexCli.routingMode
+      - All existing settings tests pass
+    tdd:
+      red:
+        - Write integration test for gc/cx round-trip before verifying SQL
+      green:
+        - SQL sync makes test pass
+      refactor: null
+    estimatedEffort: "30min"
+
+  # =========================================================================
+  # Phase 2: Gemini CLI Executor Proxy (TDD)
+  # =========================================================================
+  - id: task-4
+    title: "RED: Failing tests for Gemini CLI executor proxy injection"
+    description: >
+      Create gemini-cli-executor-proxy.test.ts with 6-8 test cases. Direct mode
+      preserves authConfig token as GEMINI_API_KEY. Proxy mode overrides with
+      proxy key and adds GOOGLE_GEMINI_BASE_URL. All must FAIL.
+    state: Todo
+    dependencies:
+      - task-1
+    acceptanceCriteria:
+      - "Test: direct mode — GEMINI_API_KEY from authConfig.token, no GOOGLE_GEMINI_BASE_URL"
+      - "Test: proxy mode — GEMINI_API_KEY from proxyConfig.apiKey (not authConfig)"
+      - "Test: proxy mode — GOOGLE_GEMINI_BASE_URL set to proxyConfig.baseUrl"
+      - "Test: proxy mode without apiKey — GOOGLE_GEMINI_BASE_URL set, no GEMINI_API_KEY override"
+      - "Test: no proxyConfig — falls through to authConfig token injection"
+      - "Test: missing baseUrl in proxy mode — no proxy env vars"
+      - All tests fail (RED state confirmed)
+    tdd:
+      red:
+        - Write 6-8 test cases for Gemini proxy injection
+      green: null
+      refactor: null
+    estimatedEffort: "30min"
+
+  - id: task-5
+    title: "GREEN+REFACTOR: Implement Gemini CLI buildSpawnEnv proxy override"
+    description: >
+      Add proxyConfig property + updateProxyConfig() to GeminiCliExecutorService.
+      Restructure buildSpawnEnv to check proxy mode first (proxy key overrides
+      authConfig token), then fall through to direct auth. All tests pass.
+    state: Todo
+    dependencies:
+      - task-4
+    acceptanceCriteria:
+      - updateProxyConfig() method on GeminiCliExecutorService
+      - buildSpawnEnv checks proxy mode before authConfig
+      - Proxy mode: GOOGLE_GEMINI_BASE_URL + GEMINI_API_KEY (proxy key)
+      - Direct mode: GEMINI_API_KEY (authConfig.token) — unchanged behavior
+      - All tests from task-4 pass
+    tdd:
+      red: null
+      green:
+        - Add proxyConfig property and setter
+        - Restructure buildSpawnEnv with proxy-first logic
+      refactor:
+        - Ensure early return pattern is clear
+    estimatedEffort: "30min"
+
+  # =========================================================================
+  # Phase 3: Codex CLI Executor Proxy (TDD)
+  # =========================================================================
+  - id: task-6
+    title: "RED: Failing tests for Codex CLI executor proxy injection"
+    description: >
+      Create codex-cli-executor-proxy.test.ts with 6-8 test cases. Direct mode
+      preserves CODEX_API_KEY. Proxy mode sets OPENAI_BASE_URL + OPENAI_API_KEY
+      (NOT CODEX_API_KEY). All must FAIL.
+    state: Todo
+    dependencies:
+      - task-1
+    acceptanceCriteria:
+      - "Test: direct mode — CODEX_API_KEY from authConfig.token, no OPENAI_BASE_URL"
+      - "Test: proxy mode — OPENAI_API_KEY from proxyConfig.apiKey"
+      - "Test: proxy mode — OPENAI_BASE_URL set to proxyConfig.baseUrl"
+      - "Test: proxy mode — CODEX_API_KEY NOT set (only OPENAI_API_KEY)"
+      - "Test: no proxyConfig — falls through to authConfig CODEX_API_KEY"
+      - "Test: missing baseUrl — no proxy env vars"
+      - All tests fail (RED state)
+    tdd:
+      red:
+        - Write 6-8 test cases for Codex proxy injection
+      green: null
+      refactor: null
+    estimatedEffort: "30min"
+
+  - id: task-7
+    title: "GREEN+REFACTOR: Implement Codex CLI buildSpawnEnv proxy override"
+    description: >
+      Add proxyConfig property + updateProxyConfig() to CodexCliExecutorService.
+      Restructure buildSpawnEnv: proxy mode sets OPENAI_BASE_URL + OPENAI_API_KEY;
+      direct mode preserves CODEX_API_KEY.
+    state: Todo
+    dependencies:
+      - task-6
+    acceptanceCriteria:
+      - updateProxyConfig() method on CodexCliExecutorService
+      - Proxy mode: OPENAI_BASE_URL + OPENAI_API_KEY
+      - Direct mode: CODEX_API_KEY — unchanged behavior
+      - CODEX_API_KEY NOT set in proxy mode
+      - All tests from task-6 pass
+    tdd:
+      red: null
+      green:
+        - Add proxyConfig + updateProxyConfig
+        - Restructure buildSpawnEnv with proxy-first logic
+      refactor: null
+    estimatedEffort: "30min"
+
+  # =========================================================================
+  # Phase 4: Provider + Worker Threading
+  # =========================================================================
+  - id: task-8
+    title: "Thread proxy config for Gemini + Codex in provider and worker"
+    description: >
+      Add instanceof checks for GeminiCliExecutorService and
+      CodexCliExecutorService in agent-executor-provider.service.ts and
+      feature-agent-worker.ts. Add provider tests.
+    state: Todo
+    dependencies:
+      - task-5
+      - task-7
+    acceptanceCriteria:
+      - Provider calls updateProxyConfig on Gemini + Codex executors
+      - Worker calls updateProxyConfig on Gemini + Codex executors (pinned type path)
+      - Provider test verifies Gemini executor gets proxy config
+      - Provider test verifies Codex executor gets proxy config
+      - Existing Claude Code proxy threading unchanged
+    tdd:
+      red:
+        - Write provider tests for Gemini + Codex threading
+      green:
+        - Add instanceof checks in provider + worker
+      refactor: null
+    estimatedEffort: "30min"
+
+  # =========================================================================
+  # Phase 5: Agent-Aware UI + Tier 2 Docs + i18n + Storybook
+  # =========================================================================
+  - id: task-9
+    title: "Agent-aware routing section + Tier 2 documentation panels"
+    description: >
+      Extend LiteLLMProxyRoutingSection to render agent-specific content based
+      on settings.agent.type. Tier 1 agents (Claude Code, Gemini, Codex) get
+      mode selector. Tier 2 (Cursor, Copilot) get copy-pasteable instruction
+      panels. Cursor shows proxy URL with /cursor suffix + API key. Copilot
+      shows VS Code settings.json snippet.
+    state: Todo
+    dependencies:
+      - task-3
+    acceptanceCriteria:
+      - Claude Code renders existing full routing UI
+      - Gemini CLI renders Direct/Proxy mode selector (no passthrough)
+      - Codex CLI renders Direct/Proxy mode selector (no passthrough)
+      - Cursor renders documentation panel with auto-appended /cursor URL
+      - Copilot renders documentation panel with settings.json snippet
+      - Rovo Dev shows "not supported" message
+      - Mode change triggers save with correct agent-specific payload
+    tdd:
+      red:
+        - Test that component renders mode selector for gemini-cli
+        - Test that component renders docs panel for cursor
+      green:
+        - Implement agent-type-aware conditional rendering
+      refactor:
+        - Extract Tier 2 doc panels if component exceeds 300 lines
+    estimatedEffort: "60min"
+
+  - id: task-10
+    title: "i18n keys for multi-agent proxy routing"
+    description: >
+      Add i18n keys for Gemini CLI, Codex CLI mode labels, Cursor instructions,
+      Copilot instructions, and "not supported" message to all 8 locale files.
+    state: Todo
+    dependencies:
+      - task-9
+    acceptanceCriteria:
+      - All 8 locale files have identical key sets
+      - Translation parity test passes
+      - Keys cover all agent-specific labels and doc panel text
+    tdd: null
+    estimatedEffort: "20min"
+
+  - id: task-11
+    title: "Storybook stories for all agent routing variants"
+    description: >
+      Add story variants to litellm-proxy-routing-section.stories.tsx for
+      Gemini CLI (direct + proxy), Codex CLI (direct + proxy), Cursor (docs),
+      Copilot (docs). Build Storybook to verify.
+    state: Todo
+    dependencies:
+      - task-9
+    acceptanceCriteria:
+      - Stories for each of the 4 new agent types
+      - pnpm build:storybook succeeds
+      - Each story renders the correct agent-specific UI
+    tdd: null
+    estimatedEffort: "20min"
+
+totalEstimate: "5-6 hours"
+
+openQuestions: []
+
+content: |
+  ## Summary
+
+  LiteLLM multi-agent proxy routing — 11 tasks across 5 phases. Tier 1
+  (Gemini + Codex) get env-var proxy injection via TDD. Tier 2 (Cursor +
+  Copilot) get documentation panels. All share the existing routing section UI.
+
+  ## Acceptance Checklist
+
+  Before marking feature complete:
+
+  - [ ] All 11 tasks completed
+  - [ ] Tests passing (`pnpm test`)
+  - [ ] Linting clean (`pnpm lint:fix`)
+  - [ ] Types valid (`pnpm typecheck`)
+  - [ ] TypeSpec compiles (`pnpm tsp:codegen`)
+  - [ ] Storybook builds (`pnpm build:storybook`)
+  - [ ] Translation parity (all 8 locales)
+  - [ ] Gemini CLI env var injection verified (unit tests)
+  - [ ] Codex CLI env var injection verified (unit tests)
+  - [ ] Settings round-trip verified (integration tests)
+  - [ ] PR created and reviewed
+
+  ---
+
+  _Task details are in the tasks[] array of tasks.yaml_

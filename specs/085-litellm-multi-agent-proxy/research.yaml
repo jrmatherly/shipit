@@ -1,0 +1,269 @@
+# Research Artifact (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: litellm-multi-agent-proxy
+summary: Technical analysis for 085-litellm-multi-agent-proxy
+
+# Relationships
+relatedFeatures:
+  - "084-litellm-proxy-agent-integration"
+  - "082-agent-permission-modes"
+
+technologies:
+  - TypeSpec 1.10
+  - TypeScript 6.0
+  - better-sqlite3
+  - React 19
+  - Vitest
+
+relatedLinks:
+  - title: "Claude Code executor (reference pattern)"
+    url: packages/core/src/infrastructure/services/agents/common/executors/claude-code-executor.service.ts
+  - title: "Gemini CLI executor"
+    url: packages/core/src/infrastructure/services/agents/common/executors/gemini-cli-executor.service.ts
+  - title: "Codex CLI executor"
+    url: packages/core/src/infrastructure/services/agents/common/executors/codex-cli-executor.service.ts
+  - title: "Cursor executor"
+    url: packages/core/src/infrastructure/services/agents/common/executors/cursor-executor.service.ts
+  - title: "Copilot CLI executor"
+    url: packages/core/src/infrastructure/services/agents/common/executors/copilot-cli-executor.service.ts
+
+# Structured technology decisions
+decisions:
+  - title: "Gemini CLI env var conflict: authConfig.token vs proxy key in GEMINI_API_KEY"
+    chosen: "Proxy mode overrides authConfig token — proxy key takes precedence in GEMINI_API_KEY"
+    rejected:
+      - "Use a different env var for proxy key (no such env var exists for Gemini CLI)"
+      - "Require user to remove authConfig.token when using proxy (poor UX)"
+    rationale: >
+      LiteLLM's Gemini CLI integration uses the same GEMINI_API_KEY env var for the
+      proxy virtual key. When proxy mode is active, the proxy key must replace the
+      user's Google API key in this variable. The buildSpawnEnv() override should
+      check proxy mode first: if proxy, set GEMINI_API_KEY to proxy key and
+      GOOGLE_GEMINI_BASE_URL to proxy URL; if direct, fall through to existing
+      authConfig.token injection. This is safe because when routing through the
+      proxy, the proxy handles auth to Google — the user's key is not needed.
+
+  - title: "Codex CLI env var strategy: CODEX_API_KEY vs OPENAI_API_KEY"
+    chosen: "Set OPENAI_API_KEY + OPENAI_BASE_URL in proxy mode; preserve CODEX_API_KEY from authConfig in direct mode"
+    rejected:
+      - "Override CODEX_API_KEY with proxy key (wrong env var for LiteLLM routing)"
+      - "Set both CODEX_API_KEY and OPENAI_API_KEY (confusing dual-auth)"
+    rationale: >
+      LiteLLM expects OPENAI_API_KEY (not CODEX_API_KEY) for OpenAI-compatible
+      proxy routing. The Codex CLI uses CODEX_API_KEY for direct OpenAI auth but
+      accepts OPENAI_BASE_URL + OPENAI_API_KEY for proxy routing. In proxy mode,
+      we set OPENAI_BASE_URL + OPENAI_API_KEY (proxy key) and do NOT set
+      CODEX_API_KEY. In direct mode, we preserve the existing authConfig.token
+      injection as CODEX_API_KEY.
+
+  - title: "TypeSpec model structure: Shared vs per-agent proxy config"
+    chosen: "Minimal per-agent models with only routingMode field (reuse LiteLLMProxyRoutingMode enum)"
+    rejected:
+      - "Full ClaudeCodeProxyConfig clone for each agent (too much duplication)"
+      - "Single shared AgentProxyConfig used by all agents (loses agent-specific flexibility)"
+    rationale: >
+      Gemini CLI and Codex CLI only need routingMode (direct/proxy — no passthrough,
+      no custom headers, no model overrides). Claude Code needed 5 fields because
+      of its richer integration surface (custom headers, 3 model overrides). Creating
+      minimal models keeps the schema clean and avoids empty columns. If future
+      agents need more fields, their model can be extended independently.
+
+  - title: "Cursor documentation panel: Auto-append /cursor suffix"
+    chosen: "Auto-append /cursor to proxy URL in documentation instructions"
+    rejected:
+      - "Show raw URL and tell user to add /cursor manually"
+    rationale: >
+      LiteLLM requires the /cursor suffix for proper routing. Auto-appending
+      eliminates a common misconfiguration. The suffix is a LiteLLM convention
+      (not arbitrary), so it's stable. The instructions panel shows the complete
+      URL: `${proxyUrl}/cursor`.
+
+  - title: "Provider instanceof pattern: Extend existing pattern vs interface"
+    chosen: "Extend existing instanceof pattern for Gemini + Codex (same as Claude Code)"
+    rejected:
+      - "Refactor to IProxyConfigurable interface (better architecture, larger scope)"
+    rationale: >
+      The PR review for spec 084 identified instanceof as an architectural concern
+      (I2 finding). However, refactoring to an interface now would touch the executor
+      base class, all 6 executor implementations, the factory interface, and tests —
+      a scope expansion that belongs in a dedicated tech debt task, not this feature.
+      For now, add instanceof checks for GeminiCliExecutorService and
+      CodexCliExecutorService alongside the existing ClaudeCodeExecutorService check.
+      The tech debt plan should track the interface refactor.
+
+  - title: "Routing section UI: Agent-aware conditional rendering"
+    chosen: "Single LiteLLMProxyRoutingSection component with agent-type-based conditional rendering"
+    rejected:
+      - "Separate component per agent (4 components with significant overlap)"
+      - "Tab sub-navigation within the routing section (over-engineering for 4 agents)"
+    rationale: >
+      The component already exists from spec 084. Extend it to check
+      settings.agent.type and render different content: Tier 1 agents get the
+      routing mode selector + proxy-specific fields. Tier 2 agents get a
+      documentation panel with copy-pasteable instructions. This keeps one
+      component as the source of truth for all proxy routing UI.
+
+# Open questions (all resolved)
+openQuestions: []
+
+# Markdown content
+content: |
+  ## Status
+
+  - **Phase:** Research
+  - **Updated:** 2026-04-06
+
+  ## Codebase Analysis
+
+  ### Existing Executor Proxy Support
+
+  | Executor | Has authConfig | Has buildSpawnEnv | Current Env Vars | Proxy Changes Needed |
+  | --- | --- | --- | --- | --- |
+  | Claude Code | No (uses proxyConfig) | Yes (full proxy logic) | ANTHROPIC_BASE_URL, AUTH_TOKEN, CUSTOM_HEADERS, model overrides | Done (spec 084) |
+  | Gemini CLI | Yes | Yes (GEMINI_API_KEY) | GEMINI_API_KEY from token | Add proxyConfig + GOOGLE_GEMINI_BASE_URL + override GEMINI_API_KEY |
+  | Codex CLI | Yes | Yes (CODEX_API_KEY) | CODEX_API_KEY from token | Add proxyConfig + OPENAI_BASE_URL + OPENAI_API_KEY (different from CODEX_API_KEY) |
+  | Cursor | No | No | None | Documentation only — no env var injection possible |
+  | Copilot CLI | No | No | None | Documentation only — no env var injection possible |
+
+  ### Env Var Conflict Resolution
+
+  **Gemini CLI — Same env var, different values:**
+  - Direct mode: `GEMINI_API_KEY = authConfig.token` (user's Google API key)
+  - Proxy mode: `GEMINI_API_KEY = proxyConfig.apiKey` (LiteLLM proxy key)
+  - Resolution: proxy mode takes precedence. When proxy is active, the proxy
+    handles auth to Google, so the user's key is not needed.
+
+  **Codex CLI — Different env vars for different purposes:**
+  - Direct mode: `CODEX_API_KEY = authConfig.token` (user's OpenAI key)
+  - Proxy mode: `OPENAI_API_KEY = proxyConfig.apiKey` + `OPENAI_BASE_URL = proxyConfig.baseUrl`
+  - Resolution: no conflict. Different env vars. In proxy mode, skip CODEX_API_KEY.
+
+  ## Technology Decisions
+
+  ### 1. Gemini CLI: Proxy Key Overrides Auth Token
+
+  In proxy mode, `GEMINI_API_KEY` is set to the proxy key (not the user's Google
+  key). The `buildSpawnEnv()` override checks proxy mode first:
+
+  ```typescript
+  protected override buildSpawnEnv(): Record<string, string | undefined> {
+    const env = super.buildSpawnEnv();
+
+    // Proxy mode takes precedence over authConfig token
+    if (this.proxyConfig?.geminiCli?.routingMode === 'proxy' && this.proxyConfig.baseUrl) {
+      env.GOOGLE_GEMINI_BASE_URL = this.proxyConfig.baseUrl;
+      if (this.proxyConfig.apiKey) {
+        env.GEMINI_API_KEY = this.proxyConfig.apiKey;
+      }
+      return env;
+    }
+
+    // Direct mode: existing authConfig token injection
+    if (this.authConfig?.authMethod === 'token' && this.authConfig.token) {
+      env.GEMINI_API_KEY = this.authConfig.token;
+    }
+    return env;
+  }
+  ```
+
+  ### 2. Codex CLI: Separate Env Vars for Proxy
+
+  Codex uses OPENAI_API_KEY (not CODEX_API_KEY) for LiteLLM proxy routing:
+
+  ```typescript
+  protected override buildSpawnEnv(): Record<string, string | undefined> {
+    const env = super.buildSpawnEnv();
+
+    // Proxy mode: use OpenAI-compatible env vars for LiteLLM
+    if (this.proxyConfig?.codexCli?.routingMode === 'proxy' && this.proxyConfig.baseUrl) {
+      env.OPENAI_BASE_URL = this.proxyConfig.baseUrl;
+      if (this.proxyConfig.apiKey) {
+        env.OPENAI_API_KEY = this.proxyConfig.apiKey;
+      }
+      return env;
+    }
+
+    // Direct mode: existing authConfig token injection
+    if (this.authConfig?.authMethod === 'token' && this.authConfig.token) {
+      env.CODEX_API_KEY = this.authConfig.token;
+    }
+    return env;
+  }
+  ```
+
+  ### 3. Minimal Per-Agent TypeSpec Models
+
+  ```typespec
+  model GeminiCliProxyConfig {
+    routingMode?: LiteLLMProxyRoutingMode;  // Reuse existing enum (direct/proxy only)
+  }
+
+  model CodexCliProxyConfig {
+    routingMode?: LiteLLMProxyRoutingMode;  // Reuse existing enum (direct/proxy only)
+  }
+
+  model LiteLLMProxyConfig {
+    // ... existing fields ...
+    claudeCode?: ClaudeCodeProxyConfig;   // existing
+    geminiCli?: GeminiCliProxyConfig;     // NEW
+    codexCli?: CodexCliProxyConfig;       // NEW
+  }
+  ```
+
+  DB columns: `litellm_proxy_gc_routing_mode TEXT` and `litellm_proxy_cx_routing_mode TEXT`
+  (gc = gemini cli, cx = codex cli — follows the `cc` prefix pattern from spec 084).
+
+  ### 4. UI: Agent-Aware Routing Section
+
+  The existing `LiteLLMProxyRoutingSection` component gains agent-type awareness:
+
+  ```
+  settings.agent.type === 'claude-code'  → Full routing UI (existing from spec 084)
+  settings.agent.type === 'gemini-cli'   → Direct/Proxy mode selector
+  settings.agent.type === 'codex-cli'    → Direct/Proxy mode selector
+  settings.agent.type === 'cursor'       → Documentation panel (Cursor config instructions)
+  settings.agent.type === 'copilot-cli'  → Documentation panel (VS Code settings.json snippet)
+  settings.agent.type === 'rovo-dev'     → "Not supported" message
+  ```
+
+  ### 5. Provider Threading (Extend Existing Pattern)
+
+  Add instanceof checks alongside the existing Claude Code check:
+
+  ```typescript
+  if (executor instanceof ClaudeCodeExecutorService) {
+    executor.updateProxyConfig(settings.litellmProxy);
+  } else if (executor instanceof GeminiCliExecutorService) {
+    executor.updateProxyConfig(settings.litellmProxy);
+  } else if (executor instanceof CodexCliExecutorService) {
+    executor.updateProxyConfig(settings.litellmProxy);
+  }
+  ```
+
+  ## Library Analysis
+
+  No new libraries needed. All existing dependencies.
+
+  ## Security Considerations
+
+  - Same security model as spec 084: env vars only, never CLI args
+  - Gemini CLI proxy mode replaces the user's Google API key with the proxy key —
+    the user's key is not leaked to the proxy, and the proxy key is not leaked to Google
+  - Codex CLI uses a different env var (OPENAI_API_KEY) for proxy, so the user's
+    CODEX_API_KEY is never sent to the proxy
+
+  ## Performance Implications
+
+  Zero runtime overhead — same as spec 084 (env var injection at spawn time only).
+
+  ## Open Questions
+
+  All resolved:
+  1. Cursor URL suffix → auto-append /cursor
+  2. Copilot config → documentation-only panel
+  3. Gemini/Codex routing modes → direct + proxy only (no passthrough)
+
+  ---
+
+  _Updated by `/shipit-kit:research` — proceed with `/shipit-kit:plan`_

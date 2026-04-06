@@ -173,6 +173,8 @@ function createTestRow(overrides: Partial<SettingsRow> = {}): SettingsRow {
     litellm_proxy_cc_sonnet_model: null,
     litellm_proxy_cc_haiku_model: null,
     litellm_proxy_cc_opus_model: null,
+    litellm_proxy_gc_routing_mode: null,
+    litellm_proxy_cx_routing_mode: null,
     interactive_agent_enabled: 1,
     interactive_agent_auto_timeout_minutes: 15,
     interactive_agent_max_concurrent_sessions: 3,

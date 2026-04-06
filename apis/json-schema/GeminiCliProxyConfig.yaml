@@ -1,0 +1,8 @@
+$schema: https://json-schema.org/draft/2020-12/schema
+$id: GeminiCliProxyConfig.yaml
+type: object
+properties:
+  routingMode:
+    $ref: LiteLLMProxyRoutingMode.yaml
+    description: How Gemini CLI routes API traffic through the proxy (direct or proxy)
+description: Per-agent proxy routing config for Gemini CLI

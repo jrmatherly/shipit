@@ -22,14 +22,52 @@ export interface LiteLLMProxyRoutingSectionProps {
   settings: Settings;
 }
 
+/** Agent types that support env-var-based proxy routing (Tier 1) */
+const TIER1_AGENTS = new Set(['claude-code', 'gemini-cli', 'codex-cli']);
+/** Agent types that need documentation-only panels (Tier 2) */
+const TIER2_AGENTS = new Set(['cursor', 'copilot-cli']);
+
+/** Get the per-agent proxy config key for building payloads */
+function agentConfigKey(agentType: string): string | null {
+  switch (agentType) {
+    case 'claude-code':
+      return 'claudeCode';
+    case 'gemini-cli':
+      return 'geminiCli';
+    case 'codex-cli':
+      return 'codexCli';
+    default:
+      return null;
+  }
+}
+
+/** Get the current routing mode for the active agent */
+function getRoutingMode(settings: Settings): string {
+  const agentType = settings.agent.type as string;
+  switch (agentType) {
+    case 'claude-code':
+      return settings.litellmProxy?.claudeCode?.routingMode ?? LiteLLMProxyRoutingMode.direct;
+    case 'gemini-cli':
+      return settings.litellmProxy?.geminiCli?.routingMode ?? LiteLLMProxyRoutingMode.direct;
+    case 'codex-cli':
+      return settings.litellmProxy?.codexCli?.routingMode ?? LiteLLMProxyRoutingMode.direct;
+    default:
+      return LiteLLMProxyRoutingMode.direct;
+  }
+}
+
+/** Whether this agent supports passthrough mode */
+function supportsPassthrough(agentType: string): boolean {
+  return agentType === 'claude-code';
+}
+
 export function LiteLLMProxyRoutingSection({ settings }: LiteLLMProxyRoutingSectionProps) {
   const { t } = useTranslation('web');
   const [, startTransition] = useTransition();
+  const agentType = settings.agent.type as string;
 
   const cc = settings.litellmProxy?.claudeCode;
-  const [routingMode, setRoutingMode] = useState<string>(
-    cc?.routingMode ?? LiteLLMProxyRoutingMode.direct
-  );
+  const [routingMode, setRoutingMode] = useState<string>(getRoutingMode(settings));
   const [customHeaders, setCustomHeaders] = useState(cc?.customHeaders ?? '');
   const [sonnetModel, setSonnetModel] = useState(cc?.sonnetModel ?? '');
   const [haikuModel, setHaikuModel] = useState(cc?.haikuModel ?? '');
@@ -41,6 +79,10 @@ export function LiteLLMProxyRoutingSection({ settings }: LiteLLMProxyRoutingSect
   const originalOpusModel = cc?.opusModel ?? '';
 
   const showProxyFields = routingMode !== LiteLLMProxyRoutingMode.direct;
+  const isTier1 = TIER1_AGENTS.has(agentType);
+  const isTier2 = TIER2_AGENTS.has(agentType);
+  const proxyUrl = settings.litellmProxy?.baseUrl ?? '';
+  const proxyApiKey = settings.litellmProxy?.apiKey ?? '';
 
   function save(payload: Record<string, unknown>) {
     startTransition(async () => {
@@ -60,14 +102,28 @@ export function LiteLLMProxyRoutingSection({ settings }: LiteLLMProxyRoutingSect
       opusModel: string;
     }>
   ) {
+    const key = agentConfigKey(agentType);
+    if (!key) return {};
+
+    if (agentType === 'claude-code') {
+      return {
+        litellmProxy: {
+          claudeCode: {
+            routingMode: overrides?.routingMode ?? routingMode,
+            customHeaders: overrides?.customHeaders ?? customHeaders,
+            sonnetModel: overrides?.sonnetModel ?? sonnetModel,
+            haikuModel: overrides?.haikuModel ?? haikuModel,
+            opusModel: overrides?.opusModel ?? opusModel,
+          },
+        },
+      };
+    }
+
+    // Gemini CLI and Codex CLI: only routingMode
     return {
       litellmProxy: {
-        claudeCode: {
+        [key]: {
           routingMode: overrides?.routingMode ?? routingMode,
-          customHeaders: overrides?.customHeaders ?? customHeaders,
-          sonnetModel: overrides?.sonnetModel ?? sonnetModel,
-          haikuModel: overrides?.haikuModel ?? haikuModel,
-          opusModel: overrides?.opusModel ?? opusModel,
         },
       },
     };
@@ -78,6 +134,66 @@ export function LiteLLMProxyRoutingSection({ settings }: LiteLLMProxyRoutingSect
     save(buildPayload({ routingMode: value }));
   }
 
+  // Unsupported agent type
+  if (!isTier1 && !isTier2) {
+    return (
+      <SettingsSection
+        icon={Route}
+        title={t('settings.litellmProxy.routing.title')}
+        description={t('settings.litellmProxy.routing.description')}
+        testId="litellm-proxy-routing-section"
+        tooltip={t('settings.litellmProxy.routing.hint')}
+      >
+        <SettingsRow label="" description={t('settings.litellmProxy.routing.notSupported')}>
+          <span />
+        </SettingsRow>
+      </SettingsSection>
+    );
+  }
+
+  // Tier 2: Documentation-only panels
+  if (isTier2) {
+    const isCursor = agentType === 'cursor';
+    const displayUrl = proxyUrl
+      ? isCursor
+        ? `${proxyUrl.replace(/\/+$/, '')}/cursor`
+        : proxyUrl
+      : '';
+
+    return (
+      <SettingsSection
+        icon={Route}
+        title={t('settings.litellmProxy.routing.title')}
+        description={t('settings.litellmProxy.routing.description')}
+        testId="litellm-proxy-routing-section"
+        tooltip={t('settings.litellmProxy.routing.hint')}
+      >
+        <SettingsRow
+          label={
+            isCursor
+              ? t('settings.litellmProxy.routing.cursorInstructions')
+              : t('settings.litellmProxy.routing.copilotInstructions')
+          }
+          description={
+            isCursor
+              ? t('settings.litellmProxy.routing.cursorDescription')
+              : t('settings.litellmProxy.routing.copilotDescription')
+          }
+        >
+          <div className="w-64 space-y-2">
+            <code className="bg-muted block rounded px-2 py-1 text-xs break-all">{displayUrl}</code>
+            {isCursor && proxyApiKey ? (
+              <code className="bg-muted block rounded px-2 py-1 text-xs break-all">
+                {proxyApiKey}
+              </code>
+            ) : null}
+          </div>
+        </SettingsRow>
+      </SettingsSection>
+    );
+  }
+
+  // Tier 1: Env-var-based proxy routing (Claude Code, Gemini CLI, Codex CLI)
   return (
     <SettingsSection
       icon={Route}
@@ -106,9 +222,11 @@ export function LiteLLMProxyRoutingSection({ settings }: LiteLLMProxyRoutingSect
             <SelectItem value={LiteLLMProxyRoutingMode.proxy}>
               {t('settings.litellmProxy.routing.modeProxy')}
             </SelectItem>
-            <SelectItem value={LiteLLMProxyRoutingMode.passthrough}>
-              {t('settings.litellmProxy.routing.modePassthrough')}
-            </SelectItem>
+            {supportsPassthrough(agentType) && (
+              <SelectItem value={LiteLLMProxyRoutingMode.passthrough}>
+                {t('settings.litellmProxy.routing.modePassthrough')}
+              </SelectItem>
+            )}
           </SelectContent>
         </Select>
       </SettingsRow>
@@ -119,7 +237,7 @@ export function LiteLLMProxyRoutingSection({ settings }: LiteLLMProxyRoutingSect
         </SettingsRow>
       )}
 
-      {showProxyFields ? (
+      {showProxyFields && agentType === 'claude-code' ? (
         <>
           <SettingsRow
             label={t('settings.litellmProxy.routing.customHeaders')}

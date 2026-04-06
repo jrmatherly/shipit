@@ -13,7 +13,9 @@ import type {
   AgentFeature,
   AgentConfig,
   GeminiPermissionMode,
+  LiteLLMProxyConfig,
 } from '../../../../../domain/generated/output.js';
+import { LiteLLMProxyRoutingMode } from '../../../../../domain/generated/output.js';
 import type {
   AgentExecutionOptions,
   AgentExecutionResult,
@@ -33,10 +35,15 @@ export class GeminiCliExecutorService extends ExecutorBase {
   readonly agentType: AgentType = 'gemini-cli' as AgentType;
 
   private readonly authConfig?: AgentConfig;
+  private proxyConfig?: LiteLLMProxyConfig;
 
   constructor(spawn: SpawnFunction, authConfig?: AgentConfig) {
     super(spawn);
     this.authConfig = authConfig;
+  }
+
+  updateProxyConfig(config?: LiteLLMProxyConfig): void {
+    this.proxyConfig = config;
   }
 
   supportsFeature(feature: AgentFeature): boolean {
@@ -340,8 +347,31 @@ export class GeminiCliExecutorService extends ExecutorBase {
 
   protected override buildSpawnEnv(): Record<string, string | undefined> {
     const env = super.buildSpawnEnv();
+
+    // Proxy mode takes precedence — never leak user's personal key to proxy
+    const gc = this.proxyConfig?.geminiCli;
+    if (gc?.routingMode === LiteLLMProxyRoutingMode.proxy && this.proxyConfig?.baseUrl) {
+      env.GOOGLE_GEMINI_BASE_URL = this.proxyConfig.baseUrl;
+      if (this.proxyConfig.apiKey) {
+        env.GEMINI_API_KEY = this.proxyConfig.apiKey;
+      } else {
+        this.log(
+          'WARNING: Proxy mode active but no proxy API key configured — proxy may reject requests'
+        );
+      }
+      return env;
+    }
+
+    // Guard against unrecognized routing modes
+    if (gc?.routingMode && gc.routingMode !== LiteLLMProxyRoutingMode.direct) {
+      this.log(
+        `WARNING: Unsupported routing mode "${gc.routingMode}" for Gemini CLI, falling back to direct`
+      );
+    }
+
+    // Direct mode: existing authConfig token injection
     if (this.authConfig?.authMethod === 'token' && this.authConfig.token) {
-      return { ...env, GEMINI_API_KEY: this.authConfig.token };
+      env.GEMINI_API_KEY = this.authConfig.token;
     }
     return env;
   }
