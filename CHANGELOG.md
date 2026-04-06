@@ -1,3 +1,15 @@
+# [1.168.0](https://github.com/jrmatherly/shipit/compare/v1.167.1...v1.168.0) (2026-04-06)
+
+
+### Bug Fixes
+
+* **web:** wrap test renders in tooltip provider and fix formatting ([d7afd70](https://github.com/jrmatherly/shipit/commit/d7afd700db04e48faac2b1f1bc0103e9669e40ed))
+
+
+### Features
+
+* **web:** adopt stitch editorial design system across all pages ([97a219b](https://github.com/jrmatherly/shipit/commit/97a219be37afc314e986b3b777c1ad5f690c6835))
+
 ## [1.167.1](https://github.com/jrmatherly/shipit/compare/v1.167.0...v1.167.1) (2026-04-05)
 
 
