@@ -77,6 +77,16 @@ Adding a field to `FeatureFlags` in TypeSpec generates a **required** (not optio
 7. `feature-flags-settings-section.tsx` — toggle row + fallback object
 8. All 8 `translations/*/web.json` — label + description keys
 9. Stories and tests constructing FeatureFlags objects (grep for `reactFileManager:` to find all)
+10. `sqlite-settings.repository.ts` — INSERT column list + VALUES list + UPDATE SET clause (see Settings Repository SQL Sync below)
+
+### Settings Repository SQL Sync (CRITICAL)
+
+When a migration adds columns to the `settings` table, THREE files must be updated:
+1. `settings.mapper.ts` — `SettingsRow` interface + `toDatabase()` + `toDomain()`
+2. `sqlite-settings.repository.ts` — INSERT INTO column list + VALUES list
+3. `sqlite-settings.repository.ts` — UPDATE SET clause
+
+**Gotcha:** `load()` uses `SELECT *` so reads work even with missing columns. But INSERT/UPDATE enumerate columns explicitly — SQLite silently ignores extra named parameters from `toDatabase()` that aren't in the SQL. Settings appear to save (no error) but revert on reload. Always verify column parity across all three files.
 
 ### Tool Metadata System
 
@@ -146,6 +156,7 @@ Adding a new CLI agent requires changes across 8+ integration points:
 - **Security overrides are scoped, not blanket:** Use `"parent>child": "^x.y.z"` syntax to patch only the vulnerable subtree. A blanket `"ajv": "^8.18.0"` breaks `@eslint/eslintrc` which needs ajv 6.x (different API). Preserve the scope when widening.
 - **TypeSpec patch peer warning is benign:** `pnpm add` always shows `unmet peer @typespec/compiler@^0.59.1: found 1.10.0` from `@typespec-tools/emitter-typescript@0.3.0` — pnpm reads the pre-patch manifest. The patch updates the peerDep to `^1.0.0`. Ignore this specific warning.
 - **Lint-staged is parallel-session safe:** When committing a subset of modified files via `git add <path>` while other files are unstaged, the pre-commit hook's lint-staged creates a backup stash, runs formatters ONLY on staged files, then restores the stash. Unstaged work in other files is preserved untouched. Safe to commit your slice without coordinating with parallel agents.
+- **`format:check` CI vs local:** Pre-commit hooks run `prettier --write` on staged files only. CI runs `pnpm format:check` on the entire project. A file modified by a background agent but not re-staged can pass pre-commit but fail CI. Run `pnpm format:check` before pushing if agents modified files.
 - **Security alert APIs split by tool:** Dependabot uses GraphQL `repository.vulnerabilityAlerts` (works with `repo` scope); code scanning (CodeQL) uses REST `gh api 'repos/OWNER/REPO/code-scanning/alerts?state=open'` (also `repo` scope). The REST `/dependabot/alerts` endpoint requires `admin:repo_hook` — avoid it. Admin ops may require switching to `jrmatherly` via `gh auth switch --user jrmatherly`.
 - **CodeQL taint boundary:** `js/path-injection` and similar queries stop taint propagation at DB reads (e.g. `featureRepo.findById()`). A file with a structurally identical sink to a flagged file may be missed because its taint source flows through a DB lookup. When auditing alert coverage, trace the source manually — don't assume "not flagged = safe".
 - **CodeQL inline suppression does NOT work with GitHub default setup:** `// codeql[query-id]` and `// lgtm[query-id]` comments are recognized by the CodeQL CLI's `AlertSuppression.ql` query but GitHub's code scanning pipeline does NOT run that query. Maintainer Arthur Baars confirmed on github/codeql#9298: *"Alert suppression using //lgtm or otherwise is not supported by GitHub Code Scanning."* Issue closed as "not planned." The ONLY supported ways to suppress false positives are: (1) REST API dismissal `gh api --method PATCH repos/OWNER/REPO/code-scanning/alerts/N -f state=dismissed -f dismissed_reason='false positive' -f dismissed_comment='...'` (max 280 chars), (2) GitHub UI dismissal, (3) fixing the code so taint analysis no longer flags it. Do NOT add inline `// codeql[...]` comments — they are dead code that falsely implies suppression. Use `// SECURITY:` prefix instead for human-readable rationale documenting dismissed alerts.
