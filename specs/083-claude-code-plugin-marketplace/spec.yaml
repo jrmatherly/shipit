@@ -1,0 +1,146 @@
+# Feature Specification (YAML)
+# This is the source of truth. Markdown is auto-generated from this file.
+
+name: claude-code-plugin-marketplace
+number: 083
+branch: feat/083-claude-code-plugin-marketplace
+oneLiner: Browse, install, and manage Claude Code plugins from LiteLLM marketplace in the ShipIT web UI
+summary: >
+  Add a Plugins page to ShipIT that fetches the Claude Code plugin catalog from
+  a user-configured LiteLLM proxy marketplace endpoint, displays plugins in a
+  visual card grid with search/filter, and delegates install/uninstall/enable/disable
+  operations to the claude CLI. Includes a LiteLLM proxy settings section and
+  feature flag gating.
+phase: Requirements
+sizeEstimate: XL
+
+# Relationships
+relatedFeatures:
+  - "005-global-settings-service"
+  - "013-feature-agent"
+  - "015-cursor-support"
+  - "082-agent-permission-modes"
+
+technologies:
+  - TypeScript
+  - TypeSpec
+  - React
+  - Next.js
+  - Zod
+  - SQLite
+  - Vitest
+  - Playwright
+
+relatedLinks:
+  - title: Implementation Plan
+    url: .scratchpad/plans/claude-code-plugin-marketplace.md
+  - title: LiteLLM Plugin Marketplace Docs
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_plugin_marketplace
+  - title: Claude Code Plugin Reference
+    url: https://code.claude.com/docs/en/plugins-reference
+  - title: Claude Code Marketplace Spec
+    url: https://code.claude.com/docs/en/plugin-marketplaces
+
+# Open questions (must be resolved before implementation)
+openQuestions: []
+
+# Markdown content (the actual spec)
+content: |
+  ## Problem Statement
+
+  Claude Code plugins (skills, agents, hooks, MCP servers, LSP servers) are powerful
+  extensibility mechanisms, but discovery and installation is CLI-only via
+  `claude plugin install <name>@<marketplace>`. Organizations running a LiteLLM proxy
+  can curate approved plugins via the `/claude-code/marketplace.json` endpoint, but
+  there is no GUI for browsing this catalog, understanding what each plugin does, or
+  managing installations.
+
+  ShipIT already supports Claude Code as a first-class agent with both batch and
+  interactive executors. Adding plugin marketplace support gives users a visual
+  catalog, lets admins govern plugin availability, and reduces friction for discovery
+  and installation -- all from the ShipIT web UI.
+
+  ## Success Criteria
+
+  - [ ] Users can browse a plugin catalog fetched from their LiteLLM proxy marketplace
+  - [ ] Users can search plugins by name/description and filter by category
+  - [ ] Users can install/uninstall plugins via UI buttons (delegates to `claude` CLI)
+  - [ ] Users can enable/disable installed plugins via UI toggles
+  - [ ] Plugin installation state is accurately reflected (installed, enabled, disabled)
+  - [ ] LiteLLM proxy URL and API key are configurable in Settings
+  - [ ] "Test Connection" button validates proxy connectivity
+  - [ ] Feature is gated behind `featureFlags.plugins` (off by default)
+  - [ ] Plugins page only visible when agent type is Claude Code
+  - [ ] All proxy-supplied data is validated (Zod schemas) and sanitized before rendering
+  - [ ] Subprocess arguments are validated against allowlists (no command injection)
+  - [ ] All 8 locale files have complete i18n key parity
+  - [ ] Every UI component has a colocated Storybook story
+  - [ ] TDD workflow followed: failing tests first in every phase
+
+  ## Affected Areas
+
+  | Area | Impact | Reasoning |
+  | --- | --- | --- |
+  | tsp/domain/entities/settings.tsp | High | New LiteLLMProxyConfig model + plugins feature flag |
+  | packages/core/src/application/ports/ | High | New IPluginMarketplaceService port interface |
+  | packages/core/src/infrastructure/services/ | High | New PluginMarketplaceService (HTTP + subprocess) |
+  | packages/core/src/infrastructure/persistence/sqlite/ | High | Migration + mapper for new settings fields |
+  | packages/core/src/infrastructure/di/ | Medium | DI registration for service + 5 use cases + web tokens |
+  | src/presentation/web/app/plugins/ | High | New Plugins page route |
+  | src/presentation/web/components/features/plugins/ | High | New PluginsPageClient, PluginCard, PluginDetailDrawer |
+  | src/presentation/web/components/features/settings/ | Medium | New LiteLLM proxy settings section |
+  | src/presentation/web/components/layouts/app-sidebar/ | Low | Add Plugins nav item (conditional) |
+  | src/presentation/web/lib/feature-flags.ts | Medium | Add plugins flag to FeatureFlagsState chain |
+  | src/presentation/web/app/actions/ | Medium | 5 new server actions + Storybook mocks |
+  | translations/*/web.json | Medium | New i18n keys across all 8 locales |
+  | tests/ | High | Unit + component + E2E tests across all layers |
+
+  ## Architecture
+
+  **Thin proxy approach:** ShipIT fetches the marketplace catalog from LiteLLM and
+  delegates all plugin lifecycle operations to the `claude` CLI subprocess.
+
+  ```
+  LiteLLM Proxy                    ShipIT                         Claude Code CLI
+  ┌──────────────┐    HTTP GET    ┌─────────────────┐   execFile  ┌──────────────┐
+  │ /claude-code/ │◄─────────────│ PluginMarketplace│───────────►│ claude plugin │
+  │ marketplace.  │  marketplace  │ Service          │  install/  │ install/list/ │
+  │ json          │   catalog     │                  │  list/etc  │ enable/etc    │
+  └──────────────┘               └─────────────────┘            └──────────────┘
+                                        │
+                                        ▼
+                                 ┌─────────────────┐
+                                 │ Plugins Page UI  │
+                                 │ (card grid +     │
+                                 │  detail drawer)  │
+                                 └─────────────────┘
+  ```
+
+  ## Security Requirements
+
+  All data from the LiteLLM proxy is untrusted attacker-controlled input:
+  - Subprocess arguments validated via regex allowlists before execFile
+  - URL scheme validation (http/https only, HTTPS required for non-localhost)
+  - Zod runtime schema validation for all proxy responses AND CLI output
+  - UI string truncation and URL scheme validation before rendering
+  - API key over HTTPS only, plaintext SQLite storage (consistent with agent.token)
+  - Concurrency mutex for plugin operations (one at a time)
+  - Generic error messages to client (no internal details)
+
+  ## Dependencies
+
+  - Spec 005 (Global Settings Service) -- extends Settings model with LiteLLMProxyConfig
+  - Spec 013 (Feature Agent) -- agent type awareness for conditional UI
+  - Spec 082 (Agent Permission Modes) -- permission mode system for Claude Code executor
+
+  ## Size Estimate
+
+  **XL** -- ~35 new files, ~14 modified files, ~2,500 lines across 7 implementation
+  phases. Spans all architecture layers: TypeSpec domain model, SQLite migration,
+  infrastructure service (first HTTP client in project), 5 use cases, 5 server actions,
+  new route/page/components, settings section, feature flag chain, E2E tests.
+  Extensive security validation requirements add complexity.
+
+  ---
+
+  _Generated by `/shipit-kit:new-feature` -- proceed with `/shipit-kit:research`_
