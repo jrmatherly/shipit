@@ -11,7 +11,7 @@ summary: >
   visual card grid with search/filter, and delegates install/uninstall/enable/disable
   operations to the claude CLI. Includes a LiteLLM proxy settings section and
   feature flag gating.
-phase: Requirements
+phase: research
 sizeEstimate: XL
 
 # Relationships

@@ -3,27 +3,319 @@
 
 name: claude-code-plugin-marketplace
 summary: Technical analysis for 083-claude-code-plugin-marketplace
+phase: research
+updatedAt: '2026-04-06'
 
 # Relationships
-relatedFeatures: []
-technologies: []
-relatedLinks: []
+relatedFeatures:
+  - '005-global-settings-service'
+  - '013-feature-agent'
+  - '015-cursor-support'
+  - '082-agent-permission-modes'
+
+technologies:
+  - TypeScript
+  - TypeSpec
+  - React
+  - Next.js
+  - Zod
+  - SQLite
+  - Vitest
+  - Playwright
+
+relatedLinks:
+  - title: Implementation Plan (3 review iterations, 36 findings addressed)
+    url: .scratchpad/plans/claude-code-plugin-marketplace.md
+  - title: LiteLLM Plugin Marketplace Docs (verified from GitHub source)
+    url: https://docs.litellm.ai/docs/tutorials/claude_code_plugin_marketplace
+  - title: Claude Code Plugin Reference
+    url: https://code.claude.com/docs/en/plugins-reference
+  - title: Claude Code Marketplace Spec
+    url: https://code.claude.com/docs/en/plugin-marketplaces
+  - title: LiteLLM Raw Docs Source (verification)
+    url: https://raw.githubusercontent.com/BerriAI/litellm/main/docs/my-website/docs/tutorials/claude_code_plugin_marketplace.md
 
 # Structured technology decisions
 decisions:
-  - title: { { DECISION_TITLE } }
-    chosen: { { CHOSEN_OPTION } }
+  - title: Architecture approach - thin proxy vs deep integration
+    chosen: >
+      Thin proxy: ShipIT fetches marketplace catalog from LiteLLM via HTTP,
+      delegates all plugin lifecycle operations (install/uninstall/enable/disable)
+      to the claude CLI subprocess
     rejected:
-      - { { OPTION_1 } }
-      - { { OPTION_2 } }
-    rationale: { { RATIONALE } }
+      - >
+        Deep integration: ShipIT manages plugin lifecycle directly by reading/writing
+        ~/.claude/plugins/ files and implementing caching, version resolution, and
+        hook registration internally
+    rationale: >
+      Claude Code's plugin system handles caching, version management, dependency
+      resolution, and hook registration internally. Reimplementing any of this is
+      fragile and breaks on Claude Code version updates. ShipIT's role is limited to:
+      (1) UI layer for browsing with rich cards/search/filter, (2) installation bridge
+      via claude CLI subprocess, (3) status awareness via claude plugin list --json,
+      (4) settings integration for LiteLLM proxy URL storage. This was the unanimous
+      recommendation from the 4-agent architecture review.
 
-# Open questions (should be resolved by end of research)
+  - title: HTTP client library
+    chosen: >
+      Node 22+ built-in fetch with AbortController timeout pattern. No external library.
+      This establishes the first HTTP client pattern in the infrastructure layer.
+    rejected:
+      - axios (unnecessary dependency for simple GET request)
+      - node-fetch (Node 22+ has native fetch)
+      - got (heavy, unnecessary features)
+    rationale: >
+      Node 22+ (project minimum) includes native fetch. A single GET to the marketplace
+      endpoint does not justify adding an HTTP library dependency. The pattern uses
+      AbortController for 10s timeout, redirect: 'error' to prevent SSRF, and response
+      size limit (5MB). This establishes a reusable pattern for future HTTP integrations
+      without adding dependencies.
+
+  - title: Runtime validation strategy
+    chosen: >
+      Zod schemas for all external data boundaries: LiteLLM proxy JSON response,
+      claude plugin list --json CLI output, and all user-supplied inputs (plugin names,
+      URLs, scopes)
+    rejected:
+      - TypeSpec-generated types only (no runtime validation)
+      - io-ts (less ecosystem adoption, heavier syntax)
+      - ajv/JSON Schema (less ergonomic for TypeScript)
+    rationale: >
+      All data from LiteLLM proxy is untrusted. Zod is already a project dependency and
+      provides TypeScript-native runtime validation. The security review identified that
+      every field must be validated before it reaches subprocess arguments or the UI.
+      Zod schemas validate at two boundaries: (1) HTTP response from LiteLLM, (2) JSON
+      output from claude CLI subprocess.
+
+  - title: Subprocess argument safety
+    chosen: >
+      Input validation via regex allowlists + execFile with arguments as separate array
+      elements. Plugin names validated against ^[a-zA-Z0-9_-]+$, scope against exact
+      allowlist ('user' | 'project' | 'local'), URLs against scheme validation.
+      Never shell: true, never string concatenation.
+    rejected:
+      - shell-quote npm package (CodeQL does not model it as a sanitizer)
+      - Custom shell-escape functions (CodeQL treats as opaque, taint flows through)
+      - Relying on execFile alone without input validation
+    rationale: >
+      The security review identified subprocess command injection as the highest-risk
+      attack vector. execFile without shell: true prevents shell metacharacter injection,
+      but input validation adds defense-in-depth. The regex allowlists are intentionally
+      strict to reject any unexpected characters. shell-quote was explicitly rejected because
+      CodeQL's js/command-line-injection does not recognize it (zero references in CodeQL's
+      javascript/ql/lib/semmle/javascript/frameworks/).
+
+  - title: Plugin state tracking
+    chosen: >
+      Query claude plugin list --json at runtime for current installation state.
+      Do NOT read/write ~/.claude/plugins/ files directly.
+    rejected:
+      - Read installed_plugins.json directly from filesystem
+      - Maintain a shadow copy of plugin state in ShipIT's SQLite
+    rationale: >
+      Claude Code owns its plugin state files and their internal format may change
+      between versions. The CLI provides a stable interface via --json flag.
+      Reading files directly would create a fragile coupling. The CLI command was
+      empirically verified: claude plugin list --json and --available flags both
+      confirmed working.
+
+  - title: Feature flag placement
+    chosen: >
+      Add plugins feature flag in Phase 1 (domain model phase) so all subsequent
+      phases can gate behind it from the start. Flag added to TypeSpec FeatureFlags
+      model, defaults to false.
+    rejected:
+      - Add feature flag in the UI phase (Phase 5) when first needed
+    rationale: >
+      Adding the flag early enables incremental commits per phase without exposing
+      unfinished UI. The feature flag chain touches 8 files (TypeSpec model, codegen,
+      factory, migration, mapper, feature-flags.ts, settings section, i18n) and must
+      be done atomically. Deferring it would block Phase 5+6 parallelization.
+
+  - title: Settings persistence for LiteLLM proxy config
+    chosen: >
+      SQLite columns (litellm_proxy_base_url, litellm_proxy_api_key,
+      litellm_proxy_marketplace_enabled, feature_flag_plugins) added via migration 054.
+      Flattened column layout matching existing settings mapper pattern.
+    rejected:
+      - JSON blob column for proxy config
+      - Separate litellm_config table
+    rationale: >
+      The existing settings mapper uses flattened columns for nested domain objects
+      (e.g., agent config fields are separate columns, not a JSON blob). Following
+      this pattern ensures consistency and enables SQL-level queries. The migration
+      number 054 follows the existing sequence.
+
+  - title: UI component library for plugins page
+    chosen: >
+      Reuse existing editorial design system components (SettingsSection, SettingsRow,
+      SwitchRow, BaseDrawer, card grid patterns from Tools page). No new component
+      library dependencies.
+    rejected:
+      - New card component library
+      - Custom grid system
+    rationale: >
+      The Tools page and Skills page already provide browse/install patterns with card
+      grids and drawer details. The editorial design system (Stitch refresh) has
+      established tokens and utility classes. Reusing these patterns ensures visual
+      consistency and reduces implementation scope.
+
+  - title: Sidebar icon for plugins
+    chosen: Blocks icon from lucide-react
+    rejected:
+      - Puzzle icon (already used by Skills page)
+      - Package icon (too generic)
+    rationale: >
+      The Puzzle icon is already assigned to the Skills nav item. Blocks conveys
+      the concept of composable plugin components. Identified during 4-agent
+      architecture review to prevent icon collision.
+
+# CLI command verification (empirically tested on local machine)
+cliVerification:
+  verified:
+    - command: claude plugin install <name>@<marketplace> --scope <scope>
+      status: VERIFIED
+      method: claude plugin --help on local machine
+    - command: claude plugin uninstall <name>@<marketplace>
+      status: VERIFIED
+      method: claude plugin --help on local machine
+    - command: claude plugin enable <name>@<marketplace>
+      status: VERIFIED
+      method: claude plugin --help on local machine
+    - command: claude plugin disable <name>@<marketplace>
+      status: VERIFIED
+      method: claude plugin --help on local machine
+    - command: claude plugin list --json --available
+      status: VERIFIED
+      method: claude plugin list --help on local machine
+    - command: claude plugin marketplace add/list/remove/update
+      status: VERIFIED
+      method: claude plugin marketplace --help on local machine
+    - command: claude plugin validate
+      status: VERIFIED
+      method: claude plugin --help on local machine
+  doesNotExist:
+    - command: claude plugin search
+      status: DOES NOT EXIST
+      note: Removed from plan. Use claude plugin list --json --available instead.
+
+# LiteLLM endpoint verification (confirmed from GitHub source)
+litellmVerification:
+  publicEndpoint:
+    path: GET /claude-code/marketplace.json
+    auth: none required
+    status: VERIFIED
+    source: github.com/BerriAI/litellm raw docs
+  adminEndpoints:
+    - method: POST
+      path: /claude-code/plugins
+      purpose: Register plugin
+      auth: required
+    - method: GET
+      path: /claude-code/plugins
+      purpose: List all plugins
+      auth: required
+    - method: POST
+      path: /claude-code/plugins/{name}/enable
+      purpose: Enable plugin
+      auth: required
+    - method: POST
+      path: /claude-code/plugins/{name}/disable
+      purpose: Disable plugin
+      auth: required
+    - method: DELETE
+      path: /claude-code/plugins/{name}
+      purpose: Delete plugin
+      auth: required
+  pluginSchema:
+    fields:
+      - name (string, required)
+      - source (object with source type + repo/url/path)
+      - version (string, optional)
+      - description (string, optional)
+      - category (string, optional)
+      - keywords (string[], optional)
+    sourceFormats:
+      - type: github
+        fields: repo (org/name)
+      - type: url
+        fields: url (git URL)
+      - type: git-subdir
+        fields: url + path
+  docsNote: >
+    docs.litellm.ai/llms-full.txt does NOT mention the marketplace.
+    Marketplace docs are in the tutorials section only.
+
+# Claude Code plugin system summary (April 2026)
+pluginSystem:
+  manifest: .claude-plugin/plugin.json
+  components:
+    - Skills (SKILL.md)
+    - Agents (.md)
+    - Hooks (hooks.json)
+    - MCP Servers (.mcp.json)
+    - LSP Servers (.lsp.json)
+    - Output Styles
+    - Slash Commands
+  installation: claude plugin install <name>@<marketplace> --scope user|project|local
+  marketplaces: Git repos with .claude-plugin/marketplace.json catalog
+  cache: ~/.claude/plugins/cache/<marketplace>/<plugin>/<version>/
+  registry: ~/.claude/plugins/installed_plugins.json (v2 format)
+  knownMarketplaces: ~/.claude/plugins/known_marketplaces.json
+  settings: enabledPlugins object in ~/.claude/settings.json
+
+# ShipIT existing infrastructure relevant to this feature
+existingInfrastructure:
+  toolInstaller: Auto-discovers tool JSON in packages/core/src/infrastructure/services/tool-installer/tools/
+  agentExecutors: Claude Code batch (claude CLI subprocess) and interactive (Anthropic SDK v2 session API)
+  authDetection: Two-tier system with LiteLLM proxy detected via ANTHROPIC_API_KEY env var
+  settings: SQLite-persisted, deep-merge updates via updateSettingsAction
+  uiPatterns: Tools page and Skills page provide browse/install card grid + drawer detail patterns
+  httpClient: No existing HTTP fetch in infrastructure layer - this feature establishes the pattern
+  nodeVersion: Node 22+ required (native fetch available)
+
+# Open questions (all resolved during plan review iterations)
 openQuestions:
-  []
-  # - question: "Which library should we use?"
-  #   resolved: true
-  #   answer: "Library X because of Y"
+  - question: Should ShipIT manage plugin lifecycle directly or delegate to claude CLI?
+    resolved: true
+    answer: >
+      Delegate to claude CLI. Claude Code owns caching, versioning, dependency
+      resolution, and hook registration. ShipIT provides UI + subprocess bridge only.
+  - question: How to handle the missing claude plugin search command?
+    resolved: true
+    answer: >
+      Use claude plugin list --json --available instead. The search command does not
+      exist (empirically verified). Plan was corrected in v2.
+  - question: Is LiteLLM marketplace endpoint documented and stable?
+    resolved: true
+    answer: >
+      Yes. Verified from raw GitHub source at BerriAI/litellm. The endpoint
+      GET /claude-code/marketplace.json is public (no auth). Admin CRUD endpoints
+      require auth. Note: docs.litellm.ai/llms-full.txt does NOT mention it;
+      it is in the tutorials section only.
+  - question: What is the first HTTP client pattern for ShipIT infrastructure?
+    resolved: true
+    answer: >
+      Node 22+ native fetch with AbortController (10s timeout), redirect: 'error',
+      response size limit (5MB), Zod validation. No external library needed.
+  - question: How should subprocess arguments be secured against injection?
+    resolved: true
+    answer: >
+      Regex allowlists for plugin names (^[a-zA-Z0-9_-]+$), scope exact-match
+      allowlist, URL scheme validation. Always execFile with args as separate
+      array elements. Never shell: true or string concatenation. shell-quote npm
+      package rejected because CodeQL does not model it as a barrier.
+  - question: Should feature flag be added early or with the UI?
+    resolved: true
+    answer: >
+      Early (Phase 1). The flag chain touches 8 files and must be atomic.
+      Adding it early enables incremental commits without exposing unfinished UI
+      and enables Phase 5+6 parallelization.
+  - question: What sidebar icon to use for Plugins?
+    resolved: true
+    answer: >
+      Blocks from lucide-react. Puzzle is already used by Skills page.
+      Identified during 4-agent architecture review.
 
 # Markdown content (the full research document)
 content: |
@@ -31,39 +323,183 @@ content: |
 
   - **Phase:** Research
   - **Updated:** 2026-04-06
+  - **Review iterations:** 3 (v1 initial, v2 CLI-corrected, v3 team-reviewed with 36 findings)
 
   ## Technology Decisions
 
-  ### {{DECISION_TITLE}}
+  ### Architecture: Thin Proxy vs Deep Integration
 
   **Options considered:**
 
-  1. {{OPTION_1}}
-  2. {{OPTION_2}}
-  3. {{OPTION_3}}
+  1. **Thin proxy (chosen):** ShipIT fetches marketplace catalog from LiteLLM via HTTP GET,
+     delegates all plugin lifecycle operations to the `claude` CLI subprocess
+  2. **Deep integration (rejected):** ShipIT manages plugin lifecycle directly by reading/writing
+     `~/.claude/plugins/` files and implementing caching, version resolution, and hook registration
 
-  **Decision:** {{CHOSEN_OPTION}}
+  **Decision:** Thin proxy
 
-  **Rationale:** {{RATIONALE}}
+  **Rationale:** Claude Code's plugin system handles caching, version management, dependency
+  resolution, and hook registration internally. Reimplementing any of this is fragile and breaks
+  on Claude Code version updates. ShipIT's role is: (1) UI layer for browsing, (2) installation
+  bridge via subprocess, (3) status awareness via `claude plugin list --json`, (4) settings
+  integration for proxy URL storage. Unanimous recommendation from the 4-agent architecture review.
+
+  ### HTTP Client: Native fetch vs External Library
+
+  **Options considered:**
+
+  1. **Node 22+ built-in fetch (chosen)** with AbortController timeout
+  2. axios -- unnecessary dependency for a single GET
+  3. node-fetch -- Node 22+ has native fetch
+  4. got -- heavy, unnecessary features
+
+  **Decision:** Native fetch
+
+  **Rationale:** This is the first HTTP client in the infrastructure layer. The pattern uses
+  AbortController for 10s timeout, `redirect: 'error'` to prevent SSRF, and response size
+  limit (5MB). This establishes a reusable pattern for future HTTP integrations without
+  adding dependencies.
+
+  ### Runtime Validation: Zod Schemas
+
+  **Options considered:**
+
+  1. **Zod (chosen)** -- already a project dependency, TypeScript-native
+  2. TypeSpec-generated types only -- no runtime validation (rejected: unsafe)
+  3. io-ts -- less ecosystem adoption
+  4. ajv/JSON Schema -- less ergonomic for TypeScript
+
+  **Decision:** Zod at all external data boundaries
+
+  **Rationale:** All data from LiteLLM proxy is untrusted. Zod validates at two boundaries:
+  (1) HTTP response from LiteLLM, (2) JSON output from `claude` CLI subprocess. The security
+  review identified this as critical for both injection prevention and UI safety.
+
+  ### Subprocess Security: Allowlist Validators
+
+  **Options considered:**
+
+  1. **Regex allowlists + execFile with array args (chosen)**
+  2. shell-quote npm package (rejected: CodeQL does not model it as sanitizer)
+  3. Custom shell-escape functions (rejected: CodeQL treats as opaque)
+  4. execFile alone without input validation (rejected: insufficient defense-in-depth)
+
+  **Decision:** Strict input validation + execFile
+
+  **Rationale:** Plugin names must match `^[a-zA-Z0-9_-]+$`. Scope must exactly match
+  `'user' | 'project' | 'local'`. URLs validated for scheme. Arguments always as separate
+  array elements to `execFile`. `shell-quote` was explicitly rejected because CodeQL's
+  `js/command-line-injection` does not recognize it (zero references in CodeQL's
+  `javascript/ql/lib/semmle/javascript/frameworks/`).
+
+  ### Plugin State: CLI Query vs Filesystem Read
+
+  **Options considered:**
+
+  1. **Query `claude plugin list --json` at runtime (chosen)**
+  2. Read `installed_plugins.json` directly (rejected: fragile coupling)
+  3. Shadow copy in ShipIT's SQLite (rejected: sync complexity)
+
+  **Decision:** CLI query
+
+  **Rationale:** Claude Code owns its plugin state files. Internal format may change between
+  versions. The CLI provides a stable `--json` interface. Both `--json` and `--available`
+  flags empirically verified.
 
   ## Library Analysis
 
-  | Library     | Version     | Purpose     | Pros     | Cons     |
-  | ----------- | ----------- | ----------- | -------- | -------- |
-  | {{LIBRARY}} | {{VERSION}} | {{PURPOSE}} | {{PROS}} | {{CONS}} |
+  | Library | Version | Purpose | Pros | Cons |
+  | --- | --- | --- | --- | --- |
+  | Zod | existing dep | Runtime validation of proxy responses + CLI output | Already in project, TS-native, great error messages | Adds ~200 lines of schema definitions |
+  | Node fetch | Node 22+ built-in | HTTP GET to LiteLLM marketplace endpoint | Zero dependency, native AbortController support | Less feature-rich than axios/got (sufficient) |
+  | lucide-react | existing dep | Blocks icon for sidebar nav | Already in project, consistent with other nav icons | None |
+
+  No new dependencies required. All technologies are already in the project stack.
+
+  ## CLI Command Verification
+
+  All commands empirically verified on local machine:
+
+  | Command | Status | Notes |
+  | --- | --- | --- |
+  | `claude plugin install <name>@<marketplace> --scope <scope>` | VERIFIED | All flags confirmed |
+  | `claude plugin uninstall <name>@<marketplace>` | VERIFIED | |
+  | `claude plugin enable <name>@<marketplace>` | VERIFIED | |
+  | `claude plugin disable <name>@<marketplace>` | VERIFIED | |
+  | `claude plugin list --json --available` | VERIFIED | Both flags confirmed |
+  | `claude plugin marketplace add/list/remove/update` | VERIFIED | All subcommands exist |
+  | `claude plugin validate` | VERIFIED | Validates manifests |
+  | `claude plugin search` | **DOES NOT EXIST** | Removed from plan; use `list --available` |
 
   ## Security Considerations
 
-  No security implications identified.
+  All data from the LiteLLM proxy is **untrusted attacker-controlled input**:
+
+  1. **Subprocess argument validation:** Plugin names must match `^[a-zA-Z0-9_-]+$`.
+     Scope must be exactly `'user' | 'project' | 'local'`. Arguments always passed as
+     separate array elements to `execFile` (never concatenated, never `shell: true`).
+
+  2. **URL validation:** Proxy base URL must be `http:` or `https:` scheme only. HTTPS
+     required for non-localhost URLs. Request timeout (10s) and response size limit (5MB).
+     No redirect following (`redirect: 'error'` prevents SSRF).
+
+  3. **UI sanitization:** Truncate display strings (name: 100 chars, description: 2000 chars).
+     Validate source URLs against `https:` scheme before rendering as links. Never render
+     raw HTML from proxy data.
+
+  4. **Runtime schema validation:** Zod validates proxy JSON responses AND `claude plugin
+     list --json` output before processing. Reject malformed entries.
+
+  5. **API key security:** Stored plaintext in SQLite (consistent with existing `agent.token`
+     pattern). Never logged or included in error responses. Require HTTPS when transmitting.
+
+  6. **Concurrency guard:** Single mutex for plugin operations (one install/uninstall/toggle
+     at a time). Subprocess timeout: 30s.
+
+  7. **Error privacy:** "Test Connection" and all server actions return generic success/failure
+     only. No detailed error messages to client. Log details server-side.
 
   ## Performance Implications
 
-  No performance implications identified.
+  1. **Catalog fetch latency:** HTTP GET to LiteLLM proxy adds ~100-500ms per page load.
+     Catalog is fetched on-demand (no background polling). Future optimization: consider
+     client-side caching with SWR/stale-while-revalidate pattern.
 
-  ## Open Questions
+  2. **Subprocess overhead:** Each `claude plugin list --json` spawns a child process (~200ms).
+     Called once per page load to determine installation state. Acceptable for a settings-tier page.
 
-  All questions resolved.
+  3. **Response size limit:** 5MB cap prevents memory exhaustion from malicious proxy responses.
+     Typical marketplace catalogs are well under 100KB.
+
+  4. **No background sync:** Plugin state is queried on-demand, not polled. This avoids
+     background resource usage but means state may be slightly stale if plugins are
+     installed/uninstalled via CLI while the page is open.
+
+  ## Anti-Patterns to Avoid
+
+  - Do NOT read/write `~/.claude/settings.json` or `installed_plugins.json` directly
+  - Do NOT implement plugin caching (Claude Code handles this)
+  - Do NOT parse plugin component files (display metadata only)
+  - Do NOT assume marketplace.json format (validate with Zod)
+  - Do NOT bundle MCP server functionality (plugins bring their own)
+  - Do NOT make UI Claude Code-specific (design for future agent plugin systems)
+  - Do NOT use `claude plugin search` (does not exist)
+  - Do NOT use `shell: true` or string concatenation for subprocess arguments
+  - Do NOT render proxy-supplied URLs without scheme validation
+  - Do NOT use `resolve(ClassRef)` in server actions (must use string tokens)
+
+  ## Resolved Questions
+
+  All 7 open questions from spec review have been resolved. See `openQuestions` array above.
+
+  ## Review History
+
+  - **v1:** Initial plan from research agents
+  - **v2:** Corrected after empirical CLI verification (removed `search` command, fixed
+    TypeSpec path, fixed source schema, added admin endpoints)
+  - **v3:** Updated after 4-agent team review (architecture, security, testing, feasibility)
+    with 36 findings addressed across critical/high/medium severity
 
   ---
 
-  _Updated by `/shipit-kit:research` — proceed with `/shipit-kit:plan`_
+  _Updated by `/shipit-kit:research` -- proceed with `/shipit-kit:plan`_
