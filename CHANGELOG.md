@@ -1,3 +1,10 @@
+# [1.172.0](https://github.com/jrmatherly/shipit/compare/v1.171.0...v1.172.0) (2026-04-06)
+
+
+### Features
+
+* **agents:** litellm multi-agent proxy routing ([#14](https://github.com/jrmatherly/shipit/issues/14)) ([b431841](https://github.com/jrmatherly/shipit/commit/b431841fd804982661364f7f9fc5933bf2ffbd7e))
+
 # [1.171.0](https://github.com/jrmatherly/shipit/compare/v1.170.0...v1.171.0) (2026-04-06)
 
 
