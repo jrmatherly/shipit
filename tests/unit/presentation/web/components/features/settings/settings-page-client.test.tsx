@@ -9,6 +9,10 @@ vi.mock('@/app/actions/update-settings', () => ({
   updateSettingsAction: vi.fn().mockResolvedValue({ success: true }),
 }));
 
+vi.mock('@/app/actions/add-marketplace', () => ({
+  addMarketplaceAction: vi.fn().mockResolvedValue({ success: true }),
+}));
+
 vi.mock('sonner', () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));

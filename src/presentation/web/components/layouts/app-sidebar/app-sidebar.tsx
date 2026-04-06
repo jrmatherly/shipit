@@ -12,6 +12,7 @@ import {
   ZapOff,
   Wrench,
   Puzzle,
+  Blocks,
   Settings,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -166,6 +167,14 @@ export function AppSidebar({
               label={t('navigation.skills')}
               href="/skills"
               active={pathname === '/skills'}
+            />
+          ) : null}
+          {featureFlags.plugins ? (
+            <SidebarNavItem
+              icon={Blocks}
+              label={t('navigation.plugins')}
+              href="/plugins"
+              active={pathname === '/plugins'}
             />
           ) : null}
           <SidebarNavItem

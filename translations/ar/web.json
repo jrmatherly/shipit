@@ -16,7 +16,8 @@
       "flags": "العلامات",
       "chat": "المحادثة",
       "layout": "التخطيط",
-      "database": "قاعدة البيانات"
+      "database": "قاعدة البيانات",
+      "proxy": "وكيل LiteLLM"
     },
     "language": {
       "title": "اللغة",

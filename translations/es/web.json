@@ -16,7 +16,8 @@
       "flags": "Opciones",
       "chat": "Chat",
       "layout": "Diseño",
-      "database": "Base de datos"
+      "database": "Base de datos",
+      "proxy": "Proxy LiteLLM"
     },
     "language": {
       "title": "Idioma",

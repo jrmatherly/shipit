@@ -16,7 +16,8 @@
       "flags": "דגלים",
       "chat": "צ'אט",
       "layout": "פריסה",
-      "database": "מסד נתונים"
+      "database": "מסד נתונים",
+      "proxy": "פרוקסי LiteLLM"
     },
     "language": {
       "title": "שפה",

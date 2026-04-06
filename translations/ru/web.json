@@ -16,7 +16,8 @@
       "flags": "Флаги",
       "chat": "Чат",
       "layout": "Расположение",
-      "database": "База данных"
+      "database": "База данных",
+      "proxy": "LiteLLM Прокси"
     },
     "language": {
       "title": "Язык",
