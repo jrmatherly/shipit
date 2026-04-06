@@ -12,15 +12,13 @@ describe('FetchPluginCatalogUseCase', () => {
 
   beforeEach(() => {
     mockMarketplaceService = {
-      fetchCatalog: vi
-        .fn()
-        .mockResolvedValue([
-          {
-            name: 'test-plugin',
-            description: 'A test',
-            source: { source: 'github', repo: 'org/test' },
-          },
-        ]),
+      fetchCatalog: vi.fn().mockResolvedValue([
+        {
+          name: 'test-plugin',
+          description: 'A test',
+          source: { source: 'github', repo: 'org/test' },
+        },
+      ]),
       listInstalled: vi
         .fn()
         .mockResolvedValue([{ id: 'test-plugin@mp', scope: 'user', enabled: true }]),
