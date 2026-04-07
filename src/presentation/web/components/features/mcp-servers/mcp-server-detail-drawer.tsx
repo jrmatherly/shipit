@@ -36,7 +36,7 @@ export function McpServerDetailDrawer({
   open,
   onClose,
 }: McpServerDetailDrawerProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('web');
   const [tools, setTools] = useState<McpToolInfo[]>([]);
   const [loadingTools, setLoadingTools] = useState(false);
   const [toolError, setToolError] = useState<string | null>(null);

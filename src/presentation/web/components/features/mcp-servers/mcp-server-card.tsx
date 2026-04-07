@@ -18,7 +18,7 @@ const TRANSPORT_ICONS: Record<string, typeof Server> = {
 };
 
 export function McpServerCard({ server, onSelect }: McpServerCardProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('web');
   const TransportIcon = TRANSPORT_ICONS[server.transport] ?? Server;
   const description = server.mcp_info?.description ?? '';
 

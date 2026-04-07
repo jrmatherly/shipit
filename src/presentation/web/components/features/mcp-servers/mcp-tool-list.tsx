@@ -52,7 +52,7 @@ export function groupToolsByServer(tools: McpToolInfo[], serverNames: string[]):
 }
 
 export function McpToolList({ tools, serverNames }: McpToolListProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('web');
   const grouped = useMemo(() => groupToolsByServer(tools, serverNames), [tools, serverNames]);
 
   if (tools.length === 0) {

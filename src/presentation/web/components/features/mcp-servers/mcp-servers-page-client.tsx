@@ -18,7 +18,7 @@ interface McpServersPageClientProps {
 const TRANSPORT_FILTERS = ['all', 'http', 'sse', 'stdio'] as const;
 
 export function McpServersPageClient({ proxyConfigured }: McpServersPageClientProps) {
-  const { t } = useTranslation();
+  const { t } = useTranslation('web');
   const [searchQuery, setSearchQuery] = useState('');
   const [transportFilter, setTransportFilter] = useState<string>('all');
   const [selectedServer, setSelectedServer] = useState<McpServerInfo | null>(null);
