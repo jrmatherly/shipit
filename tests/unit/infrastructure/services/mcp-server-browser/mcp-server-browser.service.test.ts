@@ -263,5 +263,44 @@ describe('McpServerBrowserService', () => {
 
       expect(fetchSpy).toHaveBeenCalled();
     });
+
+    it('parses Server-Sent Events response format with text/event-stream content-type', async () => {
+      // MCP Streamable HTTP transport often returns SSE even for a single response.
+      // Format: "event: message\ndata: {json}\n\n"
+      const sseBody = `event: message\ndata: ${JSON.stringify(mockJsonRpcToolsResponse)}\n\n`;
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(sseBody, {
+          status: 200,
+          headers: { 'content-type': 'text/event-stream' },
+        })
+      );
+
+      const result = await service.fetchTools(baseUrl, serverName);
+      expect(result).toHaveLength(2);
+      expect(result[0].name).toBe('read_wiki');
+    });
+
+    it('parses SSE body even when content-type header is missing (fallback)', async () => {
+      const sseBody = `data: ${JSON.stringify(mockJsonRpcToolsResponse)}\n\n`;
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        // No content-type header — our code must detect SSE format from body shape
+        new Response(sseBody, { status: 200 })
+      );
+
+      const result = await service.fetchTools(baseUrl, serverName);
+      expect(result).toHaveLength(2);
+    });
+
+    it('returns empty array when SSE response has no data line', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response('event: ping\n\n', {
+          status: 200,
+          headers: { 'content-type': 'text/event-stream' },
+        })
+      );
+
+      const result = await service.fetchTools(baseUrl, serverName);
+      expect(result).toEqual([]);
+    });
   });
 });

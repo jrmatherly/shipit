@@ -153,15 +153,62 @@ async function fetchJson(endpoint: string, options: FetchJsonOptions): Promise<u
 
     if (!res.ok) return null;
 
+    const contentType = res.headers.get('content-type')?.toLowerCase() ?? '';
     const text = await res.text();
     if (text.length > MAX_RESPONSE_SIZE) return null;
+
+    // MCP Streamable HTTP transport may return either application/json
+    // or text/event-stream. SSE responses look like:
+    //   event: message
+    //   data: {"jsonrpc":"2.0","id":1,"result":{"tools":[...]}}
+    //
+    // We extract the first `data:` line's payload and parse that as JSON.
+    // If the content type is JSON, we parse directly.
+    if (contentType.includes('text/event-stream')) {
+      return parseSseFirstDataEvent(text);
+    }
 
     try {
       return JSON.parse(text) as unknown;
     } catch {
-      return null;
+      // Some servers omit the content-type header but return SSE anyway.
+      // Try SSE parsing as a fallback before giving up.
+      return parseSseFirstDataEvent(text);
     }
   } finally {
     clearTimeout(timeout);
+  }
+}
+
+/**
+ * Extract the first `data: ...` payload from a Server-Sent Events response
+ * body and parse it as JSON. Returns null if no valid data line is found.
+ *
+ * Handles:
+ *   event: message
+ *   data: {"jsonrpc":"2.0",...}
+ *
+ * And multi-line data fields (per SSE spec — though rare for MCP).
+ */
+function parseSseFirstDataEvent(body: string): unknown {
+  const lines = body.split(/\r?\n/);
+  const dataParts: string[] = [];
+
+  for (const line of lines) {
+    if (line.startsWith('data:')) {
+      // Strip the "data:" prefix and any single leading space.
+      dataParts.push(line.slice(5).replace(/^ /, ''));
+    } else if (line === '' && dataParts.length > 0) {
+      // Empty line terminates the first SSE event — stop collecting.
+      break;
+    }
+  }
+
+  if (dataParts.length === 0) return null;
+
+  try {
+    return JSON.parse(dataParts.join('\n')) as unknown;
+  } catch {
+    return null;
   }
 }

@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button';
 import { RefreshCw } from 'lucide-react';
 import { McpToolList } from './mcp-tool-list';
 import { McpConnectInstructions } from './mcp-connect-instructions';
+import { McpServerIcon } from './mcp-server-icon';
 import { fetchMcpServerToolsAction } from '@/app/actions/fetch-mcp-server-tools';
 import type {
   McpServerInfo,
@@ -69,8 +70,8 @@ export function McpServerDetailDrawer({
 
   const handleRefresh = useCallback(() => {
     if (!server) return;
-    // Clear the cached server name to force a re-fetch on the next render
-    // and call loadTools directly for immediate feedback.
+    // Clear the cached server name to force a re-fetch and call loadTools
+    // directly for immediate feedback.
     setLoadedServerName(null);
     loadTools(server.server_name);
   }, [server, loadTools]);
@@ -80,71 +81,117 @@ export function McpServerDetailDrawer({
   const description = server.mcp_info?.description ?? '';
 
   return (
-    <BaseDrawer open={open} onClose={onClose}>
-      <DrawerTitle>{server.name}</DrawerTitle>
-      {description ? <DrawerDescription>{description}</DrawerDescription> : null}
-
-      <Separator className="my-4" />
-
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground text-xs">{t('mcpServers.detail.serverName')}</span>
-          <span className="font-mono text-xs">{server.server_name}</span>
-        </div>
-
-        {isValidDisplayUrl(server.url) ? (
-          <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs">{t('mcpServers.detail.url')}</span>
-            <span className="max-w-[200px] truncate font-mono text-xs">{server.url}</span>
+    <BaseDrawer open={open} onClose={onClose} data-testid="mcp-server-detail-drawer">
+      <div className="flex flex-col gap-6 overflow-y-auto p-6">
+        {/* Header */}
+        <div className="space-y-2">
+          <span className="text-[10px] font-bold tracking-[0.2em] text-slate-400 uppercase">
+            {t(`mcpServers.transport.${server.transport}`, server.transport.toUpperCase())} &middot;
+            MCP Server
+          </span>
+          <div className="flex items-start gap-3">
+            <div className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-slate-100 ring-1 ring-slate-200/50 dark:bg-slate-800 dark:ring-slate-700/50">
+              <McpServerIcon
+                serverName={server.server_name}
+                url={server.url}
+                transport={server.transport}
+                size="lg"
+              />
+            </div>
+            <DrawerTitle className="text-foreground mt-2 text-lg font-bold tracking-tight">
+              {server.name}
+            </DrawerTitle>
           </div>
-        ) : null}
-
-        <div className="flex items-center justify-between">
-          <span className="text-muted-foreground text-xs">{t('mcpServers.detail.transport')}</span>
-          <Badge variant="outline" className="text-xs">
-            {t(`mcpServers.transport.${server.transport}`, server.transport.toUpperCase())}
-          </Badge>
+          {description ? (
+            <DrawerDescription className="text-muted-foreground text-sm leading-relaxed">
+              {description}
+            </DrawerDescription>
+          ) : null}
         </div>
 
-        {server.auth_type && server.auth_type !== 'none' ? (
+        <Separator />
+
+        {/* Metadata */}
+        <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-muted-foreground text-xs">{t('mcpServers.detail.authType')}</span>
-            <Badge variant="secondary" className="text-xs">
-              {t(`mcpServers.authType.${server.auth_type}`, server.auth_type)}
+            <span className="text-muted-foreground text-xs font-medium">
+              {t('mcpServers.detail.serverName')}
+            </span>
+            <span className="font-mono text-xs">{server.server_name}</span>
+          </div>
+
+          {isValidDisplayUrl(server.url) ? (
+            <div className="flex items-center justify-between gap-4">
+              <span className="text-muted-foreground shrink-0 text-xs font-medium">
+                {t('mcpServers.detail.url')}
+              </span>
+              <span className="truncate font-mono text-xs" title={server.url}>
+                {server.url}
+              </span>
+            </div>
+          ) : null}
+
+          <div className="flex items-center justify-between">
+            <span className="text-muted-foreground text-xs font-medium">
+              {t('mcpServers.detail.transport')}
+            </span>
+            <Badge variant="outline">
+              {t(`mcpServers.transport.${server.transport}`, server.transport.toUpperCase())}
             </Badge>
           </div>
-        ) : null}
+
+          {server.auth_type && server.auth_type !== 'none' ? (
+            <div className="flex items-center justify-between">
+              <span className="text-muted-foreground text-xs font-medium">
+                {t('mcpServers.detail.authType')}
+              </span>
+              <Badge variant="secondary">
+                {t(`mcpServers.authType.${server.auth_type}`, server.auth_type)}
+              </Badge>
+            </div>
+          ) : null}
+        </div>
+
+        <Separator />
+
+        {/* Tools */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between">
+            <h3 className="text-foreground text-sm font-bold tracking-tight">
+              {t('mcpServers.tools.title')}
+            </h3>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="size-7"
+              onClick={handleRefresh}
+              disabled={loadingTools}
+              aria-label={t('mcpServers.tools.refresh')}
+              data-testid="mcp-tools-refresh"
+            >
+              <RefreshCw className={`size-3.5 ${loadingTools ? 'animate-spin' : ''}`} />
+            </Button>
+          </div>
+          {loadingTools ? (
+            <p className="text-muted-foreground text-sm">{t('accessibility.loading')}...</p>
+          ) : toolError ? (
+            <p className="text-destructive text-sm">{toolError}</p>
+          ) : (
+            <McpToolList tools={tools} serverName={server.server_name} />
+          )}
+        </div>
+
+        <Separator />
+
+        {/* Connect instructions */}
+        <div className="space-y-3">
+          <h3 className="text-foreground text-sm font-bold tracking-tight">
+            {t('mcpServers.connect.title')}
+          </h3>
+          <McpConnectInstructions proxyBaseUrl={proxyBaseUrl} serverName={server.server_name} />
+        </div>
       </div>
-
-      <Separator className="my-4" />
-
-      <div className="mb-3 flex items-center justify-between">
-        <h3 className="text-sm font-semibold">{t('mcpServers.tools.title')}</h3>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="h-7 w-7"
-          onClick={handleRefresh}
-          disabled={loadingTools}
-          aria-label={t('mcpServers.tools.refresh')}
-          data-testid="mcp-tools-refresh"
-        >
-          <RefreshCw className={`h-3.5 w-3.5 ${loadingTools ? 'animate-spin' : ''}`} />
-        </Button>
-      </div>
-      {loadingTools ? (
-        <p className="text-muted-foreground text-sm">{t('accessibility.loading')}...</p>
-      ) : toolError ? (
-        <p className="text-destructive text-sm">{toolError}</p>
-      ) : (
-        <McpToolList tools={tools} serverName={server.server_name} />
-      )}
-
-      <Separator className="my-4" />
-
-      <h3 className="mb-3 text-sm font-semibold">{t('mcpServers.connect.title')}</h3>
-      <McpConnectInstructions proxyBaseUrl={proxyBaseUrl} serverName={server.server_name} />
     </BaseDrawer>
   );
 }

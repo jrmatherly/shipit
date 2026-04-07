@@ -3,7 +3,7 @@
 import { useTranslation } from 'react-i18next';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Server, Wifi, Terminal } from 'lucide-react';
+import { McpServerIcon } from './mcp-server-icon';
 import type { McpServerInfo } from '@shipit-ai/core/application/ports/output/services/mcp-server-browser.interface';
 
 interface McpServerCardProps {
@@ -11,15 +11,8 @@ interface McpServerCardProps {
   onSelect: (server: McpServerInfo) => void;
 }
 
-const TRANSPORT_ICONS: Record<string, typeof Server> = {
-  http: Server,
-  sse: Wifi,
-  stdio: Terminal,
-};
-
 export function McpServerCard({ server, onSelect }: McpServerCardProps) {
   const { t } = useTranslation('web');
-  const TransportIcon = TRANSPORT_ICONS[server.transport] ?? Server;
   const description = server.mcp_info?.description ?? '';
 
   return (
@@ -34,24 +27,34 @@ export function McpServerCard({ server, onSelect }: McpServerCardProps) {
           onSelect(server);
         }
       }}
+      data-testid={`mcp-server-card-${server.server_name}`}
     >
-      <div className="flex items-start justify-between gap-2">
-        <div className="flex items-center gap-2">
-          <TransportIcon className="text-muted-foreground h-4 w-4 shrink-0" />
-          <h3 className="text-sm font-semibold">{server.name}</h3>
+      <div className="flex items-start gap-3">
+        <div className="flex size-11 shrink-0 items-center justify-center rounded-lg bg-slate-100 ring-1 ring-slate-200/50 dark:bg-slate-800 dark:ring-slate-700/50">
+          <McpServerIcon
+            serverName={server.server_name}
+            url={server.url}
+            transport={server.transport}
+            size="md"
+          />
         </div>
-        <Badge variant="outline" className="shrink-0 text-xs">
-          {t(`mcpServers.transport.${server.transport}`, server.transport.toUpperCase())}
-        </Badge>
+        <h3 className="text-foreground mt-2 min-w-0 flex-1 truncate text-sm leading-tight font-bold tracking-tight">
+          {server.name}
+        </h3>
       </div>
 
       {description ? (
-        <p className="text-muted-foreground mt-2 line-clamp-2 text-xs">{description}</p>
+        <p className="text-muted-foreground mt-3 line-clamp-2 text-xs leading-relaxed">
+          {description}
+        </p>
       ) : null}
 
-      <div className="mt-3 flex items-center gap-2">
+      <div className="mt-4 flex flex-wrap items-center gap-1.5">
+        <Badge variant="outline">
+          {t(`mcpServers.transport.${server.transport}`, server.transport.toUpperCase())}
+        </Badge>
         {server.auth_type && server.auth_type !== 'none' ? (
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary">
             {t(`mcpServers.authType.${server.auth_type}`, server.auth_type)}
           </Badge>
         ) : null}

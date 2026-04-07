@@ -4,8 +4,9 @@ import { useState, useEffect, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
 import { AlertCircle, Search, Server } from 'lucide-react';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import { EmptyState } from '@/components/common/empty-state';
+import { PageHeader } from '@/components/common/page-header';
 import { McpServerCard } from './mcp-server-card';
 import { McpServerDetailDrawer } from './mcp-server-detail-drawer';
 import { fetchMcpServersAction } from '@/app/actions/fetch-mcp-servers';
@@ -21,7 +22,7 @@ const TRANSPORT_FILTERS = ['all', 'http', 'sse', 'stdio'] as const;
 export function McpServersPageClient({ proxyConfigured, proxyBaseUrl }: McpServersPageClientProps) {
   const { t } = useTranslation('web');
   const [searchQuery, setSearchQuery] = useState('');
-  const [transportFilter, setTransportFilter] = useState<string>('all');
+  const [transportFilter, setTransportFilter] = useState<(typeof TRANSPORT_FILTERS)[number]>('all');
   const [selectedServer, setSelectedServer] = useState<McpServerInfo | null>(null);
   const [servers, setServers] = useState<McpServerInfo[]>([]);
   const [loading, setLoading] = useState(true);
@@ -61,67 +62,86 @@ export function McpServersPageClient({ proxyConfigured, proxyBaseUrl }: McpServe
 
   if (!proxyConfigured) {
     return (
-      <div className="flex h-full items-center justify-center p-8">
-        <EmptyState icon={<AlertCircle className="h-8 w-8" />} title={t('mcpServers.noProxy')} />
+      <div className="flex flex-col gap-8 p-8">
+        <PageHeader
+          eyebrow="Developer Portal"
+          title={t('mcpServers.title')}
+          description={t('mcpServers.subtitle')}
+        />
+        <EmptyState icon={<AlertCircle className="size-10" />} title={t('mcpServers.noProxy')} />
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="flex h-full items-center justify-center p-8">
-        <p className="text-muted-foreground">{t('accessibility.loading')}...</p>
+      <div className="flex flex-col gap-8 p-8">
+        <PageHeader
+          eyebrow="Developer Portal"
+          title={t('mcpServers.title')}
+          description={t('mcpServers.subtitle')}
+        />
+        <div className="text-muted-foreground text-center text-sm">
+          {t('accessibility.loading')}...
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-6 p-6">
-      <div>
-        <h1 className="text-2xl font-bold">{t('mcpServers.title')}</h1>
-        {error ? (
-          <div className="border-destructive/50 bg-destructive/10 mt-2 rounded-md border p-3">
-            <div className="flex items-center gap-2">
-              <AlertCircle className="text-destructive h-4 w-4" />
-              <p className="text-destructive text-sm">{error}</p>
-            </div>
-          </div>
-        ) : null}
-        <p className="text-muted-foreground mt-1 text-sm">{t('mcpServers.subtitle')}</p>
-      </div>
+    <div className="flex flex-col gap-8 p-8">
+      <PageHeader
+        eyebrow="Developer Portal"
+        title={t('mcpServers.title')}
+        description={t('mcpServers.subtitle')}
+      />
 
-      <div className="flex flex-wrap items-center gap-3">
+      {error ? (
+        <div
+          role="alert"
+          className="border-destructive/40 bg-destructive/10 editorial-shadow flex items-center gap-2 rounded-xl border px-4 py-3"
+        >
+          <AlertCircle className="text-destructive size-4 shrink-0" />
+          <p className="text-destructive text-sm font-medium">{error}</p>
+        </div>
+      ) : null}
+
+      {/* Search */}
+      <div className="relative">
+        <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
         <Input
           placeholder={t('mcpServers.searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          className="max-w-xs"
+          className="ps-9"
+          data-testid="mcp-servers-search"
         />
-        <div className="flex gap-1">
-          {TRANSPORT_FILTERS.map((filter) => (
-            <Badge
-              key={filter}
-              variant={transportFilter === filter ? 'default' : 'outline'}
-              className="cursor-pointer"
-              onClick={() => setTransportFilter(filter)}
-            >
-              {filter === 'all'
-                ? t('mcpServers.filter.all')
-                : t(`mcpServers.transport.${filter}`, filter.toUpperCase())}
-            </Badge>
-          ))}
-        </div>
+      </div>
+
+      {/* Transport filter */}
+      <div className="flex flex-wrap gap-2">
+        {TRANSPORT_FILTERS.map((filter) => (
+          <Button
+            key={filter}
+            variant={transportFilter === filter ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setTransportFilter(filter)}
+            data-testid={`mcp-servers-filter-${filter}`}
+          >
+            {filter === 'all'
+              ? t('mcpServers.filter.all')
+              : t(`mcpServers.transport.${filter}`, filter.toUpperCase())}
+          </Button>
+        ))}
       </div>
 
       {filtered.length === 0 ? (
-        <div className="flex items-center justify-center py-16">
-          <EmptyState
-            icon={
-              servers.length === 0 ? <Server className="h-8 w-8" /> : <Search className="h-8 w-8" />
-            }
-            title={servers.length === 0 ? t('mcpServers.noServers') : t('mcpServers.noResults')}
-          />
-        </div>
+        <EmptyState
+          icon={
+            servers.length === 0 ? <Server className="size-10" /> : <Search className="size-10" />
+          }
+          title={servers.length === 0 ? t('mcpServers.noServers') : t('mcpServers.noResults')}
+        />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((server) => (

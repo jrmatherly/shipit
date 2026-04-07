@@ -139,7 +139,11 @@ export function McpConnectInstructions({ proxyBaseUrl, serverName }: McpConnectI
 
   return (
     <div className="space-y-3">
-      <div className="flex flex-wrap gap-1" role="tablist">
+      <div
+        className="flex flex-wrap gap-1.5 rounded-lg border border-slate-200/60 bg-slate-50/50 p-1 dark:border-slate-700/50 dark:bg-slate-900/40"
+        role="tablist"
+        aria-label={t('mcpServers.connect.title')}
+      >
         {CLIENTS.map((client) => (
           <button
             key={client.id}
@@ -147,35 +151,36 @@ export function McpConnectInstructions({ proxyBaseUrl, serverName }: McpConnectI
             role="tab"
             aria-selected={activeClient === client.id}
             onClick={() => setActiveClient(client.id)}
-            className={
-              activeClient === client.id
-                ? 'bg-primary text-primary-foreground rounded-md px-2.5 py-1 text-xs font-medium'
-                : 'border-border hover:bg-muted rounded-md border px-2.5 py-1 text-xs'
-            }
+            data-state={activeClient === client.id ? 'active' : 'inactive'}
+            className="data-[state=active]:bg-card data-[state=active]:text-primary text-muted-foreground hover:text-foreground rounded-md px-2.5 py-1 text-xs font-medium transition-all data-[state=active]:shadow-sm data-[state=active]:ring-1 data-[state=active]:ring-slate-200/70 dark:data-[state=active]:ring-slate-700/50"
           >
             {client.label}
           </button>
         ))}
       </div>
 
-      <div className="relative">
-        <pre className="bg-muted max-h-64 overflow-auto rounded-md p-3 pr-10 font-mono text-[11px] leading-relaxed">
+      <div className="editorial-shadow group relative overflow-hidden rounded-xl border border-slate-200/60 bg-slate-50/60 dark:border-slate-700/50 dark:bg-slate-900/60">
+        {/* Terminal-style header bar with dots */}
+        <div className="flex items-center justify-between border-b border-slate-200/60 bg-slate-100/40 px-3 py-2 dark:border-slate-700/50 dark:bg-slate-900/40">
+          <div className="flex items-center gap-1.5">
+            <span className="size-2 rounded-full bg-slate-300 dark:bg-slate-600" aria-hidden />
+            <span className="size-2 rounded-full bg-slate-300 dark:bg-slate-600" aria-hidden />
+            <span className="size-2 rounded-full bg-slate-300 dark:bg-slate-600" aria-hidden />
+          </div>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="size-6 shrink-0"
+            onClick={handleCopy}
+            aria-label={t('mcpServers.connect.copy')}
+          >
+            {copied ? <Check className="text-primary size-3" /> : <Copy className="size-3" />}
+          </Button>
+        </div>
+        <pre className="max-h-64 overflow-auto p-3 font-mono text-[11px] leading-relaxed">
           <code>{snippet}</code>
         </pre>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon"
-          className="absolute top-1 right-1 h-7 w-7"
-          onClick={handleCopy}
-          aria-label={t('mcpServers.connect.copy')}
-        >
-          {copied ? (
-            <Check className="text-primary h-3.5 w-3.5" />
-          ) : (
-            <Copy className="h-3.5 w-3.5" />
-          )}
-        </Button>
       </div>
 
       <p className="text-muted-foreground text-xs">{t('mcpServers.connect.replaceKey')}</p>
