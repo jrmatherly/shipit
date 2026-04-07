@@ -6,7 +6,7 @@
   "author": "OpenAI",
   "website": "https://github.com/openai/codex",
   "platforms": ["linux", "darwin", "win32"],
-  "iconUrl": "https://cdn.simpleicons.org/openai",
+  "iconUrl": "/icons/tools/openai.svg",
   "binary": "codex",
   "packageManager": "npm",
   "commands": {
