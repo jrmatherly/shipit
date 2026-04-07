@@ -1,3 +1,10 @@
+## [1.173.2](https://github.com/jrmatherly/shipit/compare/v1.173.1...v1.173.2) (2026-04-07)
+
+
+### Bug Fixes
+
+* **web:** mcp tools json-rpc fetch and connect instructions ([#18](https://github.com/jrmatherly/shipit/issues/18)) ([807f3a9](https://github.com/jrmatherly/shipit/commit/807f3a9157b36a9e9cf04b57d2e92a598a49227d))
+
 ## [1.173.1](https://github.com/jrmatherly/shipit/compare/v1.173.0...v1.173.1) (2026-04-07)
 
 
