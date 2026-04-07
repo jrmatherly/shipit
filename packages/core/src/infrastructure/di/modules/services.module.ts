@@ -49,6 +49,8 @@ import { SettingsReaderService } from '../../services/settings-reader.service.js
 import { execFile } from 'node:child_process';
 import type { IPluginMarketplaceService } from '../../../application/ports/output/services/plugin-marketplace.interface.js';
 import { PluginMarketplaceService } from '../../services/plugin-marketplace/plugin-marketplace.service.js';
+import type { IMcpServerBrowserService } from '../../../application/ports/output/services/mcp-server-browser.interface.js';
+import { McpServerBrowserService } from '../../services/mcp-server-browser/mcp-server-browser.service.js';
 
 /**
  * Register business services (singletons and factories).
@@ -152,4 +154,10 @@ export function registerServicesModule(
       return new PluginMarketplaceService(spawnCb);
     },
   });
+
+  // McpServerBrowserService — read-only HTTP client (no subprocess calls)
+  container.registerSingleton<IMcpServerBrowserService>(
+    'IMcpServerBrowserService',
+    McpServerBrowserService
+  );
 }
