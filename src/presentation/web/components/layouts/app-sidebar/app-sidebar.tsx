@@ -13,6 +13,7 @@ import {
   Wrench,
   Puzzle,
   Blocks,
+  ServerIcon,
   Settings,
 } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -175,6 +176,14 @@ export function AppSidebar({
               label={t('navigation.plugins')}
               href="/plugins"
               active={pathname === '/plugins'}
+            />
+          ) : null}
+          {featureFlags.mcpServers ? (
+            <SidebarNavItem
+              icon={ServerIcon}
+              label={t('navigation.mcpServers')}
+              href="/mcp-servers"
+              active={pathname === '/mcp-servers'}
             />
           ) : null}
           <SidebarNavItem

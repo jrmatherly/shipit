@@ -157,6 +157,24 @@ export function FeatureFlagsSettingsSection({ settings }: FeatureFlagsSettingsSe
           save({ featureFlags: newFlags });
         }}
       />
+      <SwitchRow
+        label={t('settings.featureFlags.mcpServers')}
+        description={
+          settings.litellmProxy?.baseUrl
+            ? t('settings.featureFlags.mcpServersDescription')
+            : `${t('settings.featureFlags.mcpServersDescription')} — ${t('mcpServers.noProxy')}`
+        }
+        tooltip="Enables the MCP Servers page for viewing MCP servers deployed on your LiteLLM proxy. Requires a LiteLLM proxy URL to be configured."
+        id="flag-mcp-servers"
+        testId="switch-flag-mcp-servers"
+        checked={flags.mcpServers}
+        disabled={!settings.litellmProxy?.baseUrl}
+        onChange={(v) => {
+          const newFlags = { ...flags, mcpServers: v };
+          setFlags(newFlags);
+          save({ featureFlags: newFlags });
+        }}
+      />
     </SettingsSection>
   );
 }

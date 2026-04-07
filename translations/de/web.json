@@ -70,7 +70,9 @@
       "notInstalled": "Nicht installiert",
       "failedToSave": "IDE- & Terminal-Einstellungen konnten nicht gespeichert werden",
       "hint": "Ihr bevorzugter Editor öffnet Dateien zur Überprüfung. Die Shell-Einstellung steuert generierte Skripte. Der Terminal-Emulator wird gestartet, wenn Shell-Sitzungen über die Web-UI geöffnet werden.",
-      "links": { "configurationGuide": "Konfigurationsanleitung" }
+      "links": {
+        "configurationGuide": "Konfigurationsanleitung"
+      }
     },
     "workflow": {
       "title": "Workflow",
@@ -78,7 +80,11 @@
       "sectionDescription": "Automatisierungsverhalten nach der Implementierung",
       "defaultFastMode": "Schnellmodus als Standard",
       "defaultFastModeDescription": "SDLC-Phasen überspringen und direkt aus dem Prompt implementieren",
-      "subsections": { "approve": "Genehmigen", "evidence": "Nachweise", "git": "Git" },
+      "subsections": {
+        "approve": "Genehmigen",
+        "evidence": "Nachweise",
+        "git": "Git"
+      },
       "autoApprovePrd": "PRD automatisch genehmigen",
       "autoApprovePrdDescription": "Manuelle Überprüfung der Anforderungen überspringen",
       "autoApprovePlan": "Plan automatisch genehmigen",
@@ -109,7 +115,10 @@
       "stageTimeouts": "Phasen-Zeitlimits",
       "failedToSave": "Workflow-Einstellungen konnten nicht gespeichert werden",
       "hint": "Steuern Sie, wie autonom jeder Feature-Lauf ist. Autogenehmigung überspringt die manuelle Überprüfungspause in jeder Phase. Push- und PR-Optionen steuern, was nach erfolgreicher Implementierung passiert.",
-      "links": { "approvalGates": "Genehmigungsstufen", "pushAndPrFlags": "Push- & PR-Flags" }
+      "links": {
+        "approvalGates": "Genehmigungsstufen",
+        "pushAndPrFlags": "Push- & PR-Flags"
+      }
     },
     "ci": {
       "title": "Continuous Integration",
@@ -125,7 +134,10 @@
       "hideCiStatus": "CI-Status ausblenden",
       "hideCiStatusDescription": "CI-Status-Badges in Feature-Drawer und Merge-Überprüfung ausblenden",
       "hint": "Wenn ein Feature abgeschlossen ist, kann der Agent CI überwachen und Fehler automatisch beheben. Diese Limits verhindern unkontrollierte Wiederholungen und steuern, wie viel Log-Ausgabe zur Analyse an den Agenten gesendet wird.",
-      "links": { "cicdPipeline": "CI/CD-Pipeline", "ciSecurityGates": "CI-Sicherheitsgates" }
+      "links": {
+        "cicdPipeline": "CI/CD-Pipeline",
+        "ciSecurityGates": "CI-Sicherheitsgates"
+      }
     },
     "stageTimeouts": {
       "title": "Phasen-Zeitlimits",
@@ -175,7 +187,9 @@
       },
       "failedToSave": "Benachrichtigungseinstellungen konnten nicht gespeichert werden",
       "hint": "In-App-Toast-Benachrichtigungen halten Sie auf dem Laufenden. Passen Sie genau an, welche Agenten-Lebenszyklus-Ereignisse eine Benachrichtigung auslösen.",
-      "links": { "notificationSystem": "Benachrichtigungssystem" }
+      "links": {
+        "notificationSystem": "Benachrichtigungssystem"
+      }
     },
     "featureFlags": {
       "title": "Feature-Flags",
@@ -198,7 +212,9 @@
       "reactFileManagerDescription": "Den integrierten React-Dateimanager anstelle der nativen Betriebssystem-Ordnerauswahl verwenden",
       "plugins": "Plugins Marketplace",
       "pluginsDescription": "Enable the Claude Code plugins marketplace browser",
-      "hint": "Experimentelle Features, die noch in Entwicklung sind. Aktivierung auf eigene Gefahr — sie können sich in zukünftigen Versionen ändern oder entfernt werden. Der Debug-Modus fügt ausführliche Protokollierung hinzu, die bei der Fehlerbehebung nützlich ist."
+      "hint": "Experimentelle Features, die noch in Entwicklung sind. Aktivierung auf eigene Gefahr — sie können sich in zukünftigen Versionen ändern oder entfernt werden. Der Debug-Modus fügt ausführliche Protokollierung hinzu, die bei der Fehlerbehebung nützlich ist.",
+      "mcpServers": "MCP Servers",
+      "mcpServersDescription": "Enable the MCP servers browser for viewing LiteLLM proxy MCP servers"
     },
     "litellmProxy": {
       "title": "LiteLLM Proxy",
@@ -277,7 +293,8 @@
     "sessions": "Sitzungen",
     "tools": "Tools",
     "skills": "Skills",
-    "plugins": "Plugins"
+    "plugins": "Plugins",
+    "mcpServers": "MCP Servers"
   },
   "sidebar": {
     "features": "Features",
@@ -299,7 +316,7 @@
     "deleteSubFeatures": "Unter-Features löschen",
     "closePullRequest": "Pull Request schließen",
     "cancel": "Abbrechen",
-    "deleting": "Wird gelöscht\u2026",
+    "deleting": "Wird gelöscht…",
     "delete": "Löschen"
   },
   "rejectFeedback": {
@@ -308,25 +325,25 @@
     "ariaLabel": "Ablehnungsfeedback",
     "placeholder": "Beschreiben Sie, was geändert werden muss...",
     "cancel": "Abbrechen",
-    "rejecting": "Wird abgelehnt\u2026",
+    "rejecting": "Wird abgelehnt…",
     "confirmReject": "Ablehnung bestätigen"
   },
   "emptyState": {
     "addProject": "Projekt hinzufügen",
     "addProjectDescription": "Fügen Sie Ihren Projektordner hinzu, um die Feature-Erstellung freizuschalten.",
-    "addProjectDescriptionLine2": "Beschreiben Sie, was Sie brauchen \u2014 ShipIT AI erledigt den Rest.",
-    "checkingSetup": "Einrichtung wird geprüft\u2026",
+    "addProjectDescriptionLine2": "Beschreiben Sie, was Sie brauchen — ShipIT AI erledigt den Rest.",
+    "checkingSetup": "Einrichtung wird geprüft…",
     "ready": "{{label}} bereit",
     "notInstalled": "{{label}} nicht installiert",
     "reCheck": "Erneut prüfen",
     "needsAuth": "{{label}} benötigt Authentifizierung",
     "open": "{{label}} öffnen",
-    "checking": "{{label}} wird geprüft\u2026",
+    "checking": "{{label}} wird geprüft…",
     "notFound": "{{label}} nicht gefunden",
     "docs": "Dokumentation",
-    "opening": "Wird geöffnet\u2026",
+    "opening": "Wird geöffnet…",
     "chooseFolder": "Ordner auswählen",
-    "folderHint": "Jeder Ordner funktioniert \u2014 Git wird bei Bedarf automatisch initialisiert.",
+    "folderHint": "Jeder Ordner funktioniert — Git wird bei Bedarf automatisch initialisiert.",
     "orUseCli": "oder CLI verwenden",
     "copyCommands": "Befehle kopieren",
     "git": "Git",
@@ -335,7 +352,7 @@
     "githubCliRequired": "Für Pull Requests erforderlich"
   },
   "welcome": {
-    "loadingAgents": "Agenten werden geladen\u2026",
+    "loadingAgents": "Agenten werden geladen…",
     "chooseAgent": "Wählen Sie Ihren Agenten",
     "pickModel": "Modell auswählen",
     "selectAgentSubtitle": "Wählen Sie den KI-Coding-Agenten, den ShipIT AI verwenden soll.",
@@ -383,11 +400,11 @@
     "stopDevServer": "Server stoppen",
     "startDevServer": "Server starten",
     "retryDevServer": "Server neu starten",
-    "starting": "Startet\u2026",
+    "starting": "Startet…",
     "retry": "Wiederholen",
     "start": "Starten",
     "failed": "Fehlgeschlagen",
-    "deleting": "Lösche\u2026",
+    "deleting": "Lösche…",
     "addFeature": "Feature hinzufügen",
     "reviewRequirements": "Anforderungen prüfen",
     "reviewTechnicalPlan": "Technischen Plan prüfen",
@@ -622,7 +639,7 @@
     "addRepository": "Repository hinzufügen"
   },
   "modelPicker": {
-    "searchPlaceholder": "Modell-ID suchen oder eingeben\u2026"
+    "searchPlaceholder": "Modell-ID suchen oder eingeben…"
   },
   "skills": {
     "searchPlaceholder": "Fähigkeiten suchen..."
@@ -664,6 +681,40 @@
     },
     "card": {
       "permissionOverride": "Berechtigung: {{mode}}"
+    }
+  },
+  "mcpServers": {
+    "title": "MCP Servers",
+    "subtitle": "Browse MCP servers deployed on your LiteLLM proxy",
+    "noProxy": "No LiteLLM proxy configured. Add a proxy URL in Settings to browse MCP servers.",
+    "noServers": "No MCP servers found",
+    "noResults": "No servers match your search",
+    "searchPlaceholder": "Search servers...",
+    "filter": {
+      "all": "All"
+    },
+    "transport": {
+      "http": "HTTP",
+      "sse": "SSE",
+      "stdio": "STDIO"
+    },
+    "authType": {
+      "api_key": "API Key",
+      "bearer_token": "Bearer Token",
+      "basic": "Basic",
+      "oauth2": "OAuth2",
+      "aws_sigv4": "AWS SigV4"
+    },
+    "detail": {
+      "serverName": "Server Name",
+      "url": "URL",
+      "transport": "Transport",
+      "authType": "Auth Type"
+    },
+    "tools": {
+      "title": "Available Tools",
+      "noTools": "No tools available",
+      "other": "Other"
     }
   }
 }
