@@ -1,3 +1,10 @@
+# [1.174.0](https://github.com/jrmatherly/shipit/compare/v1.173.2...v1.174.0) (2026-04-07)
+
+
+### Features
+
+* **web:** mcp servers editorial polish, vendor icons, and sse tool parsing ([4b4faf2](https://github.com/jrmatherly/shipit/commit/4b4faf21ce24981253910fa339d64b4e743d684c))
+
 ## [1.173.2](https://github.com/jrmatherly/shipit/compare/v1.173.1...v1.173.2) (2026-04-07)
 
 
