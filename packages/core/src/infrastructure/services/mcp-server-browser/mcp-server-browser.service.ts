@@ -105,7 +105,11 @@ async function fetchJson(endpoint: string, headers: Record<string, string>): Pro
     const text = await res.text();
     if (text.length > MAX_RESPONSE_SIZE) return null;
 
-    return JSON.parse(text) as unknown;
+    try {
+      return JSON.parse(text) as unknown;
+    } catch {
+      return null;
+    }
   } finally {
     clearTimeout(timeout);
   }

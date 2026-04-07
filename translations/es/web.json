@@ -715,6 +715,7 @@
       "title": "Available Tools",
       "noTools": "No tools available",
       "other": "Other"
-    }
+    },
+    "fetchError": "Failed to fetch MCP servers. Check your proxy configuration."
   }
 }

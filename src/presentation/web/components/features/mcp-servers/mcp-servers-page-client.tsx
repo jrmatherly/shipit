@@ -24,17 +24,25 @@ export function McpServersPageClient({ proxyConfigured }: McpServersPageClientPr
   const [selectedServer, setSelectedServer] = useState<McpServerInfo | null>(null);
   const [servers, setServers] = useState<McpServerInfo[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!proxyConfigured) {
       setLoading(false);
       return;
     }
-    fetchMcpServersAction().then((result) => {
-      setServers(result.servers);
-      setLoading(false);
-    });
-  }, [proxyConfigured]);
+    fetchMcpServersAction()
+      .then((result) => {
+        setServers(result.servers);
+        if (result.error) setError(result.error);
+      })
+      .catch(() => {
+        setError(t('mcpServers.fetchError'));
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [proxyConfigured, t]);
 
   const serverNames = useMemo(() => servers.map((s) => s.server_name), [servers]);
 
@@ -72,6 +80,14 @@ export function McpServersPageClient({ proxyConfigured }: McpServersPageClientPr
     <div className="space-y-6 p-6">
       <div>
         <h1 className="text-2xl font-bold">{t('mcpServers.title')}</h1>
+        {error ? (
+          <div className="border-destructive/50 bg-destructive/10 mt-2 rounded-md border p-3">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="text-destructive h-4 w-4" />
+              <p className="text-destructive text-sm">{error}</p>
+            </div>
+          </div>
+        ) : null}
         <p className="text-muted-foreground mt-1 text-sm">{t('mcpServers.subtitle')}</p>
       </div>
 

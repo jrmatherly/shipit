@@ -39,12 +39,20 @@ export function McpServerDetailDrawer({
   const { t } = useTranslation();
   const [tools, setTools] = useState<McpToolInfo[]>([]);
   const [loadingTools, setLoadingTools] = useState(false);
+  const [toolError, setToolError] = useState<string | null>(null);
 
   const loadTools = useCallback(async () => {
     setLoadingTools(true);
-    const result = await fetchMcpServerToolsAction();
-    setTools(result.tools);
-    setLoadingTools(false);
+    setToolError(null);
+    try {
+      const result = await fetchMcpServerToolsAction();
+      setTools(result.tools);
+      if (result.error) setToolError(result.error);
+    } catch {
+      setToolError('Failed to load tools');
+    } finally {
+      setLoadingTools(false);
+    }
   }, []);
 
   useEffect(() => {
@@ -99,6 +107,8 @@ export function McpServerDetailDrawer({
       <h3 className="mb-3 text-sm font-semibold">{t('mcpServers.tools.title')}</h3>
       {loadingTools ? (
         <p className="text-muted-foreground text-sm">{t('accessibility.loading')}...</p>
+      ) : toolError ? (
+        <p className="text-destructive text-sm">{toolError}</p>
       ) : (
         <McpToolList tools={tools} serverNames={serverNames} />
       )}
