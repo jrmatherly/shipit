@@ -52,6 +52,10 @@ import { UninstallPluginUseCase } from '../../../application/use-cases/plugins/u
 import { TogglePluginUseCase } from '../../../application/use-cases/plugins/toggle-plugin.use-case.js';
 import { AddMarketplaceUseCase } from '../../../application/use-cases/plugins/add-marketplace.use-case.js';
 
+// MCP server browser use cases
+import { FetchMcpServersUseCase } from '../../../application/use-cases/mcp-servers/fetch-mcp-servers.use-case.js';
+import { FetchMcpServerToolsUseCase } from '../../../application/use-cases/mcp-servers/fetch-mcp-server-tools.use-case.js';
+
 // Upgrade use case
 import { UpgradeCliUseCase } from '../../../application/use-cases/upgrade/upgrade-cli.use-case.js';
 
@@ -197,5 +201,13 @@ export function registerWebTokensModule(container: DependencyContainer): void {
   });
   container.register('AddMarketplaceUseCase', {
     useFactory: (c) => c.resolve(AddMarketplaceUseCase),
+  });
+
+  // MCP server browser
+  container.register('FetchMcpServersUseCase', {
+    useFactory: (c) => c.resolve(FetchMcpServersUseCase),
+  });
+  container.register('FetchMcpServerToolsUseCase', {
+    useFactory: (c) => c.resolve(FetchMcpServerToolsUseCase),
   });
 }
