@@ -1,4 +1,5 @@
-export async function fetchMcpServerToolsAction() {
+export async function fetchMcpServerToolsAction(_serverName: string) {
+  void _serverName;
   return {
     tools: [
       {

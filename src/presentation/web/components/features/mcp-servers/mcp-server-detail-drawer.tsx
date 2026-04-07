@@ -6,7 +6,10 @@ import { BaseDrawer } from '@/components/common/base-drawer';
 import { DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { RefreshCw } from 'lucide-react';
 import { McpToolList } from './mcp-tool-list';
+import { McpConnectInstructions } from './mcp-connect-instructions';
 import { fetchMcpServerToolsAction } from '@/app/actions/fetch-mcp-server-tools';
 import type {
   McpServerInfo,
@@ -15,7 +18,7 @@ import type {
 
 interface McpServerDetailDrawerProps {
   server: McpServerInfo | null;
-  serverNames: string[];
+  proxyBaseUrl: string;
   open: boolean;
   onClose: () => void;
 }
@@ -32,7 +35,7 @@ function isValidDisplayUrl(url?: string): boolean {
 
 export function McpServerDetailDrawer({
   server,
-  serverNames,
+  proxyBaseUrl,
   open,
   onClose,
 }: McpServerDetailDrawerProps) {
@@ -40,14 +43,16 @@ export function McpServerDetailDrawer({
   const [tools, setTools] = useState<McpToolInfo[]>([]);
   const [loadingTools, setLoadingTools] = useState(false);
   const [toolError, setToolError] = useState<string | null>(null);
+  const [loadedServerName, setLoadedServerName] = useState<string | null>(null);
 
-  const loadTools = useCallback(async () => {
+  const loadTools = useCallback(async (serverName: string) => {
     setLoadingTools(true);
     setToolError(null);
     try {
-      const result = await fetchMcpServerToolsAction();
+      const result = await fetchMcpServerToolsAction(serverName);
       setTools(result.tools);
       if (result.error) setToolError(result.error);
+      setLoadedServerName(serverName);
     } catch {
       setToolError('Failed to load tools');
     } finally {
@@ -56,10 +61,19 @@ export function McpServerDetailDrawer({
   }, []);
 
   useEffect(() => {
-    if (open && server && tools.length === 0) {
-      loadTools();
-    }
-  }, [open, server, tools.length, loadTools]);
+    if (!open || !server) return;
+    // Re-fetch whenever the drawer opens for a different server.
+    if (loadedServerName === server.server_name) return;
+    loadTools(server.server_name);
+  }, [open, server, loadedServerName, loadTools]);
+
+  const handleRefresh = useCallback(() => {
+    if (!server) return;
+    // Clear the cached server name to force a re-fetch on the next render
+    // and call loadTools directly for immediate feedback.
+    setLoadedServerName(null);
+    loadTools(server.server_name);
+  }, [server, loadTools]);
 
   if (!server) return null;
 
@@ -104,14 +118,33 @@ export function McpServerDetailDrawer({
 
       <Separator className="my-4" />
 
-      <h3 className="mb-3 text-sm font-semibold">{t('mcpServers.tools.title')}</h3>
+      <div className="mb-3 flex items-center justify-between">
+        <h3 className="text-sm font-semibold">{t('mcpServers.tools.title')}</h3>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="h-7 w-7"
+          onClick={handleRefresh}
+          disabled={loadingTools}
+          aria-label={t('mcpServers.tools.refresh')}
+          data-testid="mcp-tools-refresh"
+        >
+          <RefreshCw className={`h-3.5 w-3.5 ${loadingTools ? 'animate-spin' : ''}`} />
+        </Button>
+      </div>
       {loadingTools ? (
         <p className="text-muted-foreground text-sm">{t('accessibility.loading')}...</p>
       ) : toolError ? (
         <p className="text-destructive text-sm">{toolError}</p>
       ) : (
-        <McpToolList tools={tools} serverNames={serverNames} />
+        <McpToolList tools={tools} serverName={server.server_name} />
       )}
+
+      <Separator className="my-4" />
+
+      <h3 className="mb-3 text-sm font-semibold">{t('mcpServers.connect.title')}</h3>
+      <McpConnectInstructions proxyBaseUrl={proxyBaseUrl} serverName={server.server_name} />
     </BaseDrawer>
   );
 }

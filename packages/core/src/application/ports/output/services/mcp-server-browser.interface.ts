@@ -37,5 +37,13 @@ export interface McpToolInfo {
 
 export interface IMcpServerBrowserService {
   fetchServers(proxyBaseUrl: string, apiKey?: string): Promise<McpServerInfo[]>;
-  fetchTools(proxyBaseUrl: string, apiKey?: string): Promise<McpToolInfo[]>;
+  /**
+   * Fetch tools for a specific MCP server via JSON-RPC.
+   *
+   * LiteLLM exposes each MCP server at `{proxyBaseUrl}/{serverName}/mcp` and
+   * accepts standard MCP JSON-RPC requests. This method POSTs a
+   * `{"jsonrpc":"2.0","id":1,"method":"tools/list"}` body and parses the
+   * `result.tools` array from the response.
+   */
+  fetchTools(proxyBaseUrl: string, serverName: string, apiKey?: string): Promise<McpToolInfo[]>;
 }

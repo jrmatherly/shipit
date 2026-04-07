@@ -19,8 +19,8 @@ function createMockBrowserService(): IMcpServerBrowserService {
   return {
     fetchServers: vi.fn().mockResolvedValue([]),
     fetchTools: vi.fn().mockResolvedValue([
-      { name: 'server-tool1', description: 'Tool 1' },
-      { name: 'server-tool2', description: 'Tool 2' },
+      { name: 'tool1', description: 'Tool 1' },
+      { name: 'tool2', description: 'Tool 2' },
     ]),
   };
 }
@@ -31,13 +31,13 @@ describe('FetchMcpServerToolsUseCase', () => {
     const service = createMockBrowserService();
 
     const useCase = new FetchMcpServerToolsUseCase(reader, service);
-    const result = await useCase.execute();
+    const result = await useCase.execute({ serverName: 'some-server' });
 
     expect(result.tools).toEqual([]);
     expect(service.fetchTools).not.toHaveBeenCalled();
   });
 
-  it('delegates to service with correct args when proxy configured', async () => {
+  it('delegates to service with baseUrl, serverName, and apiKey', async () => {
     const reader = createMockSettingsReader({
       litellmProxy: {
         baseUrl: 'http://localhost:4000',
@@ -48,9 +48,13 @@ describe('FetchMcpServerToolsUseCase', () => {
     const service = createMockBrowserService();
 
     const useCase = new FetchMcpServerToolsUseCase(reader, service);
-    const result = await useCase.execute();
+    const result = await useCase.execute({ serverName: 'deepwiki_mcp' });
 
-    expect(service.fetchTools).toHaveBeenCalledWith('http://localhost:4000', 'sk-key');
+    expect(service.fetchTools).toHaveBeenCalledWith(
+      'http://localhost:4000',
+      'deepwiki_mcp',
+      'sk-key'
+    );
     expect(result.tools).toHaveLength(2);
   });
 
@@ -65,8 +69,25 @@ describe('FetchMcpServerToolsUseCase', () => {
     const service = createMockBrowserService();
 
     const useCase = new FetchMcpServerToolsUseCase(reader, service);
-    const result = await useCase.execute();
+    const result = await useCase.execute({ serverName: 'deepwiki_mcp' });
 
     expect(result.tools).toEqual([]);
+  });
+
+  it('returns empty when serverName is empty', async () => {
+    const reader = createMockSettingsReader({
+      litellmProxy: {
+        baseUrl: 'http://localhost:4000',
+        apiKey: 'sk-key',
+        marketplaceEnabled: true,
+      },
+    });
+    const service = createMockBrowserService();
+
+    const useCase = new FetchMcpServerToolsUseCase(reader, service);
+    const result = await useCase.execute({ serverName: '' });
+
+    expect(result.tools).toEqual([]);
+    expect(service.fetchTools).not.toHaveBeenCalled();
   });
 });

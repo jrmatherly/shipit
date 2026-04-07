@@ -714,8 +714,14 @@
     "tools": {
       "title": "Available Tools",
       "noTools": "No tools available",
-      "other": "Other"
+      "other": "Other",
+      "refresh": "Refresh tools"
     },
-    "fetchError": "Failed to fetch MCP servers. Check your proxy configuration."
+    "fetchError": "Failed to fetch MCP servers. Check your proxy configuration.",
+    "connect": {
+      "title": "Connect to this server",
+      "copy": "Copy to clipboard",
+      "replaceKey": "Replace <LITELLM_API_KEY> with your LiteLLM virtual key."
+    }
   }
 }

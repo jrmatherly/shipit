@@ -9,13 +9,15 @@ export default async function McpServersPage() {
   if (!flags.mcpServers) notFound();
 
   let proxyConfigured = false;
+  let proxyBaseUrl = '';
   try {
     const useCase = resolve<LoadSettingsUseCase>('LoadSettingsUseCase');
     const settings = await useCase.execute();
     proxyConfigured = !!settings.litellmProxy?.baseUrl;
+    proxyBaseUrl = settings.litellmProxy?.baseUrl ?? '';
   } catch {
     // Settings not available
   }
 
-  return <McpServersPageClient proxyConfigured={proxyConfigured} />;
+  return <McpServersPageClient proxyConfigured={proxyConfigured} proxyBaseUrl={proxyBaseUrl} />;
 }

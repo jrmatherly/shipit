@@ -11,29 +11,28 @@ type Story = StoryObj<typeof meta>;
 
 export const WithTools: Story = {
   args: {
-    serverNames: ['deepwiki-mcp', 'github_mcp'],
+    serverName: 'deepwiki-mcp',
     tools: [
       { name: 'deepwiki-mcp-read_wiki', description: 'Read wiki contents' },
       { name: 'deepwiki-mcp-search', description: 'Search documentation' },
-      { name: 'github_mcp-list_issues', description: 'List GitHub issues' },
-      { name: 'github_mcp-create_issue', description: 'Create a new issue' },
+      { name: 'deepwiki-mcp-list_repos', description: 'List indexed repositories' },
     ],
   },
 };
 
 export const NoTools: Story = {
   args: {
-    serverNames: ['deepwiki-mcp'],
+    serverName: 'empty_server',
     tools: [],
   },
 };
 
-export const UnmatchedTools: Story = {
+export const UnprefixedTools: Story = {
   args: {
-    serverNames: ['deepwiki-mcp'],
+    serverName: 'my_server',
     tools: [
-      { name: 'deepwiki-mcp-read_wiki', description: 'Read wiki contents' },
-      { name: 'unknown-server-tool', description: 'Tool from unknown server' },
+      { name: 'query', description: 'Execute a query' },
+      { name: 'list_tables', description: 'List all tables' },
     ],
   },
 };

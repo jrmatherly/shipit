@@ -129,3 +129,23 @@ There are multiple code paths that spawn an agent process: create, start, resume
 - `check-and-unblock-features.use-case.ts` → `execute()` (auto-unblock children)
 
 **Rule:** Treat `create-feature.use-case.ts initializeAndSpawn()` as the canonical spawn. When adding a flag, copy its option-passing pattern to all other sites.
+
+## Verify External API Endpoints Exist Before Implementing Against Them
+
+When integrating with a third-party API, **read the current docs page directly** (not search snippets, not cached results) and ideally cURL against a real instance before writing service code. Don't assume an endpoint exists just because a search result mentions it.
+
+**The trap:** LiteLLM's MCP tool listing was implemented against `GET /mcp-rest/tools/list` because a web search snippet referenced that path. Unit tests passed because they verified the HTTP client correctly called *the wrong URL*. The bug only surfaced when a real user opened the drawer and saw "No tools available" — the endpoint returned 404 in every LiteLLM version.
+
+**The real API:** LiteLLM exposes each MCP server at `POST {proxyUrl}/{serverName}/mcp` with a JSON-RPC body (`{"jsonrpc":"2.0","id":1,"method":"tools/list"}`) and `x-litellm-api-key: Bearer <key>` header. This is per-server, not global, and uses POST with JSON-RPC framing, not GET.
+
+**Rule:** Before implementing an HTTP client against any third-party API:
+
+1. Fetch the current docs page with `curl -sL {url} | sed 's/<[^>]*>//g'` or WebFetch — don't rely on snippet summaries
+2. Find a concrete curl example in the docs that matches your use case
+3. Run that curl against a test instance if one is available
+4. Only then write the service code
+5. Add a comment in the service file pointing to the exact docs section so the next maintainer can verify
+
+**Related trap (same class of bug):** String-token DI resolution. Server actions use `resolve<T>('Name')` which accepts *any* string at the TypeScript level. Registering a use case by class token in `use-cases.module.ts` is not sufficient — it must also be registered under the string name in `web-tokens.module.ts`. Unit tests that instantiate use cases directly (bypassing DI) don't catch this. The DI smoke test at `tests/unit/infrastructure/di/container-string-token-resolution.test.ts` scans all server actions for `resolve<T>('Token')` calls and asserts every token is registered — run it whenever adding a new server action.
+
+**Rule of thumb:** Any bug that can only be found by actually running the UI is a testing gap. When you fix one, add a unit test or smoke test that would have caught it. Five minutes of test authoring saves hours of "why doesn't this work in production."

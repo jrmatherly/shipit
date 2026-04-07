@@ -23,6 +23,7 @@ import { AutoResolveMergedBranchesUseCase } from '../../../application/use-cases
 // Agent use cases
 import { ApproveAgentRunUseCase } from '../../../application/use-cases/agents/approve-agent-run.use-case.js';
 import { RejectAgentRunUseCase } from '../../../application/use-cases/agents/reject-agent-run.use-case.js';
+import { StopAgentRunUseCase } from '../../../application/use-cases/agents/stop-agent-run.use-case.js';
 import { PollAgentEventsUseCase } from '../../../application/use-cases/agents/poll-agent-events.use-case.js';
 
 // Tool use cases
@@ -126,6 +127,9 @@ export function registerWebTokensModule(container: DependencyContainer): void {
   });
   container.register('RejectAgentRunUseCase', {
     useFactory: (c) => c.resolve(RejectAgentRunUseCase),
+  });
+  container.register('StopAgentRunUseCase', {
+    useFactory: (c) => c.resolve(StopAgentRunUseCase),
   });
   container.register('PollAgentEventsUseCase', {
     useFactory: (c) => c.resolve(PollAgentEventsUseCase),
