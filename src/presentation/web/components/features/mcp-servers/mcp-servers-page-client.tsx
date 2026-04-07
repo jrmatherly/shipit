@@ -13,11 +13,12 @@ import type { McpServerInfo } from '@shipit-ai/core/application/ports/output/ser
 
 interface McpServersPageClientProps {
   proxyConfigured: boolean;
+  proxyBaseUrl: string;
 }
 
 const TRANSPORT_FILTERS = ['all', 'http', 'sse', 'stdio'] as const;
 
-export function McpServersPageClient({ proxyConfigured }: McpServersPageClientProps) {
+export function McpServersPageClient({ proxyConfigured, proxyBaseUrl }: McpServersPageClientProps) {
   const { t } = useTranslation('web');
   const [searchQuery, setSearchQuery] = useState('');
   const [transportFilter, setTransportFilter] = useState<string>('all');
@@ -43,8 +44,6 @@ export function McpServersPageClient({ proxyConfigured }: McpServersPageClientPr
         setLoading(false);
       });
   }, [proxyConfigured, t]);
-
-  const serverNames = useMemo(() => servers.map((s) => s.server_name), [servers]);
 
   const filtered = useMemo(() => {
     return servers.filter((server) => {
@@ -133,7 +132,7 @@ export function McpServersPageClient({ proxyConfigured }: McpServersPageClientPr
 
       <McpServerDetailDrawer
         server={selectedServer}
-        serverNames={serverNames}
+        proxyBaseUrl={proxyBaseUrl}
         open={!!selectedServer}
         onClose={() => setSelectedServer(null)}
       />

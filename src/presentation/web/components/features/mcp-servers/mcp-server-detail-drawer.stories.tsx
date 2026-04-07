@@ -7,7 +7,7 @@ const meta = {
   args: {
     open: true,
     onClose: () => undefined,
-    serverNames: ['deepwiki-mcp', 'github_mcp'],
+    proxyBaseUrl: 'http://localhost:4000',
   },
 } satisfies Meta<typeof McpServerDetailDrawer>;
 

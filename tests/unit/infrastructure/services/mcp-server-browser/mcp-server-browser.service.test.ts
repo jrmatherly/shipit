@@ -6,6 +6,7 @@ describe('McpServerBrowserService', () => {
   let service: McpServerBrowserService;
   const baseUrl = 'http://localhost:4000';
   const apiKey = 'sk-test-key';
+  const serverName = 'deepwiki_mcp';
 
   beforeEach(() => {
     service = new McpServerBrowserService();
@@ -33,19 +34,23 @@ describe('McpServerBrowserService', () => {
     },
   ];
 
-  const mockToolsResponse = {
-    tools: [
-      {
-        name: 'deepwiki-mcp-read_wiki',
-        title: 'Read Wiki',
-        description: 'Read wiki contents from DeepWiki',
-        inputSchema: { type: 'object', properties: {} },
-      },
-      {
-        name: 'github_mcp-list_issues',
-        description: 'List GitHub issues',
-      },
-    ],
+  const mockJsonRpcToolsResponse = {
+    jsonrpc: '2.0',
+    id: 1,
+    result: {
+      tools: [
+        {
+          name: 'read_wiki',
+          title: 'Read Wiki',
+          description: 'Read wiki contents from DeepWiki',
+          inputSchema: { type: 'object', properties: {} },
+        },
+        {
+          name: 'search',
+          description: 'Search documentation',
+        },
+      ],
+    },
   };
 
   describe('fetchServers', () => {
@@ -73,7 +78,7 @@ describe('McpServerBrowserService', () => {
       expect((init?.headers as Record<string, string>)['Authorization']).toBe(`Bearer ${apiKey}`);
     });
 
-    it('calls /public/mcp_hub endpoint', async () => {
+    it('calls /public/mcp_hub endpoint with GET', async () => {
       const fetchSpy = vi
         .spyOn(globalThis, 'fetch')
         .mockResolvedValueOnce(new Response('[]', { status: 200 }));
@@ -81,6 +86,7 @@ describe('McpServerBrowserService', () => {
       await service.fetchServers(baseUrl);
 
       expect(fetchSpy.mock.calls[0][0]).toBe('http://localhost:4000/public/mcp_hub');
+      expect(fetchSpy.mock.calls[0][1]?.method).toBe('GET');
     });
 
     it('returns empty array on timeout', async () => {
@@ -152,35 +158,66 @@ describe('McpServerBrowserService', () => {
   });
 
   describe('fetchTools', () => {
-    it('returns validated tool array on success (wrapped format)', async () => {
+    it('returns validated tool array on JSON-RPC success', async () => {
       vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify(mockToolsResponse), { status: 200 })
+        new Response(JSON.stringify(mockJsonRpcToolsResponse), { status: 200 })
       );
 
-      const result = await service.fetchTools(baseUrl, apiKey);
+      const result = await service.fetchTools(baseUrl, serverName, apiKey);
 
       expect(result).toHaveLength(2);
-      expect(result[0].name).toBe('deepwiki-mcp-read_wiki');
-      expect(result[1].name).toBe('github_mcp-list_issues');
+      expect(result[0].name).toBe('read_wiki');
+      expect(result[1].name).toBe('search');
     });
 
-    it('returns validated tool array on success (bare array format)', async () => {
-      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
-        new Response(JSON.stringify(mockToolsResponse.tools), { status: 200 })
-      );
-
-      const result = await service.fetchTools(baseUrl);
-      expect(result).toHaveLength(2);
-    });
-
-    it('calls /mcp-rest/tools/list endpoint', async () => {
+    it('POSTs to /{serverName}/mcp endpoint with JSON-RPC body', async () => {
       const fetchSpy = vi
         .spyOn(globalThis, 'fetch')
-        .mockResolvedValueOnce(new Response(JSON.stringify({ tools: [] }), { status: 200 }));
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify(mockJsonRpcToolsResponse), { status: 200 })
+        );
 
-      await service.fetchTools(baseUrl);
+      await service.fetchTools(baseUrl, serverName, apiKey);
 
-      expect(fetchSpy.mock.calls[0][0]).toBe('http://localhost:4000/mcp-rest/tools/list');
+      expect(fetchSpy.mock.calls[0][0]).toBe(`http://localhost:4000/${serverName}/mcp`);
+      const init = fetchSpy.mock.calls[0][1];
+      expect(init?.method).toBe('POST');
+      expect(init?.body).toBe(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }));
+    });
+
+    it('sends x-litellm-api-key header (not Authorization)', async () => {
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify(mockJsonRpcToolsResponse), { status: 200 })
+        );
+
+      await service.fetchTools(baseUrl, serverName, apiKey);
+
+      const headers = fetchSpy.mock.calls[0][1]?.headers as Record<string, string>;
+      expect(headers['x-litellm-api-key']).toBe(`Bearer ${apiKey}`);
+      expect(headers['Authorization']).toBeUndefined();
+      expect(headers['Content-Type']).toBe('application/json');
+    });
+
+    it('accepts fallback wrapped format { tools: [...] }', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify({ tools: mockJsonRpcToolsResponse.result.tools }), {
+          status: 200,
+        })
+      );
+
+      const result = await service.fetchTools(baseUrl, serverName);
+      expect(result).toHaveLength(2);
+    });
+
+    it('accepts fallback bare array format', async () => {
+      vi.spyOn(globalThis, 'fetch').mockResolvedValueOnce(
+        new Response(JSON.stringify(mockJsonRpcToolsResponse.result.tools), { status: 200 })
+      );
+
+      const result = await service.fetchTools(baseUrl, serverName);
+      expect(result).toHaveLength(2);
     });
 
     it('returns empty array on timeout', async () => {
@@ -188,7 +225,7 @@ describe('McpServerBrowserService', () => {
         () => new Promise((_resolve, reject) => setTimeout(() => reject(new Error('aborted')), 50))
       );
 
-      const result = await service.fetchTools(baseUrl);
+      const result = await service.fetchTools(baseUrl, serverName);
       expect(result).toEqual([]);
     });
 
@@ -197,8 +234,34 @@ describe('McpServerBrowserService', () => {
         new Response('Unauthorized', { status: 401 })
       );
 
-      const result = await service.fetchTools(baseUrl);
+      const result = await service.fetchTools(baseUrl, serverName);
       expect(result).toEqual([]);
+    });
+
+    it('returns empty array for unsafe server name (path traversal)', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const result = await service.fetchTools(baseUrl, '../admin');
+      expect(result).toEqual([]);
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('returns empty array for server name with special characters', async () => {
+      const fetchSpy = vi.spyOn(globalThis, 'fetch');
+      const result = await service.fetchTools(baseUrl, 'server with spaces');
+      expect(result).toEqual([]);
+      expect(fetchSpy).not.toHaveBeenCalled();
+    });
+
+    it('accepts safe server names with alphanumerics, hyphens, and underscores', async () => {
+      const fetchSpy = vi
+        .spyOn(globalThis, 'fetch')
+        .mockResolvedValueOnce(
+          new Response(JSON.stringify(mockJsonRpcToolsResponse), { status: 200 })
+        );
+
+      await service.fetchTools(baseUrl, 'valid_server-name123');
+
+      expect(fetchSpy).toHaveBeenCalled();
     });
   });
 });

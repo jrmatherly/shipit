@@ -52,11 +52,22 @@ const McpToolInfoSchema = z.object({
   inputSchema: z.record(z.string(), z.unknown()).optional(),
 });
 
+// MCP JSON-RPC response for tools/list:
+// { "jsonrpc": "2.0", "id": 1, "result": { "tools": [...] } }
+export const McpJsonRpcToolsListResponseSchema = z.object({
+  jsonrpc: z.string().optional(),
+  id: z.union([z.string(), z.number()]).optional(),
+  result: z.object({
+    tools: z.array(McpToolInfoSchema),
+  }),
+});
+
+// Some older LiteLLM versions / compat modes may return the wrapped result directly
 export const McpToolListResponseSchema = z.object({
   tools: z.array(McpToolInfoSchema),
 });
 
-// Fallback: tools/list may return a bare array in some LiteLLM versions
+// Bare array fallback
 export const McpToolListFallbackSchema = z.array(McpToolInfoSchema);
 
 export type ValidatedMcpServerInfo = z.infer<typeof McpServerInfoSchema>;

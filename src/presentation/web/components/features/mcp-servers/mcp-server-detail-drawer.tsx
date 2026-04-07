@@ -7,6 +7,7 @@ import { DrawerTitle, DrawerDescription } from '@/components/ui/drawer';
 import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { McpToolList } from './mcp-tool-list';
+import { McpConnectInstructions } from './mcp-connect-instructions';
 import { fetchMcpServerToolsAction } from '@/app/actions/fetch-mcp-server-tools';
 import type {
   McpServerInfo,
@@ -15,7 +16,7 @@ import type {
 
 interface McpServerDetailDrawerProps {
   server: McpServerInfo | null;
-  serverNames: string[];
+  proxyBaseUrl: string;
   open: boolean;
   onClose: () => void;
 }
@@ -32,7 +33,7 @@ function isValidDisplayUrl(url?: string): boolean {
 
 export function McpServerDetailDrawer({
   server,
-  serverNames,
+  proxyBaseUrl,
   open,
   onClose,
 }: McpServerDetailDrawerProps) {
@@ -40,14 +41,16 @@ export function McpServerDetailDrawer({
   const [tools, setTools] = useState<McpToolInfo[]>([]);
   const [loadingTools, setLoadingTools] = useState(false);
   const [toolError, setToolError] = useState<string | null>(null);
+  const [loadedServerName, setLoadedServerName] = useState<string | null>(null);
 
-  const loadTools = useCallback(async () => {
+  const loadTools = useCallback(async (serverName: string) => {
     setLoadingTools(true);
     setToolError(null);
     try {
-      const result = await fetchMcpServerToolsAction();
+      const result = await fetchMcpServerToolsAction(serverName);
       setTools(result.tools);
       if (result.error) setToolError(result.error);
+      setLoadedServerName(serverName);
     } catch {
       setToolError('Failed to load tools');
     } finally {
@@ -56,10 +59,11 @@ export function McpServerDetailDrawer({
   }, []);
 
   useEffect(() => {
-    if (open && server && tools.length === 0) {
-      loadTools();
-    }
-  }, [open, server, tools.length, loadTools]);
+    if (!open || !server) return;
+    // Re-fetch whenever the drawer opens for a different server.
+    if (loadedServerName === server.server_name) return;
+    loadTools(server.server_name);
+  }, [open, server, loadedServerName, loadTools]);
 
   if (!server) return null;
 
@@ -110,8 +114,13 @@ export function McpServerDetailDrawer({
       ) : toolError ? (
         <p className="text-destructive text-sm">{toolError}</p>
       ) : (
-        <McpToolList tools={tools} serverNames={serverNames} />
+        <McpToolList tools={tools} serverName={server.server_name} />
       )}
+
+      <Separator className="my-4" />
+
+      <h3 className="mb-3 text-sm font-semibold">{t('mcpServers.connect.title')}</h3>
+      <McpConnectInstructions proxyBaseUrl={proxyBaseUrl} serverName={server.server_name} />
     </BaseDrawer>
   );
 }

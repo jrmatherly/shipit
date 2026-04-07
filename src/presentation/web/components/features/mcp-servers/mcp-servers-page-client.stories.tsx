@@ -10,9 +10,9 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  args: { proxyConfigured: true },
+  args: { proxyConfigured: true, proxyBaseUrl: 'http://localhost:4000' },
 };
 
 export const NoProxy: Story = {
-  args: { proxyConfigured: false },
+  args: { proxyConfigured: false, proxyBaseUrl: '' },
 };
