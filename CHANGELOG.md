@@ -1,3 +1,10 @@
+# [1.173.0](https://github.com/jrmatherly/shipit/compare/v1.172.0...v1.173.0) (2026-04-07)
+
+
+### Features
+
+* **web:** litellm mcp server browser ([#16](https://github.com/jrmatherly/shipit/issues/16)) ([0906fd1](https://github.com/jrmatherly/shipit/commit/0906fd15f2616d2a09fda8d6a0dc69b2c1c95bbb))
+
 # [1.172.0](https://github.com/jrmatherly/shipit/compare/v1.171.0...v1.172.0) (2026-04-06)
 
 
