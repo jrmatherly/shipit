@@ -1,3 +1,10 @@
+## [1.173.1](https://github.com/jrmatherly/shipit/compare/v1.173.0...v1.173.1) (2026-04-07)
+
+
+### Bug Fixes
+
+* **web:** mcp servers page i18n namespace and di string token ([#17](https://github.com/jrmatherly/shipit/issues/17)) ([7d083f5](https://github.com/jrmatherly/shipit/commit/7d083f54915765f625e88e6eaf15662517ad725a))
+
 # [1.173.0](https://github.com/jrmatherly/shipit/compare/v1.172.0...v1.173.0) (2026-04-07)
 
 
