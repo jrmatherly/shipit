@@ -1,3 +1,11 @@
+## [1.174.1](https://github.com/jrmatherly/shipit/compare/v1.174.0...v1.174.1) (2026-04-07)
+
+
+### Bug Fixes
+
+* **config:** add hooktimeout to vitest node project for windows ci ([1754de5](https://github.com/jrmatherly/shipit/commit/1754de54ab13916b2b1d3f43fe2a7514eba40df1))
+* **web:** codex cli openai icon and add icon url test ([c859c90](https://github.com/jrmatherly/shipit/commit/c859c90c2538e2bb471c846bfdc2195838de81e2))
+
 # [1.174.0](https://github.com/jrmatherly/shipit/compare/v1.173.2...v1.174.0) (2026-04-07)
 
 
