@@ -648,6 +648,9 @@ model FeatureFlags {
 
   @doc("Enable the Claude Code plugins marketplace browser")
   plugins: boolean = false;
+
+  @doc("Enable the MCP servers browser for viewing LiteLLM proxy MCP servers")
+  mcpServers: boolean = false;
 }
 
 /**

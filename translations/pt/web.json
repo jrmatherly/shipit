@@ -212,7 +212,9 @@
       "reactFileManagerDescription": "Usar o gerenciador de arquivos React integrado em vez do seletor de pastas nativo do SO",
       "plugins": "Plugins Marketplace",
       "pluginsDescription": "Enable the Claude Code plugins marketplace browser",
-      "hint": "Recursos experimentais que ainda estão em desenvolvimento. Ative por sua conta e risco — podem mudar ou ser removidos em versões futuras. O modo debug adiciona logs detalhados úteis para solução de problemas."
+      "hint": "Recursos experimentais que ainda estão em desenvolvimento. Ative por sua conta e risco — podem mudar ou ser removidos em versões futuras. O modo debug adiciona logs detalhados úteis para solução de problemas.",
+      "mcpServers": "MCP Servers",
+      "mcpServersDescription": "Enable the MCP servers browser for viewing LiteLLM proxy MCP servers"
     },
     "litellmProxy": {
       "title": "LiteLLM Proxy",
@@ -291,7 +293,8 @@
     "sessions": "Sessões",
     "tools": "Ferramentas",
     "skills": "Skills",
-    "plugins": "Plugins"
+    "plugins": "Plugins",
+    "mcpServers": "MCP Servers"
   },
   "sidebar": {
     "features": "Recursos",
@@ -313,7 +316,7 @@
     "deleteSubFeatures": "Excluir sub-recursos",
     "closePullRequest": "Fechar pull request",
     "cancel": "Cancelar",
-    "deleting": "Excluindo\u2026",
+    "deleting": "Excluindo…",
     "delete": "Excluir"
   },
   "rejectFeedback": {
@@ -322,25 +325,25 @@
     "ariaLabel": "Feedback de rejeição",
     "placeholder": "Descreva o que precisa mudar...",
     "cancel": "Cancelar",
-    "rejecting": "Rejeitando\u2026",
+    "rejecting": "Rejeitando…",
     "confirmReject": "Confirmar Rejeição"
   },
   "emptyState": {
     "addProject": "Adicionar um projeto",
     "addProjectDescription": "Adicione sua pasta de projeto para desbloquear a criação de recursos.",
-    "addProjectDescriptionLine2": "Descreva o que você precisa \u2014 o ShipIT AI cuida do resto.",
-    "checkingSetup": "Verificando configuração\u2026",
+    "addProjectDescriptionLine2": "Descreva o que você precisa — o ShipIT AI cuida do resto.",
+    "checkingSetup": "Verificando configuração…",
     "ready": "{{label}} pronto",
     "notInstalled": "{{label}} não instalado",
     "reCheck": "Verificar novamente",
     "needsAuth": "{{label}} precisa de autenticação",
     "open": "Abrir {{label}}",
-    "checking": "Verificando {{label}}\u2026",
+    "checking": "Verificando {{label}}…",
     "notFound": "{{label}} não encontrado",
     "docs": "Docs",
-    "opening": "Abrindo\u2026",
+    "opening": "Abrindo…",
     "chooseFolder": "Escolha uma Pasta",
-    "folderHint": "Qualquer pasta funciona \u2014 o git será inicializado automaticamente se necessário.",
+    "folderHint": "Qualquer pasta funciona — o git será inicializado automaticamente se necessário.",
     "orUseCli": "ou use o CLI",
     "copyCommands": "Copiar comandos",
     "git": "Git",
@@ -349,7 +352,7 @@
     "githubCliRequired": "Necessário para pull requests"
   },
   "welcome": {
-    "loadingAgents": "Carregando agentes\u2026",
+    "loadingAgents": "Carregando agentes…",
     "chooseAgent": "Escolha seu agente",
     "pickModel": "Escolha um modelo",
     "selectAgentSubtitle": "Selecione o agente de codificação AI que você quer que o ShipIT AI use.",
@@ -397,11 +400,11 @@
     "stopDevServer": "Parar servidor",
     "startDevServer": "Iniciar servidor",
     "retryDevServer": "Reiniciar servidor",
-    "starting": "Iniciando\u2026",
+    "starting": "Iniciando…",
     "retry": "Tentar novamente",
     "start": "Iniciar",
     "failed": "Falhou",
-    "deleting": "Excluindo\u2026",
+    "deleting": "Excluindo…",
     "addFeature": "Adicionar funcionalidade",
     "reviewRequirements": "Revisar requisitos",
     "reviewTechnicalPlan": "Revisar plano técnico",
@@ -636,7 +639,7 @@
     "addRepository": "Adicionar repositório"
   },
   "modelPicker": {
-    "searchPlaceholder": "Buscar ou digitar um ID de modelo\u2026"
+    "searchPlaceholder": "Buscar ou digitar um ID de modelo…"
   },
   "skills": {
     "searchPlaceholder": "Buscar habilidades..."
@@ -679,5 +682,40 @@
     "card": {
       "permissionOverride": "Permissao: {{mode}}"
     }
+  },
+  "mcpServers": {
+    "title": "MCP Servers",
+    "subtitle": "Browse MCP servers deployed on your LiteLLM proxy",
+    "noProxy": "No LiteLLM proxy configured. Add a proxy URL in Settings to browse MCP servers.",
+    "noServers": "No MCP servers found",
+    "noResults": "No servers match your search",
+    "searchPlaceholder": "Search servers...",
+    "filter": {
+      "all": "All"
+    },
+    "transport": {
+      "http": "HTTP",
+      "sse": "SSE",
+      "stdio": "STDIO"
+    },
+    "authType": {
+      "api_key": "API Key",
+      "bearer_token": "Bearer Token",
+      "basic": "Basic",
+      "oauth2": "OAuth2",
+      "aws_sigv4": "AWS SigV4"
+    },
+    "detail": {
+      "serverName": "Server Name",
+      "url": "URL",
+      "transport": "Transport",
+      "authType": "Auth Type"
+    },
+    "tools": {
+      "title": "Available Tools",
+      "noTools": "No tools available",
+      "other": "Other"
+    },
+    "fetchError": "Failed to fetch MCP servers. Check your proxy configuration."
   }
 }

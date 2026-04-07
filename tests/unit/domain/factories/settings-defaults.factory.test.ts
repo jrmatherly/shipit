@@ -353,6 +353,7 @@ describe('createDefaultSettings', () => {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       });
     });
   });

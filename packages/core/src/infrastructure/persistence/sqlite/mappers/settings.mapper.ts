@@ -127,6 +127,7 @@ export interface SettingsRow {
   feature_flag_git_rebase_sync: number;
   feature_flag_react_file_manager: number;
   feature_flag_plugins: number;
+  feature_flag_mcp_servers: number;
   // LiteLLM Proxy config (added in migration 054)
   litellm_proxy_base_url: string | null;
   litellm_proxy_api_key: string | null;
@@ -266,6 +267,7 @@ export function toDatabase(settings: Settings): SettingsRow {
     feature_flag_git_rebase_sync: settings.featureFlags?.gitRebaseSync ? 1 : 0,
     feature_flag_react_file_manager: settings.featureFlags?.reactFileManager ? 1 : 0,
     feature_flag_plugins: settings.featureFlags?.plugins ? 1 : 0,
+    feature_flag_mcp_servers: settings.featureFlags?.mcpServers ? 1 : 0,
 
     // LiteLLMProxyConfig (string fields nullable, boolean → 0/1)
     litellm_proxy_base_url: settings.litellmProxy?.baseUrl ?? null,
@@ -459,6 +461,7 @@ export function fromDatabase(row: SettingsRow): Settings {
       gitRebaseSync: row.feature_flag_git_rebase_sync === 1,
       reactFileManager: row.feature_flag_react_file_manager === 1,
       plugins: row.feature_flag_plugins === 1,
+      mcpServers: row.feature_flag_mcp_servers === 1,
     },
 
     // LiteLLMProxyConfig (TEXT → string, INTEGER 0/1 → boolean)

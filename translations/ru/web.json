@@ -212,7 +212,9 @@
       "reactFileManagerDescription": "Использовать встроенный файловый менеджер React вместо системного выбора папок",
       "plugins": "Plugins Marketplace",
       "pluginsDescription": "Enable the Claude Code plugins marketplace browser",
-      "hint": "Экспериментальные функции, которые ещё находятся в разработке. Включайте на свой страх и риск — они могут измениться или быть удалены в будущих версиях. Режим отладки добавляет подробное логирование, полезное для устранения неполадок."
+      "hint": "Экспериментальные функции, которые ещё находятся в разработке. Включайте на свой страх и риск — они могут измениться или быть удалены в будущих версиях. Режим отладки добавляет подробное логирование, полезное для устранения неполадок.",
+      "mcpServers": "MCP Servers",
+      "mcpServersDescription": "Enable the MCP servers browser for viewing LiteLLM proxy MCP servers"
     },
     "litellmProxy": {
       "title": "LiteLLM Proxy",
@@ -291,7 +293,8 @@
     "sessions": "Сессии",
     "tools": "Инструменты",
     "skills": "Навыки",
-    "plugins": "Plugins"
+    "plugins": "Plugins",
+    "mcpServers": "MCP Servers"
   },
   "sidebar": {
     "features": "Функции",
@@ -313,7 +316,7 @@
     "deleteSubFeatures": "Удалить подфункции",
     "closePullRequest": "Закрыть запрос на слияние",
     "cancel": "Отмена",
-    "deleting": "Удаление\u2026",
+    "deleting": "Удаление…",
     "delete": "Удалить"
   },
   "rejectFeedback": {
@@ -322,25 +325,25 @@
     "ariaLabel": "Обратная связь при отклонении",
     "placeholder": "Опишите, что нужно изменить...",
     "cancel": "Отмена",
-    "rejecting": "Отклонение\u2026",
+    "rejecting": "Отклонение…",
     "confirmReject": "Подтвердить отклонение"
   },
   "emptyState": {
     "addProject": "Добавить проект",
     "addProjectDescription": "Добавьте папку проекта для создания функций.",
-    "addProjectDescriptionLine2": "Опишите, что вам нужно \u2014 ShipIT AI сделает остальное.",
-    "checkingSetup": "Проверка настройки\u2026",
+    "addProjectDescriptionLine2": "Опишите, что вам нужно — ShipIT AI сделает остальное.",
+    "checkingSetup": "Проверка настройки…",
     "ready": "{{label}} готов",
     "notInstalled": "{{label}} не установлен",
     "reCheck": "Проверить снова",
     "needsAuth": "{{label}} требует аутентификации",
     "open": "Открыть {{label}}",
-    "checking": "Проверка {{label}}\u2026",
+    "checking": "Проверка {{label}}…",
     "notFound": "{{label}} не найден",
     "docs": "Документация",
-    "opening": "Открытие\u2026",
+    "opening": "Открытие…",
     "chooseFolder": "Выбрать папку",
-    "folderHint": "Подойдёт любая папка \u2014 git будет инициализирован автоматически при необходимости.",
+    "folderHint": "Подойдёт любая папка — git будет инициализирован автоматически при необходимости.",
     "orUseCli": "или используйте CLI",
     "copyCommands": "Копировать команды",
     "git": "Git",
@@ -349,7 +352,7 @@
     "githubCliRequired": "Необходим для запросов на слияние"
   },
   "welcome": {
-    "loadingAgents": "Загрузка агентов\u2026",
+    "loadingAgents": "Загрузка агентов…",
     "chooseAgent": "Выберите вашего агента",
     "pickModel": "Выберите модель",
     "selectAgentSubtitle": "Выберите AI-агента для кодирования, который будет использовать ShipIT AI.",
@@ -397,11 +400,11 @@
     "stopDevServer": "Остановить сервер",
     "startDevServer": "Запустить сервер",
     "retryDevServer": "Перезапустить сервер",
-    "starting": "Запуск\u2026",
+    "starting": "Запуск…",
     "retry": "Повторить",
     "start": "Запуск",
     "failed": "Ошибка",
-    "deleting": "Удаление\u2026",
+    "deleting": "Удаление…",
     "addFeature": "Добавить функцию",
     "reviewRequirements": "Проверить требования",
     "reviewTechnicalPlan": "Проверить технический план",
@@ -636,7 +639,7 @@
     "addRepository": "Добавить репозиторий"
   },
   "modelPicker": {
-    "searchPlaceholder": "Поиск или введите ID модели\u2026"
+    "searchPlaceholder": "Поиск или введите ID модели…"
   },
   "skills": {
     "searchPlaceholder": "Поиск навыков..."
@@ -679,5 +682,40 @@
     "card": {
       "permissionOverride": "Разрешение: {{mode}}"
     }
+  },
+  "mcpServers": {
+    "title": "MCP Servers",
+    "subtitle": "Browse MCP servers deployed on your LiteLLM proxy",
+    "noProxy": "No LiteLLM proxy configured. Add a proxy URL in Settings to browse MCP servers.",
+    "noServers": "No MCP servers found",
+    "noResults": "No servers match your search",
+    "searchPlaceholder": "Search servers...",
+    "filter": {
+      "all": "All"
+    },
+    "transport": {
+      "http": "HTTP",
+      "sse": "SSE",
+      "stdio": "STDIO"
+    },
+    "authType": {
+      "api_key": "API Key",
+      "bearer_token": "Bearer Token",
+      "basic": "Basic",
+      "oauth2": "OAuth2",
+      "aws_sigv4": "AWS SigV4"
+    },
+    "detail": {
+      "serverName": "Server Name",
+      "url": "URL",
+      "transport": "Transport",
+      "authType": "Auth Type"
+    },
+    "tools": {
+      "title": "Available Tools",
+      "noTools": "No tools available",
+      "other": "Other"
+    },
+    "fetchError": "Failed to fetch MCP servers. Check your proxy configuration."
   }
 }

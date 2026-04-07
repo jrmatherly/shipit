@@ -755,6 +755,10 @@ export type FeatureFlags = {
    * Enable the Claude Code plugins marketplace browser
    */
   plugins: boolean;
+  /**
+   * Enable the MCP servers browser for viewing LiteLLM proxy MCP servers
+   */
+  mcpServers: boolean;
 };
 
 /**

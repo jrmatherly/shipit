@@ -526,6 +526,7 @@ describe('SQLiteSettingsRepository', () => {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       };
 
       await repository.initialize(settings);
@@ -540,6 +541,7 @@ describe('SQLiteSettingsRepository', () => {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       });
     });
 
@@ -558,6 +560,7 @@ describe('SQLiteSettingsRepository', () => {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       });
     });
 
@@ -574,6 +577,7 @@ describe('SQLiteSettingsRepository', () => {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       };
       settings.updatedAt = new Date('2025-01-02T00:00:00Z');
       await repository.update(settings);
@@ -588,6 +592,7 @@ describe('SQLiteSettingsRepository', () => {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       });
     });
 
@@ -602,6 +607,7 @@ describe('SQLiteSettingsRepository', () => {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       };
 
       await repository.initialize(settings);

@@ -15,6 +15,10 @@ import { UninstallPluginUseCase } from '../../../application/use-cases/plugins/u
 import { TogglePluginUseCase } from '../../../application/use-cases/plugins/toggle-plugin.use-case.js';
 import { AddMarketplaceUseCase } from '../../../application/use-cases/plugins/add-marketplace.use-case.js';
 
+// MCP server browser use cases
+import { FetchMcpServersUseCase } from '../../../application/use-cases/mcp-servers/fetch-mcp-servers.use-case.js';
+import { FetchMcpServerToolsUseCase } from '../../../application/use-cases/mcp-servers/fetch-mcp-server-tools.use-case.js';
+
 // Agent use cases
 import { ConfigureAgentUseCase } from '../../../application/use-cases/agents/configure-agent.use-case.js';
 import { ValidateAgentAuthUseCase } from '../../../application/use-cases/agents/validate-agent-auth.use-case.js';
@@ -155,6 +159,10 @@ export function registerUseCasesModule(container: DependencyContainer): void {
   container.registerSingleton(UninstallPluginUseCase);
   container.registerSingleton(TogglePluginUseCase);
   container.registerSingleton(AddMarketplaceUseCase);
+
+  // MCP server browser
+  container.registerSingleton(FetchMcpServersUseCase);
+  container.registerSingleton(FetchMcpServerToolsUseCase);
 
   // Conflict resolution
   container.registerSingleton(ConflictResolutionService);

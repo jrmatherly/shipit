@@ -42,6 +42,7 @@ export const AllSections: Story = {
         gitRebaseSync: false,
         reactFileManager: false,
         plugins: false,
+        mcpServers: false,
       },
     },
     shipitAiHome: '/opt/shipit-ai',

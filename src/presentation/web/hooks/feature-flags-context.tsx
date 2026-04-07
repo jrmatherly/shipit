@@ -12,6 +12,7 @@ const defaultFlags: FeatureFlagsState = {
   gitRebaseSync: false,
   reactFileManager: false,
   plugins: false,
+  mcpServers: false,
 };
 
 const FeatureFlagsContext = createContext<FeatureFlagsState>(defaultFlags);

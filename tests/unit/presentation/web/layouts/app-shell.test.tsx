@@ -27,6 +27,7 @@ const defaultFlags = {
   gitRebaseSync: false,
   reactFileManager: false,
   plugins: false,
+  mcpServers: false,
 };
 
 function renderShell(children: React.ReactNode) {

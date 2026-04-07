@@ -25,6 +25,7 @@ export function FeatureFlagsSettingsSection({ settings }: FeatureFlagsSettingsSe
     gitRebaseSync: false,
     reactFileManager: false,
     plugins: false,
+    mcpServers: false,
   };
 
   const [flags, setFlags] = useState<FeatureFlags>({ ...featureFlags });
@@ -152,6 +153,24 @@ export function FeatureFlagsSettingsSection({ settings }: FeatureFlagsSettingsSe
         disabled={!settings.litellmProxy?.baseUrl}
         onChange={(v) => {
           const newFlags = { ...flags, plugins: v };
+          setFlags(newFlags);
+          save({ featureFlags: newFlags });
+        }}
+      />
+      <SwitchRow
+        label={t('settings.featureFlags.mcpServers')}
+        description={
+          settings.litellmProxy?.baseUrl
+            ? t('settings.featureFlags.mcpServersDescription')
+            : `${t('settings.featureFlags.mcpServersDescription')} — ${t('mcpServers.noProxy')}`
+        }
+        tooltip="Enables the MCP Servers page for viewing MCP servers deployed on your LiteLLM proxy. Requires a LiteLLM proxy URL to be configured."
+        id="flag-mcp-servers"
+        testId="switch-flag-mcp-servers"
+        checked={flags.mcpServers}
+        disabled={!settings.litellmProxy?.baseUrl}
+        onChange={(v) => {
+          const newFlags = { ...flags, mcpServers: v };
           setFlags(newFlags);
           save({ featureFlags: newFlags });
         }}

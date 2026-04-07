@@ -73,3 +73,9 @@ export type {
   PluginSource,
   PluginOperationResult,
 } from './plugin-marketplace.interface.js';
+export type {
+  IMcpServerBrowserService,
+  McpServerInfo,
+  McpServerMcpInfo,
+  McpToolInfo,
+} from './mcp-server-browser.interface.js';
