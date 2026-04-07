@@ -6,7 +6,7 @@
  *
  * Business Rules:
  * - Reads proxy URL from settings via ISettingsReader
- * - If proxy not configured or mcpServers flag disabled, returns empty array
+ * - If proxy not configured, returns empty array (flag gated at page level)
  * - Delegates to IMcpServerBrowserService for HTTP retrieval
  */
 

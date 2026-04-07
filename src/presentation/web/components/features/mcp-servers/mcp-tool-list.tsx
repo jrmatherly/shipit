@@ -68,7 +68,10 @@ export function McpToolList({ tools, serverNames }: McpToolListProps) {
           </h4>
           <div className="space-y-2">
             {group.tools.map((tool) => (
-              <div key={tool.displayName} className="rounded-md border p-2">
+              <div
+                key={`${group.serverName}-${tool.displayName}`}
+                className="rounded-md border p-2"
+              >
                 <div className="flex items-center gap-2">
                   <Badge variant="outline" className="font-mono text-xs">
                     {tool.displayName}

@@ -10,6 +10,7 @@
  * Silent failure to empty arrays on any error.
  */
 
+import { injectable } from 'tsyringe';
 import type {
   IMcpServerBrowserService,
   McpServerInfo,
@@ -24,6 +25,7 @@ import {
 const FETCH_TIMEOUT_MS = 10_000;
 const MAX_RESPONSE_SIZE = 5_000_000;
 
+@injectable()
 export class McpServerBrowserService implements IMcpServerBrowserService {
   async fetchServers(proxyBaseUrl: string, apiKey?: string): Promise<McpServerInfo[]> {
     try {
