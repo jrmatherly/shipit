@@ -47,7 +47,7 @@ jobs:
       # 1. Checkout, build, link
       # ─────────────────────────────────────────────────────────────────────
       - name: 📥 Checkout shipit-ai CLI
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v5
       - uses: actions/setup-node@v6
@@ -301,7 +301,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout shipit-ai CLI
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v5
       - uses: actions/setup-node@v6
@@ -441,7 +441,7 @@ jobs:
 
     steps:
       - name: 📥 Checkout shipit-ai CLI
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - uses: pnpm/action-setup@v5
       - uses: actions/setup-node@v6
